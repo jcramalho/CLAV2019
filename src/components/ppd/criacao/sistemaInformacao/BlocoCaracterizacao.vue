@@ -3,7 +3,7 @@
     <!-- CONTEXTO DE CARACTERIZAÇÃO DO PPD -->
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
-        4.  Caracterização do sistema de informação (SI)
+        3.  Caracterização do sistema de informação (SI)
         <InfoBox header="Caracterização SI" :text="myhelp"  helpColor="white"/>
       </div>
     </v-expansion-panel-header>
@@ -87,7 +87,7 @@
           <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
               v-model="c.caracterizacao.dimensao"
-              label="Indique nº de registos e dimensão em unidades binárias."
+              label="Indique a dimensão em unidades binárias (Gb)."
               solo
               clearable
           ></v-text-field>
@@ -99,7 +99,7 @@
           <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
               v-model="c.caracterizacao.crescimento"
-              label="Indique nº de registos e dimensão em unidades binárias."
+              label="Indique a dimensão em unidades binárias (Gb)."
               solo
               clearable
           ></v-text-field>
@@ -484,17 +484,7 @@
               clearable
           ></v-textarea>
         </v-col>
-        <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Menção de responsabilidade</div>
-        </v-col>
-        <v-col cols="12" xs="12" sm="9">
-          <v-textarea
-              v-model="c.caracterizacao.mencaoResp"
-              label=""
-              solo
-              clearable
-          ></v-textarea>
-        </v-col>
+
 
         </v-row>
     </v-expansion-panel-content>

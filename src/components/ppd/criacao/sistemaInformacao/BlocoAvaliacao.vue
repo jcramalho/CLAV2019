@@ -28,7 +28,7 @@
           </v-col>
 
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Decomposição do</div>
+            <div class="info-label">Decomposição</div>
           </v-col>
           <v-col cols="12" xs="12" sm="9">
             <div class="info-label">???</div>
@@ -70,19 +70,68 @@
           <v-col cols="12" xs="12" sm="9">
             <v-radio-group v-model="loadCheck" row>
               <v-radio
-                v-for="(p, i) in tsRada"
+                v-for="(p, i) in fontLegitimacao"
                 :key="i"
                 :label="p"
                 :value="p"
                 color="indigo darken-3"
               ></v-radio>
             </v-radio-group>
-            <div v-if="loadCheck === 'TS'">
-              <span>TS</span>
+            <div v-if="loadCheck === 'TS/LC'">
+              <v-autocomplete
+                label="Selecione a fonte de legitimação"
+                :items="tabelasSelecao"
+                item-text="titulo"
+                return-object
+                v-model="a"
+                solo
+                dense
+              />
             </div>
-            <div v-if="loadCheck === 'RADA'">
-              <span>RADA</span>
+            <div v-else-if="loadCheck === 'PGD/LC'">
+              <v-autocomplete
+                label="Selecione a fonte de legitimação"
+                :items="portariaLC"
+                item-text="titulo"
+                return-object
+                v-model="a"
+                solo
+                dense
+              />
             </div>
+            <div v-else-if="loadCheck === 'PGD'">
+              <v-autocomplete
+                label="Selecione a fonte de legitimação"
+                :items="portaria"
+                item-text="titulo"
+                return-object
+                v-model="a"
+                solo
+                dense
+              />
+            </div>
+            <div v-else-if="loadCheck === 'RADA'">
+              <v-autocomplete
+                label="Selecione a fonte de legitimação"
+                :items="portariaRada"
+                item-text="titulo"
+                return-object
+                v-model="a"
+                solo
+                dense
+              />
+            </div>
+            <div v-else>
+                  <v-autocomplete
+                    label="Selecione a fonte de legitimação"
+                    :items="tsRada"
+                    item-text="titulo"
+                    return-object
+                    v-model="a"
+                    solo
+                    dense
+                  ></v-autocomplete>
+                </div>
           </v-col>
 
           <v-col cols="12" xs="12" sm="3">
@@ -129,7 +178,7 @@ export default {
       myhelp: help,
       numeroRef: "",
       siTipoRelacao: [],
-      
+
       loadCheck: "",
 
 
@@ -141,12 +190,57 @@ export default {
                     "X (Input - quando fornece dados ou informação ao sistema em análise)",
                     "O (Output - quando a informação, no todo ou em parte, tem origem ou resulta do processamento de dados existentes no sistema em análise)"],
       checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"],
-      tsRada: ["TS","RADA"],
+      fontLegitimacao: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
+
+      a: "",
+      portaria: [],
+      portariaLC: [],
+      portariaRada: [],
+      tabelasSelecao: [],
+      tsRada: [],
     };
   },
 
-  methods: {
+  created: async function() {
+    try {
+      //var user = this.$verifyTokenUser();
+      var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
+      this.portariaLC = await this.prepararLeg(response.data);
+      var response2 = await this.$request("get", "/pgd");
+      this.portaria = await this.prepararLeg(response2.data);
+      var response3 = await this.$request("get", "/legislacao?fonte=RADA");
+      this.portariaRada = await this.prepararLeg(response3.data);
+      //var response4 = await this.$request("get","/rada");
+      //this.tsRada = response4.data
+      var response5 = await this.$request("get","/tabelasSelecao")
+      this.tabelasSelecao = response5.data.map(ts=>{return {
+          titulo: ts.designacao,
+          codigo: ts.id.split("clav#")[1]
+        }
+      });
+    }catch (e) {
+      this.portariaLC = [];
+      this.portaria = [];
+      this.portariaRada = [];
+      this.tabelasSelecao = [];
+      this.tsRada = [];
+    }
 
+
+  },
+
+  methods: {
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push(l.tipo + " " + l.numero + " - " + l.sumario);
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
   }
 };
 </script>

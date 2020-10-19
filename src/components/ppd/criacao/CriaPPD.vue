@@ -15,20 +15,18 @@
             <v-col cols="12" xs="12" sm="9">
               <v-text-field
                 :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                v-model="ppd.titulo"
+                v-model="ppd.geral.nomePPD"
                 label="Título"
                 solo
                 clearable
               ></v-text-field>
             </v-col>
-          </v-row>
-          <v-row>
             <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Entidades</div>
             </v-col>
             <v-col cols="12" xs="12" sm="9" v-if="entidadesReady">
               <v-autocomplete
-                v-model="entSel"
+                v-model="ppd.geral.entSel"
                 :items="entidades"
                 item-text="label"
                 placeholder="Selecione as entidades abrangidas pelo PPD"
@@ -44,42 +42,33 @@
                 Ainda não foi possível carregar as entidades...
               </v-alert>
             </v-col>
+          </v-row>
+          <v-row>
             <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Menção de responsabilidade</div>
             </v-col>
             <v-col cols="12" xs="12" sm="9">
               <v-textarea
-                  v-model="ppd.identificacao.mencaoResp"
+                  v-model="ppd.geral.mencaoResp"
                   label=""
                   solo
                   clearable
               ></v-textarea>
             </v-col>
           </v-row>
-          <v-expansion-panels>
-            <!-- BLOCO IDENTIFICAÇÃO -->
-            <BlocoIdentificacao
-              :c="ppd"
-              :semaforos="semaforos"
-              :sis="listaSistema"
-              :entidadesReady="entidadesReady"
-              :entidades="entidades"
-            />
-            <!-- BLOCO AVALIAÇÃO -->
-            <BlocoAvaliacao
-              :c="ppd"
-            />
-            <!-- BLOCO CARACTERIZAÇÃO -->
-            <BlocoCaracterizacao
-              :c="ppd"
-            />
-            <!-- BLOCO ESTRATÉGIA -->
-            <BlocoEstrategia
-              :c="ppd"
-            />
-
-
-          </v-expansion-panels>
+          <!-- sisISLAÇÂO -->
+          <SistemaOps
+            :sistema="ppd.sistemasInfo"
+            @unselectSistema="unselectSistema($event)"
+          />
+          <SistemaInfo
+            :ppd="ppd"
+            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo)"
+            :entidades="entidades"
+            :entidadesReady="entidadesReady"
+            :semaforos="semaforos"
+            :listaSistema="listaSistema"
+          />
         </v-card-text>
 
         <v-snackbar
@@ -102,23 +91,28 @@ const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
-import BlocoIdentificacao from "@/components/ppd/criacao/BlocoIdentificacao.vue";
-import BlocoAvaliacao from "@/components/ppd/criacao/BlocoAvaliacao.vue";
-import BlocoCaracterizacao from "@/components/ppd/criacao/BlocoCaracterizacao.vue";
-import BlocoEstrategia from "@/components/ppd/criacao/BlocoEstrategia.vue";
+import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
+import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
+//import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
+
 
 export default {
   components: {
-    BlocoIdentificacao,
-    BlocoAvaliacao,
-    BlocoCaracterizacao,
-    BlocoEstrategia
+    SistemaInfo,
+    SistemaOps,
+    //SistemaSelect
   },
 
   data: () => ({
     // Objeto que guarda um ppd
     ppd: {
-      nRef: "",
+
+      geral:{
+        numeroPPD: "", //é necessário?
+        nomePPD: "",
+        mencaoResp: "",
+        entSel: [],
+      },
       identificacao: {
         numeroSI: "",
         nomeSI: "",
@@ -131,19 +125,19 @@ export default {
         localDadosPrivado: "",
         userList: [],
         defResponsavel: "",
+        defCheck: "",
         insourcing: "",
+        insourcingCheck:"",
         outsourcing: "",
+        outsourcingCheck: "",
         notas: "",
       },
       avaliacao: {
         codigo: "",
         descricao: "",
         checkedAti: "",
-        nRef: ""
       },
       caracterizacao:{
-        nRef: "",
-        nomeSI: "",
         dependenciaSoft: "",
         modeloCres: "",
         dimensao:"",
@@ -177,26 +171,25 @@ export default {
         contratoAtivos: "",
         planoRecuperacao: "",
         notas: "",
-        mencaoResp: ""
       },
       estrategia:{
 
       },
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      notasAp: [],
-      exemplosNotasAp: [],
-      notasEx: [],
-      termosInd: [],
+      codigo: "", //é necessário?
+      descricao: "", //é necessário?
+      notasAp: [], //é necessário?
+      exemplosNotasAp: [], //é necessário?
+      notasEx: [], //é necessário?
+      termosInd: [], //é necessário?
 
-      sistema: [],
+      sistemasInfo: [],
 
       user: {
         token: ""
-      }
+      },
     },
 
+    dialog: false,
 
     // Lista de todas as entidades existentes
     entidades: [],
@@ -260,8 +253,8 @@ export default {
     // Quando se termina a seleção das entidades
     entidadesSelecionadas: async function(){
       try{
-        this.entSel.sort((a, b) => a.identificacao > b.identificacao ? 1 : -1 );
-        this.ppd.entidades = this.entSel;
+        this.geral.entSel.sort((a, b) => a.identificacao > b.identificacao ? 1 : -1 );
+        this.ppd.entidades = this.geral.entSel;
 
         for(let i=0; i < this.listaProcessos.procs.length; i++){
             for(let j=0; j < this.ppd.entidades.length; j++){
@@ -305,6 +298,23 @@ export default {
       } catch (error) {
         return error;
       }
+    },
+
+    newSistema: function(sis, lista) {
+        lista.push(sis);
+    },
+
+    selectSistema: function(sis) {
+      this.ppd.sistemasInfo.push(sis);
+      // Remove dos selecionáveis
+      var index = this.listaSistema.findIndex(l => l.id === sis.id);
+      this.listaSistema.splice(index, 1);
+    },
+    unselectSistema: function(sistema) {
+      // Recoloca o sistema nos selecionáveis
+      this.listaSistema.push(sistema);
+      var index = this.ppd.sistemasInfo.findIndex(e => e.id === sistema.id);
+      this.ppd.sistemasInfo.splice(index, 1);
     },
 
 
