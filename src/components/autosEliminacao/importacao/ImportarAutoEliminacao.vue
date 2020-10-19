@@ -419,6 +419,13 @@ export default {
   methods: {
     validar: async function() {
       for(var zc of this.auto.zonaControlo) {
+        if(zc.nrAgregacoes ==0 && zc.agregacoes.length==0) {
+          this.errosVal.erros.push({
+            sobre: "Nº de Agregações",
+            mensagem: "O numero de agregações deve ser superior a 0 (zero)"
+          })
+          this.errosVal.numErros++;
+        }
         if(zc.notasPCA && !zc.validaNotaPCA) {
           this.errosVal.erros.push({
             sobre: "Notas do PCA",
@@ -486,7 +493,7 @@ export default {
       for(var zc of this.auto.zonaControlo) {
         if(this.tipo=="PGD_LC" || this.tipo=="TS_LC")
           delete zc["referencia"];
-
+        
         if(zc.destino === "Conservação") zc.destino = "C"
         else if(zc.destino === "Eliminação") zc.destino = "E"
         
@@ -530,6 +537,12 @@ export default {
         .then(() => {
           conversor(this.fileSerie, this.fileAgreg, this.tipo)
             .then(async res => {
+              //VERIFICA SE O FICHEIRO DE CLASSES ESTÁ VAZIO
+              if(res.auto.zonaControlo.length===0) {
+                this.flagAE = true;
+                this.erro = "Verificar se preencheu o ficheiro das classes / séries."
+              }
+
               var currentDate = new Date();
               this.auto.zonaControlo = res.auto.zonaControlo;
               if (this.tipo == "TS_LC") {
@@ -583,7 +596,11 @@ export default {
                 }
                 this.auto.zonaControlo.forEach(zc => {
                   var classe = this.classes.find(
-                    elem => elem.codigo == zc.codigo && elem.referencia == zc.referencia
+                    elem => {
+                      var codigo = elem.codigo || ''
+                      var referencia = elem.referencial || ''
+                      return codigo == zc.codigo && referencia == zc.referencia 
+                    }
                   )
 
                   if (!classe) {
