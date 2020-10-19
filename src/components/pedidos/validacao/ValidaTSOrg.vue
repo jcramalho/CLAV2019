@@ -286,24 +286,10 @@ export default {
     async finalizarPedido(dados) {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
-        for (const key in pedido.objeto.dados) {
-          if (
-            pedido.objeto.dados[key] === undefined ||
-            pedido.objeto.dados[key] === null ||
-            pedido.objeto.dados[key] === ""
-          ) {
-            delete pedido.objeto.dados[key];
-          }
-        }
-
-        this.overlay = true;
-        await this.$request("post", "/tabelasSelecao", {
-          tabela: pedido
-        });
-
-        const estado = "Validado";
 
         let dadosUtilizador = this.$verifyTokenUser();
+
+        const estado = "Em Despacho";
 
         const novaDistribuicao = {
           estado: estado,
@@ -333,12 +319,6 @@ export default {
               this.erros.push({ parametro: erro.param, mensagem: erro.msg });
             });
           }
-        } else {
-          this.erros.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Ocorreu um erro ao aceder à ontologia."
-          });
-          //console.log("e :", e);
         }
       }
     }

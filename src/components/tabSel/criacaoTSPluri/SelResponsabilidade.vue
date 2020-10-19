@@ -27,8 +27,13 @@
                   >Participante</span
                 >
                 <v-radio-group row v-model="todosParticipantes">
-                  <v-radio label="Não part." value="NP"></v-radio>
                   <v-radio
+                    color="indigo darken-4"
+                    label="Não part."
+                    value="NP"
+                  ></v-radio>
+                  <v-radio
+                    color="indigo darken-4"
                     v-for="p in participacao"
                     :key="p.idtermo"
                     :label="p.termo.substring(0, 3)"
@@ -58,8 +63,13 @@
                   </td>
                   <td>
                     <v-radio-group v-model="props.item.participante" row>
-                      <v-radio label="Não part." value="NP"></v-radio>
                       <v-radio
+                        color="indigo darken-4"
+                        label="Não part."
+                        value="NP"
+                      ></v-radio>
+                      <v-radio
+                        color="indigo darken-4"
                         v-for="p in participacao"
                         :key="p.idtermo"
                         :label="p.termo.substring(0, 3)"

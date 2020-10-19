@@ -1,33 +1,35 @@
 <template>
   <v-row class="ma-1">
     <v-col>
-      <v-card>
+      <v-card style="background-color:#fafafa">
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading"
             >Nova Tabela de Seleção Pluriorganizacional</v-toolbar-title
           >
         </v-app-bar>
-        <v-card-text class="panel-body">
-          <v-stepper v-model="stepNo" vertical>
-            <v-stepper-step :complete="stepNo > 1" step="1">
-              Entidades abrangidas pela TS
-              <span v-if="stepNo > 1">
-                <v-chip
-                  v-for="(e, i) in entSel"
-                  :key="i"
-                  class="ma-2"
-                  color="indigo darken-4"
-                  text-color="white"
-                  label
-                >
-                  <v-icon left>account_balance</v-icon>
-                  {{ e.label }}
-                </v-chip>
-              </span>
-            </v-stepper-step>
-            <v-stepper-content step="1">
-              <v-col v-if="entidadesReady">
+
+        <v-stepper v-model="stepNo" style="background-color:#fafafa" vertical>
+          <v-stepper-step color="amber accent-3" :complete="stepNo > 1" step="1"
+            ><font size="4"><b> Entidades abrangidas pela TS</b></font>
+            <span v-if="stepNo > 1">
+              <v-chip
+                v-for="(e, i) in entSel"
+                :key="i"
+                class="ma-2"
+                color="indigo darken-4"
+                text-color="white"
+                label
+              >
+                <v-icon left>account_balance</v-icon>
+                {{ e.label }}
+              </v-chip>
+            </span>
+          </v-stepper-step>
+          <v-stepper-content step="1">
+            <v-col v-if="entidadesReady">
+              <v-form ref="ents" :lazy-validation="false">
                 <v-autocomplete
+                  color="indigo darken-4"
                   v-model="entSel"
                   :items="entidades"
                   :rules="[
@@ -43,71 +45,94 @@
                   return-object
                 >
                 </v-autocomplete>
-              </v-col>
-              <v-col v-else>
-                <v-alert dense type="info">
-                  Ainda não foi possível carregar as entidades...
-                </v-alert>
-              </v-col>
-              <hr style="border-top: 0px" />
-              <v-btn color="primary" @click="entidadesSelecionadas()"
+              </v-form>
+              <v-btn
+                color="indigo darken-4"
+                class="white--text"
+                @click="entidadesSelecionadas()"
                 >Continuar</v-btn
               >
-            </v-stepper-content>
+            </v-col>
+            <v-col v-else>
+              <v-alert dense type="info">
+                Ainda não foi possível carregar as entidades...
+              </v-alert>
+            </v-col>
+          </v-stepper-content>
 
-            <v-stepper-step :complete="stepNo > 2" step="2">
-              Designação da Tabela de Seleção
-              <span v-if="stepNo > 2">
-                <v-chip
-                  class="ma-2"
-                  color="indigo darken-4"
-                  text-color="white"
-                  label
-                >
-                  {{ tabelaSelecao.designacao }}
-                </v-chip>
-              </span>
-            </v-stepper-step>
-            <v-stepper-content step="2">
-              <v-col xs12 sm6 md10>
+          <v-stepper-step color="amber accent-3" :complete="stepNo > 2" step="2"
+            ><font size="4"><b> Designação da Tabela de Seleção</b></font>
+            <span v-if="stepNo > 2">
+              <v-chip
+                class="ma-2"
+                color="indigo darken-4"
+                text-color="white"
+                label
+              >
+                {{ tabelaSelecao.designacao }}
+              </v-chip>
+            </span>
+          </v-stepper-step>
+          <v-stepper-content step="2">
+            <v-col xs12 sm6 md10>
+              <v-form ref="nomeTS" :lazy-validation="false">
                 <v-text-field
                   :rules="[v => !!v || 'A designação não pode ser vazia']"
                   placeholder="Designação da Nova Tabela de Seleção"
                   v-model="tabelaSelecao.designacao"
                 ></v-text-field>
-              </v-col>
-              <v-btn color="primary" @click="validaTSnome">Continuar</v-btn>
-            </v-stepper-content>
-
-            <v-stepper-step :complete="stepNo > 3" step="3">
-              Seleção dos Processos
-            </v-stepper-step>
-            <v-stepper-content step="3">
-              <v-col v-if="listaProcessosReady && entSelReady">
-                <v-card>
-                  <v-card-text>
-                    <ListaProcessos
-                      :listaProcs="listaProcessos"
-                      :listaCodigosEsp="listaCodigosEsp"
-                    />
-                  </v-card-text>
-                </v-card>
-              </v-col>
-
-              <v-col v-else
-                >Ainda não foi possível carregar a informação dos
-                Processos...</v-col
+              </v-form>
+              <v-btn
+                class="white--text"
+                color="indigo darken-4"
+                @click="stepNo = 1"
+                >Voltar</v-btn
               >
-            </v-stepper-content>
+              <v-btn
+                style="margin: 10px"
+                color="indigo darken-4"
+                class="white--text"
+                @click="validaTSnome"
+                >Continuar</v-btn
+              >
+            </v-col>
+          </v-stepper-content>
 
-            <hr style="border-top: 0px" />
+          <v-stepper-step color="amber accent-3" :complete="stepNo > 3" step="3"
+            ><font size="4"><b> Seleção dos Processos</b></font>
+          </v-stepper-step>
+          <v-stepper-content step="3">
+            <v-col v-if="listaProcessosReady && entSelReady">
+              <v-card>
+                <v-card-text>
+                  <ListaProcessos
+                    :listaProcs="listaProcessos"
+                    :listaCodigosEsp="listaCodigosEsp"
+                  />
+                </v-card-text>
+              </v-card>
+            </v-col>
 
-            <v-row align="center" justify="space-around">
-              <v-btn v-if="stepNo > 2" color="primary" @click="stepNo = 2"
+            <v-col v-else
+              >Ainda não foi possível carregar a informação dos
+              Processos...</v-col
+            >
+
+            <v-card-actions style="margin-left: 5px">
+              <v-btn
+                v-if="stepNo > 2"
+                color="indigo darken-4"
+                class="white--text"
+                @click="stepNo = 2"
                 >Voltar</v-btn
               >
 
-              <v-btn v-if="stepNo > 2" color="primary" @click="validarTS">
+              <v-btn
+                v-if="stepNo > 2"
+                color="indigo darken-4"
+                class="white--text"
+                @click="validarTS"
+              >
                 Validar TS
                 <DialogValidacaoOK
                   v-if="validacaoTerminada && numeroErros == 0"
@@ -123,9 +148,10 @@
 
               <v-btn
                 v-if="stepNo > 2"
-                color="primary"
+                color="indigo darken-4"
+                class="white--text"
                 @click="guardarTrabalho()"
-                >Guardar trabalho
+                >Guardar trabalho<v-icon right>save</v-icon>
                 <DialogPendenteGuardado
                   v-if="pendenteGuardado"
                   :pendente="pendente"
@@ -133,13 +159,18 @@
                 />
               </v-btn>
 
-              <v-btn v-if="stepNo > 2" color="primary" @click="submeterTS"
+              <v-btn
+                v-if="stepNo > 2"
+                color="indigo darken-4"
+                class="white--text"
+                @click="submeterTS"
                 >Submeter</v-btn
               >
 
               <v-btn
                 v-if="stepNo > 2"
-                color="primary"
+                color="indigo darken-4"
+                class="white--text"
                 @click="sairOperacao = true"
                 >Sair
                 <DialogSair
@@ -161,9 +192,9 @@
                   @sair="abortar"
                 />
               </v-btn>
-            </v-row>
-          </v-stepper>
-        </v-card-text>
+            </v-card-actions>
+          </v-stepper-content>
+        </v-stepper>
       </v-card>
     </v-col>
   </v-row>
@@ -236,7 +267,7 @@ export default {
 
   methods: {
     validaTSnome: function() {
-      if (this.tabelaSelecao.designacao != "") {
+      if (this.$refs.nomeTS.validate()) {
         this.stepNo = 3;
       }
     },
@@ -295,7 +326,7 @@ export default {
     // Quando se termina a seleção das entidades
     entidadesSelecionadas: async function() {
       try {
-        if (this.entSel.length > 1) {
+        if (this.$refs.ents.validate()) {
           this.entSel.sort((a, b) => (a.designacao > b.designacao ? 1 : -1));
           this.tabelaSelecao.entidades = this.entSel;
 

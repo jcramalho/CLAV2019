@@ -1,137 +1,153 @@
 <template>
   <v-row class="ma-1">
     <v-col>
-      <v-card>
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading"
-            >Nova Tabela de Seleção Pluriorganizacional</v-toolbar-title
+      <v-app-bar color="indigo darken-4" dark>
+        <v-toolbar-title class="card-heading"
+          >Nova Tabela de Seleção Pluriorganizacional</v-toolbar-title
+        >
+      </v-app-bar>
+      <v-stepper v-model="stepNo" vertical style="background-color:#fafafa">
+        <v-stepper-step color="amber accent-3" :complete="stepNo > 1" step="1"
+          ><font size="4"><b> Entidades abrangidas pela TS</b></font>
+          <span v-if="stepNo > 1">
+            <v-chip
+              v-for="(e, i) in tabelaSelecao.entidades"
+              :key="i"
+              class="ma-2"
+              color="indigo darken-4"
+              text-color="white"
+              label
+            >
+              <v-icon left>account_balance</v-icon>
+              {{ e.label }}
+            </v-chip>
+          </span>
+        </v-stepper-step>
+
+        <v-stepper-step color="amber accent-3" :complete="stepNo > 2" step="2"
+          ><font size="4"><b> Designação da Tabela de Seleção</b></font>
+          <span v-if="stepNo > 2">
+            <v-chip
+              class="ma-2"
+              color="indigo darken-4"
+              text-color="white"
+              label
+            >
+              {{ tabelaSelecao.designacao }}
+            </v-chip>
+          </span>
+        </v-stepper-step>
+        <v-stepper-content step="2">
+          <v-col xs12 sm6 md10>
+            <v-form ref="nomeTS" :lazy-validation="false">
+              <v-text-field
+                placeholder="Designação da Nova Tabela de Seleção"
+                v-model="tabelaSelecao.designacao"
+                :rules="[v => !!v || 'A designação não pode ser vazia']"
+              ></v-text-field>
+            </v-form>
+            <v-btn
+              color="indigo darken-4"
+              class="white--text"
+              @click="validaTSnome"
+              >Continuar</v-btn
+            >
+          </v-col>
+        </v-stepper-content>
+
+        <v-stepper-step color="amber accent-3" :complete="stepNo > 3" step="3"
+          ><font size="4"><b> Seleção dos Processos</b></font>
+        </v-stepper-step>
+        <v-stepper-content step="3">
+          <v-col v-if="listaProcessosReady">
+            <v-card>
+              <v-card-text>
+                <ListaProcessos
+                  :listaProcs="listaProcessos"
+                  :listaCodigosEsp="listaCodigosEsp"
+                />
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+          <v-col v-else
+            >Ainda não foi possível carregar a informação dos
+            Processos...</v-col
           >
-        </v-app-bar>
-        <v-card-text class="panel-body">
-          <v-stepper v-model="stepNo" vertical>
-            <v-stepper-step :complete="stepNo > 1" step="1">
-              Entidades abrangidas pela TS
-              <span v-if="stepNo > 1">
-                <v-chip
-                  v-for="(e, i) in tabelaSelecao.entidades"
-                  :key="i"
-                  class="ma-2"
-                  color="indigo darken-4"
-                  text-color="white"
-                  label
-                >
-                  <v-icon left>account_balance</v-icon>
-                  {{ e.label }}
-                </v-chip>
-              </span>
-            </v-stepper-step>
 
-            <v-stepper-step :complete="stepNo > 2" step="2">
-              Designação da Tabela de Seleção
-              <span v-if="stepNo > 2">
-                <v-chip
-                  class="ma-2"
-                  color="indigo darken-4"
-                  text-color="white"
-                  label
-                >
-                  {{ tabelaSelecao.designacao }}
-                </v-chip>
-              </span>
-            </v-stepper-step>
-            <v-stepper-content step="2">
-              <v-col xs12 sm6 md10>
-                <v-text-field
-                  placeholder="Designação da Nova Tabela de Seleção"
-                  v-model="tabelaSelecao.designacao"
-                  :rules="[v => !!v || 'A designação não pode ser vazia']"
-                ></v-text-field>
-              </v-col>
-              <v-btn color="primary" @click="validaTSnome">Continuar</v-btn>
-            </v-stepper-content>
+          <v-card-actions style="margin-left: 5px">
+            <v-btn
+              v-if="stepNo > 2"
+              color="indigo darken-4"
+              class="white--text"
+              @click="stepNo = 2"
+              >Voltar</v-btn
+            >
 
-            <v-stepper-step :complete="stepNo > 3" step="3">
-              Seleção dos Processos
-            </v-stepper-step>
-            <v-stepper-content step="3">
-              <v-col v-if="listaProcessosReady">
-                <v-card>
-                  <v-card-text>
-                    <ListaProcessos
-                      :listaProcs="listaProcessos"
-                      :listaCodigosEsp="listaCodigosEsp"
-                    />
-                  </v-card-text>
-                </v-card>
-              </v-col>
+            <v-btn
+              v-if="stepNo > 2"
+              color="indigo darken-4"
+              class="white--text"
+              @click="validarTS"
+            >
+              Validar TS
+              <DialogValidacaoOK
+                v-if="validacaoTerminada && numeroErros == 0"
+                @continuar="fechoValidacao"
+              />
 
-              <v-col v-else
-                >Ainda não foi possível carregar a informação dos
-                Processos...</v-col
-              >
-            </v-stepper-content>
+              <DialogValidacaoErros
+                v-if="validacaoTerminada && numeroErros > 0"
+                :erros="mensagensErro"
+                @continuar="fechoValidacao"
+              />
+            </v-btn>
 
-            <hr style="border-top: 0px" />
+            <v-btn
+              v-if="stepNo > 2"
+              color="indigo darken-4"
+              class="white--text"
+              @click="guardarTrabalho()"
+              >Guardar trabalho
+              <DialogPendenteGuardado
+                v-if="pendenteGuardado"
+                :pendente="pendente"
+                @continuar="pendenteGuardado = false"
+              />
+            </v-btn>
 
-            <v-row align="center" justify="space-around">
-              <v-btn v-if="stepNo > 2" color="primary" @click="stepNo = 2"
-                >Voltar</v-btn
-              >
+            <v-btn
+              v-if="stepNo > 2"
+              color="indigo darken-4"
+              class="white--text"
+              @click="submeterTS"
+              >Submeter</v-btn
+            >
 
-              <v-btn v-if="stepNo > 2" color="primary" @click="validarTS">
-                Validar TS
-                <DialogValidacaoOK
-                  v-if="validacaoTerminada && numeroErros == 0"
-                  @continuar="fechoValidacao"
-                />
+            <v-btn
+              v-if="stepNo > 2"
+              color="indigo darken-4"
+              class="white--text"
+              @click="sairOperacao = true"
+              >Sair
+              <DialogSair
+                v-if="sairOperacao"
+                @continuar="sairOperacao = false"
+                @sair="sair"
+              />
+            </v-btn>
 
-                <DialogValidacaoErros
-                  v-if="validacaoTerminada && numeroErros > 0"
-                  :erros="mensagensErro"
-                  @continuar="fechoValidacao"
-                />
-              </v-btn>
-
-              <v-btn
-                v-if="stepNo > 2"
-                color="primary"
-                @click="guardarTrabalho()"
-                >Guardar trabalho
-                <DialogPendenteGuardado
-                  v-if="pendenteGuardado"
-                  :pendente="pendente"
-                  @continuar="pendenteGuardado = false"
-                />
-              </v-btn>
-
-              <v-btn v-if="stepNo > 2" color="primary" @click="submeterTS"
-                >Submeter</v-btn
-              >
-
-              <v-btn
-                v-if="stepNo > 2"
-                color="primary"
-                @click="sairOperacao = true"
-                >Sair
-                <DialogSair
-                  v-if="sairOperacao"
-                  @continuar="sairOperacao = false"
-                  @sair="sair"
-                />
-              </v-btn>
-
-              <v-btn dark color="red darken-4" @click="eliminarTabela = true"
-                >Cancelar
-                <DialogCancelar
-                  v-if="eliminarTabela"
-                  @continuar="eliminarTabela = false"
-                  @sair="abortar"
-                />
-              </v-btn>
-            </v-row>
-          </v-stepper>
-        </v-card-text>
-      </v-card>
+            <v-btn dark color="red darken-4" @click="eliminarTabela = true"
+              >Cancelar
+              <DialogCancelar
+                v-if="eliminarTabela"
+                @continuar="eliminarTabela = false"
+                @sair="abortar"
+              />
+            </v-btn>
+          </v-card-actions>
+        </v-stepper-content>
+      </v-stepper>
     </v-col>
   </v-row>
 </template>
@@ -239,7 +255,7 @@ export default {
     },
 
     validaTSnome: function() {
-      if (this.tabelaSelecao.designacao != "") {
+      if (this.$refs.nomeTS.validate()) {
         this.stepNo = 3;
       }
     },

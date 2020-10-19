@@ -8,11 +8,31 @@
             v-model="filtroLabel"
             row
           >
-            <v-radio label="Todos" value="Todos"></v-radio>
-            <v-radio label="Comuns" value="Processo Comum"></v-radio>
-            <v-radio label="Específicos" value="Processo Específico"></v-radio>
-            <v-radio label="Restantes" value="Processo Restante"></v-radio>
-            <v-radio label="A Selecionar" value="Pré-Selecionado"></v-radio>
+            <v-radio
+              color="indigo darken-4"
+              label="Todos"
+              value="Todos"
+            ></v-radio>
+            <v-radio
+              color="indigo darken-4"
+              label="Comuns"
+              value="Processo Comum"
+            ></v-radio>
+            <v-radio
+              color="indigo darken-4"
+              label="Específicos"
+              value="Processo Específico"
+            ></v-radio>
+            <v-radio
+              color="indigo darken-4"
+              label="Restantes"
+              value="Processo Restante"
+            ></v-radio>
+            <v-radio
+              color="indigo darken-4"
+              label="A Selecionar"
+              value="Pré-Selecionado"
+            ></v-radio>
           </v-radio-group>
         </v-col>
       </v-row>
@@ -70,8 +90,13 @@
                 "
                 row
               >
-                <v-radio label="Não part." value="NP"></v-radio>
                 <v-radio
+                  color="indigo darken-4"
+                  label="Não part."
+                  value="NP"
+                ></v-radio>
+                <v-radio
+                  color="indigo darken-4"
                   v-for="p in participacao"
                   :key="p.idtermo"
                   :label="p.termo.substring(0, 3)"

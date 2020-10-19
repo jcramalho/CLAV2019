@@ -29,9 +29,9 @@ export default {
       sumario: null,
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
-      numeroDespacho: null,
+      numeroDespacho: null
     };
   },
   async created() {
@@ -41,8 +41,18 @@ export default {
   },
   watch: {
     pedido(newValue) {
-      this.sumario = newValue.objeto.dados.titulo;
-    },
+      switch (newValue.objeto.tipo) {
+        case "TS Organizacional":
+          this.sumario = newValue.objeto.dados.ts.designacao;
+          break;
+        case "TS Pluriorganizacional":
+          this.sumario = newValue.objeto.dados.designacao;
+          break;
+        default:
+          this.sumario = newValue.objeto.dados.titulo;
+          break;
+      }
+    }
   },
   methods: {
     async criarDependentes(pedidos_dependencias) {
@@ -56,17 +66,17 @@ export default {
               sigla: pedidos_dependencias[i].sigla,
               sioe: pedidos_dependencias[i].sioe,
               tipologiasSel: pedidos_dependencias[i].tipologiasSel.map(
-                (tipologia) => {
+                tipologia => {
                   let tip = tipologia.split(" - ");
                   return {
                     sigla: tip[0],
                     designacao: tip[1],
-                    id: "tip_" + tip[0],
+                    id: "tip_" + tip[0]
                   };
                 }
               ),
               dataCriacao: pedidos_dependencias[i].dataCriacao,
-              dataExtincao: pedidos_dependencias[i].dataExtincao,
+              dataExtincao: pedidos_dependencias[i].dataExtincao
             };
 
             await this.$request("post", "/entidades", novoEnt);
@@ -81,7 +91,7 @@ export default {
               dataRevogacao: "",
               estado: "Ativo",
               entidadesSel: pedidos_dependencias[i].entidadesSel,
-              processosSel: [],
+              processosSel: []
             };
 
             if (!!pedidos_dependencias[i].link) {
@@ -98,48 +108,50 @@ export default {
       }
     },
     async finalizarPedido(despacho) {
+      let res;
+      let despachoAprovacao;
       try {
-        if (!!this.pedido.pedidos_dependentes[0]) {
-          await this.criarDependentes(this.pedido.pedidos_dependentes);
-        }
-
-        let res = await this.$request("get", "/contador/despacho");
-
-        this.numeroDespacho =
-          res.data.valor.toString() + "/" + new Date().getFullYear();
-
-        const despachoAprovacao = {
-          id: "leg_" + nanoid(),
-          numero: this.numeroDespacho,
-          sumario: despacho.sumario,
-          tipo: "Despacho",
-          data: despacho.data,
-          link: "/rada/" + this.pedido.objeto.dados.id,
-          diplomaFonte: "RADA",
-          dataRevogacao: "",
-          estado: "Ativo",
-          entidadesSel: [
-            {
-              sigla: "DGLAB",
-              designacao:
-                "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
-              id: "ent_DGLAB",
-            },
-          ],
-          processosSel: [],
-        };
-
         if (this.pedido.objeto.tipo === "RADA") {
+          if (!!this.pedido.pedidos_dependentes[0]) {
+            await this.criarDependentes(this.pedido.pedidos_dependentes);
+          }
+
+          res = await this.$request("get", "/contador/despacho");
+
+          this.numeroDespacho =
+            res.data.valor.toString() + "/" + new Date().getFullYear();
+
+          despachoAprovacao = {
+            id: "leg_" + nanoid(),
+            numero: this.numeroDespacho,
+            sumario: despacho.sumario,
+            tipo: "Despacho",
+            data: despacho.data,
+            link: "/rada/" + this.pedido.objeto.dados.id,
+            diplomaFonte: "RADA",
+            dataRevogacao: "",
+            estado: "Ativo",
+            entidadesSel: [
+              {
+                sigla: "DGLAB",
+                designacao:
+                  "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
+                id: "ent_DGLAB"
+              }
+            ],
+            processosSel: []
+          };
+
           //Isso faz com que tenhamos uma object property ou data property, tendo que se verificar na construção dos triplos;
           let responseSFC = await this.$request(
             "get",
             "/vocabularios/vc_pcaSubformaContagem"
           );
 
-          let subformasContagem = responseSFC.data.map((item) => {
+          let subformasContagem = responseSFC.data.map(item => {
             return {
               label: item.termo.split(": ")[1] + ": " + item.desc,
-              value: item.idtermo.split("#")[1],
+              value: item.idtermo.split("#")[1]
             };
           });
 
@@ -151,6 +163,46 @@ export default {
           );
 
           await this.$request("post", "/rada", { triplos });
+        } else if (this.pedido.objeto.tipo.includes("TS ")) {
+          for (const key in this.pedido.objeto.dados) {
+            if (
+              this.pedido.objeto.dados[key] === undefined ||
+              this.pedido.objeto.dados[key] === null ||
+              this.pedido.objeto.dados[key] === ""
+            ) {
+              delete this.pedido.objeto.dados[key];
+            }
+          }
+          let response = await this.$request("post", "/tabelasSelecao", {
+            tabela: this.pedido
+          });
+          this.pedido.objeto.dados.id = response.data.id;
+
+          res = await this.$request("get", "/contador/despacho");
+
+          this.numeroDespacho =
+            res.data.valor.toString() + "/" + new Date().getFullYear();
+
+          despachoAprovacao = {
+            id: "leg_" + nanoid(),
+            numero: this.numeroDespacho,
+            sumario: despacho.sumario,
+            tipo: "Despacho",
+            data: despacho.data,
+            link: "/tabelasSelecao/" + this.pedido.objeto.dados.id,
+            diplomaFonte: "TS/LC",
+            dataRevogacao: "",
+            estado: "Ativo",
+            entidadesSel: [
+              {
+                sigla: "DGLAB",
+                designacao:
+                  "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
+                id: "ent_DGLAB"
+              }
+            ],
+            processosSel: []
+          };
         }
 
         await this.$request("post", "/legislacao", despachoAprovacao);
@@ -160,7 +212,7 @@ export default {
         let novaDistribuicao = {
           estado: "Validado",
           responsavel: dadosUtilizador.email,
-          data: new Date(),
+          data: new Date()
         };
 
         if (!!despacho.mensagem) {
@@ -171,7 +223,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: this.pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         await this.$request("put", "/contador/despacho");
@@ -191,14 +243,14 @@ export default {
           estado: "Devolvido",
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         this.pedido.estado = "Devolvido";
 
         await this.$request("put", "/pedidos", {
           pedido: this.pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
@@ -207,12 +259,12 @@ export default {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem = "Erro ao devolver o pedido!";
       }
-    },
+    }
   },
   components: {
     ConsultaPedido,
     DespachoAprovacao,
-    ErroDialog,
-  },
+    ErroDialog
+  }
 };
 </script>
