@@ -90,7 +90,7 @@
               :tipo="pedido.objeto.tipo"
             />
 
-            <ValidaTS
+            <ValidaTSPluri
               v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'"
               :p="pedido"
             />
@@ -182,7 +182,7 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
-import ValidaTS from "@/components/pedidos/validacao/ValidaTS";
+import ValidaTSPluri from "@/components/pedidos/validacao/ValidaTSPluri";
 import ValidaTSOrg from "@/components/pedidos/validacao/ValidaTSOrg";
 import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
 import AnalisaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
@@ -210,13 +210,13 @@ export default {
     ValidaEditaTipologiaEntidade,
     AnalisaClasseN1,
     ValidaAE,
-    ValidaTS,
+    ValidaTSPluri,
     ValidaTSOrg,
     Loading,
     VerDespachos,
     ErroDialog,
     ValidaRADA,
-    VerHistorico,
+    VerHistorico
   },
 
   data() {
@@ -226,7 +226,7 @@ export default {
       pedido: {},
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       pedidoLoaded: false,
       despachosDialog: false,
@@ -234,9 +234,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" },
+        { text: "Despacho", value: "despacho" }
       ],
-      etapas: [],
+      etapas: []
     };
   },
 
@@ -276,7 +276,7 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
-    },
-  },
+    }
+  }
 };
 </script>
