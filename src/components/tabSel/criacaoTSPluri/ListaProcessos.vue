@@ -29,7 +29,7 @@
           ></v-radio>
           <v-radio
             color="indigo darken-4"
-            label="Pré-Selecionados"
+            label="A Selecionar"
             value="Pré-Selecionado"
           ></v-radio>
         </v-radio-group>
