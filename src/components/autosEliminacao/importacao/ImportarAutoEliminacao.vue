@@ -554,9 +554,9 @@ export default {
                   if (!classe) {
                     this.flagAE = true;
                     this.erro =
-                      "Codigo da classe <b>" +
-                      zc.codigo +
-                      "</b> não foi encontrado na Lista Consolidada";
+                      "<p>A junção de código de classe e número de referência está a ser utilizada como identificador.</p>" +
+                      "<p>O código <b>"+ zc.codigo +
+                      "</b> introduzido não pertence a nenhuma junção entre código e referência nas classes presentes em "+this.auto.legislacao.split(" - ")[0]+".</p>";
                     return; //ERROS
                   }
                   var pca = classe.pca.valor;
@@ -607,20 +607,19 @@ export default {
                     this.flagAE = true;
                     if(zc.codigo && zc.referencia) 
                       this.erro =
-                        "Codigo da classe <b>" +
-                        zc.codigo +
-                        "</b> e Referência <b>"+ zc.referencia +
-                        "</b> não foram encontrados em "+this.auto.legislacao.split(" - ")[0];
+                        "<p>A junção de código de classe e número de referência está a ser utilizada como identificador.</p>" +
+                        "<p>O código <b>"+ zc.codigo + "</b> e Referência <b>"+ zc.referencia +
+                        "</b> introduzidos não pertencem a nenhuma junção entre código e referência nas classes presentes em "+this.auto.legislacao.split(" - ")[0]+".</p>";
                     else if(zc.codigo) 
                       this.erro =
-                        "Codigo da classe <b>" +
-                        zc.codigo +
-                        "</b> não foi encontrado em "+this.auto.legislacao.split(" - ")[0];
+                        "<p>A junção de código de classe e número de referência está a ser utilizada como identificador.</p>" +
+                        "<p>O código <b>"+ zc.codigo +
+                        "</b> introduzido não pertence a nenhuma junção entre código e referência nas classes presentes em "+this.auto.legislacao.split(" - ")[0]+".</p>";
                     else
                       this.erro =
-                        "Referência <b>" +
-                        zc.referencia +
-                        "</b> não foi encontrada em "+this.auto.legislacao.split(" - ")[0];
+                        "<p>A junção de código de classe e número de referência está a ser utilizada como identificador.</p>" +
+                        "<p>A Referência <b>"+ zc.referencia +
+                        "</b> introduzida não pertence a nenhuma junção entre código e referência nas classes presentes em "+this.auto.legislacao.split(" - ")[0]+".</p>";
                     return; //ERROS
                   } 
                   else if((this.tipo == "PGD" || this.tipo=="RADA") && classe.df.valor == "C") {

@@ -167,6 +167,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
     var series = enc.decode(fileSerie).replace(/['"]/g,'').split("\n")
     if(!fileAgreg) var agregacoes = [];
     else var agregacoes = enc.decode(fileAgreg).replace(/['"]/g,'').split("\n")
+    
     if(!verificarSerie(series[0]))
       reject({msg: "Verifique se inseriu o ficheiro de classe / série correto", numErros: 1})
     if(fileAgreg && !verificarAgregacoes(agregacoes[0]))
@@ -174,6 +175,10 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
     
     series.shift()
     agregacoes.shift()
+    if(fileAgreg && (agregacoes.length==0 || agregacoes[0]=="")) {
+      reject({msg: "Verificar se preencheu o ficheiro das agregações / unidades de instalação.", numErros: 1})
+    }
+
     var errosSerie = {
       codigosRepetidos: [],
       referenciasRepetidas: [],
