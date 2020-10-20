@@ -90,6 +90,7 @@
                         :key="props.item.numeroSI"
                         item-text="label"
                         item-value="value"
+                        label="Indique a relação"
                         v-model="props.item.idRel"
                         :items="tipoRelacao"
                         solo
@@ -261,7 +262,6 @@ export default {
 
       //Listas das opções disponiveis
       tipoRelacao: [
-        {label: "Por selecionar", value:"Indefinido"},
         {label: "S (síntese - quando sintetiza o conteúdo informativo do sistema em análise)", value:"S"},
         {label: "D (duplicada - quando possui, no todo ou em parte, o mesmo conteúdo informativo do sistema em análise - não confundir com backups ou réplicas do sistema)",value:"D"},
         {label: "I (complementar - quando possui informação adicional que acrescenta significado à informação do sistema em análise)",value:"I"},
