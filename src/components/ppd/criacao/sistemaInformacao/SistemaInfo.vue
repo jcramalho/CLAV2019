@@ -33,7 +33,7 @@
             dark
             @click="dialog = false"
           >
-            <v-icon>mdi-close</v-icon>
+            <v-icon>clear</v-icon>
           </v-btn>
           <v-toolbar-title>Novo Sistema de informação</v-toolbar-title>
           <v-spacer></v-spacer>
@@ -54,7 +54,7 @@
             </v-btn>
           </v-toolbar-items>
         </v-app-bar>
-        <v-sheet id="scrolling" class="overflow-y-auto overflow-x-hidden" >
+        <v-sheet id="scrolling" class="overflow-y-auto overflow-x-hidden">
           <v-container style="height: 70px;"></v-container>
           <v-row >
             <v-col cols="12" xs="12" sm="3">
@@ -94,6 +94,9 @@
               <!-- BLOCO AVALIAÇÃO -->
               <BlocoAvaliacao
                 :c="ppd"
+                :sistema="ppd.sistemasInfo"
+                @newSistemasRelacionados="newSistemasRelacionados($event, ppd.avaliacao.sistemasRelacionados)"
+                @unselectSistemasRelacionados="unselectSistemasRelacionados($event)"
               />
               <!-- BLOCO CARACTERIZAÇÃO -->
               <BlocoCaracterizacao
@@ -168,6 +171,17 @@ export default {
   },
 
   methods: {
+
+    newSistemasRelacionados: function(sistema, lista) {
+        lista.push(sistema);
+    },
+
+    unselectSistemasRelacionados: function(sistema) {
+      // Recoloca o sistema nos selecionáveis
+      this.ppd.sistemasInfo.push(sistema);
+      var index = this.ppd.avaliacao.sistemasRelacionados.findIndex(e => e.id === sistema.id);
+      this.ppd.avaliacao.sistemasRelacionados.splice(index, 1);
+    },
 
     fecharErros: function() {
       this.mensagensErro = [];
@@ -250,7 +264,7 @@ export default {
     },
 
     newSistema: async function() {
-      if(this.validaAll("O campo número do SI",this.ppd.identificacao.numeroSI) &&
+      if(/*this.validaAll("O campo número do SI",this.ppd.identificacao.numeroSI) &&
         this.validaAll("O campo  nome do SI",this.ppd.identificacao.nomeSI) &&
         this.validaAll("O campo administrador do sistema",this.ppd.identificacao.adminSistema) &&
         this.validaAll("O campo administrador de dados",this.ppd.identificacao.adminDados) &&
@@ -263,7 +277,7 @@ export default {
         this.validaInsourcing(this.ppd.identificacao.insourcing, this.ppd.identificacao.insourcingCheck) &&
         this.validaOutsourcing(this.ppd.identificacao.outsourcing, this.ppd.identificacao.outsourcingCheck) &&
         this.validaAll("O campo notas", this.ppd.identificacao.notas) &&
-        this.validaAll("O campo de utilizadores",this.ppd.identificacao.userList)
+        this.validaAll("O campo de utilizadores",this.ppd.identificacao.userList)*/1
       ){
         var sistema = {
           numeroSI: this.ppd.identificacao.numeroSI,

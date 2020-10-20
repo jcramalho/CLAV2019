@@ -10,24 +10,6 @@
     <v-expansion-panel-content>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Número de referência SI</div>
-          </v-col>
-          <v-col cols="12" xs="12" sm="9">
-            <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                v-model="c.nRef"
-                label="Identificador do sistema de informação"
-                solo
-                clearable
-            ></v-text-field>
-          </v-col>
-
-
-          <v-col dark cols="12" xs="12" sm="12">
-            <div style="text-align:center" class="separador">SI relacionado</div>
-          </v-col>
-
-          <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Decomposição</div>
           </v-col>
           <v-col cols="12" xs="12" sm="9">
@@ -46,7 +28,90 @@
                 clearable
             ></v-text-field>
           </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Sistemas informação</div>
+          </v-col>
+          <v-col v-if="c.avaliacao.sistemasRelacionados.length > 0">
+            <v-data-table :headers="headers" :items="c.avaliacao.sistemasRelacionados" class="elevation-1" hide-default-footer>
+              <template v-slot:header="props">
+                <tr>
+                  <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
+                </tr>
+              </template>
 
+              <template v-slot:item="props">
+                <tr>
+                  <td>{{ props.item.relacao }}</td>
+                  <td>{{ props.item.numeroSI }}</td>
+                  <td>
+                    <v-btn small color="red darken-2" dark rounded @click="unselectSistemasRelacionados(props.item)">
+                      <v-icon dark>remove_circle_outline</v-icon>
+                    </v-btn>
+                  </td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-col>
+          <v-col v-else>
+            <v-alert :value="true" type="warning">Não tem sistemas informação relacionados...</v-alert>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Selecione o(s) sistema(s) informação relacionado(s)</div>
+          </v-col>
+          <v-col>
+            <v-card>
+              <v-card-title>
+                <v-text-field
+                  v-model="searchProcessos"
+                  append-icon="search"
+                  label="Procura filtra sistemas informação"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-card-title>
+              <v-data-table
+                :headers="siRelacionadosHeaders"
+                :items="c.sistemasInfo"
+                :items-per-page="5"
+                :search="searchProcessos"
+                item-key="numeroSI"
+                class="elevation-1"
+                :sort-by="['numeroSI']"
+                :footer-props="footer_props"
+              >
+                <template v-slot:item="props">
+                  <tr>
+                    <td>
+                      <v-select
+                        :key="props.item.numeroSI"
+                        item-text="label"
+                        item-value="value"
+                        v-model="props.item.idRel"
+                        :items="tipoRelacao"
+                        solo
+                        @change="selectSistema(props.item.numeroSI, $event)"
+                      />
+                    </td>
+                    <td>{{ props.item.numeroSI }}</td>
+                    <td>{{ props.item.relacao }}</td>
+                  </tr>
+                </template>
+
+                <v-alert
+                  v-slot:no-results
+                  :value="true"
+                  color="error"
+                  icon="warning"
+                >A procura por "{{ search }}" não deu resultados.</v-alert>
+              </v-data-table>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Tipo de relação</div>
           </v-col>
@@ -178,17 +243,32 @@ export default {
       myhelp: help,
       numeroRef: "",
       siTipoRelacao: [],
-
       loadCheck: "",
 
 
+      siRelacionadosHeaders: [
+        { text: "Relação", align: "left", value: "relacao" },
+        { text: "Número SI", align: "left", value: "numeroSI", sortable: true },
+      ],
+      footer_props: {
+        "items-per-page-text": "Sistemas por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todos"
+      },
+      //para apagar!!
+      searchProcessos: "",
+
+
       //Listas das opções disponiveis
-      tipoRelacao: ["S (síntese - quando sintetiza o conteúdo informativo do sistema em análise)",
-                    "D (duplicada - quando possui, no todo ou em parte, o mesmo conteúdo informativo do sistema em análise - não confundir com backups ou réplicas do sistema)",
-                    "I (complementar - quando possui informação adicional que acrescenta significado à informação do sistema em análise)",
-                    "A (antecedente - quando se trata de um sistema inactivo, que foi substituído pelo sistema em análise)",
-                    "X (Input - quando fornece dados ou informação ao sistema em análise)",
-                    "O (Output - quando a informação, no todo ou em parte, tem origem ou resulta do processamento de dados existentes no sistema em análise)"],
+      tipoRelacao: [
+        {label: "Por selecionar", value:"Indefinido"},
+        {label: "S (síntese - quando sintetiza o conteúdo informativo do sistema em análise)", value:"S"},
+        {label: "D (duplicada - quando possui, no todo ou em parte, o mesmo conteúdo informativo do sistema em análise - não confundir com backups ou réplicas do sistema)",value:"D"},
+        {label: "I (complementar - quando possui informação adicional que acrescenta significado à informação do sistema em análise)",value:"I"},
+        {label: "A (antecedente - quando se trata de um sistema inactivo, que foi substituído pelo sistema em análise)",value:"A"},
+        {label: "X (Input - quando fornece dados ou informação ao sistema em análise)",value:"X"},
+        {label: "O (Output - quando a informação, no todo ou em parte, tem origem ou resulta do processamento de dados existentes no sistema em análise)",value:"O"},
+      ],
       checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"],
       fontLegitimacao: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
 
@@ -241,6 +321,20 @@ export default {
         return [];
       }
     },
+    selectSistema: function(numeroSI, relacao) {
+      var index = this.c.sistemasInfo.findIndex(p => p.numeroSI === numeroSI);
+      this.c.sistemasInfo[index].relacao = relacao;
+      var selectedSistema = JSON.parse(JSON.stringify(this.c.sistemasInfo[index]));
+      this.c.sistemasInfo.splice(index, 1);
+      this.$emit("newSistemasRelacionados", selectedSistema);
+    },
+
+    unselectSistemasRelacionados: function(sistema) {
+      sistema.idRel= "Por selecionar";
+      sistema.relacao = "";
+      this.$emit("unselectSistemasRelacionados", sistema);
+    },
+
   }
 };
 </script>

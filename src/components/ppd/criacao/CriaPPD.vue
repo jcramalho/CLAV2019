@@ -136,6 +136,7 @@ export default {
         codigo: "",
         descricao: "",
         checkedAti: "",
+        sistemasRelacionados: [],
       },
       caracterizacao:{
         dependenciaSoft: "",
