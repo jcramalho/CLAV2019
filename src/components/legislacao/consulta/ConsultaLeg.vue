@@ -29,7 +29,7 @@
 
           <v-col v-if="item.text">
             <div v-if="item.campo === 'Link'" class="info-content">
-              <a :href="item.text" target="_blank">{{ item.text }}</a>
+              <a :href="item.text" target="_blank">{{ item.text.split('/')[1] === 'rada' ? 'CLAV:' : ''}}{{ item.text }}</a>
             </div>
             <div v-else-if="item.campo === 'Entidades'" class="info-content">
               <ul>
