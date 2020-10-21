@@ -85,26 +85,25 @@
             <v-expansion-panels>
               <!-- BLOCO IDENTIFICAÇÃO -->
               <BlocoIdentificacao
-                :c="ppd"
+                :ppd="ppd"
                 :semaforos="semaforos"
-                :sis="listaSistema"
-                :entidadesReady="entidadesReady"
                 :entidades="entidades"
               />
               <!-- BLOCO AVALIAÇÃO -->
               <BlocoAvaliacao
-                :c="ppd"
-                :sistema="ppd.sistemasInfo"
+                :ppd="ppd"
+                :semaforos="semaforos"
+                :listaLegislacao="listaLegislacao"
                 @newSistemasRelacionados="newSistemasRelacionados($event, ppd.avaliacao.sistemasRelacionados)"
                 @unselectSistemasRelacionados="unselectSistemasRelacionados($event)"
               />
               <!-- BLOCO CARACTERIZAÇÃO -->
               <BlocoCaracterizacao
-                :c="ppd"
+                :ppd="ppd"
               />
               <!-- BLOCO ESTRATÉGIA -->
               <BlocoEstrategia
-                :c="ppd"
+                :ppd="ppd"
               />
             </v-expansion-panels>
           </v-row>
@@ -132,7 +131,7 @@ import BlocoEstrategia from "@/components/ppd/criacao/sistemaInformacao/BlocoEst
 
 
 export default {
-  props: ["ppd", "semaforos", "listaSistema", "sistema", "entidades", "entidadesReady"],
+  props: ["ppd", "semaforos", "listaLegislacao", "sistema", "entidades"],
 
   components: {
   //    InfoBox,
@@ -144,7 +143,6 @@ export default {
 
   data: function() {
     return {
-      listaTipos: [],
       erroValidacao: false,
       mensagensErro: [],
       valid: false,
@@ -157,17 +155,7 @@ export default {
   },
 
   created: async function() {
-    try {
-      var tipos = await this.$request(
-        "get",
-        "/vocabularios/vc_tipoDiplomaLegislativo"
-      );
-      this.listaTipos = tipos.data.map(t => {
-        return { label: t.termo, value: t.termo };
-      });
-    } catch (e) {
-      return e;
-    }
+    
   },
 
   methods: {

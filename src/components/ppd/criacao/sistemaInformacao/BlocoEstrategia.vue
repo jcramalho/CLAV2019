@@ -15,7 +15,7 @@
           <v-col cols="12" xs="12" sm="9">
             <v-text-field
                 :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                v-model="c.nRef"
+                v-model="ppd.nRef"
                 label="Identificador do sistema de informação"
                 solo
                 clearable
@@ -54,7 +54,7 @@
             <v-select
               :items="checkedAti"
               label="Indique o estado de atividade do sistema"
-              v-model="c.avaliacao.checkedAti"
+              v-model="ppd.avaliacao.checkedAti"
               dense
               solo
             ></v-select>
@@ -76,7 +76,7 @@ const help = require("@/config/help").help;
 import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
-  props: ["c"],
+  props: ["ppd"],
 
   components: {
     InfoBox

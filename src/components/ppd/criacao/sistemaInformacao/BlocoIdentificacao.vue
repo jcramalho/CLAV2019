@@ -13,9 +13,9 @@
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Administrador do Sistema</div>
         </v-col>
-        <v-col cols="12" xs="12" sm="9" v-if="entidadesReady">
+        <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="c.identificacao.adminSistema"
+            v-model="ppd.identificacao.adminSistema"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a administração operacional do sistema"
@@ -35,9 +35,9 @@
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Administrador de Dados</div>
         </v-col>
-        <v-col cols="12" xs="12" sm="9" v-if="entidadesReady">
+        <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="c.identificacao.adminDados"
+            v-model="ppd.identificacao.adminDados"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a administração operacional dos dados"
@@ -57,9 +57,9 @@
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Proprietário do SI - Entidade pública</div>
         </v-col>
-        <v-col cols="12" xs="12" sm="9" v-if="entidadesReady">
+        <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="c.identificacao.propSistemaPublico"
+            v-model="ppd.identificacao.propSistemaPublico"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a propriedade intelectual/responsabilidade de gestão do SI"
@@ -83,7 +83,7 @@
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
             :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-            v-model="c.identificacao.propSistemaPrivado"
+            v-model="ppd.identificacao.propSistemaPrivado"
             label="Indique o nome do organismo responsável pela gestão dos dados"
             solo
             clearable
@@ -93,9 +93,9 @@
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Proprietário dos dados</div>
         </v-col>
-        <v-col cols="12" xs="12" sm="9" v-if="entidadesReady">
+        <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="c.identificacao.propDados"
+            v-model="ppd.identificacao.propDados"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a propriedade intelectual/responsabilidade de gestão dos dados"
@@ -116,9 +116,9 @@
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Localização dos dados - Entidade pública</div>
         </v-col>
-        <v-col cols="12" xs="12" sm="9" v-if="entidadesReady">
+        <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="c.identificacao.localDadosPublico"
+            v-model="ppd.identificacao.localDadosPublico"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a propriedade intelectual/responsabilidade de gestão dos dados"
@@ -141,7 +141,7 @@
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
             :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-            v-model="c.identificacao.localDadosPrivado"
+            v-model="ppd.identificacao.localDadosPrivado"
             label="Indique o nome da entidade privada onde os dados residem"
             solo
             clearable
@@ -153,7 +153,7 @@
           <div class="info-label">Definição formal de responsabilidades</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-radio-group v-model="c.identificacao.defCheck" row>
+          <v-radio-group v-model="ppd.identificacao.defCheck" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -162,10 +162,10 @@
               color="indigo darken-3"
             ></v-radio>
           </v-radio-group>
-          <div v-if="c.identificacao.defCheck === 'Sim'">
+          <div v-if="ppd.identificacao.defCheck === 'Sim'">
               <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="c.identificacao.defResponsavel"
+              v-model="ppd.identificacao.defResponsavel"
               label="Indique a expressão dessa formalização de mandatos"
               solo
               clearable
@@ -177,7 +177,7 @@
           <div class="info-label">Insourcing</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-radio-group v-model="c.identificacao.insourcingCheck" row>
+          <v-radio-group v-model="ppd.identificacao.insourcingCheck" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -186,10 +186,10 @@
               color="indigo darken-3"
             ></v-radio>
           </v-radio-group>
-          <div v-if="c.identificacao.insourcingCheck === 'Sim'">
+          <div v-if="ppd.identificacao.insourcingCheck === 'Sim'">
               <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="c.identificacao.insourcing"
+              v-model="ppd.identificacao.insourcing"
               label="Indique a natureza dos serviços prestados"
               solo
               clearable
@@ -200,7 +200,7 @@
           <div class="info-label">Outsourcing</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-radio-group v-model="c.identificacao.outsourcingCheck" row>
+          <v-radio-group v-model="ppd.identificacao.outsourcingCheck" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -209,10 +209,10 @@
               color="indigo darken-3"
             ></v-radio>
           </v-radio-group>
-          <div v-if="c.identificacao.outsourcingCheck === 'Sim'">
+          <div v-if="ppd.identificacao.outsourcingCheck === 'Sim'">
               <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="c.identificacao.outsourcing"
+              v-model="ppd.identificacao.outsourcing"
               label="Indique a natureza dos serviços prestados"
               solo
               clearable
@@ -224,7 +224,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-textarea
-              v-model="c.identificacao.notas"
+              v-model="ppd.identificacao.notas"
               label=""
               solo
               clearable
@@ -243,14 +243,14 @@
           dark
           rounded
           elevation="24"
-          @click="insereNovoUser(c.identificacao.userList, 'na')"
+          @click="insereNovoUser(ppd.identificacao.userList, 'na')"
           >
             Novo utilizador
             <v-icon dark right>add_circle_outline</v-icon>
           </v-btn>
         </v-col>
         <v-col>
-          <v-row v-for="(user, index) in c.identificacao.userList" :key="index">
+          <v-row v-for="(user, index) in ppd.identificacao.userList" :key="index">
             <v-col cols="12" xs="12" sm="9">
               <v-textarea
               v-model="user.user"
@@ -267,7 +267,7 @@
               rounded
               small
               elevation="7"
-              @click="c.identificacao.userList.splice(index, 1)"
+              @click="ppd.identificacao.userList.splice(index, 1)"
               >
                 Remover
                 <v-icon dark right>remove_circle_outline</v-icon>
@@ -303,7 +303,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 
 
 export default {
-  props: ["c","semaforos","sis","entidades","entidadesReady"],
+  props: ["ppd","semaforos","entidades"],
 
   components: {
     InfoBox,

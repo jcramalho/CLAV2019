@@ -24,7 +24,7 @@
             <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Entidades</div>
             </v-col>
-            <v-col cols="12" xs="12" sm="9" v-if="entidadesReady">
+            <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
               <v-autocomplete
                 v-model="ppd.geral.entSel"
                 :items="entidades"
@@ -65,9 +65,8 @@
             :ppd="ppd"
             :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo)"
             :entidades="entidades"
-            :entidadesReady="entidadesReady"
             :semaforos="semaforos"
-            :listaSistema="listaSistema"
+            :listaLegislacao="listaLegislacao"
           />
         </v-card-text>
 
@@ -137,6 +136,7 @@ export default {
         descricao: "",
         checkedAti: "",
         sistemasRelacionados: [],
+        legislacoes: [],
       },
       caracterizacao:{
         dependenciaSoft: "",
@@ -196,17 +196,12 @@ export default {
     entidades: [],
     // Lista com as entidades selecionadas
     entSel: [],
-    // True quando a lista de entidades estiver carregada
-    entidadesReady: false,
     // Passa a true quando o utilizador tiver selecionado todas as entidades no primeiro passo
     entSelReady: false,
 
     myhelp: help,
-    classesPai: [],
-    entidadesD: [],
-    entidadesP: [],
-    listaProcessos: [],
-    listaSistema: [],
+
+    listaLegislacao: [],
 
     loginErrorSnackbar: false,
 
@@ -215,9 +210,9 @@ export default {
 
 
     semaforos: {
-      paisReady: false,
-      classesReady: false,
       entidadesReady: false,
+      legislacaoReady: false,
+
       sistemaReady: false,
       pcaFormasContagemReady: false,
       pcaSubFormasContagemReady: false,
@@ -232,6 +227,8 @@ export default {
 
   methods: {
 
+
+    
     // Faz load de todas as entidades
     loadEntidades: async function() {
       try {
@@ -244,7 +241,7 @@ export default {
             label: item.sigla + " - " + item.designacao
           };
         });
-        this.entidadesReady = true;
+        this.semaforos.entidadesReady = true;
       }
         catch (err) {
           return err;
@@ -281,7 +278,7 @@ export default {
     loadLegislacao: async function() {
       try {
         var response = await this.$request("get", "/legislacao?estado=Ativo");
-        this.listaSistema = response.data
+        this.listaLegislacao = response.data
           .map(function(item) {
             return {
               tipo: item.tipo,
@@ -295,7 +292,7 @@ export default {
           .sort(function(a, b) {
             return -1 * a.data.localeCompare(b.data);
           });
-        this.semaforos.sistemaReady = true;
+        this.semaforos.legislacaoReady = true;
       } catch (error) {
         return error;
       }
@@ -308,12 +305,12 @@ export default {
     selectSistema: function(sis) {
       this.ppd.sistemasInfo.push(sis);
       // Remove dos selecionáveis
-      var index = this.listaSistema.findIndex(l => l.id === sis.id);
-      this.listaSistema.splice(index, 1);
+      var index = this.listaLegislacao.findIndex(l => l.id === sis.id);
+      this.listaLegislacao.splice(index, 1);
     },
     unselectSistema: function(sistema) {
       // Recoloca o sistema nos selecionáveis
-      this.listaSistema.push(sistema);
+      this.listaLegislacao.push(sistema);
       var index = this.ppd.sistemasInfo.findIndex(e => e.id === sistema.id);
       this.ppd.sistemasInfo.splice(index, 1);
     },

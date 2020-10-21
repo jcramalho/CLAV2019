@@ -10,31 +10,10 @@
     <v-expansion-panel-content>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Decomposição</div>
-          </v-col>
-          <v-col cols="12" xs="12" sm="9">
-            <div class="info-label">???</div>
-          </v-col>
-
-          <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Número de referência</div>
-          </v-col>
-          <v-col cols="12" xs="12" sm="9">
-            <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                v-model="numeroRef"
-                label="Indique o número de referência do sistema relacionado"
-                solo
-                clearable
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Sistemas informação</div>
           </v-col>
-          <v-col v-if="c.avaliacao.sistemasRelacionados.length > 0">
-            <v-data-table :headers="headers" :items="c.avaliacao.sistemasRelacionados" class="elevation-1" hide-default-footer>
+          <v-col v-if="ppd.avaliacao.sistemasRelacionados.length > 0">
+            <v-data-table :headers="siRelacionadosHeadersShow" :items="ppd.avaliacao.sistemasRelacionados" class="elevation-1" hide-default-footer>
               <template v-slot:header="props">
                 <tr>
                   <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
@@ -75,7 +54,7 @@
               </v-card-title>
               <v-data-table
                 :headers="siRelacionadosHeaders"
-                :items="c.sistemasInfo"
+                :items="ppd.sistemasInfo"
                 :items-per-page="5"
                 :search="searchProcessos"
                 item-key="numeroSI"
@@ -114,29 +93,12 @@
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Tipo de relação</div>
-          </v-col>
-          <v-col
-            class="d-flex"
-            cols="12"
-            sm="9"
-          >
-            <v-select
-              :items="tipoRelacao"
-              label="Indique o estado de atividade do sistema"
-              v-model="siTipoRelacao"
-              dense
-              multiple
-            ></v-select>
-          </v-col>
-
-          <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Código de classificação </div>
+            <div class="info-label">Fonte de legitimação </div>
           </v-col>
           <v-col cols="12" xs="12" sm="9">
             <v-radio-group v-model="loadCheck" row>
               <v-radio
-                v-for="(p, i) in fontLegitimacao"
+                v-for="(p, i) in fonteLegitimacao"
                 :key="i"
                 :label="p"
                 :value="p"
@@ -171,7 +133,7 @@
                 :items="portaria"
                 item-text="titulo"
                 return-object
-                v-model="a"
+                v-model="fonteLegitimacaoSelected"
                 solo
                 dense
               />
@@ -199,7 +161,60 @@
                   ></v-autocomplete>
                 </div>
           </v-col>
-
+        </v-row>
+        <v-row>
+          <v-col xs="2" sm="2" class="mt-3">
+            <div class="info-label">
+              Tabela de Seleção
+            </div>
+          </v-col>
+          <v-col xs="3" sm="3"/>
+          <v-col xs="5" sm="5">
+            <v-text-field
+              v-if="!tree_ou_tabela"
+              label="Procurar"
+              v-model="search"
+              append-icon="search"
+              single-line
+              hide-details
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-list v-if="tree_ou_tabela">
+              <v-list-group
+                v-for="(classe, i) in classesTree"
+                :key="i"
+                multiple
+              >
+                <template v-slot:activator>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      <span v-if="classe.codigo">{{classe.codigo}} <span class="ml-7">{{classe.titulo}}</span></span>
+                      <span v-else class="ml-9">{{classe.titulo}}</span>
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </template>
+                  <ShowPGD :classe="classe"/>
+              </v-list-group>
+            </v-list>
+            <v-data-table v-else
+              :headers="headers"
+              :items="classeSelecionada"
+              item-key="idClasse"
+              :search="search"
+              class="elevation-1"
+              :footer-props="footer_props"
+              :page.sync="paginaTabela"
+              :expanded="expanded"
+              :single-expand="true"
+              @click:row="clicked">
+            >
+            </v-data-table>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Atividade do SI</div>
           </v-col>
@@ -211,16 +226,38 @@
             <v-select
               :items="checkedAti"
               label="Indique o estado de atividade do sistema"
-              v-model="c.avaliacao.checkedAti"
+              v-model="ppd.avaliacao.checkedAti"
               dense
               solo
             ></v-select>
           </v-col>
+          <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Legislação / Diplomas jurídico-administrativos</div>
+          </v-col>
+          <v-col cols="12" xs="12" sm="9" v-if="semaforos.legislacaoReady">
+            <v-autocomplete
+              v-model="ppd.avaliacao.legislacao"
+              :items="listaLegislacao"
+              item-text="numero"
+              item-value="numero"
+              placeholder="Selecione as legislações/diplomas jurídico-administrativos"
+              multiple
+              chips
+              deletable-chips
+              return-object
+            >
+            </v-autocomplete>
+          </v-col>
+          <v-col v-else>
+            <v-alert dense type="info">
+              Ainda não foi possível carregar as legislações/diplomas jurídico-administrativos...
+            </v-alert>
+          </v-col>
         </v-row>
         <v-row>
-        <v-col>
-          <hr style="border: 3px solid indigo; border-radius: 2px;" />
-        </v-col>
+          <v-col>
+            <hr style="border: 3px solid indigo; border-radius: 2px;" />
+          </v-col>
         </v-row>
     </v-expansion-panel-content>
   </v-expansion-panel>
@@ -233,7 +270,7 @@ const help = require("@/config/help").help;
 import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
-  props: ["c"],
+  props: ["ppd", "semaforos", "listaLegislacao"],
 
   components: {
     InfoBox
@@ -242,14 +279,18 @@ export default {
   data: () => {
     return {
       myhelp: help,
-      numeroRef: "",
       siTipoRelacao: [],
       loadCheck: "",
-
+      fonteLegitimacaoSelected: "",
 
       siRelacionadosHeaders: [
         { text: "Relação", align: "left", value: "relacao" },
         { text: "Número SI", align: "left", value: "numeroSI", sortable: true },
+      ],
+      siRelacionadosHeadersShow: [
+        { text: "Relação", align: "left", value: "relacao" },
+        { text: "Número SI", align: "left", value: "numeroSI", sortable: true },
+        { text: "Remover", align: "left", sortable: false, value: "" },
       ],
       footer_props: {
         "items-per-page-text": "Sistemas por página",
@@ -262,15 +303,15 @@ export default {
 
       //Listas das opções disponiveis
       tipoRelacao: [
-        {label: "S (síntese - quando sintetiza o conteúdo informativo do sistema em análise)", value:"S"},
-        {label: "D (duplicada - quando possui, no todo ou em parte, o mesmo conteúdo informativo do sistema em análise - não confundir com backups ou réplicas do sistema)",value:"D"},
-        {label: "I (complementar - quando possui informação adicional que acrescenta significado à informação do sistema em análise)",value:"I"},
-        {label: "A (antecedente - quando se trata de um sistema inactivo, que foi substituído pelo sistema em análise)",value:"A"},
-        {label: "X (Input - quando fornece dados ou informação ao sistema em análise)",value:"X"},
-        {label: "O (Output - quando a informação, no todo ou em parte, tem origem ou resulta do processamento de dados existentes no sistema em análise)",value:"O"},
+        {label: "S (síntese - quando sintetiza o conteúdo informativo do sistema em análise)", value:"Síntese"},
+        {label: "D (duplicada - quando possui, no todo ou em parte, o mesmo conteúdo informativo do sistema em análise - não confundir com backups ou réplicas do sistema)",value:"Duplicada"},
+        {label: "I (complementar - quando possui informação adicional que acrescenta significado à informação do sistema em análise)",value:"Complementar"},
+        {label: "A (antecedente - quando se trata de um sistema inactivo, que foi substituído pelo sistema em análise)",value:"Antecedente"},
+        {label: "X (Input - quando fornece dados ou informação ao sistema em análise)",value:"Input"},
+        {label: "O (Output - quando a informação, no todo ou em parte, tem origem ou resulta do processamento de dados existentes no sistema em análise)",value:"Output"},
       ],
       checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"],
-      fontLegitimacao: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
+      fonteLegitimacao: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
 
       a: "",
       portaria: [],
@@ -278,18 +319,45 @@ export default {
       portariaRada: [],
       tabelasSelecao: [],
       tsRada: [],
+
+
+
+      //---------------------------------------------------------------------
+      //----
+      classes: [],
+      classesTree: [],
+      classeSelecionada: [],
+      //----
+
+      expanded: [],
+      tree_ou_tabela: false,
+      search: "",
+      paginaTabela: 1,
+      headers: [
+      {text: "Código", sortable: false, value: "codigo"},
+      {text: "Referência", sortable: false, value: "referencia"},
+      {text: "Título", sortable: false, value: "titulo"},
+      {text: "PCA", sortable: false, value: "pca"},
+      {text: "Destino Final", sortable: false, value: "df"},
+      ],
+      headersLC: [
+        {text: "Código", sortable: false, value: "codigo"},
+        {text: "Título", sortable: false, value: "titulo"},
+        {text: "PCA", sortable: false, value: "pca"},
+        {text: "Destino Final", sortable: false, value: "df"}
+      ],
     };
   },
 
   created: async function() {
     try {
       //var user = this.$verifyTokenUser();
-      var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
-      this.portariaLC = await this.prepararLeg(response.data);
+      //var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
+      //this.portariaLC = await this.prepararLeg(response.data);
       var response2 = await this.$request("get", "/pgd");
       this.portaria = await this.prepararLeg(response2.data);
-      var response3 = await this.$request("get", "/legislacao?fonte=RADA");
-      this.portariaRada = await this.prepararLeg(response3.data);
+      //var response3 = await this.$request("get", "/legislacao?fonte=RADA");
+      //this.portariaRada = await this.prepararLeg(response3.data);
       //var response4 = await this.$request("get","/rada");
       //this.tsRada = response4.data
       var response5 = await this.$request("get","/tabelasSelecao")
@@ -309,12 +377,106 @@ export default {
 
   },
 
+  watch:{
+    "fonteLegitimacaoSelected": function() {
+
+      //if (this.fonteLegitimacaoSelected != "") {
+        this.loadConsultaPGD(this.fonteLegitimacaoSelected.id);
+      //}
+    },
+  },
+
   methods: {
+
+    //-----------
+
+    loadConsultaPGD: async function(id) {
+      try {
+        var response = await this.$request("get", "/pgd/"+id);
+        this.classeSelecionada = response.data;
+      }
+        catch (err) {
+          return err;
+      }
+    },
+
+    clicked(value) {
+      if(value.descricao || value.notaDF || value.notaPCA || value.formaContagem || value.subFormaContagem || value.designacaoParticipante || value.designacaoDono)
+        if(this.expanded[0] == value) this.expanded.pop();
+        else this.expanded = [value]
+    },
+
+    //--------------------
+    parseEntidades: async function(ent) {
+      try {
+        var entidades = "";
+        for (var i = 0; i < ent.length; i++) {
+          entidades = entidades + ent[i] + " ";
+        }
+        return entidades;
+      } catch (e) {
+        return {};
+      }
+    },
+    preparaLegislacao: async function(leg) {
+      try {
+        var myLegislacao = {
+          data: {
+            campo: "Data do diploma",
+            text: leg.data
+          },
+          sumario: {
+            campo: "Sumário",
+            text: leg.sumario
+          },
+          fonte: {
+            campo: "Fonte de legitimação",
+            text: leg.fonte
+          },
+          link: {
+            campo: "Link",
+            text: leg.link
+          },
+          entidades: {
+            campo: "Entidades",
+            text: await this.parseEntidades(leg.entidades)
+          }
+        };
+        return myLegislacao;
+      } catch (e) {
+        return {};
+      }
+    },
+    procuraClasse: function (classe, myClasses, classePai) {
+      var index = myClasses.map(cl => cl.classe).indexOf(classePai)
+      if(index>=0) myClasses[index].filhos.push(classe)
+      else
+        for(var c of myClasses) {
+          c.filhos = this.procuraClasse(classe,c.filhos,classePai)
+        }
+      return myClasses
+    },
+    prepararClasses: async function(classes) {
+      var myClasses = [];
+      for(var c of classes) {
+        c.filhos = []
+
+        if(c.nivel == 1) {
+          myClasses.push(c)
+        }
+        else {
+          myClasses = this.procuraClasse(c,myClasses,c.classePai)
+        }
+      }
+      return myClasses;
+    },
+    //--------------------
+    //----------------------------------------------
     prepararLeg: async function(leg) {
       try {
         var myPortarias = [];
         for (var l of leg) {
-          myPortarias.push(l.tipo + " " + l.numero + " - " + l.sumario);
+          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
         }
         return myPortarias;
       } catch (error) {
@@ -322,10 +484,10 @@ export default {
       }
     },
     selectSistema: function(numeroSI, relacao) {
-      var index = this.c.sistemasInfo.findIndex(p => p.numeroSI === numeroSI);
-      this.c.sistemasInfo[index].relacao = relacao;
-      var selectedSistema = JSON.parse(JSON.stringify(this.c.sistemasInfo[index]));
-      this.c.sistemasInfo.splice(index, 1);
+      var index = this.ppd.sistemasInfo.findIndex(p => p.numeroSI === numeroSI);
+      this.ppd.sistemasInfo[index].relacao = relacao;
+      var selectedSistema = JSON.parse(JSON.stringify(this.ppd.sistemasInfo[index]));
+      this.ppd.sistemasInfo.splice(index, 1);
       this.$emit("newSistemasRelacionados", selectedSistema);
     },
 
