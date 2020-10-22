@@ -15,20 +15,18 @@
             <v-col cols="12" xs="12" sm="9">
               <v-text-field
                 :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                v-model="ppd.titulo"
+                v-model="ppd.geral.nomePPD"
                 label="Título"
                 solo
                 clearable
               ></v-text-field>
             </v-col>
-          </v-row>
-          <v-row>
             <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Entidades</div>
             </v-col>
-            <v-col cols="12" xs="12" sm="9" v-if="entidadesReady">
+            <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
               <v-autocomplete
-                v-model="entSel"
+                v-model="ppd.geral.entSel"
                 :items="entidades"
                 item-text="label"
                 placeholder="Selecione as entidades abrangidas pelo PPD"
@@ -45,20 +43,31 @@
               </v-alert>
             </v-col>
           </v-row>
-          <v-expansion-panels>
-            <!-- BLOCO IDENTIFICAÇÃO -->
-            <BlocoIdentificacao
-              :c="ppd"
-            />
-            <!-- BLOCO AVALIAÇÃO -->
-            <BlocoAvaliacao
-              :c="ppd"
-            />
-            <!-- BLOCO CARACTERIZAÇÃO -->
-            <BlocoCaracterizacao
-              :c="ppd"
-            />
-          </v-expansion-panels>
+          <v-row>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Menção de responsabilidade</div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+              <v-textarea
+                  v-model="ppd.geral.mencaoResp"
+                  label=""
+                  solo
+                  clearable
+              ></v-textarea>
+            </v-col>
+          </v-row>
+          <!-- sisISLAÇÂO -->
+          <SistemaOps
+            :sistema="ppd.sistemasInfo"
+            @unselectSistema="unselectSistema($event)"
+          />
+          <SistemaInfo
+            :ppd="ppd"
+            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo)"
+            :entidades="entidades"
+            :semaforos="semaforos"
+            :listaLegislacao="listaLegislacao"
+          />
         </v-card-text>
 
         <v-snackbar
@@ -81,44 +90,55 @@ const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
-import BlocoIdentificacao from "@/components/ppd/BlocoIdentificacao.vue";
-import BlocoAvaliacao from "@/components/ppd/BlocoAvaliacao.vue";
-import BlocoCaracterizacao from "@/components/ppd/BlocoCaracterizacao.vue";
+import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
+import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
+//import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
+
 
 export default {
   components: {
-    BlocoIdentificacao,
-    BlocoAvaliacao,
-    BlocoCaracterizacao,
+    SistemaInfo,
+    SistemaOps,
+    //SistemaSelect
   },
 
   data: () => ({
     // Objeto que guarda um ppd
     ppd: {
-      nRef: "",
+
+      geral:{
+        numeroPPD: "", //é necessário?
+        nomePPD: "",
+        mencaoResp: "",
+        entSel: [],
+      },
       identificacao: {
+        numeroSI: "",
         nomeSI: "",
-        local: "",
-        adminSistema: "",
-        adminDados: "",
-        propSistema: "",
-        propDados: "",
+        adminSistema: [],
+        adminDados: [],
+        propSistemaPublico: [],
+        propSistemaPrivado: "",
+        propDados: [],
+        localDadosPublico: [],
+        localDadosPrivado: "",
         userList: [],
         defResponsavel: "",
+        defCheck: "",
         insourcing: "",
+        insourcingCheck:"",
         outsourcing: "",
+        outsourcingCheck: "",
         notas: "",
-        mencaoResp: ""
       },
       avaliacao: {
         codigo: "",
         descricao: "",
         checkedAti: "",
-        nRef: ""
+        sistemasRelacionados: [],
+        legislacoes: [],
       },
       caracterizacao:{
-        nRef: "",
-        nomeSI: "",
         dependenciaSoft: "",
         modeloCres: "",
         dimensao:"",
@@ -152,41 +172,54 @@ export default {
         contratoAtivos: "",
         planoRecuperacao: "",
         notas: "",
-        mencaoResp: ""
       },
-      codigo: "",
-      titulo: "",
-      descricao: "",
-      notasAp: [],
-      exemplosNotasAp: [],
-      notasEx: [],
-      termosInd: [],
+      estrategia:{
 
+      },
+      codigo: "", //é necessário?
+      descricao: "", //é necessário?
+      notasAp: [], //é necessário?
+      exemplosNotasAp: [], //é necessário?
+      notasEx: [], //é necessário?
+      termosInd: [], //é necessário?
+
+      sistemasInfo: [],
 
       user: {
         token: ""
-      }
+      },
     },
+
+    dialog: false,
+
     // Lista de todas as entidades existentes
     entidades: [],
     // Lista com as entidades selecionadas
     entSel: [],
-    // True quando a lista de entidades estiver carregada
-    entidadesReady: false,
     // Passa a true quando o utilizador tiver selecionado todas as entidades no primeiro passo
     entSelReady: false,
 
     myhelp: help,
-    classesPai: [],
-    entidadesD: [],
-    entidadesP: [],
-    listaProcessos: [],
+
     listaLegislacao: [],
 
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar um PLano de preservação digital!",
-    mensValCodigo: ""
+    mensValCodigo: "",
+
+
+    semaforos: {
+      entidadesReady: false,
+      legislacaoReady: false,
+
+      sistemaReady: false,
+      pcaFormasContagemReady: false,
+      pcaSubFormasContagemReady: false,
+      critLegalAdicionadoPCA: false,
+      critLegalAdicionadoDF: false,
+      critGestionarioAdicionado: false
+    },
 
   }),
 
@@ -194,6 +227,8 @@ export default {
 
   methods: {
 
+
+    
     // Faz load de todas as entidades
     loadEntidades: async function() {
       try {
@@ -206,7 +241,7 @@ export default {
             label: item.sigla + " - " + item.designacao
           };
         });
-        this.entidadesReady = true;
+        this.semaforos.entidadesReady = true;
       }
         catch (err) {
           return err;
@@ -216,8 +251,8 @@ export default {
     // Quando se termina a seleção das entidades
     entidadesSelecionadas: async function(){
       try{
-        this.entSel.sort((a, b) => a.identificacao > b.identificacao ? 1 : -1 );
-        this.ppd.entidades = this.entSel;
+        this.geral.entSel.sort((a, b) => a.identificacao > b.identificacao ? 1 : -1 );
+        this.ppd.entidades = this.geral.entSel;
 
         for(let i=0; i < this.listaProcessos.procs.length; i++){
             for(let j=0; j < this.ppd.entidades.length; j++){
@@ -240,6 +275,47 @@ export default {
     },
 
 
+    loadLegislacao: async function() {
+      try {
+        var response = await this.$request("get", "/legislacao?estado=Ativo");
+        this.listaLegislacao = response.data
+          .map(function(item) {
+            return {
+              tipo: item.tipo,
+              numero: item.numero,
+              sumario: item.sumario,
+              data: item.data,
+              selected: false,
+              id: item.id
+            };
+          })
+          .sort(function(a, b) {
+            return -1 * a.data.localeCompare(b.data);
+          });
+        this.semaforos.legislacaoReady = true;
+      } catch (error) {
+        return error;
+      }
+    },
+
+    newSistema: function(sis, lista) {
+        lista.push(sis);
+    },
+
+    selectSistema: function(sis) {
+      this.ppd.sistemasInfo.push(sis);
+      // Remove dos selecionáveis
+      var index = this.listaLegislacao.findIndex(l => l.id === sis.id);
+      this.listaLegislacao.splice(index, 1);
+    },
+    unselectSistema: function(sistema) {
+      // Recoloca o sistema nos selecionáveis
+      this.listaLegislacao.push(sistema);
+      var index = this.ppd.sistemasInfo.findIndex(e => e.id === sistema.id);
+      this.ppd.sistemasInfo.splice(index, 1);
+    },
+
+
   },
 
   /* em principio nao vai ser necessario porque vou buscar a info toda logo no inicio
@@ -258,6 +334,7 @@ export default {
   created: async function() {
       try{
             await this.loadEntidades();
+            await this.loadLegislacao();
       }
       catch(e){
           console.log('Erro ao carregar a informação inicial: ' + e);

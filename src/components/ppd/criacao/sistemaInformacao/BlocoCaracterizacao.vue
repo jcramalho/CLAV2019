@@ -3,8 +3,8 @@
     <!-- CONTEXTO DE CARACTERIZAÇÃO DO PPD -->
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
-        Caracterização do plano de preservação digital
-        <InfoBox header="Caracterização ppd" :text="myhelp.Classe.BlocoDecisoes"  helpColor="white"/>
+        3.  Caracterização do sistema de informação (SI)
+        <InfoBox header="Caracterização SI" :text="myhelp"  helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
@@ -15,7 +15,7 @@
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
             :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-            v-model="c.caracterizacao.nRef"
+            v-model="ppd.caracterizacao.nRef"
             label="Identificador do sistema de informação"
             solo
             clearable
@@ -27,7 +27,7 @@
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
             :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-            v-model="c.caracterizacao.nomeSI"
+            v-model="ppd.caracterizacao.nomeSI"
             label="Designação oficial do sistema"
             solo
             clearable
@@ -51,7 +51,7 @@
           <v-select
             :items="dependenciaSoft"
             label="Indique nível de dependência para com fornecedores privados"
-            v-model="c.caracterizacao.dependenciaSoft"
+            v-model="ppd.caracterizacao.dependenciaSoft"
             dense
             solo
           ></v-select>
@@ -68,11 +68,11 @@
             dense
             solo
           ></v-select>
-          <span>{{c.caracterizacao.modeloCres}}</span>
+          <span>{{ppd.caracterizacao.modeloCres}}</span>
           <div v-if="modeloCresCheck ==='Outra situação'">
             <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="c.caracterizacao.modeloCres"
+              v-model="ppd.caracterizacao.modeloCres"
               label="Indique qual"
               solo
               clearable
@@ -86,8 +86,8 @@
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="c.caracterizacao.dimensao"
-              label="Indique nº de registos e dimensão em unidades binárias."
+              v-model="ppd.caracterizacao.dimensao"
+              label="Indique a dimensão em unidades binárias (Gb)."
               solo
               clearable
           ></v-text-field>
@@ -98,8 +98,8 @@
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="c.caracterizacao.crescimento"
-              label="Indique nº de registos e dimensão em unidades binárias."
+              v-model="ppd.caracterizacao.crescimento"
+              label="Indique a dimensão em unidades binárias (Gb)."
               solo
               clearable
           ></v-text-field>
@@ -112,7 +112,7 @@
           <v-select
             :items="localSistema"
             label="Indique se os sistemas estão sediados num ponto central ou dispersos"
-            v-model="c.caracterizacao.localSistema"
+            v-model="ppd.caracterizacao.localSistema"
             dense
             solo
           ></v-select>
@@ -122,7 +122,7 @@
             <div class="info-label">Sala técnica</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-radio-group v-model="c.caracterizacao.salaTec" row>
+          <v-radio-group v-model="ppd.caracterizacao.salaTec" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -137,7 +137,7 @@
             <div class="info-label">Acesso reservado a sala técnica</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-radio-group v-model="c.caracterizacao.acessoSalaTec" row>
+          <v-radio-group v-model="ppd.caracterizacao.acessoSalaTec" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -152,7 +152,7 @@
             <div class="info-label">Sistemas de energia redundantes</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-radio-group v-model="c.caracterizacao.energiaRed" row>
+          <v-radio-group v-model="ppd.caracterizacao.energiaRed" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -167,7 +167,7 @@
             <div class="info-label">Energia socorrida</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-           <v-radio-group v-model="c.caracterizacao.energiaSoc" row>
+           <v-radio-group v-model="ppd.caracterizacao.energiaSoc" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -185,7 +185,7 @@
           <v-select
             :items="alarme"
             label="Indique se há segurança relativamente a incêndios"
-            v-model="c.caracterizacao.alarme"
+            v-model="ppd.caracterizacao.alarme"
             dense
             solo
           ></v-select>
@@ -195,7 +195,7 @@
           <div class="info-label">Climatização dedicada</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-            <v-radio-group v-model="c.caracterizacao.climatizacao" row>
+            <v-radio-group v-model="ppd.caracterizacao.climatizacao" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -213,7 +213,7 @@
           <v-select
             :items="seguranca"
             label="Indique se existe algum tipo de proteção"
-            v-model="c.caracterizacao.seguranca"
+            v-model="ppd.caracterizacao.seguranca"
             dense
             solo
           ></v-select>
@@ -223,7 +223,7 @@
           <div class="info-label">Comunicação externa segura</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-            <v-radio-group v-model="c.caracterizacao.comunicacaoEx" row>
+            <v-radio-group v-model="ppd.caracterizacao.comunicacaoEx" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -241,7 +241,7 @@
           <v-select
             :items="simNaoDesen"
             label="Indique se existe plano de contingência"
-            v-model="c.caracterizacao.planoContingencia"
+            v-model="ppd.caracterizacao.planoContingencia"
             dense
             solo
           ></v-select>
@@ -253,7 +253,7 @@
           <v-select
             :items="simNaoDesen"
             label="Indique se existe plano para gerir mudança e evolução da plataforma"
-            v-model="c.caracterizacao.planoMudEvolucao"
+            v-model="ppd.caracterizacao.planoMudEvolucao"
             dense
             solo
           ></v-select>
@@ -262,7 +262,7 @@
           <div class="info-label">Privilégios de acesso</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-            <v-radio-group v-model="c.caracterizacao.privAcesso" row>
+            <v-radio-group v-model="ppd.caracterizacao.privAcesso" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -279,7 +279,7 @@
           <v-select
             :items="catSegDados"
             label="Indique se a informação residente nos sistemas tem algum tipo de classificação de segurança"
-            v-model="c.caracterizacao.catSegDados"
+            v-model="ppd.caracterizacao.catSegDados"
             dense
             solo
           ></v-select>
@@ -288,7 +288,7 @@
           <div class="info-label">Rotinas de auditoria configuradas</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-            <v-radio-group v-model="c.caracterizacao.rotinaAuditoria" row>
+            <v-radio-group v-model="ppd.caracterizacao.rotinaAuditoria" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -302,7 +302,7 @@
           <div class="info-label">Logs das rotinas periodicamente analisados</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-            <v-radio-group v-model="c.caracterizacao.logsRotinas" row>
+            <v-radio-group v-model="ppd.caracterizacao.logsRotinas" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -319,7 +319,7 @@
           <v-select
             :items="integridadeInfo"
             label="Indique como a integridade da informação contida no sistema é verificada"
-            v-model="c.caracterizacao.integridadeInfo"
+            v-model="ppd.caracterizacao.integridadeInfo"
             dense
             solo
           ></v-select>
@@ -331,7 +331,7 @@
           <v-select
             :items="armazenamento"
             label="Indique se a organização dispõe de armazenamento com maior ou menor grau de sofisticação"
-            v-model="c.caracterizacao.armazenamento"
+            v-model="ppd.caracterizacao.armazenamento"
             dense
             solo
           ></v-select>
@@ -340,7 +340,7 @@
           <div class="info-label">Replicação de dados</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-            <v-radio-group v-model="c.caracterizacao.replicacaoDados" row>
+            <v-radio-group v-model="ppd.caracterizacao.replicacaoDados" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -357,7 +357,7 @@
           <v-select
             :items="backupsRegular"
             label="Indique se são produzidos backups regularmente"
-            v-model="c.caracterizacao.backupsRegular"
+            v-model="ppd.caracterizacao.backupsRegular"
             dense
             solo
           ></v-select>
@@ -369,7 +369,7 @@
           <v-select
             :items="modeloBackup"
             label="Indique o tipo do modelo do backup"
-            v-model="c.caracterizacao.modeloBackup"
+            v-model="ppd.caracterizacao.modeloBackup"
             dense
             solo
           ></v-select>
@@ -381,7 +381,7 @@
           <v-select
             :items="integridadeInfo"
             label="Indique se a qualidade do backup é testada"
-            v-model="c.caracterizacao.qualidadeBackup"
+            v-model="ppd.caracterizacao.qualidadeBackup"
             dense
             solo
           ></v-select>
@@ -393,7 +393,7 @@
           <v-select
             :items="inventario"
             label="Indique a metainformção e documentação do sistema"
-            v-model="c.caracterizacao.inventarioSoft"
+            v-model="ppd.caracterizacao.inventarioSoft"
             dense
             solo
           ></v-select>
@@ -405,7 +405,7 @@
           <v-select
             :items="inventario"
             label="Indique a metainformção e documentação do sistema"
-            v-model="c.caracterizacao.inventarioHard"
+            v-model="ppd.caracterizacao.inventarioHard"
             dense
             solo
           ></v-select>
@@ -417,7 +417,7 @@
           <v-select
             :items="documentacaoSis"
             label="Indique a metainformção e documentação do sistema"
-            v-model="c.caracterizacao.documentacaoSis"
+            v-model="ppd.caracterizacao.documentacaoSis"
             dense
             solo
           ></v-select>
@@ -429,7 +429,7 @@
           <v-select
             :items="documentacaoProc"
             label="Indique se os procedimentos técnicos informáticos de manutenção são facilmente acessíveis pelo pessoal TIC"
-            v-model="c.caracterizacao.documentacaoProc"
+            v-model="ppd.caracterizacao.documentacaoProc"
             dense
             solo
           ></v-select>
@@ -438,7 +438,7 @@
           <div class="info-label">Controlo de versões</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-            <v-radio-group v-model="c.caracterizacao.controlVersaoDProc" row>
+            <v-radio-group v-model="ppd.caracterizacao.controlVersaoDProc" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -455,7 +455,7 @@
           <v-select
             :items="contratoAtivos"
             label="Indique se tem contratos de manutenção ativos"
-            v-model="c.caracterizacao.contratoAtivos"
+            v-model="ppd.caracterizacao.contratoAtivos"
             dense
             solo
           ></v-select>
@@ -467,7 +467,7 @@
           <v-select
             :items="planoRecuperacao"
             label="Indique se existe um plano de contingência em caso de paragem programada ou intempestiva de sistema"
-            v-model="c.caracterizacao.planoRecuperacao"
+            v-model="ppd.caracterizacao.planoRecuperacao"
             dense
             solo
           ></v-select>
@@ -478,23 +478,13 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-textarea
-              v-model="c.caracterizacao.notas"
+              v-model="ppd.caracterizacao.notas"
               label=""
               solo
               clearable
           ></v-textarea>
         </v-col>
-        <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Menção de responsabilidade</div>
-        </v-col>
-        <v-col cols="12" xs="12" sm="9">
-          <v-textarea
-              v-model="c.caracterizacao.mencaoResp"
-              label=""
-              solo
-              clearable
-          ></v-textarea>
-        </v-col>
+
 
         </v-row>
     </v-expansion-panel-content>
@@ -508,7 +498,7 @@ const help = require("@/config/help").help;
 import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
-  props: ["c"],
+  props: ["ppd"],
 
   components: {
     InfoBox
