@@ -1,5 +1,5 @@
 <template>
-  <AlteracaoPassword/>
+  <AlteracaoPassword />
 </template>
 
 <script>

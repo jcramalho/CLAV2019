@@ -1,9 +1,9 @@
 <template>
-  <v-layout row wrap ma-2>
-    <v-flex xs2>
+  <v-row>
+    <v-col cols="2">
       <div class="info-label">Selecione o(s) processo(s) relacionado(s)</div>
-    </v-flex>
-    <v-flex xs9 v-if="procReady">
+    </v-col>
+    <v-col v-if="procReady">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -17,60 +17,55 @@
         <v-data-table
           :headers="processosRelacionadosHeaders"
           :items="processos"
+          :items-per-page="5"
           :search="searchProcessos"
           item-key="id"
           class="elevation-1"
-          :pagination.sync="paginationProcessos"
+          :sort-by="['codigo']"
         >
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr>
               <td>
                 <v-select
+                  :key="props.item.id"
                   item-text="label"
                   item-value="value"
                   v-model="props.item.idRel"
                   :items="tiposRelacao"
                   solo
-                  dense
                   @change="selectProcesso(props.item.id, $event)"
                 />
-                <!--v-btn round small text-xs-center>
-                  <SelectValueFromList
-                    :options="tiposRelacao"
-                    :initialValue="props.item.idRel"
-                    @value-change="selectProcesso(props.item.id, $event)"
-                  />
-                </v-btn-->
               </td>
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
             </tr>
           </template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            A procura por "{{ search }}" não deu resultados.
-          </v-alert>
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            color="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-card>
-    </v-flex>
-    <v-flex xs9 v-else>
-      <v-subheader>A carregar entidades e tipologias...</v-subheader>
-    </v-flex>
-  </v-layout>
+    </v-col>
+    <v-col v-else>
+      <v-subheader>{{ mylabels.procRel }}</v-subheader>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import SelectValueFromList from "@/components/generic/SelectValueFromList.vue";
 
 export default {
   props: ["procReady", "processos"],
-
-  components: { SelectValueFromList },
 
   data: function() {
     return {
       searchProcessos: "",
       paginationProcessos: { sortBy: "codigo" },
+      mylabels: require("@/config/labels").mensagensEspera,
 
       processosRelacionadosHeaders: [
         { text: "Relação", align: "left", value: "relacao" },
@@ -88,18 +83,7 @@ export default {
         { label: "Sintetizado por", value: "eSintetizadoPor" },
         { label: "Suplemento de", value: "eSuplementoDe" },
         { label: "Suplemento para", value: "eSuplementoPara" }
-      ],
-
-      labels: {
-        eAntecessorDe: "É Antecessor de",
-        eComplementarDe: "É Complementar de",
-        eCruzadoCom: "É Cruzado com",
-        eSinteseDe: "É Síntese de",
-        eSintetizadoPor: "É Sintetizado por",
-        eSucessorDe: "É Sucessor de",
-        eSuplementoDe: "É Suplemento de",
-        eSuplementoPara: "É Suplemento para"
-      }
+      ]
     };
   },
 
@@ -111,7 +95,7 @@ export default {
     selectProcesso: function(id, relacao) {
       var index = this.processos.findIndex(p => p.id === id);
       this.processos[index].relacao = relacao;
-      var selectedProcesso = this.processos[index];
+      var selectedProcesso = JSON.parse(JSON.stringify(this.processos[index]));
       this.processos.splice(index, 1);
       this.$emit("selectProcesso", selectedProcesso);
     }

@@ -1,16 +1,58 @@
 <template>
-  <v-toolbar color="indigo darken-4" dark>
-    <v-toolbar-title class="subheading">
-      <span
-        >DGLAB - Direção-Geral do Livro, dos Arquivos e das Bibliotecas</span
-      >
-    </v-toolbar-title>
-    <v-spacer></v-spacer>
-    <v-toolbar-title class="subheading">
-      <span>Contactos</span>
+  <v-app-bar
+    color="indigo darken-4"
+    dark
+    dense
+    height="80px"
+    style="max-height:80px"
+  >
+    <v-toolbar-title>
+      DGLAB - Direção-Geral do Livro, dos Arquivos e das Bibliotecas
     </v-toolbar-title>
     <v-spacer></v-spacer>
 
-    <v-img :src="require('./../assets/feder.png')" max-height="60px" />
-  </v-toolbar>
+    <div class="body-2">Versão: {{ interfaceVersion }}</div>
+
+    <v-spacer></v-spacer>
+
+    <div v-if="ontoReady" class="body-2">Ontologia: {{ ontologia }}</div>
+
+    <v-spacer></v-spacer>
+
+    <v-toolbar-title>
+      <v-btn text depressed href="mailto:clav@dglab.gov.pt">Contactos</v-btn>
+    </v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-img :src="require('./../assets/feder.png')" aspect-ratio="4.8600" />
+  </v-app-bar>
 </template>
+
+<script>
+const interfaceVersion = require("@/config/global").interfaceVersion;
+
+export default {
+  data: function() {
+    return {
+      ontoReady: false,
+      ontologia: "",
+      interfaceVersion: interfaceVersion
+    };
+  },
+
+  created: async function() {
+    try {
+      let response = await this.$request("get", "/ontologia/data");
+      this.ontologia = response.data;
+      this.ontoReady = true;
+    } catch (error) {
+      return error;
+    }
+  }
+};
+</script>
+
+<style scoped>
+.v-btn:hover:before {
+  opacity: 0;
+}
+</style>

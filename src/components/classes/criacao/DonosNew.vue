@@ -1,39 +1,34 @@
 <template>
-  <v-layout row wrap color="teal lighten-5" ma-2>
-    <v-flex xs2>
+  <v-row class="ma-2 indigo lighten-5">
+    <v-col cols="2">
       <div class="info-label">Entidade nova</div>
-      <v-btn small dark round color="teal darken-4" @click="newEntidade">
-          Adicionar
-          <v-icon small dark right>add_circle_outline</v-icon>
+      <v-btn small dark rounded class="indigo darken-2" @click="newDono">
+        Adicionar
+        <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col>
       <v-form v-model="valid">
         <v-container>
-          <v-layout>
-            <v-flex xs12 md3>
-              <v-text-field
-                v-model="sigla"
-                :rules="siglaRules"
-                label="Sigla"
-                required
-              ></v-text-field>
-            </v-flex>
+          <v-row>
 
-            <v-flex xs12 md3>
+            <v-col>
+              <v-text-field v-model="sigla" label="Sigla" required></v-text-field>
+            </v-col>
+
+            <v-col>
               <v-text-field v-model="sioe" label="SIOE"></v-text-field>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3>
+            <v-col>
               <v-text-field
                 v-model="designacao"
-                :rules="designacaoRules"
                 label="Designação"
                 required
               ></v-text-field>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3>
+            <v-col>
               <v-select
                 prefix="Internacional: "
                 item-text="label"
@@ -44,20 +39,17 @@
                 solo
                 dense
               />
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-container>
       </v-form>
-    </v-flex>
+    </v-col>
 
     <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
       <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
-        <v-btn dark flat @click="fecharErros">
-          Fechar
-        </v-btn>
+      <v-btn dark text @click="fecharErros">Fechar</v-btn>
     </v-snackbar>
-
-  </v-layout>
+  </v-row>
 </template>
 
 <script>
@@ -67,7 +59,7 @@ export default {
   data: function() {
     return {
       erroValidacao: false,
-      mensagensErro:[],
+      mensagensErro: [],
       valid: false,
       sigla: "",
       sioe: "",
@@ -76,79 +68,85 @@ export default {
       designacaoRules: [v => !!v || "A Designação é obrigatória."],
       internacional: "Nao",
       simNao: [
-          {
-              label: "Sim", value: "Sim"
-          },
-          {
-              label: "Não", value: "Nao"
-          }
+        {
+          label: "Sim",
+          value: "Sim"
+        },
+        {
+          label: "Não",
+          value: "Nao"
+        }
       ]
     };
   },
 
   methods: {
-      fecharErros: function(){
-        this.mensagensErro = []
-        this.erroValidacao=false
-      },
+    fecharErros: function() {
+      this.mensagensErro = [];
+      this.erroValidacao = false;
+    },
 
-      validaSigla: function(s){
-        var res = true
-        if(s==""){
-          this.mensagensErro.push("A sigla não pode ser vazia!")
-          res = false
-        }
-        else if(this.entidades.filter(e => e.sigla == s).length > 0){
-          this.mensagensErro.push("Sigla já existente na BD.")
-          res = false
-        }
-        return res
-      },
-
-      validaDesignacao: function(d){
-        var res = true
-        if(d==""){
-          this.mensagensErro.push("A designação não pode ser vazia!")
-          res = false
-        }
-        else if(this.entidades.filter(e => e.designacao == d).length > 0){
-          this.mensagensErro.push("Designação já existente na BD.")
-          res = false
-        }
-        return res
-      },
-
-      newEntidade: function(){
-        if(this.validaSigla(this.sigla) && this.validaDesignacao(this.designacao)){
-          var entidade = {
-              estado: "Nova",
-              id: "ent_" + this.sigla,
-              sigla: this.sigla,
-              sioe: this.sioe,
-              designacao: this.designacao,
-              internacional: this.internacional
-          }
-          this.sigla = ""
-          this.sioe = ""
-          this.designacao = ""
-          this.internacional = "Nao"
-          this.$emit('newEntidade', entidade)
-        }
-        else{
-          this.erroValidacao = true
-        } 
+    validaSigla: function(s) {
+      var res = true;
+      if (s == "") {
+        this.mensagensErro.push("A sigla não pode ser vazia!");
+        res = false;
+      } else if (this.entidades.filter(e => e.sigla == s).length > 0) {
+        this.mensagensErro.push("Sigla já existente na BD.");
+        res = false;
       }
+      return res;
+    },
+
+    validaDesignacao: function(d) {
+      var res = true;
+      if (d == "") {
+        this.mensagensErro.push("A designação não pode ser vazia!");
+        res = false;
+      } else if (this.entidades.filter(e => e.designacao == d).length > 0) {
+        this.mensagensErro.push("Designação já existente na BD.");
+        res = false;
+      }
+      return res;
+    },
+
+    newDono: function() {
+      if (
+        this.validaSigla(this.sigla) &&
+        this.validaDesignacao(this.designacao)
+        ) 
+      {
+        var entidade = {
+            estado: "Nova",
+            id: "ent_" + this.sigla,
+            sigla: this.sigla,
+            tipo: "Entidade",
+            sioe: this.sioe,
+            designacao: this.designacao,
+            internacional: this.internacional
+        };
+        this.sigla = "";
+        this.sioe = "";
+        this.designacao = "";
+        this.internacional = "Nao";
+        this.$emit("newEntidade", entidade);
+      } else {
+        this.erroValidacao = true;
+      }
+    }
   }
 };
 </script>
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {

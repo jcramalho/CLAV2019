@@ -1,9 +1,9 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs2>
+  <v-row>
+    <v-col cols="2">
       <div class="info-label">Selecione o(s) participante(s) no processo</div>
-    </v-flex>
-    <v-flex xs9 v-if="entidadesReady">
+    </v-col>
+    <v-col v-if="entidadesReady">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -20,13 +20,14 @@
           :search="searchEntidades"
           item-key="id"
           class="elevation-1"
-          rows-per-page-text="Linhas por página"
-          :pagination.sync="paginationParticipantes"
+          :footer-props="participantesFooterProps"
+          :sort-by="['sigla']"
         >
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr>
               <td>
                 <v-select
+                  :key="props.item.id"
                   item-text="label"
                   item-value="value"
                   v-model="props.item.intervencao"
@@ -35,13 +36,6 @@
                   dense
                   @change="selectParticipante(props.item.id, $event)"
                 />
-                <!--v-btn color="teal draken-2" dark round small text-xs-center>
-                  <SelectValueFromList
-                    :options="tiposIntervencao"
-                    :initialValue="props.item.intervencao"
-                    @value-change="selectParticipante(props.item.id, $event)"
-                  />
-                </v-btn-->
               </td>
               <td>{{ props.item.sigla }}</td>
               <td>{{ props.item.designacao }}</td>
@@ -49,30 +43,33 @@
             </tr>
           </template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            A procura por "{{ search }}" não deu resultados.
-          </v-alert>
+          <template
+            v-slot:footer.page-text="props"
+          >{{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
+
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            color="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-card>
-    </v-flex>
-    <v-flex xs9 v-else>
-      <v-subheader>A carregar entidades e tipologias...</v-subheader>
-    </v-flex>
-  </v-layout>
+    </v-col>
+    <v-col v-else>
+      <v-subheader>{{ mylabels.participantes }}</v-subheader>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import SelectValueFromList from "@/components/generic/SelectValueFromList.vue";
-
 export default {
   props: ["entidades", "entidadesReady"],
-
-  components: { SelectValueFromList },
 
   data: function() {
     return {
       searchEntidades: "",
-      paginationParticipantes: { sortBy: "sigla" },
+      mylabels: require("@/config/labels").mensagensEspera,
 
       participantesHeaders: [
         { text: "Intervenção", align: "left", value: "intervencao" },
@@ -89,7 +86,13 @@ export default {
         { label: "Decidir", value: "Decidir" },
         { label: "Executar", value: "Executar" },
         { label: "Iniciar", value: "Iniciar" }
-      ]
+      ],
+
+      participantesFooterProps: {
+        "items-per-page-text": "Pedidos por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
 
@@ -99,11 +102,11 @@ export default {
       this.$router.go();
     },
     selectParticipante: function(id, intervencao) {
-      var index = this.entidades.findIndex(e => e.id === id);
-      this.entidades[index].intervencao = intervencao;
-      var selectedEntidade = this.entidades[index];
-      this.entidades.splice(index, 1);
-      this.$emit("selectParticipante", selectedEntidade);
+        var index = this.entidades.findIndex(e => e.id === id);
+        this.entidades[index].intervencao = intervencao;
+        var selectedEntidade = JSON.parse(JSON.stringify(this.entidades[index]));
+        this.entidades.splice(index, 1);
+        this.$emit("selectParticipante", selectedEntidade);
     }
   }
 };

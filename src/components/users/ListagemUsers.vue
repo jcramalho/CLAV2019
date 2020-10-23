@@ -24,19 +24,17 @@
         :items="utilizadores"
         :search="search"
         class="elevation-1"
-        :rows-per-page-items="[10, 20, 50]"
-        rows-per-page-text="Mostrar"
-
+        :footer-props="usersFooterProps"
       >
         <template v-slot:no-results>
           <v-alert :value="true" color="error" icon="warning">
             Não foram encontrados resultados para "{{ search }}" .
           </v-alert>
         </template>
-        <template v-slot:items="props">
+        <template v-slot:item="props">
           <tr>
             <td class="subheading">{{ props.item.name }}</td>
-            <td class="subheading">{{format(props.item.entidade)}}</td>
+            <td class="subheading">{{ format(props.item.entidade) }}</td>
             <td class="subheading">{{ props.item.email }}</td>
             <td class="subheading">{{ props.item.level }}</td>
             <td class="subheading">
@@ -48,11 +46,55 @@
                 </template>
                 <span>Editar utilizador</span>
               </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    v-on="on"
+                    @click="
+                      alterarNICId = props.item.id;
+                      newNIC = props.item.id;
+                    "
+                  >
+                    <v-icon medium color="brown">credit_card</v-icon>
+                  </v-btn>
+                </template>
+                <span>Alterar NIC do utilizador</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    v-on="on"
+                    @click="alterarPasswordId = props.item.id"
+                  >
+                    <v-icon medium color="yellow">vpn_key</v-icon>
+                  </v-btn>
+                </template>
+                <span>Alterar password do utilizador</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on" @click="desativarId = props.item.id">
+                    <v-icon color="grey darken-2">lock</v-icon>
+                  </v-btn>
+                </template>
+                <span>Desativar utilizador</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon @click="eliminarId = props.item.id">
+                    <v-icon color="red">delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>Eliminar utilizador</span>
+              </v-tooltip>
             </td>
           </tr>
         </template>
         <template v-slot:pageText="props">
-          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
+          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+          {{ props.itemsLength }}
         </template>
       </v-data-table>
     </v-card>
@@ -60,55 +102,28 @@
       <v-card>
         <v-card-title class="headline">
           <span class="headline">Editar utilizador</span>
-          <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" @click="confirmacaoDesativar = true">
-                <v-icon color="grey darken-2">lock</v-icon>
-                <v-dialog v-model="confirmacaoDesativar" persistent max-width="290">
-                  <v-card>
-                    <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>Tem a certeza que pretende desativar o utilizador?</v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="red" flat @click="confirmacaoDesativar = false">Cancelar</v-btn>
-                      <v-btn color="primary" flat @click="desativar(editedItem); confirmacaoDesativar=false; dialog = false">Confirmar</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-btn>
-            </template>
-            <span>Desativar utilizador</span>
-          </v-tooltip>
-          <!-- <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn v-on="on" icon @click="confirmacaoEliminar = true">
-                <v-icon color="red">delete</v-icon>
-                <v-dialog v-model="confirmacaoEliminar" persistent max-width="290">
-                  <v-card>
-                    <v-card-title class="headline">Confirmar ação</v-card-title>
-                    <v-card-text>Tem a certeza que pretende eliminar o utilizador?</v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="red" flat @click="confirmacaoEliminar = false">Cancelar</v-btn>
-                      <v-btn color="primary" flat @click="eliminar(editedItem); confirmacaoEliminar=false; dialog = false">Confirmar</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-btn>
-              </template>
-            <span>Eliminar utilizador</span>
-          </v-tooltip> -->
         </v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12 sm6 md12>
-                  <v-text-field prepend-icon="person" v-model="editedItem.name" label="Nome de utilizador" :rules="regraNome" required></v-text-field>
+                  <v-text-field
+                    prepend-icon="person"
+                    v-model="editedItem.name"
+                    label="Nome de utilizador"
+                    :rules="regraNome"
+                    required
+                  ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
-                  <v-text-field prepend-icon="email" v-model="editedItem.email" label="Email" :rules="regraEmail" required></v-text-field>
+                  <v-text-field
+                    prepend-icon="email"
+                    v-model="editedItem.email"
+                    label="Email"
+                    :rules="regraEmail"
+                    required
+                  ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md12>
                   <v-autocomplete
@@ -128,9 +143,10 @@
                     :items="[
                       'Administrador de Perfil Tecnológico',
                       'Administrador de Perfil Funcional',
+                      'Utilizador Decisor',
                       'Utilizador Validador',
                       'Utilizador Avançado',
-                      'Utilizador Decisor',
+                      'Utilizador Arquivo Distrital',
                       'Utilizador Simples',
                       'Representante Entidade',
                       'Utilizador desativado'
@@ -149,8 +165,120 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" flat @click="dialog = false">Cancelar</v-btn>
-          <v-btn color="primary" flat @click="guardar">Guardar</v-btn>
+          <v-btn color="red" text @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="primary" text @click="guardar">Guardar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="alterarNICId != ''" persistent max-width="500px">
+      <v-card>
+        <v-card-title class="headline">
+          <span class="headline">Alterar NIC do utilizador</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="form3" lazy-validation>
+            <v-text-field
+              id="nic"
+              prepend-icon="credit_card"
+              name="NIC"
+              v-model="newNIC"
+              filled
+              label="Altere NIC"
+              type="text"
+              :rules="regraNIC"
+              required
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="alterarNICId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn
+            :disabled="alterarNICId == newNIC"
+            color="primary"
+            text
+            @click="alterarNIC()"
+          >
+            Alterar NIC
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="alterarPasswordId != ''" persistent max-width="500px">
+      <v-card>
+        <v-card-title class="headline">
+          <span class="headline">Alterar password do utilizador</span>
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="form2" lazy-validation>
+            <v-text-field
+              id="password"
+              prepend-icon="lock"
+              name="password"
+              v-model="password"
+              label="Nova Password"
+              type="password"
+              :rules="regraPassword"
+              @input="verificaPassword()"
+              required
+            />
+            <v-text-field
+              id="rep_password"
+              prepend-icon="lock"
+              name="rep_password"
+              v-model="rep_password"
+              label="Repita a Password"
+              type="password"
+              :rules="regraPassword"
+              @input="verificaPassword()"
+              required
+            />
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="alterarPasswordId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn color="primary" text @click="alterarPassword()">
+            Alterar Password
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="desativarId != ''" persistent max-width="290">
+      <v-card>
+        <v-card-title class="headline">Confirmar ação</v-card-title>
+        <v-card-text>
+          Tem a certeza que pretende desativar o utilizador?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="desativarId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn color="primary" text @click="desativar(desativarId)">
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog :value="eliminarId != ''" persistent max-width="290px">
+      <v-card>
+        <v-card-title class="headline">Confirmar ação</v-card-title>
+        <v-card-text>
+          Tem a certeza que pretende eliminar o utilizador?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red" text @click="eliminarId = ''">
+            Cancelar
+          </v-btn>
+          <v-btn color="primary" text @click="eliminar(eliminarId)">
+            Confirmar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -159,17 +287,14 @@
       :color="color"
       :timeout="timeout"
       :top="true"
-      >
+    >
       {{ text }}
-      <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
   </v-content>
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   data: () => ({
     search: "",
@@ -177,10 +302,17 @@ export default {
     regraEntidade: [v => !!v || "Entidade é obrigatório."],
     regraEmail: [
       v => !!v || "Email é obrigatório.",
-      v => /.+@.+/.test(v) || "Email tem de ser válido."
+      v => /^.+@.+\..+$/.test(v) || "Email tem de ser válido."
     ],
     regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
+    regraPassword: [v => !!v || "Password é obrigatório."],
+    regraNIC: [v => !!v || "NIC é obrigatório."],
     ent_list: [],
+    usersFooterProps: {
+      "items-per-page-text": "Pedidos por página",
+      "items-per-page-options": [5, 10, -1],
+      "items-per-page-all-text": "Todos"
+    },
     headers: [
       {
         text: "Nome",
@@ -206,23 +338,28 @@ export default {
         value: "level",
         class: "title"
       },
-      { 
-        text: "Ações", 
+      {
+        text: "Ações",
         sortable: false,
-        value: '',
+        value: "",
         class: "title"
       }
     ],
     dialog: false,
-    confirmacaoDesativar: false,
-    confirmacaoEliminar: false,
+    alterarNICId: "",
+    newNIC: "",
+    alterarPasswordId: "",
+    desativarId: "",
+    eliminarId: "",
     editedIndex: -1,
     editedItem: {
-      nome: '',
-      entidade: '',
-      email: '',
-      level: ''
+      nome: "",
+      entidade: "",
+      email: "",
+      level: ""
     },
+    password: "",
+    rep_password: "",
     utilizadores: [],
     entidades: [],
     snackbar: false,
@@ -237,8 +374,7 @@ export default {
   },
   methods: {
     async getEntidades() {
-      await axios
-        .get(lhost + "/api/entidades")
+      this.$request("get", "/entidades")
         .then(res => {
           this.entidades = res.data.map(ent => {
             return {
@@ -249,79 +385,119 @@ export default {
         })
         .catch(error => alert(error));
     },
-    async getUtilizadores(){
+    async getUtilizadores() {
       try {
-        var response = await axios.get(lhost + "/api/users?formato=normalizado");
+        var response = await this.$request("get", "/users?formato=normalizado");
         this.utilizadores = response.data;
       } catch (e) {
         return e;
       }
     },
+    verificaPassword() {
+      if (this.password != this.rep_password) {
+        if (this.regraPassword.length == 1) {
+          this.regraPassword = this.regraPassword.concat([
+            "A password deve ser igual!"
+          ]);
+        }
+      } else {
+        if (this.regraPassword.length == 2) {
+          this.regraPassword = this.regraPassword.slice(0, 1);
+        }
+      }
+    },
     editar(item) {
       this.editedIndex = this.utilizadores.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      this.editedItem.entidade = this.editedItem.entidade.split('_')[1];
+      this.editedItem.entidade = this.editedItem.entidade.split("_")[1];
       this.dialog = true;
     },
-    desativar(item) {
-      axios.put(lhost + "/api/users/desativar", {
-        token: this.$store.state.token,
-        id: item.id
-      }).then(res => {
-        if (res.data === "Utilizador desativado com sucesso!") {
-          this.text = "Utilizador desativado com sucesso!";
-          this.color = "success";
-          this.snackbar = true;
-          this.done = true;
-          this.getUtilizadores();
-        }else if(res.data === "Não pode desativar o seu próprio utilizador!"){
-          this.text = "Não pode desativar o seu próprio utilizador!";
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        }else{
-          this.text = "Ocorreu um erro ao desativar o utilizador!";
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        }
-      }).catch(function(err) {
-        this.text = err;
+    alterarNIC() {
+      if (this.$refs.form3.validate()) {
+        this.$request("put", "/users/" + this.alterarNICId + "/nic", {
+          nic: this.newNIC
+        })
+          .then(res => {
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.alterarNICId = "";
+            this.done = true;
+            this.getUtilizadores();
+          })
+          .catch(err => {
+            this.text = "Ocorreu um erro ao atualizar o NIC.";
+            this.color = "error";
+            this.snackbar = true;
+            this.done = false;
+          });
+      } else {
+        this.text = "Por favor preencha todos os campos!";
         this.color = "error";
         this.snackbar = true;
         this.done = false;
-      });
+      }
     },
-    eliminar(item) {
-      axios.delete(lhost + "/api/users/eliminar", {
-        token: this.$store.state.token,
-        id: item.id
-      }).then(res => {
-        if (res.data === "Utilizador eliminado com sucesso!") {
-          this.text = "Utilizador eliminado com sucesso!";
-          this.color = "success";
-          this.snackbar = true;
-          this.done = true;
-          this.getUtilizadores();
-        }else if(res.data === "Não pode eliminar o seu próprio utilizador!"){
-          this.text = "Não pode eliminar o seu próprio utilizador!";
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        }else{
-          this.text = "Ocorreu um erro ao eliminar o utilizador!";
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        }
-      }).catch(function(err) {
-        this.text = err;
+    alterarPassword() {
+      if (this.$refs.form2.validate()) {
+        this.$request("put", "/users/" + this.alterarPasswordId + "/password", {
+          novaPassword: this.password
+        })
+          .then(res => {
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.alterarPasswordId = "";
+            this.done = true;
+          })
+          .catch(err => {
+            this.text = "Ocorreu um erro ao atualizar a password.";
+            this.color = "error";
+            this.snackbar = true;
+            this.done = false;
+          });
+      } else {
+        this.text = "Por favor preencha todos os campos!";
         this.color = "error";
         this.snackbar = true;
         this.done = false;
-      });
+      }
     },
-    guardar(){
+    desativar(id) {
+      this.$request("put", "/users/" + id + "/desativar")
+        .then(res => {
+          this.text = res.data;
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.desativarId = "";
+          this.getUtilizadores();
+        })
+        .catch(err => {
+          this.text = err.response.data[0].msg || err.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        });
+    },
+    eliminar(id) {
+      this.$request("delete", "/users/" + id)
+        .then(res => {
+          this.text = res.data;
+          this.color = "success";
+          this.snackbar = true;
+          this.done = true;
+          this.eliminarId = "";
+          this.getUtilizadores();
+        })
+        .catch(err => {
+          this.text = err.response.data[0].msg || err.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        });
+    },
+    guardar() {
       if (this.$refs.form.validate()) {
         var parsedType;
         switch (this.editedItem.level) {
@@ -331,13 +507,16 @@ export default {
           case "Administrador de Perfil Funcional":
             parsedType = 6;
             break;
-          case "Utilizador Validador":
+          case "Utilizador Decisor":
             parsedType = 5;
             break;
-          case "Utilizador Avançado":
+          case "Utilizador Validador":
             parsedType = 4;
             break;
-          case "Utilizador Decisor":
+          case "Utilizador Avançado":
+            parsedType = 3.5;
+            break;
+          case "Utilizador Arquivo Distrital":
             parsedType = 3;
             break;
           case "Utilizador Simples":
@@ -350,37 +529,26 @@ export default {
             parsedType = -1;
             break;
         }
-        axios.put(lhost + "/api/users/atualizarMultiplos", {
-          id: this.editedItem.id,
+        this.$request("put", "/users/" + this.editedItem.id, {
           nome: this.editedItem.name,
           email: this.editedItem.email,
-          entidade: 'ent_' + this.editedItem.entidade,
+          entidade: "ent_" + this.editedItem.entidade,
           level: parsedType
-        }).then(res => {
-          if (res.data === "Já existe utilizador registado com esse email!") {
-            this.text = "Já existe um utilizar registado com esse email!";
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
-          }else if (res.data === "Utilizador atualizado com sucesso!") {
-            this.text = "Utilizador atualizado com sucesso!";
+        })
+          .then(res => {
+            this.text = res.data;
             this.color = "success";
             this.snackbar = true;
             this.done = true;
             this.dialog = false;
             this.getUtilizadores();
-          }else{
-            this.text = "Ocorreu um erro ao atualizar a informação do utilizador!";
+          })
+          .catch(err => {
+            this.text = err.response.data[0].msg || err.response.data;
             this.color = "error";
             this.snackbar = true;
             this.done = false;
-          }
-        }).catch(function(err) {
-          this.text = err;
-          this.color = "error";
-          this.snackbar = true;
-          this.done = false;
-        });
+          });
       } else {
         this.text = "Por favor verifique se preencheu todos os campos!";
         this.color = "error";
@@ -392,14 +560,14 @@ export default {
       this.snackbar = false;
       if (this.done == true) this.getUtilizadores();
     },
-    registo(){
-      this.$router.push('/users/registo')
+    registo() {
+      this.$router.push("/users/registo");
     },
-    format(entidade){
-      if(entidade!=undefined){
-        return entidade.split('_')[1];
-      }else{
-        return '';
+    format(entidade) {
+      if (entidade != undefined) {
+        return entidade.split("_")[1];
+      } else {
+        return "";
       }
     }
   }

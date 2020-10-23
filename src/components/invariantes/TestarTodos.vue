@@ -1,22 +1,30 @@
 <template>
   <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs11 v-if="erro == '' && invs.length > 0 && !loading">
+    <v-row row wrap justify-center>
+      <v-col cols="11" v-if="erro == '' && invs.length > 0 && !loading">
         <div v-for="(inv, index) in invs" :key="index">
-          <TabelaErros :inv="inv" />
+          <TabelaErros
+            :inv="inv"
+            :idRel="inv.idRel"
+            :idInv="inv.idInv"
+            @erro="updateErroTE"
+          />
+          <v-alert :value="erroTE != ''" type="error">
+            {{ erroTE }}
+          </v-alert>
           <br />
         </div>
-      </v-flex>
-      <v-flex v-else-if="!loading">
+      </v-col>
+      <v-col v-else-if="!loading">
         <v-alert :value="erro == ''" color="success">
           Não há erros após testar todos os invariantes!
         </v-alert>
         <v-alert :value="erro != ''" type="error">
           {{ erro }}
         </v-alert>
-      </v-flex>
-      <v-flex xs12 v-else>
-        <div class="text-xs-center">
+      </v-col>
+      <v-col cols="12" v-else>
+        <div class="text-center">
           <br /><br /><br />
           <div class="display-1 font-weight-black indigo--text">
             A testar invariantes
@@ -29,20 +37,19 @@
             color="indigo"
           ></v-progress-circular>
         </div>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
 import TabelaErros from "@/components/invariantes/TabelaErros.vue";
-const lhost = require("@/config/global").host;
-import axios from "axios";
 
 export default {
   data: () => ({
     invs: [],
     erro: "",
+    erroTE: "",
     loading: true
   }),
   components: {
@@ -50,8 +57,7 @@ export default {
   },
 
   mounted: function() {
-    axios
-      .get(lhost + "/api/invariantes/testarTodos")
+    this.$request("get", "/invariantes/testarTodos")
       .then(response => {
         this.invs = response.data;
         this.loading = false;
@@ -61,6 +67,11 @@ export default {
           "Não foi possível testar os invariantes... Tente novamente mais tarde.";
         this.loading = false;
       });
+  },
+  methods: {
+    updateErroTE: function(erro) {
+      this.erroTE = erro;
+    }
   }
 };
 </script>

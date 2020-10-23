@@ -1,69 +1,61 @@
 <template>
-  <v-layout row wrap color="teal lighten-5" ma-2>
-    <v-flex xs2>
-      <div class="info-label">Processos Relacionados</div>
-    </v-flex>
-    <v-flex xs9 v-if="processos.length > 0">
-      <v-data-table
-        :headers="headers"
-        :items="processos"
-        class="elevation-1"
-        hide-actions
-      >
-        <template v-slot:headers="props">
+  <v-row>
+    <v-col cols="2">
+      <div class="info-label">
+        Processos Relacionados
+        <InfoBox header="Processos Relacionados" :text="myhelp.Classe.Campos.ProcessosRelacionados" />
+      </div>
+    </v-col>
+    <v-col v-if="processos.length > 0">
+      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-default-footer>
+        <template v-slot:header="props">
           <tr>
-            <th
-              v-for="h in props.headers"
-              :key="h.text"
-              class="body-2 font-weight-bold"
-            >
-              {{ h.text }}
-            </th>
-            <th style="color: green;">{{ mylabels.remover }}</th>
+            <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
           </tr>
         </template>
 
-        <template v-slot:items="props">
+        <template v-slot:item="props">
           <tr>
             <td>{{ props.item.relacao }}</td>
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
-              <v-btn
-                small
-                color="red darken-2"
-                dark
-                round
-                @click="unselectProcRel(props.item)"
-              >
-                <v-icon dark>remove_circle</v-icon>
+              <v-btn small color="red darken-2" dark rounded @click="unselectProcRel(props.item)">
+                <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
           </tr>
         </template>
       </v-data-table>
-    </v-flex>
-    <v-flex xs9 v-else>
-      <v-alert :value="true" type="warning">
-        Não tem processos relacionados...
-      </v-alert>
-    </v-flex>
-  </v-layout>
+    </v-col>
+    <v-col v-else>
+      <v-alert :value="true" type="warning">Não tem processos relacionados...</v-alert>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 const labels = require("@/config/labels").classeCriacaoProcessosRelacionadosOps;
+const help = require("@/config/help").help;
+
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["processos"],
 
+  components: {
+    InfoBox
+  },
+
   data: function() {
     return {
       mylabels: labels,
+      myhelp: help,
       headers: [
         { text: "Relação", align: "left", sortable: true, value: "idRel" },
         { text: "Processo", align: "left", sortable: false, value: "codigo" },
-        { text: "Título", align: "left", sortable: false, value: "titulo" }
+        { text: "Título", align: "left", sortable: false, value: "titulo" },
+        { text: "Remover", align: "left", sortable: false, value: "" }
       ],
 
       labels: {

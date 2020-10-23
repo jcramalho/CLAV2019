@@ -1,104 +1,80 @@
 <template>
-  <!-- SUBCLASSES 4º NÍVEL -->
-  <v-expansion-panel-content
-    v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF"
-  >
-    <template v-slot:header>
-      <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
-        <v-toolbar-title>Subclasses de nível 4</v-toolbar-title>
-      </v-toolbar>
-    </template>
+  <v-expansion-panel v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF">
+    <!-- SUBCLASSES 4º NÍVEL -->
+    <v-expansion-panel-header  class="expansion-panel-heading">
+      <div>Subclasses de nível 4</div>
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
+    </v-expansion-panel-header>
+    <v-expansion-panel-content>
 
-    <v-container fluid>
-      <v-layout>
-        <v-flex>
-          <v-tabs
-            v-model="active"
-            color="teal darken-4"
-            dark
-            slider-color="white"
-          >
-            <v-tab
-              v-for="subClasse in c.subclasses"
-              :key="subClasse.codigo"
-              ripple
-            >
-              {{ subClasse.codigo }}
-            </v-tab>
-            <v-tab-item
-              v-for="subClasse in c.subclasses"
-              :key="subClasse.codigo"
-            >
-              <v-layout wrap row>
-                <v-flex xs2>
-                  <div class="info-label">Código:</div>
-                </v-flex>
-                <v-flex xs10>
-                  {{ subClasse.codigo }}
-                </v-flex>
-              </v-layout>
-              <v-layout wrap row>
-                <v-flex xs2>
-                  <div class="info-label">Código do pai:</div>
-                </v-flex>
-                <v-flex xs10>
-                  {{ c.codigo }}
-                </v-flex>
-              </v-layout>
-              <v-layout wrap row>
-                <v-flex xs2>
-                  <div class="info-label">Título:</div>
-                </v-flex>
-                <v-flex xs10>
-                  <v-text-field
-                    v-model="subClasse.titulo"
-                    label="Título"
-                    solo
-                    clearable
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-layout wrap row>
-                <v-flex xs2>
-                  <div class="info-label">Descrição:</div>
-                </v-flex>
-                <v-flex xs10>
-                  <v-text-field
-                    v-model="subClasse.descricao"
-                    label="Descrição"
-                    solo
-                    clearable
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
+      <v-row>
+        <v-col cols="2">
+        <v-tabs vertical outlined v-model="active" >
+          <v-tab
+            v-for="subClasse in c.subclasses"
+            :key="subClasse.codigo"
+            ripple
+          >{{ subClasse.codigo }}</v-tab>
+        </v-tabs>
+        
+        <v-btn depressed x-small color="primary" @click="addSubclasse">
+          Adicionar subclasse
+          <v-icon dark right>add_circle_outline</v-icon>
+        </v-btn>
+         
+        </v-col>
+        <v-col>
+        <v-tabs-items v-model="active">
+          <v-tab-item v-for="subClasse in c.subclasses" :key="subClasse.codigo" class="ma-2 pa-2">
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Código:</div>
+              </v-col>
+              <v-col>{{ subClasse.codigo }}</v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Código do pai:</div>
+              </v-col>
+              <v-col>{{ c.codigo }}</v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Título:</div>
+              </v-col>
+              <v-col>
+                <v-text-field v-model="subClasse.titulo" label="Título" solo clearable></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="2">
+                <div class="info-label">Descrição:</div>
+              </v-col>
+              <v-col>
+                <v-text-field v-model="subClasse.descricao" label="Descrição" solo clearable></v-text-field>
+              </v-col>
+            </v-row>
 
-              <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+            <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
-              <TermosIndiceOps :c="c" />
+            <TermosIndiceOps :c="subClasse" />
 
-              <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+            <hr style="border-top: 3px dashed green; border-radius: 2px;" />
 
-              <BlocoDecisoes4Nivel
-                :c="subClasse"
-                :semaforos="semaforos"
-                :pcaFormasContagem="pcaFormasContagem"
-                :pcaSubFormasContagem="pcaSubFormasContagem"
-              />
-            </v-tab-item>
-            <v-tab>
-              <v-btn
-                color="green darken-2"
-                round dark
-                @click="addSubclasse">
-                  Adicionar subclasse
-                  <v-icon dark right>add_circle_outline</v-icon>
-              </v-btn>
-            </v-tab>
-          </v-tabs>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-expansion-panel-content>
+            <BlocoDecisoes4Nivel
+              :c="subClasse"
+              :semaforos="semaforos"
+              :pcaFormasContagem="pcaFormasContagem"
+              :pcaSubFormasContagem="pcaSubFormasContagem"
+            />
+          </v-tab-item>
+        </v-tabs-items>
+        </v-col>
+      </v-row>
+    </v-expansion-panel-content>
+  </v-expansion-panel>
 </template>
 
 <script>
@@ -317,45 +293,73 @@ export default {
       }
     },
 
-    addSubclasse: function(){
+    pad: function (num, size) {
+      var s = num+"";
+      while (s.length < size) s = "0" + s;
+      return s;
+    },
+
+    showSubs: function(){
+      alert(JSON.stringify(this.c.subclasses))
+    },
+
+    addSubclasse: function() {
       var novaSubclasse = {
-          nivel: 4,
-          pai: this.c.codigo,
-          codigo: this.c.codigo + (this.c.subclasses.length+1).toString(),
-          titulo: this.c.titulo + ": ",
-          descricao: "",
-          termosInd: JSON.parse(JSON.stringify(this.c.termosInd)),
+        nivel: 4,
+        pai: this.c.codigo,
+        codigo: this.c.codigo + "." + this.pad(this.c.subclasses.length + 1, 2),
+        titulo: this.c.titulo + ": ",
+        descricao: "",
+        termosInd: [],
 
-          // Bloco de contexto de avaliação
+        // Bloco de contexto de avaliação
 
-          processosRelacionados: JSON.parse(
-            JSON.stringify(this.c.processosRelacionados)
-          ),
-          legislacao: JSON.parse(JSON.stringify(this.c.legislacao)),
+        processosRelacionados: JSON.parse(
+          JSON.stringify(this.c.processosRelacionados)
+        ),
+        legislacao: JSON.parse(JSON.stringify(this.c.legislacao)),
 
-          // Bloco de decisão de avaliação: PCA e DF
+        // Bloco de decisão de avaliação: PCA e DF
 
-          pca: {
-            valor: null,
-            formaContagem: "",
-            subFormaContagem: "",
-            justificacao: []
-          },
+        pca: {
+          valor: null,
+          formaContagem: "",
+          subFormaContagem: "",
+          justificacao: []
+        },
 
-          df: {
-            valor: "NE",
-            notas: null,
-            justificacao: []
+        df: {
+          valor: "NE",
+          notas: null,
+          justificacao: []
+        },
+        // Contexto para controlar a interface de cada subclasse
+        semaforos: {
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false
           }
-        };
+      };
 
-        this.procHeranca(this.c.processosRelacionados, novaSubclasse)
-        this.c.subclasses.push(novaSubclasse)
+      this.procHeranca(this.c.processosRelacionados, novaSubclasse);
+      this.c.subclasses.push(novaSubclasse);
     }
   }
 };
 </script>
 <style>
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .info-label {
   color: #00695c;
   padding: 5px;

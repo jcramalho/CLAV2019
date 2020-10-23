@@ -7,8 +7,9 @@
             <v-toolbar-title>Recuperação</v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            De modo a recuperar acesso à sua conta, por favor insira o email com o qual se registou na plataforma CLAV.
-            Um email será enviado com um endereço no qual pode inserir uma nova password para a sua conta.
+            De modo a recuperar acesso à sua conta, por favor insira o email com
+            o qual se registou na plataforma CLAV. Um email será enviado com um
+            endereço no qual pode inserir uma nova password para a sua conta.
             <v-form ref="form" lazy-validation>
               <v-text-field
                 prepend-icon="email"
@@ -26,7 +27,9 @@
               >Cancelar</v-btn
             >
             <v-spacer></v-spacer>
-            <v-btn color="primary" type="submit" @click="recuperarUtilizador">Recuperar</v-btn>
+            <v-btn color="primary" type="submit" @click="recuperarUtilizador">
+              Recuperar
+            </v-btn>
           </v-card-actions>
           <v-snackbar
             v-model="snackbar"
@@ -35,7 +38,7 @@
             :top="true"
           >
             {{ text }}
-            <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+            <v-btn text @click="fecharSnackbar">Fechar</v-btn>
           </v-snackbar>
         </v-card>
       </v-flex>
@@ -44,9 +47,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "signup",
   data() {
@@ -56,7 +56,7 @@ export default {
         v => /.+@.+/.test(v) || "Email tem de ser válido."
       ],
       form: {
-        email: "",
+        email: ""
       },
       snackbar: false,
       color: "",
@@ -66,32 +66,20 @@ export default {
     };
   },
   methods: {
-    recuperarUtilizador(){
+    recuperarUtilizador() {
       if (this.$refs.form.validate()) {
-        axios.post(lhost + "/api/users/recuperar", {
-            email: this.$data.form.email,
-            url: window.location.href
-          })
+        this.$request("post", "/users/recuperar", {
+          email: this.$data.form.email,
+          url: window.location.href
+        })
           .then(res => {
-            if (res.data === "Não existe utilizador com esse email!") {
-              this.text = "Não existe nenhum utilizador registado com esse email!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }else if(res.data === 'Este utilizador foi registado através do Cartão de Cidadão!'){
-              this.text = "Este utilizador foi registado na plataforma CLAV através do Cartão de Cidadão, não existindo uma password para o mesmo!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }else{
-              this.text = "Email enviado com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            }
+            this.text = res.data;
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text = err.response.data[0].msg || err.response.data;
             this.color = "error";
             this.snackbar = true;
             this.done = false;

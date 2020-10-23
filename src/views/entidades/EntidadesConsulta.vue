@@ -1,23 +1,27 @@
 <template>
-  <Consulta
-    tipo="Entidades"
-    v-bind:objeto="entidade"
-    v-bind:listaTip="tipologias"
-    v-bind:titulo="titulo"
-    v-bind:listaProcD="processosDono"
-    v-bind:listaProcP="processosParticipa"
-    v-bind:parts="partsReady"
-  />
+  <div>
+    <Loading v-if="!entidadesReady" :message="'entidade'" />
+    <Consulta
+      v-else
+      tipo="Entidades"
+      v-bind:objeto="entidade"
+      v-bind:listaTip="tipologias"
+      v-bind:titulo="titulo"
+      v-bind:listaProcD="processosDono"
+      v-bind:listaProcP="processosParticipa"
+      v-bind:parts="partsReady"
+    />
+  </div>
 </template>
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
-import axios from "axios";
-const lhost = require("@/config/global").host;
+import Loading from "@/components/generic/Loading";
 
 export default {
   components: {
-    Consulta
+    Consulta,
+    Loading
   },
   data: () => ({
     idEntidade: "",
@@ -34,7 +38,8 @@ export default {
       Executor: [],
       Iniciador: []
     },
-    partsReady: false
+    partsReady: false,
+    entidadesReady: false
   }),
   methods: {
     preparaEntidade: async function(ent) {
@@ -57,6 +62,18 @@ export default {
             text: ent.internacional
           }
         };
+        if (ent.dataCriacao) {
+          myEntidade["dataCriacao"] = {
+            campo: "Data de criação",
+            text: ent.dataCriacao
+          };
+        }
+        if (ent.dataExtincao) {
+          myEntidade["dataExtincao"] = {
+            campo: "Data de extinção",
+            text: ent.dataExtincao
+          };
+        }
         return myEntidade;
       } catch (e) {
         return {};
@@ -87,32 +104,34 @@ export default {
       this.idEntidade = window.location.pathname.split("/")[2];
 
       // Informações sobre a entidade
-      var response = await axios.get(
-        lhost + "/api/entidades/" + this.idEntidade
+      var response = await this.$request(
+        "get",
+        "/entidades/" + this.idEntidade
       );
       this.titulo = response.data.designacao;
       this.entidade = await this.preparaEntidade(response.data);
 
       // Tipologias onde a entidade se encontra
-      var tipologias = await axios.get(
-        lhost + "/api/entidades/" + this.idEntidade + "/tipologias"
+      var tipologias = await this.$request(
+        "get",
+        "/entidades/" + this.idEntidade + "/tipologias"
       );
       this.tipologias = tipologias.data;
 
       // Processos em que a entidade participa como dono
-      var processosDono = await axios.get(
-        lhost + "/api/entidades/" + this.idEntidade + "/intervencao/dono"
+      var processosDono = await this.$request(
+        "get",
+        "/entidades/" + this.idEntidade + "/intervencao/dono"
       );
       this.processosDono = processosDono.data;
 
       // Procesos em que a entidade participa
-      var processosParticipa = await axios.get(
-        lhost +
-          "/api/entidades/" +
-          this.idEntidade +
-          "/intervencao/participante"
+      var processosParticipa = await this.$request(
+        "get",
+        "/entidades/" + this.idEntidade + "/intervencao/participante"
       );
       await this.parseParticipacoes(processosParticipa.data);
+      this.entidadesReady = true;
     } catch (e) {
       return e;
     }

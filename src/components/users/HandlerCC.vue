@@ -1,17 +1,53 @@
 <template>
   <v-container fluid fill-height>
     <v-layout align-center justify-center>
-      <v-flex xs12 sm8 md4>
-        <v-card class="elevation-12" v-if="successfullAuthentication">
+      <v-flex xs12 sm8 md6>
+        <v-col v-if="!isMounted" style="text-align:center">
+          <v-progress-circular
+            indeterminate
+            size="100"
+            width="10"
+            color="indigo accent-4"
+          />
+        </v-col>
+        <v-card
+          class="elevation-12"
+          v-if="isMounted && successfullAuthentication"
+        >
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Registo de utilizador via Cartão de Cidadão</v-toolbar-title>
+            <v-toolbar-title>
+              Autenticação de utilizador via Cartão de Cidadão ou Chave Móvel
+              Digital
+            </v-toolbar-title>
+          </v-toolbar>
+          <v-card-text>
+            Desculpe mas <b>não se encontra registado</b> na plataforma CLAV.
+            <br />
+            Se já foi registado pela DGLAB e apareceu-lhe esta mensagem
+            comunique com a DGLAB por forma a perceber o que correu de errado no
+            registo da sua conta.
+            <br />
+            Caso ainda não se encontre registado, consulte
+            <a href="/">Home > Registo na CLAV > Como registar-se na CLAV</a>
+            onde é explicado como se pode registar.
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" type="submit" @click="cancelar()">
+              Voltar
+            </v-btn>
+          </v-card-actions>
+          <!-- <v-toolbar dark color="primary">
+            <v-toolbar-title>
+              Registo de utilizador via Cartão de Cidadão ou Chave Móvel Digital
+            </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-form ref="form" lazy-validation>
               <v-text-field
                 prepend-icon="person"
                 name="name"
-                :value=this.nomeCompleto
+                :value="this.nomeCompleto"
                 disabled
                 required
               />
@@ -42,9 +78,10 @@
                   :items="[
                     'Administrador de Perfil Tecnológico',
                     'Administrador de Perfil Funcional',
+                    'Utilizador Decisor',
                     'Utilizador Validador',
                     'Utilizador Avançado',
-                    'Utilizador Decisor',
+                    'Utilizador Arquivo Distrital',
                     'Utilizador Simples',
                     'Representante Entidade'
                   ]"
@@ -74,21 +111,29 @@
             :top="true"
           >
             {{ text }}
-            <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
-          </v-snackbar>
+            <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+          </v-snackbar>-->
         </v-card>
-        <v-card class="elevation-12" v-if="!successfullAuthentication">
+        <v-card
+          class="elevation-12"
+          v-if="isMounted && !successfullAuthentication"
+        >
           <v-toolbar dark color="primary">
-            <v-toolbar-title>Registo de utilizador via Cartão de Cidadão</v-toolbar-title>
+            <v-toolbar-title>
+              <!--Registo de utilizador via Cartão de Cidadão-->
+              Autenticação de utilizador via Cartão de Cidadão ou Chave Móvel
+              Digital
+            </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
-            Ocorreu um erro durante a autenticação com o Cartão de Cidadão!
-            Por favor verifique se introduziu o PIN de autenticação corretamente.
+            Ocorreu um erro durante a autenticação com o Cartão de Cidadão ou
+            Chave Móvel Digital! Por favor verifique se introduziu o PIN de
+            autenticação/CMD/segurança corretamente.
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" type="submit" @click="cancelar()">
-                Voltar
+              Voltar
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -98,62 +143,70 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "signup",
+  data: () => ({
+    successfullAuthentication: false,
+    alreadyRegistered: false,
+    nic: undefined,
+    nomeCompleto: undefined,
+    token: undefined,
+    entidade: undefined,
+    /*regraEmail: [
+      v => !!v || "Email é obrigatório.",
+      v => /.+@.+/.test(v) || "Email tem de ser válido."
+    ],
+    regraEntidade: [v => !!v || "Entidade é obrigatório."],
+    regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
+    form: {
+      email: "",
+      entidade: "",
+      type: ""
+    },
+    ent_list: [],
+    snackbar: false,
+    color: "",
+    done: false,
+    timeout: 4000,
+    text: "",*/
+    isMounted: false
+  }),
   async mounted() {
-    if(this.$route.query.NIC!=undefined)
-      this.nic = Buffer.from(this.$route.query.NIC, 'base64').toString()
-    if(this.$route.query.Nome!=undefined)
-      this.nomeCompleto = Buffer.from(this.$route.query.Nome, 'base64').toString() 
-    if(this.$route.query.Token!=undefined)
-      this.token = this.$route.query.Token
-    if(this.$route.query.Entidade!=undefined)
-      this.entidade = Buffer.from(this.$route.query.Entidade, 'base64').toString()
+    if (this.$route.query.NIC != undefined)
+      this.nic = Buffer.from(this.$route.query.NIC, "base64").toString();
+    if (this.$route.query.Nome != undefined)
+      this.nomeCompleto = Buffer.from(
+        this.$route.query.Nome,
+        "base64"
+      ).toString();
+    if (this.$route.query.Token != undefined)
+      this.token = this.$route.query.Token;
+    if (this.$route.query.Entidade != undefined)
+      this.entidade = Buffer.from(
+        this.$route.query.Entidade,
+        "base64"
+      ).toString();
 
-    this.alreadyRegistered = this.token != undefined && this.nomeCompleto != undefined && this.entidade!=undefined
-    if(this.alreadyRegistered){
+    this.alreadyRegistered =
+      this.token != undefined &&
+      this.nomeCompleto != undefined &&
+      this.entidade != undefined;
+
+    if (this.alreadyRegistered) {
       this.$store.commit("guardaTokenUtilizador", this.token);
       this.$store.commit("guardaNomeUtilizador", this.nomeCompleto);
+      this.$store.commit("guardaEntidade", this.entidade);
       this.$router.push("/");
+    } else {
+      this.successfullAuthentication =
+        this.nic != undefined && this.nomeCompleto != undefined;
+      // await this.getEntidades();
+      this.isMounted = true;
     }
-
-    this.successfullAuthentication = this.nic != undefined && this.nomeCompleto != undefined
-    await this.getEntidades();
-  },
-  data() {
-    return {
-      successfullAuthentication: false,
-      alreadyRegistered: false,
-      nic: undefined,
-      nomeCompleto: undefined,
-      token: undefined,
-      entidade: undefined,
-      regraEmail: [
-        v => !!v || "Email é obrigatório.",
-        v => /.+@.+/.test(v) || "Email tem de ser válido."
-      ],
-      regraEntidade: [v => !!v || "Entidade é obrigatório."],
-      regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
-      form: {
-        email: "",
-        entidade: "",
-        type: "",
-      },
-      ent_list: [],
-      snackbar: false,
-      color: "",
-      done: false,
-      timeout: 4000,
-      text: ""
-    };
   },
   methods: {
-    async getEntidades() {
-      await axios
-        .get(lhost + "/api/entidades")
+    /*async getEntidades() {
+      await this.$request("get", "/entidades")
         .then(res => {
           this.ent_list = res.data.map(ent => {
             return {
@@ -174,13 +227,16 @@ export default {
           case "Administrador de Perfil Funcional":
             parsedType = 6;
             break;
-          case "Utilizador Validador":
+          case "Utilizador Decisor":
             parsedType = 5;
             break;
-          case "Utilizador Avançado":
+          case "Utilizador Validador":
             parsedType = 4;
             break;
-          case "Utilizador Decisor":
+          case "Utilizador Avançado":
+            parsedType = 3.5;
+            break;
+          case "Utilizador Arquivo Distrital":
             parsedType = 3;
             break;
           case "Utilizador Simples":
@@ -190,27 +246,23 @@ export default {
             parsedType = 1;
             break;
         }
-        axios.post(lhost + "/api/users/registarCC", {
-            nic: this.nic,
-            name: this.nomeCompleto,
-            email: this.$data.form.email,
-            entidade: this.$data.form.entidade,
-            type: parsedType,
-          }).then(res => {
-            if (res.data === "Utilizador registado com sucesso!") {
-              this.text = "Utilizador registado com sucesso!\n Pode agora utilizar o login via cartão de cidadão para usufruir da plataforma CLAV!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            } else if (res.data === "Utilizador já registado!") {
-              this.text = "Ocorreu um erro ao registar o utilizador: Este cartão de cidadão já tem um utilizador associado!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }
+        this.$request("post", "/users/registarCC", {
+          nic: this.nic,
+          name: this.nomeCompleto,
+          email: this.$data.form.email,
+          entidade: this.$data.form.entidade,
+          type: parsedType
+        })
+          .then(res => {
+            this.text =
+              "Utilizador registado com sucesso!\n Pode agora utilizar o login via cartão de cidadão para usufruir da plataforma CLAV!";
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text =
+              "Ocorreu um erro ao registar o utilizador: " + (err.response.data[0].msg || err.response.data);
             this.color = "error";
             this.snackbar = true;
             this.done = false;
@@ -225,7 +277,7 @@ export default {
     fecharSnackbar() {
       this.snackbar = false;
       if (this.done == true) this.$router.push("/");
-    },
+    },*/
     cancelar() {
       this.$router.push("/users/autenticacao");
     }

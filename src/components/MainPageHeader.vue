@@ -1,11 +1,27 @@
 <template>
-  <v-toolbar app color="indigo darken-4" dark>
+  <v-app-bar app color="indigo darken-4" dark height="64px">
     <v-btn to="/" icon>
       <v-icon large>home</v-icon>
     </v-btn>
     <v-toolbar-title class="headline" @click="goHome">
-      <span class="text-uppercase">CLAV</span>
-      <span class="font-weight-light">
+      
+      <span 
+        class="text-uppercase" 
+        v-if="this.$store.state.name != ''"
+      >
+        CLAV | {{ this.$store.state.entidade.split('_')[1] }} 
+      </span>
+
+      <span 
+        class="text-uppercase"
+        v-if="this.$store.state.name == ''"
+      >
+        CLAV
+      </span>
+      <span 
+        class="font-weight-light"
+        v-if="this.$store.state.name == ''"
+      >
         - Classificação e Avaliação da Informação Pública</span
       >
     </v-toolbar-title>
@@ -19,7 +35,7 @@
       :top="true"
     >
       {{ text }}
-      <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
     <v-toolbar-title class="subheading">
@@ -28,62 +44,36 @@
         to="/users/autenticacao"
         v-if="this.$store.state.name === ''"
       >
-        Autenticação
+        Iniciar Sessão
       </v-btn>
-      <!-- <v-btn
-        color="indigo accent-4"
-        to="/users/login"
-        v-if="this.$store.state.name === ''"
-      >
-        Login
-      </v-btn> -->
-      <!-- <span v-if="this.$store.state.name != ''">
-        <notification-bell
-          :size="10"
-          :count="2"
-          counterLocation="upperRight"
-          counterStyle="roundRectangle"
-          counterBackgroundColor="#FF0000"
-          counterTextColor="#FFFFFF"
-          iconColor="primary"
-        />
-      </span> -->
-      <span class="font-weight-light" v-if="this.$store.state.name != ''">
-        <v-btn icon>
-          <notification-bell
-          :size="25"
-          :count="this.counter"
-          counterLocation="upperRight"
-          counterStyle="roundRectangle"
-          counterBackgroundColor="#FF0000"
-          counterTextColor="#FFFFFF"
-          iconColor="#3a88fe"
-        />
-        </v-btn>
-        {{ this.$store.state.name }}</span
-      >
+
       <v-btn
-        color="indigo accent-4"
+        v-if="$store.state.token != '' && level >= 3"
+        @click="drawerEstatisticas"
+        icon
+      >
+        <v-icon large>assessment</v-icon>
+      </v-btn>
+      <v-btn
         v-if="this.$store.state.name != ''"
-        @click="logoutUtilizador"
+        @click="drawerDefinicoes"
+        icon
       >
-        Logout
+        <v-icon large>settings</v-icon>
       </v-btn>
-      <v-btn
+      <!--v-btn
         color="red"
         v-if="this.$store.state.name != ''"
         @click="testJWT"
       >
         JWT
-      </v-btn>
+      </v-btn-->
     </v-toolbar-title>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-import NotificationBell from 'vue-notification-bell'
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -92,34 +82,38 @@ export default {
       color: "",
       timeout: 4000,
       text: "",
-      counter: 10
+      counter: 10,
+      level: 0
     };
   },
-  components: {
-    NotificationBell
+  computed: {
+    ...mapGetters(["token"])
+  },
+  watch: {
+    //apenas atualiza o nível quando o valor do token muda
+    async token(oldToken, newToken) {
+      this.level = this.$userLevel();
+    }
+  },
+  created: async function() {
+    this.level = this.$userLevel();
   },
   methods: {
     goHome() {
       this.$router.push("/");
     },
-    logoutUtilizador() {
-      this.text = "Logout efetuado com sucesso!";
-      this.color = "success";
-      this.snackbar = true;
-      // this.$store.state.name = '';
-      // this.$store.state.token = '';
-      this.$store.commit("guardaTokenUtilizador", "");
-      this.$store.commit("guardaNomeUtilizador", "");
-      this.$router.push("/");
+    drawerDefinicoes() {
+      this.$emit('drawerDefinicoes');
+    },
+    drawerEstatisticas() {
+      this.$emit('drawerEstatisticas');
     },
     fecharSnackbar() {
       this.snackbar = false;
     },
     async testJWT() {
-      var res = await axios.get(
-        lhost + "/api/users/listarToken/" + this.$store.state.token
-      );
-      alert(JSON.stringify(res.data));
+      var res = this.$verifyTokenUser();
+      alert(JSON.stringify(res));
     }
   }
 };

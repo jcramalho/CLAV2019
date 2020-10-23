@@ -1,147 +1,172 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12 sm20>
-        <v-card class="panel panel-default panel-custom">
-          <v-toolbar class="panel-heading">
-            <v-toolbar-title class="page-header"
-              ><h1>Nova Entidade</h1></v-toolbar-title
-            >
-          </v-toolbar>
-          <v-card-text class="panel-body">
-            <div class="form-group">
-              <table
-                class="adicao"
-                style="border-color: white; border-style:solid; margin-bottom:20px;"
-              >
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">Nome da Entidade:</div>
-                  </td>
-                  <td style="width:80%;">
-                    <v-text-field
-                      solo
-                      clearable
-                      counter="150"
-                      single-line
-                      v-model="entidade.designacao"
-                      maxlength="150"
-                    ></v-text-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">Sigla:</div>
-                  </td>
-                  <td style="width:80%;">
-                    <v-text-field
-                      solo
-                      clearable
-                      counter="10"
-                      single-line
-                      v-model="entidade.sigla"
-                      maxlength="10"
-                    ></v-text-field>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">Internacional:</div>
-                  </td>
-                  <td style="width:80%;">
-                    <v-select
-                      v-model="entidade.internacional"
-                      :items="['Sim', 'Não']"
-                      label="Não"
-                      solo
-                      dense
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style="width:20%;">
-                    <div class="info-label">SIOE:</div>
-                  </td>
-                  <td style="width:80%;">
-                    <v-text-field
-                      solo
-                      clearable
-                      counter="12"
-                      single-line
-                      v-model="entidade.sioe"
-                      maxlength="12"
-                      :rules="regraSIOE"
-                      mask="############"
-                    ></v-text-field>
-                  </td>
-                </tr>
-              </table>
+  <v-row class="ma-1">
+    <v-col>
+      <v-card>
+        <!-- Header -->
+        <v-app-bar color="indigo darken-4" dark>
+          <v-toolbar-title class="card-heading">Nova Entidade</v-toolbar-title>
+        </v-app-bar>
 
-              <v-expansion-panel>
-                <v-expansion-panel-content class="expansion-panel-heading">
-                  <template v-slot:header>
-                    <div class="subheading font-weight-bold">
-                      Tipologias de Entidade
-                    </div>
-                  </template>
-                  <v-card style="padding-top:30px;">
-                    <DesSelTip
-                      :tipologias="tipSel"
-                      @unselectTipologia="unselectTipologia($event)"
-                    />
+        <!-- Content -->
+        <v-card-text>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">
+                Nome da Entidade
+              </div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                filled
+                clearable
+                color="indigo"
+                single-line
+                v-model="entidade.designacao"
+                label="Nome da Entidade"
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-                    <hr style="border-top: 1px dashed #dee2f8;" />
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">
+                Sigla
+              </div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                filled
+                clearable
+                color="indigo"
+                single-line
+                v-model="entidade.sigla"
+                label="Sigla"
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-                    <SelTip
-                      :tipologiasReady="tipologiasReady"
-                      :tipologias="tipologias"
-                      @selectTipologia="selectTipologia($event)"
-                    />
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </div>
-          </v-card-text>
-          <v-snackbar
-            v-model="snackbar"
-            :timeout="8000"
-            color="error"
-            :top="true"
-          >
-            {{ text }}
-            <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
-          </v-snackbar>
-        </v-card>
-        <div style="text-align:center">
-          <v-btn
-            medium
-            color="primary"
-            @click="submeter()"
-            :disabled="!(entidade.designacao && entidade.sigla)"
-            >Submeter Entidade</v-btn
-          >
-        </div>
-      </v-flex>
-    </v-layout>
-  </v-container>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Internacional</div>
+            </v-col>
+            <v-col>
+              <v-select
+                v-model="entidade.internacional"
+                :items="['Sim', 'Não']"
+                label="Selecione uma opção"
+                item-color="indigo"
+                color="indigo"
+                filled
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">SIOE</div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                filled
+                clearable
+                color="indigo"
+                single-line
+                v-model="entidade.sioe"
+                :rules="regraSIOE"
+                label="SIOE"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Data de criação</div>
+            </v-col>
+            <v-col>
+              <SelecionarData
+                :d="entidade.dataCriacao"
+                :label="'Data: AAAA-MM-DD'"
+                @dataSelecionada="entidade.dataCriacao = $event"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Data de extinção</div>
+            </v-col>
+            <v-col>
+              <SelecionarData
+                :d="entidade.dataExtincao"
+                :label="'Data: AAAA-MM-DD'"
+                @dataSelecionada="entidade.dataExtincao = $event"
+              />
+            </v-col>
+          </v-row>
+
+          <!-- Blocos expansivos -->
+          <v-expansion-panels>
+            <v-expansion-panel popout focusable>
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>Tipologias de Entidade</div>
+
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <DesSelTip
+                  :tipologias="tipSel"
+                  @unselectTipologia="unselectTipologia($event)"
+                />
+
+                <hr style="border-top: 1px dashed #dee2f8;" />
+
+                <SelTip
+                  :tipologiasReady="tipologiasReady"
+                  :tipologias="tipologias"
+                  @selectTipologia="selectTipologia($event)"
+                />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-card-text>
+        <v-snackbar
+          v-model="snackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
+          {{ text }}
+          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+        </v-snackbar>
+      </v-card>
+
+      <PainelOpsEnt :e="entidade" :acao="'Criação'" />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue";
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
+import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
+import SelecionarData from "@/components/generic/SelecionarData";
 
-import axios from "axios";
-const lhost = require("@/config/global").host;
+const help = require("@/config/help").help;
 
 export default {
   data: () => ({
+    myhelp: help,
     entidade: {
       designacao: "",
       sigla: "",
       internacional: "",
       sioe: "",
+      dataCriacao: "",
+      dataExtincao: "",
+      estado: "Ativa",
       tipologiasSel: [],
-      codigo: "",
     },
 
     // Para o seletor de processos
@@ -150,26 +175,30 @@ export default {
     tipologiasReady: false,
 
     regraSIOE: [
-      v => /^[0-9]*$/.test(v) || "Apenas são aceites caracteres numéricos."
+      (v) => /^\d+$/.test(v) || "Apenas são aceites caracteres numéricos.",
     ],
 
     snackbar: false,
-    text: ""
+    text: "",
   }),
+
   components: {
     DesSelTip,
-    SelTip
+    SelTip,
+    PainelOpsEnt,
+    SelecionarData,
   },
+
   methods: {
     // Vai à API buscar todas as tipologias
     loadTipologias: async function() {
       try {
-        var response = await axios.get(lhost + "/api/tipologias/");
+        let response = await this.$request("get", "/tipologias/");
         this.tipologias = response.data.map(function(item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
         this.tipologiasReady = true;
@@ -177,141 +206,68 @@ export default {
         return error;
       }
     },
+
     unselectTipologia: function(tipologia) {
       // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
-      var index = this.tipSel.findIndex(e => e.id === tipologia.id);
+      let index = this.tipSel.findIndex((e) => e.id === tipologia.id);
       this.tipSel.splice(index, 1);
+      this.entidade.tipologiasSel = this.tipSel;
     },
+
     selectTipologia: function(tipologia) {
       this.tipSel.push(tipologia);
+      this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
-      var index = this.tipologias.findIndex(e => e.id === tipologia.id);
+      let index = this.tipologias.findIndex((e) => e.id === tipologia.id);
       this.tipologias.splice(index, 1);
     },
+
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
     },
-    submeter: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.text = "Precisa de fazer login para criar a Entidade";
-          this.snackbar = true;
-          return false;
-        }
-
-        for (var i = 0; i < this.tipSel.length; i++) {
-          this.entidade.tipologiasSel[i] = this.tipSel[i].id;
-        }
-
-        if (this.entidade.internacional == "") {
-          this.entidade.internacional = "Não";
-        }
-
-        if (!/^[0-9]*$/.test(this.entidade.sioe)) {
-          this.text = "O campo 'SIOE' está no formato errado.";
-          this.snackbar = true;
-          return false;
-        }
-
-        var dataObj = this.entidade;
-
-        dataObj.codigo = "ent_" + this.entidade.sigla;
-
-        // console.log(dataObj);
-
-        var userBD = await axios.get(
-          lhost + "/api/users/listarToken/" + this.$store.state.token
-        );
-
-        var pedidoParams = {
-          tipoPedido: "Criação",
-          tipoObjeto: "Entidade",
-          novoObjeto: dataObj,
-          user: { email: userBD.data.email },
-          token: this.$store.state.token
-        };
-
-        var response = await axios.post(lhost + "/api/pedidos", pedidoParams);
-        this.$router.push("/pedidos/submissao");
-
-        /*axios
-          .post(lhost + "/api/entidades/", dataObj)
-          .then(res => {
-            this.$router.push("/pedidos/submissao");
-          })
-          .catch(err => {
-            if (err.response.status === 409) {
-              this.text =
-                "Já existe uma entidade com a sigla " +
-                this.entidade.sigla +
-                " ou designação " +
-                this.entidade.designacao;
-              this.color = "error";
-              this.snackbar = true;
-            }
-            if (err.response.status === 500) {
-              this.text = "Ocorreu um erro na criação desta entidade";
-              this.color = "error";
-              this.snackbar = true;
-            }
-          });*/
-      } catch (error) {
-        return error;
-      }
-    }
   },
+
   created: function() {
     this.loadTipologias();
-  }
+  },
 };
 </script>
 
-<style>
+<style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1a237e;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .expansion-panel-heading {
-  color: #1a237e !important;
-  background-image: linear-gradient(to bottom, #e8eaf6 0, #8c9eff 100%);
+  background-color: #283593 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
 }
 
-.panel-custom .panel-heading {
-  background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
-}
-
-.panel-custom .page-header {
-  border: none;
-  margin: 0;
-  color: #1a237e;
-}
-
-.panel-custom .panel-default:hover {
-  border-color: #8c9eff;
-}
-
-.adicao tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.adicao td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  align-content: center;
-}
-
-.adicao td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
+.card-heading {
+  font-size: x-large;
+  font-weight: bold;
 }
 
 .info-label {
-  color: #1a237e;
-  padding: 6px;
+  color: #283593; /* indigo darken-3 */
+  padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #dee2f8;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   margin: 5px;
+  border-radius: 3px;
 }
 </style>

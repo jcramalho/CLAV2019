@@ -1,316 +1,243 @@
 <template>
-  <v-container fluid>
-    <v-layout row wrap ma-2>
-      <v-flex xs12>
-        <v-card>
-          <v-toolbar color="indigo darken-4" dark>
-            <v-toolbar-title>Gestão de Pedidos</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-container fluid>
-                <v-expansion-panel popout>
-                    <PedidosLista :pedidos="pedidosSubmetidos" 
-                                  titulo="Pedidos novos" 
-                                  @distribuir="distribuiPedido($event)"
-                                  @show="showPedido($event)"
-                    />               
-                </v-expansion-panel>
-
-                <v-expansion-panel popout>
-                    <PedidosLista :pedidos="pedidosDistribuidos" 
-                                  titulo="Pedidos em apreciação técnica"
-                                  @analisar="analisaPedido($event)"
-                                  @show="showPedido($event)"
-                    />
-                </v-expansion-panel>
-
-                <v-expansion-panel popout>
-                    <PedidosLista :pedidos="pedidosValidados" titulo="Pedidos em validação"/>
-                </v-expansion-panel>
-
-                <v-expansion-panel popout>
-                    <PedidosLista :pedidos="pedidosDevolvidos" titulo="Pedidos devolvidos"/>
-                </v-expansion-panel>
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-flex>
-    </v-layout>
-
-    <v-layout row wrap ma-2>
-      <v-dialog v-model="distribuir" width="60%" >
+  <v-row class="ma-1">
+    <v-col>
       <v-card>
-        <v-card-title class="headline">Distribuição do pedido</v-card-title>
+        <v-card-title class="indigo darken-4 title white--text" dark>
+          Gestão de Pedidos
+        </v-card-title>
+        <v-card-text class="mt-4">
+          <v-expansion-panels :value="pesquisaPedidos.painel">
+            <PedidosNovos
+              :pedidos="pedidosSubmetidos"
+              :pesquisaPedidos="pesquisaPedidos"
+              @distribuir="distribuiPedido($event)"
+            />
 
-        <v-card-text>
-          <div v-if="!selectedUser.name">
-          <p>Selecione o utilizador a quem deve ser atribuída a análise do pedido 
-            (basta clicar na linha correspondente):</p>
+            <PedidosAnalise
+              :pedidos="pedidosDistribuidos"
+              :pesquisaPedidos="pesquisaPedidos"
+              @analisar="analisaPedido($event)"
+            />
 
-          <v-data-table
-            :headers="usersHeaders"
-            :items="usersRecords"
-            class="elevation-1"
-            hide-actions
-          >
-            <template v-slot:items="props">
-              <tr @click="selectedUser=props.item">
-                <td class="subheading">{{ props.item.name }}</td>
-                <td class="subheading">{{ props.item.entidade }}</td>
-              </tr>
-            </template>
-          </v-data-table>
-          </div>
+            <PedidosValidacao
+              :pedidos="pedidosValidados"
+              :pesquisaPedidos="pesquisaPedidos"
+              @validar="validaPedido($event)"
+            />
 
-          <div v-else>
-            <p>Tarefa atribuída a: <b>{{ selectedUser.name }} ({{ selectedUser.entidade }})</b>.</p>
-            <div class="info-label">Despacho</div>
-            <v-textarea
-              v-model="despacho"
-              auto-grow
-              solo
-              label="Introduza o texto para o despacho (opcional)..."
-              rows="1"
-            ></v-textarea>
-          </div>
+            <PedidosEmDespacho
+              :pedidos="pedidosEmDespacho"
+              :pesquisaPedidos="pesquisaPedidos"
+              @despachar="despacharPedido($event)"
+            />
+
+            <PedidosDevolvidos
+              :pedidos="pedidosDevolvidos"
+              :pesquisaPedidos="pesquisaPedidos"
+            />
+
+            <PedidosProcessados
+              :pedidos="pedidosProcessados"
+              :pesquisaPedidos="pesquisaPedidos"
+            />
+          </v-expansion-panels>
         </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            color="indigo darken-4"
-            round dark
-            @click="guardarDistribuicao"
-          >
-            Guardar
-          </v-btn>
-
-          <v-btn
-            color="red darken-4"
-            round dark
-            @click="cancelarDistribuicao"
-          >
-            Cancelar
-          </v-btn>
-        </v-card-actions>
       </v-card>
-    </v-dialog>
-    </v-layout>
 
-    <!-- Show do pedido ................................................-->
-    <v-layout row wrap ma-2>
-      <v-dialog v-model="show" width="80%" >
-      <v-card>
-        <v-card-title class="headline">Dados do pedido</v-card-title>
-        <v-card-text>
-          <v-layout row wrap ma-2>
-            <v-flex xs2>
-              <div class="info-label">Código</div>
-            </v-flex>
-            <v-flex xs10>
-              <div class="info-content">{{pedido.codigo}}</div>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap ma-2>
-            <v-flex xs2>
-              <div class="info-label">Estado</div>
-            </v-flex>
-            <v-flex xs10>
-              <div class="info-content">{{pedido.estado}}</div>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap ma-2>
-            <v-flex xs2>
-              <div class="info-label">Data</div>
-            </v-flex>
-            <v-flex xs10>
-              <div class="info-content">{{pedido.data}}</div>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap ma-2>
-            <v-flex xs2>
-              <div class="info-label">Criado Por</div>
-            </v-flex>
-            <v-flex xs10>
-              <div class="info-content">{{pedido.criadoPor}}</div>
-            </v-flex>
-          </v-layout>
-          <div class="info-label title">Distribuição</div>
-          <v-data-table
-            :headers="distHeaders"
-            :items="pedido.distribuicao"
-            class="elevation-1"
-            hide-actions
-          >
-            <template v-slot:items="props">
-              <tr>
-                <td class="subheading">{{ props.item.estado }}</td>
-                <td class="subheading">{{ props.item.data }}</td>
-                <td class="subheading">{{ props.item.responsavel }}</td>
-                <td class="subheading">{{ props.item.despacho }}</td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-btn
-            color="red darken-4"
-            round dark
-            @click="closePedido"
-          >
-            Fechar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    </v-layout>
-  </v-container>
+      <v-dialog v-model="distribuir" width="80%" persistent>
+        <AvancarPedido
+          :utilizadores="utilizadoresParaAnalisar"
+          :texto="{
+            textoTitulo: 'Distribuição',
+            textoAlert: 'análise',
+            textoBotao: 'Distribuir',
+          }"
+          :pedido="pedidoParaDistribuir.codigo"
+          @fecharDialog="fecharDialog()"
+          @avancarPedido="atribuirPedido($event)"
+        />
+      </v-dialog>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
+import PedidosNovos from "@/components/pedidos/PedidosNovos";
+import PedidosAnalise from "@/components/pedidos/PedidosAnalise";
+import PedidosValidacao from "@/components/pedidos/PedidosValidacao";
+import PedidosDevolvidos from "@/components/pedidos/PedidosDevolvidos";
+import PedidosEmDespacho from "@/components/pedidos/PedidosEmDespacho";
+import PedidosProcessados from "@/components/pedidos/PedidosProcessados";
+import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
-import PedidosLista from "@/components/pedidos/PedidosLista.vue"
+import {
+  NIVEIS_ANALISAR_PEDIDO,
+  NIVEIS_DISTRIBUIR_PEDIDO,
+} from "@/utils/consts";
+import { filtraNivel } from "@/utils/permissoes";
 
 export default {
-  components: { PedidosLista },
-  data: () => ({
-    pedidoParaDistribuir: {},
-    distribuir: false,
-    show: false,
-    pedido: {},
-    distHeaders: [
-      {text: "Estado", value: "estado", class:"title"},
-      {text: "Data", value: "data", class:"title"},
-      {text: "Responsável", value: "responsavel", class:"title"},
-      {text: "Despacho", value: "despacho", class:"title"}
-    ],
-    despacho: "",
-    usersHeaders: [
-      {text: "Nome", value: "name", class:"title"},
-      {text: "Entidade", value: "entidade", class:"title"}
-    ],
-    usersRecords: [],
-    selectedUser: {},
-    headers: [
-      {
-        text: "Data",
-        align: "left",
-        sortable: true,
-        value: "data",
-        class: "title"
+  components: {
+    PedidosNovos,
+    PedidosAnalise,
+    PedidosValidacao,
+    PedidosDevolvidos,
+    PedidosProcessados,
+    AvancarPedido,
+    PedidosEmDespacho,
+  },
+
+  data() {
+    return {
+      pedidoParaDistribuir: {},
+      distribuir: false,
+      utilizadoresParaAnalisar: [],
+      pedidosSubmetidos: [],
+      pedidosDistribuidos: [],
+      pedidosValidados: [],
+      pedidosEmDespacho: [],
+      pedidosDevolvidos: [],
+      pedidosProcessados: [],
+      pesquisaPedidos: {
+        painel: undefined,
+        pesquisa: "",
+        pagina: 1,
       },
-      {
-        text: "Estado",
-        align: "left",
-        sortable: false,
-        value: "estado",
-        class: "title"
-      },
-      { text: "Código", value: "codigo", sortable: false, class: "title" },
-      {
-        text: "Responsável",
-        value: "responsavel",
-        sortable: false,
-        class: "title"
-      },
-      { text: "Tipo", value: "tipo", sortable: false, class: "title" },
-      { text: "Objeto", value: "objeto", sortable: false, class: "title" },
-      { text: "Tarefa", sortable: false, class: "title" }
-    ],
-    pedidos: [], 
-    pedidosSubmetidos: [],
-    pedidosDistribuidos: [],
-    pedidosValidados: [],
-    pedidosDevolvidos: []
-  }),
-  created: async function() {
-    try {
-      var response = await axios.get(lhost + "/api/pedidos");
-      this.pedidos = response.data;
-      this.pedidosSubmetidos = this.pedidos.filter(p => p.estado == 'Submetido')
-      this.pedidosDistribuidos = this.pedidos.filter(p => p.estado == 'Distribuído')
-      this.pedidosValidados = this.pedidos.filter(p => p.estado == 'Validado')
-      this.pedidosDevolvidos = this.pedidos.filter(p => p.estado == 'Devolvido')
-    } catch (e) {
-      return e;
+    };
+  },
+
+  async created() {
+    await this.carregaPedidos();
+
+    const storage = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
+
+    if (storage !== null && storage !== undefined) {
+      if (storage.limpar) localStorage.removeItem("pesquisa-pedidos");
+      else this.pesquisaPedidos = storage;
+
+      localStorage.removeItem("pesquisa-pedidos");
     }
   },
+
   methods: {
-    rowClicked: function(item) {
-      this.$emit("pedidoSelected", item);
+    temPermissaoDistribuir() {
+      return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
     },
 
-    showPedido: function(item) {
-      this.pedido = item
-      this.show = true
-    },
-
-    closePedido: function(item) {
-      this.show = false
-    },
-
-    distribuiPedido: async function(pedido){
+    async carregaPedidos() {
       try {
-        var response = await axios.get(lhost + "/api/users");
-        this.usersRecords = response.data;
-        this.pedidoParaDistribuir = pedido
-        this.distribuir = true
+        let pedidos = await this.$request("get", "/pedidos");
+        pedidos = pedidos.data;
+
+        this.pedidosSubmetidos = pedidos.filter(
+          (p) => p.estado === "Submetido"
+        );
+        this.pedidosDistribuidos = pedidos.filter((p) => {
+          if (p.estado === "Distribuído" || p.estado === "Redistribuído")
+            return p;
+        });
+        this.pedidosEmDespacho = pedidos.filter((p) => {
+          if (p.estado === "Em Despacho") return p;
+        });
+        this.pedidosValidados = pedidos.filter((p) => {
+          if (p.estado === "Apreciado" || p.estado === "Reapreciado" || p.estado === "Devolvido para validação") return p;
+        });
+        this.pedidosDevolvidos = pedidos.filter(
+          (p) => p.estado === "Devolvido"
+        );
+        this.pedidosProcessados = pedidos.filter(
+          (p) => p.estado === "Validado"
+        );
+
+        if (this.temPermissaoDistribuir())
+          await this.listaUtilizadoresParaAnalisar();
       } catch (e) {
+        console.warn("e", e);
         return e;
       }
     },
 
-    analisaPedido: function(pedido){
-      this.$router.push("/pedidos/analisar/"+pedido.codigo);
+    fecharDialog() {
+      this.distribuir = false;
     },
 
-    cancelarDistribuicao: function(){
-      this.distribuir = false
-      this.selectedUser = {}
-      this.despacho = ""
+    distribuiPedido(dados) {
+      this.pedidoParaDistribuir = dados;
+      this.distribuir = true;
     },
 
-    guardarDistribuicao: async function(){
-        var novaDistribuicao = {
-          estado: 'Distribuído',
-          responsavel: this.selectedUser.email,
+    async listaUtilizadoresParaAnalisar() {
+      const response = await this.$request("get", "/users");
+
+      const utilizadoresFiltrados = filtraNivel(
+        response.data,
+        NIVEIS_ANALISAR_PEDIDO
+      );
+
+      this.utilizadoresParaAnalisar = utilizadoresFiltrados;
+    },
+
+    analisaPedido(pedido) {
+      this.$router.push("/pedidos/analisar/" + pedido.codigo);
+    },
+    despacharPedido(pedido) {
+      this.$router.push("/pedidos/despachar/" + pedido.codigo);
+    },
+
+    validaPedido(pedido) {
+      this.$router.push("/pedidos/validar/" + pedido.codigo);
+    },
+
+    async atribuirPedido(dados) {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedidoParaDistribuir));
+
+        let estado = "Distribuído";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        pedido.estado = estado;
+
+        pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
           data: new Date(),
-          despacho: this.despacho
-        }
-        this.pedidoParaDistribuir.estado = "Distribuído"
-        this.pedidoParaDistribuir.token = this.$store.state.token
+          despacho: dados.mensagemDespacho,
+        };
 
-        axios.put(lhost + '/api/pedidos', 
-            { pedido: this.pedidoParaDistribuir, distribuicao: novaDistribuicao})
-            .then(response => {
-              var index = this.pedidosSubmetidos.findIndex( p => p.codigo == this.pedidoParaDistribuir.codigo )
-              if(index != -1){
-                this.pedidosSubmetidos.splice(index,1)
-              }
-              this.pedidosDistribuidos.push(this.pedidoParaDistribuir)
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
 
-              this.distribuir = false
-              this.selectedUser = {}
-              this.despacho = ""
-
-              return response.data
-            })
-            .catch(e => {return e})
+        this.carregaPedidos();
+        // this.$router.push("/pedidos");
+        this.fecharDialog();
+      } catch (e) {
+        console.log("e :", e);
       }
-  }
+    },
+  },
 };
 </script>
 
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {

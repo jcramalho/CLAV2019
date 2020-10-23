@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap ma-2>
+  <v-row>
     <!-- LEGISLAÇÂO -->
-    <v-flex xs2>
+    <v-col xs="2" sm="2">
       <div class="info-label">
         Legislação
         <InfoBox
@@ -11,50 +11,30 @@
           dialogColor="#E0F2F1"
         />
       </div>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col xs="10" sm="10">
       <div class="info-content">
         <v-data-table
           :headers="headers"
           :items="legs"
           class="elevation-1"
-          hide-actions
+          hide-default-footer
         >
-          <template v-slot:headers="props">
+          <template v-slot:item="props">
             <tr>
-              <th
-                v-for="h in props.headers"
-                :key="h.text"
-                class="table-header body-2 font-weight-bold"
-              >
-                {{ h.text }}
-              </th>
-            </tr>
-          </template>
-
-          <template v-slot:items="props">
-            <tr>
-              <td>
-                <a :href="'/legislacao/' + props.item.idLeg">{{
-                  props.item.tipo
-                }}</a>
-              </td>
+              <td>{{ props.item.tipo }}</td>
               <td>
                 <a :href="'/legislacao/' + props.item.idLeg">
-                  {{ props.item.numero }}
-                </a>
+                  {{ props.item.numero }}</a
+                >
               </td>
-              <td>
-                <a :href="'/legislacao/' + props.item.idLeg">
-                  {{ props.item.sumario }}
-                </a>
-              </td>
+              <td>{{ props.item.sumario }}</td>
             </tr>
           </template>
         </v-data-table>
       </div>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -68,9 +48,22 @@ export default {
   data: function() {
     return {
       headers: [
-        { text: "Tipo", align: "left", value: "tipo" },
-        { text: "Número", value: "numero" },
-        { text: "Sumário", value: "sumario" }
+        {
+          text: "Tipo",
+          align: "left",
+          value: "tipo",
+          class: ["table-header", "body-2", "font-weight-bold"]
+        },
+        {
+          text: "Número",
+          value: "numero",
+          class: ["table-header", "body-2", "font-weight-bold"]
+        },
+        {
+          text: "Sumário",
+          value: "sumario",
+          class: ["table-header", "body-2", "font-weight-bold"]
+        }
       ],
       myhelp: help
     };

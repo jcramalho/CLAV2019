@@ -1,115 +1,66 @@
 <template>
-  <v-container>
-    <v-layout row wrap justify-center>
-      <v-flex xs12 sm10>
-        <v-card v-if="pedidoLoaded">
-          <v-toolbar color="blue" dark>
-            <v-toolbar-title
-              >Consulta do pedido: {{ this.pedido.codigo }}</v-toolbar-title
-            >
-          </v-toolbar>
-          <v-card-text>
-            <v-form>
-              <v-container>
-                <v-layout row wrap>
-                  <v-flex xs12 sm10>
-                    <v-text-field
-                      :value="
-                        this.pedido.objeto.acao +
-                          ' de ' +
-                          this.pedido.objeto.tipo
-                      "
-                      label="Tipo de Pedido"
-                      readonly
-                    ></v-text-field>
-                    <v-text-field
-                      :value="this.pedido.data.split('T')[0]"
-                      label="Data"
-                      readonly
-                    ></v-text-field>
-                    <v-text-field
-                      :value="this.pedido.estado"
-                      label="Estado"
-                      readonly
-                    ></v-text-field>
-                    <v-text-field
-                      :value="this.pedido.criadoPor"
-                      label="Autor"
-                      readonly
-                    ></v-text-field>
-                  </v-flex>
+  <div v-if="pedidoLoaded">
+    <ShowPedido :p="selectedPedido" :etapaPedido="etapaPedido" />
+  </div>
 
-                  <v-flex xs12 sm10>
-                    <v-data-table
-                      :headers="headers"
-                      :items="etapas"
-                      class="elevation-1"
-                    >
-                      <template v-slot:items="props">
-                        <td>{{ props.item.estado }}</td>
-                        <td>{{ props.item.data.split("T")[0] }}</td>
-                        <td>{{ props.item.responsavel }}</td>
-                        <td>{{ props.item.despacho }}</td>
-                      </template>
-
-                      <template v-slot:no-data>
-                        <v-alert :value="true" color="error" icon="warning">
-                          Sem informação disponível.
-                        </v-alert>
-                      </template>
-                    </v-data-table>
-                  </v-flex>
-
-                  <v-flex xs12 sm10>
-                    <pre>{{ this.pedido }}</pre>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-form>
-          </v-card-text>
-        </v-card>
-
-        <p v-else>Loading...</p>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <div v-else style="text-align:center;" class="mt-4">
+    <p>A carregar informação...</p>
+    <v-progress-circular indeterminate size="100" width="10" color="blue" />
+  </div>
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
+import ShowPedido from "@/components/pedidos/consulta/showPedido.vue";
 
 export default {
   props: ["idp"],
+
+  components: { ShowPedido },
+
   data: () => ({
-    pedido: {},
+    etapaPedido: null,
+    selectedPedido: {},
     pedidoLoaded: false,
-    headers: [
-      { text: "Estado", align: "left", sortable: false, value: "estado" },
-      { text: "Data", value: "data" },
-      { text: "Responsável", value: "responsavel" },
-      { text: "Despacho", value: "despacho" },
-      { text: "Objeto", value: "objeto" }
-    ],
-    etapas: []
   }),
-  watch: {
-    pedidoLoaded: function() {
-      this.etapas = this.pedido.distribuicao;
-    }
-  },
+
   mounted: function() {
-    axios
-      .get(lhost + "/api/pedidos/" + this.idp)
-      .then(response => {
-        this.pedido = response.data;
+    this.$request("get", "/pedidos/" + this.idp)
+      .then((response) => {
+        const pedido = response.data;
+        this.selectedPedido = pedido;
+
+        switch (pedido.estado) {
+          case "Submetido":
+            this.etapaPedido = "Pedidos Novos";
+            break;
+          case "Distribuído":
+          case "Redistribuído":
+            this.etapaPedido = "Pedidos em Apreciação Técnica";
+            break;
+          case "Apreciado":
+          case "Reapreciado":
+            this.etapaPedido = "Pedidos em Validação";
+            break;
+          case "Devolvido":
+            this.etapaPedido = "Pedidos Devolvidos";
+            break;
+          case "Validado":
+            this.etapaPedido = "Pedidos Aprovados";
+            break;
+          case "Em Despacho":
+            this.etapaPedido = "Pedidos em Despacho";
+            break;
+
+          default:
+            break;
+        }
+
+        this.$emit('pedido_original', this.selectedPedido)
         this.pedidoLoaded = true;
       })
-      .catch(error => {
+      .catch((error) => {
         return error;
       });
-  }
+  },
 };
 </script>
-
-<style></style>

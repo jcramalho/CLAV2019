@@ -1,173 +1,170 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
-      <v-flex xs12>
-        <!-- HEADER -->
-        <v-card>
-          <v-toolbar color="teal darken-4" dark>
-            <v-toolbar-title>Nova Classe</v-toolbar-title>
-          </v-toolbar>
+  <v-row class="ma-1">
+    <v-col>
+      <!-- HEADER -->
+      <v-card>
+        <v-app-bar color="indigo darken-4" dark>
+          <v-toolbar-title class="card-heading">Criar Classe</v-toolbar-title>
+        </v-app-bar>
 
-          <v-card-text>
-            <v-container fluid>
-              <v-layout wrap>
-                <v-flex xs2>
-                  <div class="info-label">Nível</div>
-                </v-flex>
-                <v-flex xs6>
-                  <v-select
-                    item-text="label"
-                    item-value="value"
-                    v-model="classe.nivel"
-                    :items="classeNiveis"
-                    label="Selecione o nível da classe:"
-                    solo
-                    dense
-                  />
-                </v-flex>
-              </v-layout>
-              <!-- CLASSE PAI -->
-              <v-layout wrap v-if="classe.nivel > 1">
-                <v-flex xs2>
-                  <div class="info-label">
-                    Classe Pai
-                    <InfoBox
-                      header="Classe Pai"
-                      :text="myhelp.Classe.Campos.Pai"
-                    />
-                  </div>
-                </v-flex>
-                <v-flex xs10>
-                  <v-select
-                    item-text="label"
-                    item-value="value"
-                    v-model="classe.pai.codigo"
-                    :items="classesPai"
-                    label="Selecione uma classe de nível superior"
-                    solo
-                    dense
-                  />
-                </v-flex>
-              </v-layout>
-              <!-- CÓDIGO DA NOVA CLASSE -->
-              <v-layout wrap v-if="classe.nivel == 1 || classe.pai.codigo">
-                <v-flex xs2>
-                  <div class="info-label">
-                    Código
-                    <InfoBox
-                      header="Código da Classe"
-                      :text="myhelp.Classe.Campos.Codigo"
-                    />
-                  </div>
-                </v-flex>
-                <v-flex xs10>
-                  <v-text-field
-                    v-model="classe.codigo"
-                    label="Código"
-                    solo
-                    clearable
-                  ></v-text-field>
-                  <span style="color: red"> {{ mensValCodigo }} </span>
-                </v-flex>
-              </v-layout>
-              <!-- TÍTULO -->
-              <v-layout wrap v-if="classe.nivel == 1 || classe.pai.codigo">
-                <v-flex xs2>
-                  <div class="info-label">
-                    Título
-                    <InfoBox
-                      header="Título da Classe"
-                      :text="myhelp.Classe.Campos.Titulo"
-                    />
-                  </div>
-                </v-flex>
-                <v-flex xs10>
-                  <v-text-field
-                    v-model="classe.titulo"
-                    label="Título"
-                    solo
-                    clearable
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
+        <v-card-text>
+          <v-row>
+            <v-col cols="2">
+              <div class="info-label">Nível</div>
+            </v-col>
+            <v-col>
+              <v-radio-group v-model="classe.nivel" row>
+                <v-radio
+                  v-for="(n, i) in classeNiveis"
+                  :key="i"
+                  :label="n.label"
+                  :value="n.value"
+                  color="indigo darken-3"
+                ></v-radio>
+              </v-radio-group>
+            </v-col>
+          </v-row>
 
-              <v-expansion-panel popout>
-                <!-- DESCRITIVO DA CLASSE -->
-                <BlocoDescritivo :c="classe" />
+          <!-- CLASSE PAI -->
+          <v-row v-if="classe.nivel > 1">
+            <v-col cols="2">
+              <div class="info-label">
+                Classe Pai
+                <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
+              </div>
+            </v-col>
+            <v-col>
+              <v-select
+                item-text="label"
+                item-value="value"
+                v-model="classe.pai.codigo"
+                :items="classesPai"
+                label="Selecione uma classe de nível superior"
+                solo
+                dense
+              />
+            </v-col>
+          </v-row>
 
-                <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-                <BlocoContexto
-                  :c="classe"
-                  :semaforos="semaforos"
-                  :donos="entidadesD"
-                  :participantes="entidadesP"
-                  :procRel="listaProcessos"
-                  :legs="listaLegislacao"
+          <!-- CÓDIGO DA NOVA CLASSE -->
+          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+            <v-col cols="2">
+              <div class="info-label">
+                Código
+                <InfoBox
+                  header="Código da Classe"
+                  :text="myhelp.Classe.Campos.Codigo"
                 />
+              </div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="classe.codigo"
+                label="Código"
+                solo
+                clearable
+              ></v-text-field>
+              <span style="color: red">{{ mensValCodigo }}</span>
+            </v-col>
+          </v-row>
 
-                <!-- DECISÕES DE AVALIAÇÂO -->
-                <v-expansion-panel-content v-if="classe.nivel == 3">
-                  <template v-slot:header>
-                    <v-toolbar
-                      color="teal darken-4 body-2 font-weight-bold"
-                      dark
-                    >
-                      <v-toolbar-title>Decisões de Avaliação</v-toolbar-title>
-                    </v-toolbar>
-                  </template>
-                  <!-- HÁ SUBDIVISÃO? -->
-                  <Subdivisao3Nivel :c="classe" />
+          <!-- TÍTULO -->
+          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
+            <v-col cols="2">
+              <div class="info-label">
+                Título
+                <InfoBox
+                  header="Título da Classe"
+                  :text="myhelp.Classe.Campos.Titulo"
+                />
+              </div>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="classe.titulo"
+                label="Título"
+                solo
+                clearable
+              ></v-text-field>
+            </v-col>
+          </v-row>
 
-                  <hr style="border: 3px solid green; border-radius: 2px;" />
+          <v-expansion-panels>
+            <!-- DESCRITIVO DA CLASSE -->
+            <BlocoDescritivo :c="classe" />
 
-                  <!-- DECISÃO SEM SUBDIVISÃO -->
-                  <DecisaoSemSubPCA
-                    :c="classe"
-                    :semaforos="semaforos"
-                    :pcaFormasContagem="pcaFormasContagem"
-                    :pcaSubFormasContagem="pcaSubFormasContagem"
-                  />
+            <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+            <BlocoContexto
+              :c="classe"
+              :semaforos="semaforos"
+              :donos="entidadesD"
+              :participantes="entidadesP"
+              :procRel="listaProcessos"
+              :legs="listaLegislacao"
+              v-if="classe.nivel == 3"
+            />
 
-                  <hr
-                    style="border-top: 3px dashed green; border-radius: 2px;"
-                  />
+            <!-- DECISÕES DE AVALIAÇÂO -->
+            <v-expansion-panel popout focusable v-if="classe.nivel == 3">
+              <v-expansion-panel-header class="expansion-panel-heading">
+                <div>
+                  Decisões de Avaliação
+                  <InfoBox header="Decisões de Avaliação" :text="myhelp.Classe.BlocoDecisoes"  helpColor="white"/>
+                </div>
+                <template v-slot:actions>
+                  <v-icon color="white">expand_more</v-icon>
+                </template>
+              </v-expansion-panel-header>
 
-                  <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
-                </v-expansion-panel-content>
+              <v-expansion-panel-content>
+                <!-- HÁ SUBDIVISÃO? -->
+                <Subdivisao3Nivel :c="classe" />
 
-                <!-- DECISÃO COM SUBDIVISÃO -->
-                <Subclasses4Nivel
+                <hr style="border: 3px solid #1A237E; border-radius: 2px;" />
+
+                <!-- DECISÃO SEM SUBDIVISÃO -->
+                <DecisaoSemSubPCA
                   :c="classe"
                   :semaforos="semaforos"
                   :pcaFormasContagem="pcaFormasContagem"
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
-              </v-expansion-panel>
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-flex>
 
-      <painel-operacoes :c="classe"/>
+                <hr
+                  style="border-top: 3px dashed #1A237E; border-radius: 2px;"
+                />
 
-      <v-snackbar
-        v-model="loginErrorSnackbar"
-        :timeout="8000"
-        color="error"
-        :top="true"
-      >
-        {{ loginErrorMessage }}
-        <v-btn flat @click="loginErrorSnackbar = false">Fechar</v-btn>
-      </v-snackbar>
+                <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
 
-    </v-layout>
+            <!-- DECISÃO COM SUBDIVISÃO -->
+            <Subclasses4Nivel
+              :c="classe"
+              :semaforos="semaforos"
+              :pcaFormasContagem="pcaFormasContagem"
+              :pcaSubFormasContagem="pcaSubFormasContagem"
+            />
+          </v-expansion-panels>
+        </v-card-text>
 
-  </v-container>
+        <v-snackbar
+          v-model="loginErrorSnackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
+          {{ loginErrorMessage }}
+          <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
+        </v-snackbar>
+      </v-card>
+      
+      <PainelOperacoes :c="classe" :pendenteId="''" />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-const axios = require("axios");
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
@@ -311,7 +308,6 @@ export default {
       critGestionarioAdicionado: false
     },
 
-    
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
@@ -389,7 +385,8 @@ export default {
           // Bloco de decisão de avaliação: PCA e DF
 
           pca: {
-            valor: null,
+            valor: "",
+            notas: "",
             formaContagem: "",
             subFormaContagem: "",
             justificacao: [] // j = [criterio]
@@ -397,8 +394,15 @@ export default {
 
           df: {
             valor: "NE",
-            notas: null,
+            notas: "",
             justificacao: []
+          },
+
+          // Contexto para controlar a interface de cada subclasse
+          semaforos: {
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false
           }
         };
         var novaSubclasse2 = {
@@ -419,7 +423,8 @@ export default {
           // Bloco de decisão de avaliação: PCA e DF
 
           pca: {
-            valor: null,
+            valor: "",
+            notas: "",
             formaContagem: "",
             subFormaContagem: "",
             justificacao: []
@@ -427,8 +432,15 @@ export default {
 
           df: {
             valor: "NE",
-            notas: null,
+            notas: "",
             justificacao: []
+          },
+
+          // Contexto para controlar a interface de cada subclasse
+          semaforos: {
+            critLegalAdicionadoPCA: false,
+            critLegalAdicionadoDF: false,
+            critGestionarioAdicionado: false
           }
         };
 
@@ -468,8 +480,9 @@ export default {
 
     loadPais: async function() {
       try {
-        var response = await axios.get(
-          lhost + "/api/classes?nivel=" + (this.classe.nivel - 1)
+        var response = await this.$request(
+          "get",
+          "/classes?nivel=" + (this.classe.nivel - 1)
         );
         this.classesPai = response.data
           .map(function(item) {
@@ -490,7 +503,7 @@ export default {
 
     loadEntidades: async function() {
       try {
-        var response = await axios.get(lhost + "/api/entidades");
+        var response = await this.$request("get", "/entidades");
         this.entidadesD = response.data.map(function(item) {
           return {
             selected: false,
@@ -502,7 +515,7 @@ export default {
             estado: item.estado
           };
         });
-        response = await axios.get(lhost + "/api/tipologias");
+        response = await this.$request("get", "/tipologias");
         this.entidadesD = await this.entidadesD.concat(
           response.data.map(function(item) {
             return {
@@ -530,7 +543,7 @@ export default {
 
     loadProcessos: async function() {
       try {
-        var response = await axios.get(lhost + "/api/classes?nivel=3");
+        var response = await this.$request("get", "/classes?nivel=3");
         this.listaProcessos = response.data
           .map(function(item) {
             return {
@@ -552,10 +565,9 @@ export default {
     },
 
     // Carrega a legislação da BD....................
-
     loadLegislacao: async function() {
       try {
-        var response = await axios.get(lhost + "/api/legislacao?estado=A");
+        var response = await this.$request("get", "/legislacao?estado=Ativo");
         this.listaLegislacao = response.data
           .map(function(item) {
             return {
@@ -587,8 +599,9 @@ export default {
 
     loadPCAFormasContagem: async function() {
       try {
-        var response = await axios.get(
-          lhost + "/api/vocabularios/vc_pcaFormaContagem"
+        var response = await this.$request(
+          "get",
+          "/vocabularios/vc_pcaFormaContagem"
         );
         this.pcaFormasContagem = this.pcaFormasContagem.concat(
           response.data
@@ -612,15 +625,16 @@ export default {
 
     loadPCASubFormasContagem: async function() {
       try {
-        var response = await axios.get(
-          lhost + "/api/vocabularios/vc_pcaSubformaContagem"
+        var response = await this.$request(
+          "get",
+          "/vocabularios/vc_pcaSubformaContagem"
         );
         this.pcaSubFormasContagem = this.pcaSubFormasContagem.concat(
           response.data
             .map(function(item) {
               var formaID = item.termo.substring(item.termo.length - 6);
               return {
-                label: formaID + ": " + item.desc.substring(0, 70) + "...",
+                label: formaID + ": " + item.desc,
                 value: item.idtermo.split("#")[1]
               };
             })
@@ -790,6 +804,20 @@ export default {
           relacao: "eSinteseDe",
           relLabel: "é Síntese de"
         });
+        this.adicionarCriterio(
+          this.classe.subclasses[0].df.justificacao,
+          "CriterioJustificacaoDensidadeInfo",
+          "Critério de Densidade Informacional",
+          criteriosLabels.textoCriterioDensidadeSinDe,
+          [
+            {
+              codigo: this.classe.subclasses[1].codigo,
+              titulo: this.classe.subclasses[1].titulo
+            }
+          ],
+          []
+        );
+
         this.classe.subclasses[1].df.valor = "E";
         this.classe.subclasses[1].processosRelacionados.push({
           codigo: this.classe.subclasses[0].codigo,
@@ -797,6 +825,19 @@ export default {
           relacao: "eSintetizadoPor",
           relLabel: "é Sintetizado por"
         });
+        this.adicionarCriterio(
+          this.classe.subclasses[1].df.justificacao,
+          "CriterioJustificacaoDensidadeInfo",
+          "Critério de Densidade Informacional",
+          criteriosLabels.textoCriterioDensidadeSinPor,
+          [
+            {
+              codigo: this.classe.subclasses[0].codigo,
+              titulo: this.classe.subclasses[0].titulo
+            }
+          ],
+          []
+        );
       } else {
         this.classe.subclasses[0].df.valor = "E";
         this.classe.subclasses[0].processosRelacionados.push({
@@ -805,6 +846,20 @@ export default {
           relacao: "eSintetizadoPor",
           relLabel: "é Sintetizado por"
         });
+        this.adicionarCriterio(
+          this.classe.subclasses[0].df.justificacao,
+          "CriterioJustificacaoDensidadeInfo",
+          "Critério de Densidade Informacional",
+          criteriosLabels.textoCriterioDensidadeSinPor,
+          [
+            {
+              codigo: this.classe.subclasses[1].codigo,
+              titulo: this.classe.subclasses[1].titulo
+            }
+          ],
+          []
+        );
+
         this.classe.subclasses[1].df.valor = "C";
         this.classe.subclasses[1].processosRelacionados.push({
           codigo: this.classe.subclasses[0].codigo,
@@ -812,17 +867,39 @@ export default {
           relacao: "eSinteseDe",
           relLabel: "é Síntese de"
         });
+        this.adicionarCriterio(
+          this.classe.subclasses[1].df.justificacao,
+          "CriterioJustificacaoDensidadeInfo",
+          "Critério de Densidade Informacional",
+          criteriosLabels.textoCriterioDensidadeSinDe,
+          [
+            {
+              codigo: this.classe.subclasses[0].codigo,
+              titulo: this.classe.subclasses[0].titulo
+            }
+          ],
+          []
+        );
       }
     },
 
     remSintese4Nivel: function(subclasses) {
       var index = -1;
+      var cindex = -1;
       for (var i = 0; i < subclasses.length; i++) {
         if (subclasses[i].processosRelacionados.length > 0) {
+          // Remover as relações das subclasses
           index = subclasses[i].processosRelacionados.findIndex(
             p => p.relacao == "eSintetizadoPor" || p.relacao == "eSinteseDe"
           );
           if (index != -1) subclasses[i].processosRelacionados.splice(index, 1);
+        }
+        // Remover o critério de densidade das subclasses
+        if (subclasses[i].df.justificacao.length > 0) {
+          cindex = subclasses[i].df.justificacao.findIndex(
+            c => c.tipo == "CriterioJustificacaoDensidadeInfo"
+          );
+          if (cindex != -1) subclasses[i].df.justificacao.splice(cindex, 1);
         }
       }
     }
@@ -831,12 +908,38 @@ export default {
 </script>
 
 <style>
-.info-label {
-  color: #00695c;
+.separador {
+  color: white; 
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.info-label {
+  color: #283593; /* indigo darken-3 */
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #e8eaf6; /* indigo lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.expansion-panel-heading {
+  background-color: #283593 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
+}
+
+.card-heading {
+  font-size: x-large;
   font-weight: bold;
 }
 

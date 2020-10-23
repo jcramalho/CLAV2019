@@ -1,53 +1,51 @@
 <template>
   <!-- PCA -->
-  <v-container fluid v-if="!c.temSubclasses4Nivel">
-    <v-layout ma-2 wrap>
-      <v-flex xs12>
-        <v-toolbar color="teal darken-4 font-weight-medium" dark height="30">
+  <div v-if="!c.temSubclasses4Nivel">
+    <v-row>
+      <v-col>
+        <v-toolbar color="indigo darken-2 font-weight-regular" dark height="30">
           <v-toolbar-title>Prazo de Conservação Administrativa</v-toolbar-title>
         </v-toolbar>
-      </v-flex>
-    </v-layout>
-    <v-layout ma-2 wrap>
-      <v-flex xs2>
-        <div class="info-label">Prazo:</div>
-      </v-flex>
-      <v-flex xs10>
+      </v-col>
+    </v-row>
+    <v-row class="ma-2">
+      <v-col cols="2">
+        <div class="info-label">
+          Prazo
+          <InfoBox header="Prazo de Conservação Administrativa" :text="myhelp.Classe.Campos.Prazo" />
+        </div>
+      </v-col>
+      <v-col>
         <v-text-field
           v-model="c.pca.valor"
           label="Prazo em anos: 0 a 199"
-          mask="###"
+          v-mask="'###'"
           solo
           clearable
         ></v-text-field>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
-    <v-layout ma-2 wrap>
-      <v-flex xs2>
-        <div class="info-label">Notas</div>
-      </v-flex>
-      <v-flex xs10>
-        <v-textarea
-          solo
-          label="Notas ao PCA"
-          v-model="c.pca.notas"
-          rows="2"
-        ></v-textarea>
-      </v-flex>
-    </v-layout>
+    <v-row class="ma-2">
+      <v-col cols="2">
+        <div class="info-label">
+          Notas
+          <InfoBox header="Notas" :text="myhelp.Classe.Campos.Notas" />
+        </div>
+      </v-col>
+      <v-col>
+        <v-textarea solo label="Notas ao PCA" v-model="c.pca.notas" rows="2"></v-textarea>
+      </v-col>
+    </v-row>
 
-    <v-layout ma-2 row wrap v-if="semaforos.pcaFormasContagemReady">
-      <v-flex xs2>
+    <v-row class="ma-2" v-if="semaforos.pcaFormasContagemReady">
+      <v-col cols="2">
         <div class="info-label">
           Forma de Contagem
-          <InfoBox
-            header="Forma de Contagem do PCA"
-            :text="myhelp.Classe.Campos.FormaContagem"
-          />
+          <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
         </div>
-      </v-flex>
-      <v-flex xs10>
+      </v-col>
+      <v-col>
         <v-select
           item-text="label"
           item-value="value"
@@ -57,21 +55,22 @@
           solo
           dense
         />
-      </v-flex>
-    </v-layout>
-    <v-layout
-      ma-2
-      row
-      wrap
+      </v-col>
+    </v-row>
+    <v-row
+      class="ma-2"
       v-if="
         semaforos.pcaSubFormasContagemReady &&
           c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'
       "
     >
-      <v-flex xs2>
-        <div class="info-label">Subforma de contagem:</div>
-      </v-flex>
-      <v-flex xs10>
+      <v-col cols="2">
+        <div class="info-label">
+          Subforma de contagem
+          <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.SubformaContagem" />
+        </div>
+      </v-col>
+      <v-col cols="10">
         <v-select
           item-text="label"
           item-value="value"
@@ -80,77 +79,74 @@
           label="Selecione uma subforma de contagem para o prazo"
           solo
           dense
-        />
-      </v-flex>
-    </v-layout>
+        >
+          <template v-slot:selection="{item}">
+            <p>{{ item.label }}</p>
+          </template>
 
-    <hr style="border-top: 2px dashed green;" />
+          <template v-slot:item="{item}">
+            <p>{{ item.label }}</p>
+          </template>
+        </v-select>
+      </v-col>
+    </v-row>
+
+    <hr style="border-top: 2px dashed #1A237E;" />
 
     <!-- JUSTIFICAÇÂO DO PCA -->
-    <v-layout row wrap>
-      <v-flex xs3>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <div class="info-label">
-              Justificação do PCA
-              <InfoBox
-                header="Justificação do PCA"
-                :text="myhelp.Classe.Campos.JustificacaoPCA"
-              />
-            </div>
-          </v-flex>
-          <v-flex xs12>
-            <v-btn
-              color="green darken-2"
-              dark
-              round
-              @click="
+    <v-row class="ma-2">
+      <v-col cols="3">
+        <div class="info-label">
+          Justificação do PCA
+          <InfoBox header="Justificação do PCA" :text="myhelp.Classe.Campos.JustificacaoPCA" />
+        </div>
+
+        <div class="ma-2">
+          <v-btn
+            color="indigo darken-2"
+            dark
+            rounded
+            @click="
                 adicionarCriterioGestionario(
                   c.pca.justificacao,
                   'CriterioJustificacaoGestionario',
                   'Critério Gestionário',
-                  textoCriterioGestionario,
+                  mylabels.textoCriterioJustificacaoGestionario,
                   [],
                   []
                 )
               "
-              v-if="!semaforos.critGestionarioAdicionado"
-            >
-              Critério Gestionário
-              <v-icon dark right>add_circle_outline</v-icon>
-            </v-btn>
-          </v-flex>
-          <v-flex xs12>
-            <v-btn
-              color="green darken-2"
-              dark
-              round
-              @click="
+            v-if="!semaforos.critGestionarioAdicionado"
+          >
+            Critério Gestionário
+            <v-icon dark right>add_circle_outline</v-icon>
+          </v-btn>
+        </div>
+        <div class="ma-2">
+          <v-btn
+            color="indigo darken-2"
+            dark
+            rounded
+            @click="
                 adicionarCriterioLegalPCA(
                   c.pca.justificacao,
                   'CriterioJustificacaoLegal',
                   'Critério Legal',
-                  textoCriterioLegal,
+                  mylabels.textoCriterioLegal,
                   [],
                   c.legislacao
                 )
               "
-              v-if="!semaforos.critLegalAdicionadoPCA"
-            >
-              Critério Legal
-              <v-icon dark right>add_circle_outline</v-icon>
-            </v-btn>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-flex xs9>
-        <v-layout
-          row
-          wrap
-          v-for="(crit, cindex) in c.pca.justificacao"
-          :key="cindex"
-        >
-          <v-flex xs3>
+            v-if="!semaforos.critLegalAdicionadoPCA"
+          >
+            Critério Legal
+            <v-icon dark right>add_circle_outline</v-icon>
+          </v-btn>
+        </div>
+      </v-col>
+      <v-col>
+        <v-row v-for="(crit, cindex) in c.pca.justificacao" :key="cindex">
+          <v-col cols="3">
             <div class="info-label">
               {{ crit.label }}
               <v-icon
@@ -158,17 +154,20 @@
                 dark
                 small
                 @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')"
-                >remove_circle</v-icon
-              >
+              >remove_circle_outline</v-icon>
             </div>
-          </v-flex>
+          </v-col>
 
-          <v-flex
-            xs9
-            v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'"
-          >
+          <v-col v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
             <div class="info-content">
-              {{ crit.notas }}
+              <v-textarea
+                auto-grow
+                clearable
+                single-line
+                rows="1"
+                :value="crit.notas"
+                v-model="crit.notas"
+              ></v-textarea>
               <a
                 :href="'/classes/consultar/' + p.id"
                 v-for="(p, i) in crit.procRel"
@@ -176,59 +175,68 @@
               >
                 {{ p.codigo }}: {{ p.titulo }}
                 <span v-if="i == crit.procRel.length - 1">.</span>
-                <span v-else>, </span>
+                <span v-else>,</span>
               </a>
             </div>
-          </v-flex>
+          </v-col>
 
-          <v-flex xs9 v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
+          <v-col v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
             <div class="info-content" v-if="crit.legislacao.length > 0">
-              {{ crit.notas }}
+              <v-textarea
+                auto-grow
+                clearable
+                single-line
+                rows="1"
+                :value="crit.notas"
+                v-model="crit.notas"
+              ></v-textarea>
               <span v-for="(l, i) in crit.legislacao" :key="l.id">
-                <a :href="'/legislacao/' + l.id">
-                  {{ l.tipo }} {{ l.numero }}
-                </a>
+                <a :href="'/legislacao/' + l.id">{{ l.tipo }} {{ l.numero }}</a>
                 <v-icon
                   color="red darken-2"
                   dark
                   small
                   @click="crit.legislacao.splice(i, 1)"
-                  >remove_circle</v-icon
-                >
+                >remove_circle_outline</v-icon>
                 <span v-if="i == crit.legislacao.length - 1">.</span>
-                <span v-else>, </span>
+                <span v-else>,</span>
               </span>
             </div>
             <div class="info-content" v-if="crit.legislacao.length == 0">
               Sem legislação associada. Pode associar legislação na área de
               contexto.
             </div>
-          </v-flex>
+          </v-col>
 
-          <v-flex
-            xs9
-            v-else-if="crit.tipo == 'CriterioJustificacaoGestionario'"
-          >
+          <v-col v-else-if="crit.tipo == 'CriterioJustificacaoGestionario'">
             <div class="info-content">
-              {{ crit.notas }}
+              <v-textarea
+                auto-grow
+                clearable
+                single-line
+                rows="1"
+                :value="crit.notas"
+                v-model="crit.notas"
+              ></v-textarea>
             </div>
-          </v-flex>
+          </v-col>
 
           <hr
             v-if="cindex < c.pca.justificacao.length"
-            style="border-top: 2px dotted green; width: 100%;"
+            style="border-top: 2px dotted #1A237E; width: 100%;"
           />
-        </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-container>
+        </v-row>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
 import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 
-const help = require("@/config/help").help;
+const help = require("@/config/help").help
+const labels = require("@/config/labels").criterios
 
 import InfoBox from "@/components/generic/infoBox.vue";
 
@@ -242,12 +250,7 @@ export default {
   data: function() {
     return {
       myhelp: help,
-      textoCriterioGestionario:
-        "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de" +
-        " escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para" +
-        " a definição do prazo o tempo do mandato de maior duração: 5 anos.",
-      textoCriterioLegal:
-        'Prazo prescricional estabelecido em "diplomas selecionados no contexto de avaliação": '
+      mylabels: labels
     };
   },
 
@@ -345,8 +348,8 @@ export default {
     unselectDiploma: function(diploma, listaLeg) {
       var index = listaLeg.findIndex(e => e.id === diploma.id);
       listaLeg.splice(index, 1);
-      if(listaLeg.length == 0){
-        this.semaforos.critLegalAdicionadoPCA = false
+      if (listaLeg.length == 0) {
+        this.semaforos.critLegalAdicionadoPCA = false;
       }
     }
   }
@@ -354,12 +357,14 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {

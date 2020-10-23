@@ -1,154 +1,130 @@
 <template>
-  <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-  <v-expansion-panel-content v-if="c.nivel == 3">
-    <template v-slot:header>
-      <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
-        <v-toolbar-title>Contexto de Avaliação</v-toolbar-title>
-      </v-toolbar>
-    </template>
-    <!-- TIPO DE PROCESSO -->
-    <v-layout row wrap ma-2>
-      <v-flex xs2>
-        <div class="info-label">Tipo de Processo:</div>
-      </v-flex>
-      <v-flex xs9>
-        <v-select
-          item-text="label"
-          item-value="value"
-          v-model="c.tipoProc"
-          :items="processoTipos"
-          label="Selecione o tipo de processo:"
-          solo
-          dense
-        />
-      </v-flex>
-    </v-layout>
+  <v-expansion-panel popout focusable>
+    <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+    <v-expansion-panel-header class="expansion-panel-heading">
+      <div>
+        Contexto de Avaliação
+        <InfoBox header="Contexto de Avaliação" :text="myhelp.Classe.BlocoContexto"  helpColor="white"/>
+      </div>
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
+    </v-expansion-panel-header>
+    <v-expansion-panel-content v-if="c.nivel == 3">
+      <!-- TIPO DE PROCESSO -->
+      <BlocoContextoSelTipoProcesso :c="c" />
 
-    <!-- PROCESSO TRANVERSAL -->
-    <v-layout row wrap ma-2>
-      <v-flex xs2>
-        <div class="info-label">Processo Transversal:</div>
-      </v-flex>
-      <v-flex xs9>
-        <v-select
-          item-text="label"
-          item-value="value"
-          v-model="c.procTrans"
-          :items="simNao"
-          label="Indique se o processo é transversal:"
-          solo
-          dense
-        />
-      </v-flex>
-    </v-layout>
+      <!-- PROCESSO TRANVERSAL -->
+      <BlocoContextoSelTransversalidade :c="c" />
+      
+      <hr style="border: 3px solid indigo; border-radius: 2px;" />
 
-    <hr style="border: 3px solid green; border-radius: 2px;" />
+      <!-- DONOS -->
+      <DonosOps :entidades="c.donos" @unselectEntidade="unselectEntidade($event)" />
 
-    <!-- DONOS -->
-    <DonosOps
-      :entidades="c.donos"
-      @unselectEntidade="unselectEntidade($event)"
-    />
+      <v-row>
+        <v-col>
+          <hr style="border-top: 1px dashed indigo;" />
+        </v-col>
+      </v-row>
 
-    <v-layout row wrap ma-2>
-      <v-flex xs12>
-        <hr style="border-top: 1px dashed green;" />
-      </v-flex>
-    </v-layout>
-
-    <DonosNew 
-      @newEntidade="newEntidade($event, c.donos)"
-      :entidadesReady="semaforos.entidadesReady"
-      :entidades="donos"/>
-
-    <v-layout row wrap ma-2>
-      <v-flex xs12>
-        <hr style="border-top: 1px dashed green;" />
-      </v-flex>
-    </v-layout>
-
-    <DonosSelect
-      :entidadesReady="semaforos.entidadesReady"
-      :entidades="donos"
-      @selectEntidade="selectEntidade($event)"
-    />
-
-    <hr style="border: 3px solid green; border-radius: 2px;" />
-
-    <!-- PARTICIPANTES -->
-    <div v-if="c.procTrans != 'N'">
-      <ParticipantesOps
-        :entidades="c.participantes"
-        @unselectParticipante="unselectParticipante($event)"
+      <DonosNew
+        @newEntidade="newEntidade($event, c.donos)"
+        :entidadesReady="semaforos.entidadesReady"
+        :entidades="donos"
       />
 
-      <v-layout row wrap ma-2>
-        <v-flex xs12>
-          <hr style="border-top: 1px dashed green;" />
-        </v-flex>
-      </v-layout>
+      <v-snackbar v-model="erroEntidadeDuplicada" :color="'error'" :timeout="60000">
+        {{ mensagemEntidadeDuplicada }}
+        <v-btn dark text @click="erroEntidadeDuplicada = false">Fechar</v-btn>
+      </v-snackbar>
 
-      <ParticipantesNew 
-        @newEntidade="newEntidade($event, c.participantes)"
+      <v-row>
+        <v-col>
+          <hr style="border-top: 1px dashed indigo;" />
+        </v-col>
+      </v-row>
+
+      <DonosSelect
         :entidadesReady="semaforos.entidadesReady"
-        :entidades="participantes"/>
-
-      <hr style="border-top: 1px dashed green;" />
-
-      <ParticipantesSelect
-        :entidadesReady="semaforos.entidadesReady"
-        :entidades="participantes"
-        @selectParticipante="selectParticipante($event)"
+        :entidades="donos"
+        @selectEntidade="selectEntidade($event)"
       />
 
-      <hr style="border: 3px solid green; border-radius: 2px;" />
-    </div>
+      <hr style="border: 3px solid indigo; border-radius: 2px;" />
 
-    <!-- PROCESSOS RELACIONADOS -->
-    <ProcessosRelacionadosOps
-      :processos="c.processosRelacionados"
-      @unselectProcRel="unselectProcesso($event)"
-    />
+      <!-- PARTICIPANTES -->
+      <div v-if="c.procTrans != 'N'">
+        <ParticipantesOps
+          :entidades="c.participantes"
+          @unselectParticipante="unselectParticipante($event)"
+        />
 
-    <hr style="border-top: 1px dashed green;" />
+        <hr style="border-top: 1px dashed indigo;" />
 
-    <ProcessosRelacionadosSelect
-      :procReady="semaforos.classesReady"
-      :processos="procRel"
-      @selectProcesso="selectProcesso($event)"
-    />
+        <ParticipantesNew
+          @newEntidade="newEntidade($event, c.participantes)"
+          :entidadesReady="semaforos.entidadesReady"
+          :entidades="participantes"
+        />
 
-    <hr style="border: 3px solid green; border-radius: 2px;" />
+        <hr style="border-top: 1px dashed indigo;" />
 
-    <!-- LEGISLAÇÂO -->
-    <LegislacaoOps
-      :legs="c.legislacao"
-      @unselectDiploma="unselectDiploma($event)"
-    />
+        <ParticipantesSelect
+          :entidadesReady="semaforos.entidadesReady"
+          :entidades="participantes"
+          @selectParticipante="selectParticipante($event)"
+        />
 
-    <v-layout row wrap ma-2>
-        <v-flex xs12>
-          <hr style="border-top: 1px dashed green;" />
-        </v-flex>
-    </v-layout>
+        <v-snackbar v-model="erroIntervencaoIndefinida" :color="'error'" :timeout="60000">
+          {{ mensagemIntervencaoIndefinida }}
+          <v-btn dark text @click="erroIntervencaoIndefinida = false">Fechar</v-btn>
+        </v-snackbar>
 
-    <LegislacaoNew 
-        :legislacao="c.legislacao"
-        @newLegislacao="newEntidade($event, c.legislacao)"
-    />
+        <hr style="border: 3px solid indigo; border-radius: 2px;" />
+      </div>
 
-    <hr style="border-top: 1px dashed green;" />
+      <!-- PROCESSOS RELACIONADOS -->
+      <ProcessosRelacionadosOps
+        :processos="c.processosRelacionados"
+        @unselectProcRel="unselectProcesso($event)"
+      />
 
-    <LegislacaoSelect
-      :legs="legs"
-      :legislacaoReady="semaforos.legislacaoReady"
-      @selectDiploma="selectDiploma($event)"
-    />
-  </v-expansion-panel-content>
+      <hr style="border-top: 1px dashed indigo;" />
+
+      <ProcessosRelacionadosSelect
+        :procReady="semaforos.classesReady"
+        :processos="procRel"
+        @selectProcesso="selectProcesso($event)"
+      />
+
+      <hr style="border: 3px solid indigo; border-radius: 2px;" />
+
+      <!-- LEGISLAÇÂO -->
+      <LegislacaoOps :legs="c.legislacao" @unselectDiploma="unselectDiploma($event)" />
+
+      <v-row ma-2>
+        <v-col>
+          <hr style="border-top: 1px dashed #1A237E;" />
+        </v-col>
+      </v-row>
+
+      <LegislacaoNew :legislacao="c.legislacao" @newLegislacao="newLegislacao($event, c.legislacao)" />
+
+      <hr style="border-top: 1px dashed #1A237E;" />
+
+      <LegislacaoSelect
+        :legs="legs"
+        :legislacaoReady="semaforos.legislacaoReady"
+        @selectDiploma="selectDiploma($event)"
+      />
+    </v-expansion-panel-content>
+  </v-expansion-panel>
 </template>
 
 <script>
 const nanoid = require("nanoid");
+const help = require("@/config/help").help;
 
 import DonosOps from "@/components/classes/criacao/DonosOps.vue";
 import DonosNew from "@/components/classes/criacao/DonosNew.vue";
@@ -161,6 +137,9 @@ import ProcessosRelacionadosSelect from "@/components/classes/criacao/ProcessosR
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 import LegislacaoNew from "@/components/classes/criacao/LegislacaoNew.vue";
 import LegislacaoSelect from "@/components/classes/criacao/LegislacaoSelect.vue";
+import BlocoContextoSelTipoProcesso from "@/components/classes/criacao/BlocoContextoSelTipoProcesso.vue";
+import BlocoContextoSelTransversalidade from "@/components/classes/criacao/BlocoContextoSelTransversalidade.vue";
+import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
   props: ["c", "semaforos", "donos", "participantes", "procRel", "legs"],
@@ -176,17 +155,21 @@ export default {
     ProcessosRelacionadosSelect,
     LegislacaoOps,
     LegislacaoNew,
-    LegislacaoSelect
+    LegislacaoSelect,
+    BlocoContextoSelTipoProcesso,
+    BlocoContextoSelTransversalidade,
+    InfoBox
   },
 
   data: () => {
     return {
-      processoTipos: [
-        { label: "Processo Comum", value: "PC" },
-        { label: "Processo Específico", value: "PE" }
-      ],
+      myhelp: help,
 
-      simNao: [{ label: "Não", value: "N" }, { label: "Sim", value: "S" }],
+      erroEntidadeDuplicada: false,
+      mensagemEntidadeDuplicada: "Entidade duplicada! Não será adicionada.",
+
+      erroIntervencaoIndefinida: false,
+      mensagemIntervencaoIndefinida: "Tem de selecionar uma intervanção para o participante!",
 
       textoCriterioUtilidadeAdministrativa:
         "Prazo decorrente da necessidade de consulta para apuramento da " +
@@ -203,10 +186,9 @@ export default {
   methods: {
     unselectEntidade: function(entidade) {
       // Recoloca a entidade nos selecionáveis
-      if(entidade.estado && (entidade.estado!="Nova")){
+      if (entidade.estado && entidade.estado != "Nova") {
         this.donos.push(entidade);
-      }
-      else if(!entidade.estado){
+      } else if (!entidade.estado) {
         this.donos.push(entidade);
       }
       var index = this.c.donos.findIndex(e => e.id === entidade.id);
@@ -221,7 +203,15 @@ export default {
     },
 
     newEntidade: function(entidade, lista) {
-      lista.push(entidade);
+      var index = lista.findIndex(e => e.id === entidade.id);
+      if(index == -1)
+        lista.push(entidade);
+      else
+        this.erroEntidadeDuplicada = true;
+    },
+
+    newLegislacao: function(leg, lista) {
+      lista.push(leg);
     },
 
     unselectParticipante: function(entidade) {
@@ -233,35 +223,42 @@ export default {
     },
 
     selectParticipante: function(entidade) {
-      this.c.participantes.push(entidade);
+      if(entidade.intervencao == "Indefinido")
+        this.erroIntervencaoIndefinida = true
+      else{
+        this.c.participantes.push(entidade);
+      }
     },
 
-    verificaCriteriosPCA: function(proc){
-      var i=0, index=-1, j=0
-      var criterios = []
+    verificaCriteriosPCA: function(proc) {
+      var i = 0,
+        index = -1,
+        j = 0;
+      var criterios = [];
       // Sem subdivisão
-      if(!this.c.temSubclasses4Nivel){
-        criterios = this.c.pca.justificacao
-        for(i=0; i < criterios.length; i++){
-          if(criterios[i].tipo == "CriterioJustificacaoUtilidadeAdministrativa"){
-            if(criterios[i].procRel.length > 0){
-              index = criterios[i].procRel.findIndex(p => p.id == proc.id)
-              if(index != -1){
-                criterios[i].procRel.splice(index, 1)
-                if(criterios[i].procRel.length == 0){
-                  criterios.splice(i, 1)
+      if (!this.c.temSubclasses4Nivel) {
+        criterios = this.c.pca.justificacao;
+        for (i = 0; i < criterios.length; i++) {
+          if (
+            criterios[i].tipo == "CriterioJustificacaoUtilidadeAdministrativa"
+          ) {
+            if (criterios[i].procRel.length > 0) {
+              index = criterios[i].procRel.findIndex(p => p.id == proc.id);
+              if (index != -1) {
+                criterios[i].procRel.splice(index, 1);
+                if (criterios[i].procRel.length == 0) {
+                  criterios.splice(i, 1);
                 }
               }
             }
-          }
-          else if(criterios[i].tipo == "CriterioJustificacaoLegal"){
-            if(criterios[i].legislacao.length > 0){
-              index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
-              if(index != -1){
-                criterios[i].legislacao.splice(index, 1)
-                if(criterios[i].legislacao.length == 0){
-                  criterios.splice(i, 1)
-                  this.semaforos.critLegalAdicionadoPCA = false
+          } else if (criterios[i].tipo == "CriterioJustificacaoLegal") {
+            if (criterios[i].legislacao.length > 0) {
+              index = criterios[i].legislacao.findIndex(p => p.id == proc.id);
+              if (index != -1) {
+                criterios[i].legislacao.splice(index, 1);
+                if (criterios[i].legislacao.length == 0) {
+                  criterios.splice(i, 1);
+                  this.semaforos.critLegalAdicionadoPCA = false;
                 }
               }
             }
@@ -269,28 +266,29 @@ export default {
         }
       }
       // Com subdivisão
-      else{
-        for(j=0; j < this.c.subclasses.length; j++){
-          criterios = this.c.subclasses[i].pca.justificacao
-          for(i=0; i < criterios.length; i++){
-            if(criterios[i].tipo == "CriterioJustificacaoUtilidadeAdministrativa"){
-              if(criterios[i].procRel.length > 0){
-                index = criterios[i].procRel.findIndex(p => p.id == proc.id)
-                if(index != -1){
-                  criterios[i].procRel.splice(index, 1)
-                  if(criterios[i].procRel.length == 0){
-                    criterios.splice(i, 1)
+      else {
+        for (j = 0; j < this.c.subclasses.length; j++) {
+          criterios = this.c.subclasses[i].pca.justificacao;
+          for (i = 0; i < criterios.length; i++) {
+            if (
+              criterios[i].tipo == "CriterioJustificacaoUtilidadeAdministrativa"
+            ) {
+              if (criterios[i].procRel.length > 0) {
+                index = criterios[i].procRel.findIndex(p => p.id == proc.id);
+                if (index != -1) {
+                  criterios[i].procRel.splice(index, 1);
+                  if (criterios[i].procRel.length == 0) {
+                    criterios.splice(i, 1);
                   }
                 }
               }
-            }
-            else if(criterios[i].tipo == "CriterioJustificacaoLegal"){
-              if(criterios[i].legislacao.length > 0){
-                index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
-                if(index != -1){
-                  criterios[i].legislacao.splice(index, 1)
-                  if(criterios[i].legislacao.length == 0){
-                    criterios.splice(i, 1)
+            } else if (criterios[i].tipo == "CriterioJustificacaoLegal") {
+              if (criterios[i].legislacao.length > 0) {
+                index = criterios[i].legislacao.findIndex(p => p.id == proc.id);
+                if (index != -1) {
+                  criterios[i].legislacao.splice(index, 1);
+                  if (criterios[i].legislacao.length == 0) {
+                    criterios.splice(i, 1);
                   }
                 }
               }
@@ -300,90 +298,109 @@ export default {
       }
     },
 
-    verificaCriteriosDF: function(proc){
-      var criterios = []
-      var i, j, indexCriterio, indexProc
+    verificaCriteriosDF: function(proc) {
+      var criterios = [];
+      var i, j, indexCriterio, indexProc;
       // Sem subdivisão
-      if(!this.c.temSubclasses4Nivel){
-        criterios = this.c.df.justificacao
+      if (!this.c.temSubclasses4Nivel) {
+        criterios = this.c.df.justificacao;
 
-        for(j=0; j < criterios.length; j++){
-          if(criterios[j].tipo == "CriterioJustificacaoLegal"){
-            if(criterios[j].legislacao.length > 0){
-              index = criterios[j].legislacao.findIndex(p => p.id == proc.id)
-              if(index != -1){
-                criterios[j].legislacao.splice(index, 1)
-                if(criterios[j].legislacao.length == 0){
-                  criterios.splice(i, 1)
+        for (j = 0; j < criterios.length; j++) {
+          if (criterios[j].tipo == "CriterioJustificacaoLegal") {
+            if (criterios[j].legislacao.length > 0) {
+              index = criterios[j].legislacao.findIndex(p => p.id == proc.id);
+              if (index != -1) {
+                criterios[j].legislacao.splice(index, 1);
+                if (criterios[j].legislacao.length == 0) {
+                  criterios.splice(i, 1);
                 }
               }
             }
           }
         }
 
-        if((proc.relacao == "eSinteseDe") || (proc.relacao == "eSintetizadoPor")){
-          indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")
-          if(indexCriterio != -1){
-            indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
-            criterios[indexCriterio].procRel.splice(indexProc, 1)
-            if(criterios[indexCriterio].procRel.length == 0){
-              criterios.splice(indexCriterio, 1)
+        if (proc.relacao == "eSinteseDe" || proc.relacao == "eSintetizadoPor") {
+          indexCriterio = criterios.findIndex(
+            c => c.tipo == "CriterioJustificacaoDensidadeInfo"
+          );
+          if (indexCriterio != -1) {
+            indexProc = criterios[indexCriterio].procRel.findIndex(
+              p => p.id == proc.id
+            );
+            criterios[indexCriterio].procRel.splice(indexProc, 1);
+            if (criterios[indexCriterio].procRel.length == 0) {
+              criterios.splice(indexCriterio, 1);
             }
           }
         }
-        if(proc.relacao == "eComplementarDe"){
-          indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoComplementaridadeInfo")
-          if(indexCriterio != -1){
-            indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
-            criterios[indexCriterio].procRel.splice(indexProc, 1)
-            if(criterios[indexCriterio].procRel.length == 0){
-              criterios.splice(indexCriterio, 1)
+        if (proc.relacao == "eComplementarDe") {
+          indexCriterio = criterios.findIndex(
+            c => c.tipo == "CriterioJustificacaoComplementaridadeInfo"
+          );
+          if (indexCriterio != -1) {
+            indexProc = criterios[indexCriterio].procRel.findIndex(
+              p => p.id == proc.id
+            );
+            criterios[indexCriterio].procRel.splice(indexProc, 1);
+            if (criterios[indexCriterio].procRel.length == 0) {
+              criterios.splice(indexCriterio, 1);
             }
           }
         }
       }
       // Com subdivisão
-      else{
-        for(j=0; j < this.c.subclasses.length; j++){
-          criterios = this.c.subclasses[j].df.justificacao
+      else {
+        for (j = 0; j < this.c.subclasses.length; j++) {
+          criterios = this.c.subclasses[j].df.justificacao;
 
-          for(i=0; i < criterios.length; i++){
-            if(criterios[i].tipo == "CriterioJustificacaoLegal"){
-              if(criterios[i].legislacao.length > 0){
-                index = criterios[i].legislacao.findIndex(p => p.id == proc.id)
-                if(index != -1){
-                  criterios[i].legislacao.splice(index, 1)
-                  if(criterios[i].legislacao.length == 0){
-                    criterios.splice(i, 1)
+          for (i = 0; i < criterios.length; i++) {
+            if (criterios[i].tipo == "CriterioJustificacaoLegal") {
+              if (criterios[i].legislacao.length > 0) {
+                index = criterios[i].legislacao.findIndex(p => p.id == proc.id);
+                if (index != -1) {
+                  criterios[i].legislacao.splice(index, 1);
+                  if (criterios[i].legislacao.length == 0) {
+                    criterios.splice(i, 1);
                   }
                 }
               }
             }
-          } 
+          }
 
-          if((proc.relacao == "eSinteseDe") || (proc.relacao == "eSintetizadoPor")){
-            indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoDensidadeInfo")
-            if(indexCriterio != -1){
-              indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
-              criterios[indexCriterio].procRel.splice(indexProc, 1)
-              if(criterios[indexCriterio].procRel.length == 0){
-                criterios.splice(indexCriterio, 1)
+          if (
+            proc.relacao == "eSinteseDe" ||
+            proc.relacao == "eSintetizadoPor"
+          ) {
+            indexCriterio = criterios.findIndex(
+              c => c.tipo == "CriterioJustificacaoDensidadeInfo"
+            );
+            if (indexCriterio != -1) {
+              indexProc = criterios[indexCriterio].procRel.findIndex(
+                p => p.id == proc.id
+              );
+              criterios[indexCriterio].procRel.splice(indexProc, 1);
+              if (criterios[indexCriterio].procRel.length == 0) {
+                criterios.splice(indexCriterio, 1);
               }
             }
           }
-          if(proc.relacao == "eComplementarDe"){
-            indexCriterio = criterios.findIndex(c => c.tipo == "CriterioJustificacaoComplementaridadeInfo")
-            if(indexCriterio != -1){
-              indexProc = criterios[indexCriterio].procRel.findIndex(p => p.id == proc.id)
-              criterios[indexCriterio].procRel.splice(indexProc, 1)
-              if(criterios[indexCriterio].procRel.length == 0){
-                criterios.splice(indexCriterio, 1)
+          if (proc.relacao == "eComplementarDe") {
+            indexCriterio = criterios.findIndex(
+              c => c.tipo == "CriterioJustificacaoComplementaridadeInfo"
+            );
+            if (indexCriterio != -1) {
+              indexProc = criterios[indexCriterio].procRel.findIndex(
+                p => p.id == proc.id
+              );
+              criterios[indexCriterio].procRel.splice(indexProc, 1);
+              if (criterios[indexCriterio].procRel.length == 0) {
+                criterios.splice(indexCriterio, 1);
               }
             }
           }
         }
       }
-    }, 
+    },
 
     unselectProcesso: function(proc) {
       proc.idRel = "Indefinido";
@@ -392,8 +409,8 @@ export default {
       this.c.processosRelacionados.splice(index, 1);
 
       // Remover os critérios quando já não há relações que os suportem
-      this.verificaCriteriosPCA(proc)
-      this.verificaCriteriosDF(proc)
+      this.verificaCriteriosPCA(proc);
+      this.verificaCriteriosDF(proc);
     },
 
     selectProcesso: function(proc) {
@@ -575,6 +592,34 @@ export default {
       // Remove dos selecionáveis
       var index = this.legs.findIndex(l => l.id === leg.id);
       this.legs.splice(index, 1);
+      // Remove critérios legais pois houve alteração no contexto
+      if(!this.c.temSubclasses4Nivel){
+        index = this.c.pca.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
+        if(index != -1){
+          this.c.pca.justificacao.splice(index, 1);
+          this.semaforos.critLegalAdicionadoPCA = false;
+        }
+        index = this.c.df.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
+        if(index != -1){
+          this.c.df.justificacao.splice(index, 1);
+          this.semaforos.critLegalAdicionadoDF = false;
+        }
+      }
+      else{
+        for(let i=0; i < this.c.subclasses.length; i++){
+          index = this.c.subclasses[i].pca.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
+          if(index != -1){
+            this.c.subclasses[i].pca.justificacao.splice(index, 1);
+            this.c.subclasses[i].semaforos.critLegalAdicionadoPCA = false;
+          }
+          index = this.c.subclasses[i].df.justificacao.findIndex(crit => crit.tipo == "CriterioJustificacaoLegal");
+          if(index != -1){
+            this.c.subclasses[i].df.justificacao.splice(index, 1);
+            this.c.subclasses[i].semaforos.critLegalAdicionadoDF = false;
+          }
+        }
+      }
+      
     },
 
     unselectDiploma: function(diploma) {
@@ -584,8 +629,8 @@ export default {
       this.c.legislacao.splice(index, 1);
 
       // Remover os critérios quando já não há relações que os suportem
-      this.verificaCriteriosPCA(diploma)
-      this.verificaCriteriosDF(diploma)
+      this.verificaCriteriosPCA(diploma);
+      this.verificaCriteriosDF(diploma);
     },
 
     // Adiciona um critério à lista de critérios do PCA ou do DF....................
@@ -653,12 +698,26 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #00695c;
+  color: #2e7d32; 
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8f5e9; 
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {

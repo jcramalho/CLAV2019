@@ -1,9 +1,9 @@
 <template>
-  <v-layout row wrap ma-2>
-    <v-flex xs2>
+  <v-row>
+    <v-col cols="2">
       <div class="info-label">Selecione o(s) dono(s) do processo</div>
-    </v-flex>
-    <v-flex xs9 v-if="entidadesReady">
+    </v-col>
+    <v-col v-if="entidadesReady">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -17,12 +17,13 @@
         <v-data-table
           :headers="entidadesHeaders"
           :items="entidades"
+          :items-per-page="5"
           :search="searchEntidades"
           item-key="id"
           class="elevation-1"
-          rows-per-page-text="Linhas por página"
+          :footer-props="footer_props"
         >
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr @click="selectEntidade(props.item)">
               <td>{{ props.item.sigla }}</td>
               <td>{{ props.item.designacao }}</td>
@@ -30,21 +31,23 @@
             </tr>
           </template>
 
-          <template v-slot:pageText="props">
-            {{ props.pageStart }} - {{ props.pageStop }} de
-            {{ props.itemsLength }}
-          </template>
+          <template
+            v-slot:footer.page-text="props"
+          >{{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            A procura por "{{ search }}" não deu resultados.
-          </v-alert>
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            class="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-card>
-    </v-flex>
-    <v-flex xs9 v-else>
-      <v-subheader>A carregar entidades...</v-subheader>
-    </v-flex>
-  </v-layout>
+    </v-col>
+    <v-col v-else>
+      <v-subheader>{{ mylabels.donos }}</v-subheader>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -54,12 +57,19 @@ export default {
   data: function() {
     return {
       searchEntidades: "",
+      mylabels: require("@/config/labels").mensagensEspera,
 
       entidadesHeaders: [
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },
         { text: "Tipo", value: "tipo" }
-      ]
+      ],
+
+      footer_props: {
+        "items-per-page-text": "Entidades por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todas"
+      }
     };
   },
 
@@ -76,12 +86,14 @@ export default {
 </script>
 <style>
 .info-label {
-  color: #00695c;
+  color: #2e7d32; /* green darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8f5e9; /* green lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
 .info-content {

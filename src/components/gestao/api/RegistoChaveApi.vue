@@ -26,16 +26,17 @@
                 :rules="regraEmail"
                 required
               />
-              <v-text-field
+              <v-autocomplete
+                item-text="label"
+                item-value="value"
+                :items="ent_list"
+                :rules="regraEntidade"
                 prepend-icon="account_balance"
-                name="entidade"
                 v-model="form.entidade"
                 label="Entidade"
-                type="text"
-                :rules="regraEntidade"
                 required
               >
-              </v-text-field>
+              </v-autocomplete>
               <!-- <v-text-field
                 id="password"
                 prepend-icon="lock"
@@ -64,7 +65,7 @@
             :top="true"
           >
             {{ text }}
-            <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+            <v-btn text @click="fecharSnackbar">Fechar</v-btn>
           </v-snackbar>
         </v-card>
       </v-flex>
@@ -73,9 +74,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "signup",
   async mounted() {
@@ -96,6 +94,7 @@ export default {
         entidade: "",
         password: ""
       },
+      ent_list: [],
       snackbar: false,
       color: "",
       done: false,
@@ -104,29 +103,35 @@ export default {
     };
   },
   methods: {
+    async getEntidades() {
+      await this.$request("get", "/entidades")
+        .then(res => {
+          this.ent_list = res.data.map(ent => {
+            return {
+              label: ent.sigla + " - " + ent.designacao,
+              value: "ent_" + ent.sigla
+            };
+          });
+        })
+        .catch(error => alert(error));
+    },
     registarChaveApi() {
       if (this.$refs.form.validate()) {
-        axios.post(lhost + "/api/chaves/registar", {
-            name: this.$data.form.name,
-            email: this.$data.form.email,
-            entidade: this.$data.form.entidade
-            // password: this.$data.form.password
-          })
+        this.$request("post", "/chaves", {
+          name: this.$data.form.name,
+          email: this.$data.form.email,
+          entidade: this.$data.form.entidade
+          // password: this.$data.form.password
+        })
           .then(res => {
-            if (res.data === "Chave API registada com sucesso!") {
-              this.text = "Chave API registada com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            } else if (res.data === "Email já em uso!") {
-              this.text = "Ocorreu um erro ao registar a chave API: Email já em uso!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }
+            this.text =
+              "Chave API registada com sucesso! A chave API foi enviada para o seu email.";
+            this.color = "success";
+            this.snackbar = true;
+            this.done = true;
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text = err.response.data[0].msg || err.response.data;
             this.color = "error";
             this.snackbar = true;
             this.done = false;

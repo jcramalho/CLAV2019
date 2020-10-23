@@ -1,5 +1,5 @@
 <template>
-  <ListagemUsers/>
+  <ListagemUsers />
 </template>
 
 <script>

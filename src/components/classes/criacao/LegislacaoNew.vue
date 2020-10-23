@@ -1,18 +1,17 @@
 <template>
-  <v-layout row wrap color="teal lighten-5" ma-2>
-    <v-flex xs2>
+  <v-row class="ma-2 indigo lighten-5">
+    <v-col cols="2">
       <div class="info-label">Legislação nova</div>
-      <v-btn small dark round color="teal darken-4" @click="newLegislacao">
-          Adicionar
-          <v-icon small dark right>add_circle_outline</v-icon>
+      <v-btn small dark rounded color="indigo darken-2" @click="newLegislacao">
+        Adicionar
+        <v-icon small dark right>add_circle_outline</v-icon>
       </v-btn>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col>
       <v-form v-model="valid">
         <v-container>
-          <v-layout>
-
-            <v-flex xs12 md3 v-if="listaTipos.length > 0">
+          <v-row>
+            <v-col xs12 md3 v-if="listaTipos.length > 0">
               <v-select
                 item-text="label"
                 item-value="value"
@@ -20,61 +19,48 @@
                 :items="listaTipos"
                 label="Tipo"
               />
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3 v-else>
-              <v-text-field
-                v-model="tipo"
-                label="Tipo"
-              ></v-text-field>
-            </v-flex>
+            <v-col xs12 md3 v-else>
+              <v-text-field v-model="tipo" label="Tipo"></v-text-field>
+            </v-col>
 
-
-            <v-flex xs12 md3>
+            <v-col xs12 md3>
               <v-text-field v-model="numero" label="Número"></v-text-field>
-            </v-flex>
+            </v-col>
 
-            <v-flex xs12 md3>
-              <v-text-field
-                v-model="sumario"
-                label="Sumário"
-              ></v-text-field>
-            </v-flex>
+            <v-col xs12 md3>
+              <v-text-field v-model="sumario" label="Sumário"></v-text-field>
+            </v-col>
 
-            <v-flex xs12 md3>
-              <v-text-field
-                v-model="data"
-                label="Data: AAAA-MM-DD"
-                mask="####-##-##"
-              />
-            </v-flex>
-          </v-layout>
+            <v-col xs12 md3>
+              <SelecionarData :d="data" :label="'Data: AAAA-MM-DD'" @dataSelecionada="data = $event" />
+            </v-col>
+          </v-row>
         </v-container>
       </v-form>
-    </v-flex>
+    </v-col>
 
     <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
       <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
-        <v-btn dark flat @click="fecharErros">
-          Fechar
-        </v-btn>
+      <v-btn dark text @click="fecharErros">Fechar</v-btn>
     </v-snackbar>
-
-  </v-layout>
+  </v-row>
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-const axios = require("axios");
+import SelecionarData from "@/components/generic/SelecionarData";
 
 export default {
   props: ["legislacao"],
+
+  components: { SelecionarData },
 
   data: function() {
     return {
       listaTipos: [],
       erroValidacao: false,
-      mensagensErro:[],
+      mensagensErro: [],
       valid: false,
       tipo: "",
       numero: "",
@@ -83,88 +69,118 @@ export default {
     };
   },
 
-  created: async function(){
-      try{
-          var tipos = await axios.get(lhost + "/api/vocabularios/vc_tipoDiplomaLegislativo")
-          this.listaTipos = tipos.data.map(t => {return {label: t.termo, value: t.termo }})
-      }
-      catch(e){
-          return e
-      }
+  created: async function() {
+    try {
+      var tipos = await this.$request(
+        "get",
+        "/vocabularios/vc_tipoDiplomaLegislativo"
+      );
+      this.listaTipos = tipos.data.map(t => {
+        return { label: t.termo, value: t.termo };
+      });
+    } catch (e) {
+      return e;
+    }
   },
 
   methods: {
-      fecharErros: function(){
-        this.mensagensErro = []
-        this.erroValidacao=false
-      },
+    fecharErros: function() {
+      this.mensagensErro = [];
+      this.erroValidacao = false;
+    },
 
-      validaTipo: function(t){
-        var res = true
-        if(t==""){
-          this.mensagensErro.push("O tipo não pode ser vazio, selecione um valor!")
-          res = false
-        }
-        return res
-      },
-
-      validaNumero: function(n){
-        var res = true
-        if(n==""){
-          this.mensagensErro.push("O número não pode ser vazio, introduza um valor!")
-          res = false
-        }
-        return res
-      },
-
-      validaDups: async function(t, n){
-          try{
-              var legs = await axios.get(lhost + "/api/legislacao")
-              var test = legs.data.filter(l => (l.tipo == t) && (l.numero == n))
-              if(test.length > 0){
-                  this.mensagensErro.push("Já existe um documento legislativo na BD com o mesmo tipo e número!")
-                  return false
-              }
-              else{
-                  return true
-              } 
-          }
-          catch(e){
-              return false
-          }
-      },
-
-      validaDupsLocais: function(t, n){
-          var test = this.legislacao.filter(l => (l.tipo == t) && (l.numero == n))
-          if(test.length > 0){
-            this.mensagensErro.push("Já foi criado um item com esse tipo e número!")
-            return false
-          }
-          else{
-            return true
-          } 
-      },
-
-      newLegislacao: async function(){
-        if(this.validaTipo(this.tipo) && this.validaNumero(this.numero) 
-            && await this.validaDups(this.tipo, this.numero) && this.validaDupsLocais(this.tipo, this.numero)){
-          var legislacao = {
-              tipo: this.tipo,
-              id: "...",
-              numero: this.numero,
-              sumario: this.sumario,
-              data: this.data
-          }
-          this.tipo = ""
-          this.numero = ""
-          this.sumario = ""
-          this.data = ""
-          this.$emit('newLegislacao', legislacao)
-        }
-        else{
-          this.erroValidacao = true
-        } 
+    validaTipo: function(t) {
+      var res = true;
+      if (t == "") {
+        this.mensagensErro.push(
+          "O tipo não pode ser vazio, selecione um valor!"
+        );
+        res = false;
       }
+      return res;
+    },
+
+    validaNumero: function(n) {
+      var res = true;
+      if (n == "") {
+        this.mensagensErro.push(
+          "O número não pode ser vazio, introduza um valor!"
+        );
+        res = false;
+      }
+      return res;
+    },
+
+    validaDups: async function(t, n) {
+      try {
+        var legs = await this.$request("get", "/legislacao");
+        var test = legs.data.filter(l => l.tipo == t && l.numero == n);
+        if (test.length > 0) {
+          this.mensagensErro.push(
+            "Já existe um documento legislativo na BD com o mesmo tipo e número!"
+          );
+          return false;
+        } else {
+          return true;
+        }
+      } catch (e) {
+        return false;
+      }
+    },
+
+    validaDupsLocais: function(t, n) {
+      var test = this.legislacao.filter(l => l.tipo == t && l.numero == n);
+      if (test.length > 0) {
+        this.mensagensErro.push(
+          "Já foi criado um item com esse tipo e número!"
+        );
+        return false;
+      } else {
+        return true;
+      }
+    },
+
+    validaSumario: function(s) {
+      if (s != "") return true;
+      else {
+        this.mensagensErro.push("O sumário não pode ficar vazio!");
+        return false;
+      }
+    },
+
+    validaData: function(d) {
+      if (d != "") return true;
+      else {
+        this.mensagensErro.push("A data não pode ficar vazia!");
+        return false;
+      }
+    },
+
+    newLegislacao: async function() {
+      if (
+        this.validaTipo(this.tipo) &&
+        this.validaNumero(this.numero) &&
+        (await this.validaDups(this.tipo, this.numero)) &&
+        this.validaDupsLocais(this.tipo, this.numero) &&
+        this.validaSumario(this.sumario) &&
+        this.validaData(this.data)
+      ) {
+        var legislacao = {
+          tipo: this.tipo,
+          id: "...",
+          numero: this.numero,
+          sumario: this.sumario,
+          data: this.data
+        };
+        this.tipo = "";
+        this.numero = "";
+        this.sumario = "";
+        this.data = "";
+        this.$emit("newLegislacao", legislacao);
+      } else {
+        this.erroValidacao = true;
+      }
+    }
   }
 };
 </script>

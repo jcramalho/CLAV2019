@@ -1,20 +1,29 @@
 <template>
-  <v-container grid-list-md fluid>
-    <v-layout row wrap justify-center>
+  <v-container style="max-width:100%">
+    <v-row>
       <!-- MENU LATERAL -->
-      <v-flex xs12 sm2>
-        <ClassesArvoreLateral />
-      </v-flex>
-      <v-flex xs12 sm10>
-        <InnerPageHeader />
+      <v-col xs="12" sm="3">
+        <ClassesArvoreLateral :classeId="idc.split('c')[1]" />
+      </v-col>
+      <v-col xs="12" sm="9">
         <!-- HEADER -->
         <v-card v-if="classeLoaded">
-          <v-toolbar color="indigo darken-2" dark>
-            <v-toolbar-title
-              >{{ this.classe.codigo }}:
-              {{ this.classe.titulo }}</v-toolbar-title
-            >
-          </v-toolbar>
+          <v-app-bar color="indigo darken-4" dark>
+            <v-toolbar-title>
+              {{ this.classe.codigo }}:
+              {{ this.classe.titulo }}
+            </v-toolbar-title>
+            <v-spacer />
+            <v-btn color="indigo accent-4" @click="goToSearch()">
+              Voltar para
+              <span v-if="this.savedSearch">
+                os resultados
+              </span>
+              <span v-else>
+                as classes
+              </span>
+            </v-btn>
+          </v-app-bar>
 
           <v-card-text>
             <ClassesFilho
@@ -22,446 +31,535 @@
               v-if="classe.filhos.length > 0"
             />
 
-            <v-expansion-panel popout>
-              <!-- DESCRITIVO DA CLASSE -->
-              <v-expansion-panel-content>
-                <template v-slot:header>
-                  <v-toolbar
-                    color="indigo darken-1 body-2 font-weight-bold"
-                    dark
-                    dense
-                  >
-                    <v-toolbar-title>
-                      Descritivo da Classe
-                      <InfoBox
+            <v-expansion-panels>
+              <v-expansion-panel popout>
+                <!-- DESCRITIVO DA CLASSE -->
+                <v-expansion-panel-header>
+                  <div class="separador">
+                    Descritivo da Classe
+                    <InfoBox
                         header="Descritivo da Classe"
                         :text="myhelp.Classe.BlocoDescritivo"
                         helpColor="white"
-                        dialogColor="#E0F2F1"
                       />
-                    </v-toolbar-title>
-                  </v-toolbar>
-                </template>
+                  </div>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row>
+                    <!-- ESTADO -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Estado
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content" v-if="classe.status == 'A'">
+                        Ativa
+                      </div>
+                      <div
+                        class="info-content"
+                        v-else-if="classe.status == 'H'"
+                      >
+                        Em revisão...
+                      </div>
+                      <div class="info-content" v-else>Inativa</div>
+                    </v-col>
+                  </v-row>
 
-                <v-layout wrap ma-2>
-                  <!-- DESCRIÇÂO -->
-                  <v-flex xs2>
-                    <div class="info-label">
-                      Descrição
-                      <InfoBox
-                        header="Descrição"
-                        :text="myhelp.Classe.Campos.Descricao"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content">
-                      {{ classe.descricao }}
-                    </div>
-                  </v-flex>
-                </v-layout>
+                  <v-row>
+                    <!-- DESCRIÇÂO -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Descrição
+                        <InfoBox
+                          header="Descrição"
+                          :text="myhelp.Classe.Campos.Descricao"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">{{ classe.descricao }}</div>
+                    </v-col>
+                  </v-row>
 
-                <NotasAp
-                  :notas="classe.notasAp"
-                  v-if="classe.notasAp.length > 0"
-                />
+                  <NotasAp
+                    :notas="classe.notasAp"
+                    v-if="classe.notasAp.length > 0"
+                  />
 
-                <ExemplosNotasAp
-                  :exemplos="classe.exemplosNotasAp"
-                  v-if="classe.exemplosNotasAp.length > 0"
-                />
+                  <ExemplosNotasAp
+                    :exemplos="classe.exemplosNotasAp"
+                    v-if="classe.exemplosNotasAp.length > 0"
+                  />
 
-                <NotasEx
-                  :notas="classe.notasEx"
-                  v-if="classe.notasEx.length > 0"
-                />
+                  <NotasEx
+                    :notas="classe.notasEx"
+                    v-if="classe.notasEx.length > 0"
+                  />
 
-                <TermosIndice
-                  :termos="classe.termosInd"
-                  v-if="classe.termosInd.length > 0"
-                />
-              </v-expansion-panel-content>
+                  <TermosIndice
+                    :termos="classe.termosInd"
+                    v-if="classe.termosInd.length > 0"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
 
-              <!-- CONTEXTO DA CLASSE -->
-              <v-expansion-panel-content v-if="classe.nivel == 3">
-                <template v-slot:header>
-                  <v-toolbar
-                    color="indigo darken-1 body-2 font-weight-bold"
-                    dark
-                    dense
-                  >
-                    <v-toolbar-title>
-                      Contexto de Avaliação
-                      <InfoBox
+              <v-expansion-panel popout v-if="classe.nivel == 3">
+                <!-- CONTEXTO DA CLASSE -->
+                <v-expansion-panel-header>
+                  <div class="separador">
+                    Contexto de Avaliação
+                    <InfoBox
                         header="Contexto de Avaliação"
                         :text="myhelp.Classe.BlocoContexto"
                         helpColor="white"
-                        dialogColor="#E0F2F1"
                       />
-                    </v-toolbar-title>
-                  </v-toolbar>
-                </template>
+                  </div>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row>
+                    <!-- TIPO DE PROCESSO -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Tipo de Processo
+                        <InfoBox
+                          header="Tipo de Processo"
+                          :text="myhelp.Classe.Campos.TipoProcesso"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">{{ classe.tipoProc }}</div>
+                    </v-col>
+                  </v-row>
 
-                <v-layout wrap ma-2>
-                  <!-- TIPO DE PROCESSO -->
-                  <v-flex xs2>
-                    <div class="info-label">
-                      Tipo de Processo
-                      <InfoBox
-                        header="Tipo de Processo"
-                        :text="myhelp.Classe.Campos.TipoProcesso"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content">
-                      {{ classe.tipoProc }}
-                    </div>
-                  </v-flex>
-                </v-layout>
+                  <v-row>
+                    <!-- TRANSVERSALIDADE -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Processo Transversal
+                        <InfoBox
+                          header="Processo Transversal"
+                          :text="myhelp.Classe.Campos.ProcessoTransversal"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">
+                        {{ classe.procTrans == "S" ? "Sim" : "Não" }}
+                      </div>
+                    </v-col>
+                  </v-row>
 
-                <v-layout wrap ma-2>
-                  <!-- TRANSVERSALIDADE -->
-                  <v-flex xs2>
-                    <div class="info-label">
-                      Processo Transversal
-                      <InfoBox
-                        header="Processo Transversal"
-                        :text="myhelp.Classe.Campos.ProcessoTransversal"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content">
-                      {{ classe.procTrans == "S" ? "Sim" : "Não" }}
-                    </div>
-                  </v-flex>
-                </v-layout>
+                  <Donos
+                    :entidades="classe.donos"
+                    v-if="classe.donos.length > 0"
+                  />
 
-                <Donos
-                  :entidades="classe.donos"
-                  v-if="classe.donos.length > 0"
-                />
+                  <Participantes
+                    :entidades="classe.participantes"
+                    v-if="classe.participantes.length > 0"
+                  />
 
-                <Participantes
-                  :entidades="classe.participantes"
-                  v-if="classe.participantes.length > 0"
-                />
+                  <ProcessosRelacionados
+                    :processos="classe.processosRelacionados"
+                    v-if="classe.processosRelacionados.length > 0"
+                  />
 
-                <ProcessosRelacionados
-                  :processos="classe.processosRelacionados"
-                  v-if="classe.processosRelacionados.length > 0"
-                />
-
-                <Legislacao
-                  :legs="this.classe.legislacao"
-                  v-if="classe.legislacao.length > 0"
-                />
-              </v-expansion-panel-content>
-
-              <v-expansion-panel-content
+                  <Legislacao
+                    :legs="this.classe.legislacao"
+                    v-if="classe.legislacao.length > 0"
+                  />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+              <v-expansion-panel
                 v-if="
                   (classe.nivel == 3 && classe.filhos.length == 0) ||
                     classe.nivel == 4
                 "
               >
-                <template v-slot:header>
-                  <v-toolbar
-                    color="indigo darken-1 body-2 font-weight-bold"
-                    dark
-                    dense
-                  >
-                    <v-toolbar-title>
-                      Decisões de Avaliação
-                      <InfoBox
+                <v-expansion-panel-header>
+                  <div class="separador">
+                    Decisões de Avaliação
+                    <InfoBox
                         header="Decisões de Avaliação"
                         :text="myhelp.Classe.BlocoDecisoes"
                         helpColor="white"
-                        dialogColor="#E0F2F1"
                       />
-                    </v-toolbar-title>
-                  </v-toolbar>
-                </template>
-
-                <v-layout ma-2 wrap>
-                  <v-flex xs12>
-                    <v-toolbar
-                      color="indigo font-weight-medium"
-                      dark
-                      height="30"
-                    >
-                      <v-toolbar-title
-                        >Prazo de Conservação Administrativa</v-toolbar-title
+                  </div>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-row>
+                    <v-col xs="12" sm="12">
+                      <v-toolbar
+                        color="indigo darken-4"
+                        class="caption font-weight-regular"
+                        dark
+                        height="25"
                       >
-                    </v-toolbar>
-                  </v-flex>
-                </v-layout>
+                        <v-toolbar-title>
+                          Prazo de Conservação Administrativa
+                        </v-toolbar-title>
+                      </v-toolbar>
+                    </v-col>
+                  </v-row>
 
-                <v-layout wrap ma-2>
-                  <!-- PRAZO -->
-                  <v-flex xs2>
-                    <div class="info-label">
-                      Prazo
-                      <InfoBox
-                        header="Prazo"
-                        :text="myhelp.Classe.Campos.Prazo"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content" v-if="classe.pca.valores > 1">
-                      {{ classe.pca.valores + " anos" }}
-                    </div>
-                    <div class="info-content" v-else-if="classe.pca.valores == 1">
-                      {{ classe.pca.valores + " ano" }}
-                    </div>
-                  </v-flex>
-                </v-layout>
-
-                <v-layout wrap ma-2 v-if="classe.pca.notas != ''">
-                  <!-- NOTAS -->
-                  <v-flex xs2>
-                    <div class="info-label">Notas</div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content">
-                      {{ classe.pca.notas }}
-                    </div>
-                  </v-flex>
-                </v-layout>
-
-                <v-layout wrap ma-2 v-if="classe.pca.formaContagem">
-                  <!-- FORMA DE CONTAGEM -->
-                  <v-flex xs2>
-                    <div class="info-label">
-                      Forma de Contagem
-                      <InfoBox
-                        header="Forma de Contagem"
-                        :text="myhelp.Classe.Campos.FormaContagem"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content">
-                      {{ classe.pca.formaContagem }}
-                    </div>
-                  </v-flex>
-                </v-layout>
-
-                <v-layout wrap ma-2 v-if="classe.pca.subFormaContagem">
-                  <!-- SUBFORMA DE CONTAGEM -->
-                  <v-flex xs2>
-                    <div class="info-label">
-                      Subforma de Contagem
-                      <InfoBox
-                        header="Subforma de Contagem"
-                        :text="myhelp.Classe.Campos.SubformaContagem"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content">
-                      {{ classe.pca.subFormaContagem }}
-                    </div>
-                  </v-flex>
-                </v-layout>
-
-                <v-layout wrap ma-2 v-if="classe.pca.justificacao">
-                  <!-- JUSTIFICAÇÂO -->
-                  <v-flex xs2>
-                    <div class="info-label">
-                      Justificação
-                      <InfoBox
-                        header="Justificação do PCA"
-                        :text="myhelp.Classe.Campos.JustificacaoPCA"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content">
-                      <div
-                        v-for="c in classe.pca.justificacao"
-                        :key="c.tipoId"
-                      >
-                        <!-- Critério Gestionário ...............................-->
-                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoGestionario'" wrap ma-1>
-                          <v-flex xs2>
-                            <div class="info-label">Critério Gestionário</div>
-                          </v-flex>
-                          <v-flex xs10>
-                            <div class="info-content">{{ mylabels.textoCriterioJustificacaoGestionario }}</div>
-                          </v-flex>
-                        </v-layout>
-
-                        <!-- Critério Utilidade Administrativa .................-->
-                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'" wrap ma-1>
-                          <v-flex xs2>
-                            <div class="info-label">Critério de Utilidade Administrativa</div>
-                          </v-flex>
-                          <v-flex xs10>
-                            <div class="info-content">
-                              {{ mylabels.textoCriterioUtilidadeAdministrativa }}
-                              <span v-for="p in c.processos" :key="p.procId">
-                                {{ p.procId }}, 
-                              </span>
-                            </div>
-                          </v-flex>
-                        </v-layout>
-
-                        <!-- Critério Legal ...................................-->
-                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoLegal'" wrap ma-1>
-                          <v-flex xs2>
-                            <div class="info-label">Critério Legal</div>
-                          </v-flex>
-                          <v-flex xs10>
-                            <div class="info-content">
-                              {{ mylabels.textoCriterioLegal }}
-                              <span v-for="l in c.legislacao" :key="l.legId">
-                                {{ l.legId }}, 
-                              </span>
-                            </div>
-                          </v-flex>
-                        </v-layout>
-
+                  <v-row>
+                    <!-- PRAZO -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Prazo
+                        <InfoBox
+                          header="Prazo"
+                          :text="myhelp.Classe.Campos.Prazo"
+                          helpColor="indigo darken-4"
+                        />
                       </div>
-                    </div>
-                  </v-flex>
-                </v-layout>
-
-                <!-- DESTINO FINAL ................................................... -->
-
-                <v-layout ma-2 wrap>
-                  <v-flex xs12>
-                    <v-toolbar
-                      color="indigo font-weight-medium"
-                      dark
-                      height="30"
-                    >
-                      <v-toolbar-title>Destino Final</v-toolbar-title>
-                    </v-toolbar>
-                  </v-flex>
-                </v-layout>
-
-                <v-layout wrap ma-2>
-                  <!-- VALOR -->
-                  <v-flex xs2>
-                    <div class="info-label">
-                      Destino Final
-                      <InfoBox
-                        header="Destino Final"
-                        :text="myhelp.Classe.Campos.DF"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content">
-                      <span v-if="classe.df.valor == 'E'">Eliminação</span>
-                      <span v-else-if="classe.df.valor == 'C'">Conservação</span>
-                      <span v-else>Não Especificado</span>
-                    </div>
-                  </v-flex>
-                </v-layout>
-
-                <v-layout wrap ma-2 v-if="classe.df.justificacao">
-                  <!-- JUSTIFICAÇÂO -->
-                  <v-flex xs2>
-                    <div class="info-label">
-                      Justificação
-                      <InfoBox
-                        header="Justificação do DF"
-                        :text="myhelp.Classe.Campos.JustificacaoDF"
-                        helpColor="indigo darken-4"
-                        dialogColor="#E0F2F1"
-                      />
-                    </div>
-                  </v-flex>
-                  <v-flex xs10>
-                    <div class="info-content">
-                      <div
-                        v-for="c in classe.df.justificacao"
-                        :key="c.tipoId"
-                      >
-
-                        <!-- Critério Legal ...................................-->
-                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoLegal'" wrap ma-1>
-                          <v-flex xs2>
-                            <div class="info-label">Critério Legal</div>
-                          </v-flex>
-                          <v-flex xs10>
-                            <div class="info-content">
-                              {{ mylabels.textoCriterioLegal }}
-                              <span v-for="l in c.legislacao" :key="l.legId">
-                                {{ l.legId }}, 
-                              </span>
-                            </div>
-                          </v-flex>
-                        </v-layout>
-
-                        <!-- Critério de Densidade Informacional ..............-->
-                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'" wrap ma-1>
-                          <v-flex xs2>
-                            <div class="info-label">Critério de Densidade Informacional</div>
-                          </v-flex>
-                          <v-flex xs10>
-                            <div class="info-content">
-                              {{ mylabels.textoCriterioDensidadeInfo }}
-                              <span v-for="p in c.processos" :key="p.procId">
-                                {{ p.procId }}, 
-                              </span>
-                            </div>
-                          </v-flex>
-                        </v-layout>
-
-                        <!-- Critério de Complementaridade Informacional ..............-->
-                        <v-layout v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'" wrap ma-1>
-                          <v-flex xs2>
-                            <div class="info-label">Critério de Complementaridade Informacional</div>
-                          </v-flex>
-                          <v-flex xs10>
-                            <div class="info-content">
-                              {{ mylabels.textoCriterioComplementaridade }}
-                              <span v-for="p in c.processos" :key="p.procId">
-                                {{ p.procId }}, 
-                              </span>
-                            </div>
-                          </v-flex>
-                        </v-layout>
-
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content" v-if="classe.pca.valores > 1">
+                        {{ classe.pca.valores + " anos" }}
                       </div>
-                    </div>
-                  </v-flex>
-                </v-layout>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+                      <div
+                        class="info-content"
+                        v-else-if="classe.pca.valores == 1"
+                      >
+                        {{ classe.pca.valores + " ano" }}
+                      </div>
+                      <div class="info-content" v-else-if="classe.pca.notas != ''">
+                        Não especificado
+                      </div>
+                    </v-col>
+                  </v-row>
+
+                  <v-row v-if="classe.pca.notas != ''">
+                    <!-- NOTAS -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Notas
+                        <InfoBox
+                          header="Notas ao PCA"
+                          :text="myhelp.Classe.Campos.Notas"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">{{ classe.pca.notas }}</div>
+                    </v-col>
+                  </v-row>
+
+                  <v-row v-if="classe.pca.formaContagem">
+                    <!-- FORMA DE CONTAGEM -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Forma de Contagem
+                        <InfoBox
+                          header="Forma de Contagem"
+                          :text="myhelp.Classe.Campos.FormaContagem"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">
+                        {{ classe.pca.formaContagem }}
+                      </div>
+                    </v-col>
+                  </v-row>
+
+                  <v-row v-if="classe.pca.subFormaContagem">
+                    <!-- SUBFORMA DE CONTAGEM -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Subforma de Contagem
+                        <InfoBox
+                          header="Subforma de Contagem"
+                          :text="myhelp.Classe.Campos.SubformaContagem"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">
+                        {{ classe.pca.subFormaContagem }}
+                      </div>
+                    </v-col>
+                  </v-row>
+
+                  <v-row v-if="classe.pca.justificacao">
+                    <!-- JUSTIFICAÇÂO -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Justificação
+                        <InfoBox
+                          header="Justificação do PCA"
+                          :text="myhelp.Classe.Campos.JustificacaoPCA"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">
+                        <div
+                          v-for="c in classe.pca.justificacao"
+                          :key="c.tipoId"
+                        >
+                          <!-- Critério Gestionário ...............................-->
+                          <v-row
+                            v-if="c.tipoId == 'CriterioJustificacaoGestionario'"
+                          >
+                            <v-col xs="2" sm="2">
+                              <div class="info-label">Critério Gestionário</div>
+                            </v-col>
+                            <v-col xs="10" sm="10">
+                              <div class="info-content">
+                                {{
+                                  /* texto normalizado:
+                                  mylabels.textoCriterioJustificacaoGestionario
+                                  texto proveniente da FRD: */
+                                  c.conteudo
+                                }}
+                              </div>
+                            </v-col>
+                          </v-row>
+
+                          <!-- Critério Utilidade Administrativa .................-->
+                          <v-row
+                            v-if="
+                              c.tipoId ==
+                                'CriterioJustificacaoUtilidadeAdministrativa'
+                            "
+                          >
+                            <v-col xs="2" sm="2">
+                              <div class="info-label">
+                                Critério de Utilidade Administrativa
+                              </div>
+                            </v-col>
+                            <v-col xs="10" sm="10">
+                              <div class="info-content">
+                                {{ c.conteudo }}
+                                <br />
+                                <br />
+                                <ul>
+                                  <li v-for="p in c.processos" :key="p.procId">
+                                    <a :href="'/classes/consultar/' + p.procId">
+                                      {{ p.procId.split("c")[1] }} -
+                                      {{ p.nome }}
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </v-col>
+                          </v-row>
+
+                          <!-- Critério Legal ...................................-->
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
+                            <v-col xs="2" sm="2">
+                              <div class="info-label">Critério Legal</div>
+                            </v-col>
+                            <v-col xs="10" sm="10">
+                              <div class="info-content">
+                                {{ c.conteudo }}
+                                <br />
+                                <br />
+                                <ul>
+                                  <li v-for="l in c.legislacao" :key="l.legId">
+                                    <a :href="'/legislacao/' + l.legId">
+                                      {{ l.tipo }} {{ l.numero }}
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </v-col>
+                          </v-row>
+                        </div>
+                      </div>
+                    </v-col>
+                  </v-row>
+
+                  <!-- DESTINO FINAL ................................................... -->
+
+                  <v-row>
+                    <v-col xs="12" sm="12">
+                      <v-toolbar
+                        color="indigo darken-4"
+                        class="caption font-weight-regular"
+                        dark
+                        height="25"
+                      >
+                        <v-toolbar-title>Destino Final</v-toolbar-title>
+                      </v-toolbar>
+                    </v-col>
+                  </v-row>
+
+                  <v-row>
+                    <!-- VALOR -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Destino Final
+                        <InfoBox
+                          header="Destino Final"
+                          :text="myhelp.Classe.Campos.DF"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">
+                        <span v-if="classe.df.valor == 'E'">Eliminação</span>
+                        <span v-else-if="classe.df.valor == 'C'">
+                          Conservação
+                        </span>
+                        <span v-else-if="classe.df.valor == 'CP'">
+                          Conservação Parcial
+                        </span>
+                        <span v-else-if="classe.df.nota!=''">Não Especificado</span>
+                      </div>
+                    </v-col>
+                  </v-row>
+
+                  <v-row v-if="classe.df.nota">
+                    <!-- NOTA ao DF -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Nota
+                        <InfoBox
+                          header="Nota ao DF"
+                          :text="myhelp.Classe.Campos.NotasDF"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">{{ classe.df.nota }}</div>
+                    </v-col>
+                  </v-row>
+
+                  <v-row v-if="classe.df.justificacao">
+                    <!-- JUSTIFICAÇÂO -->
+                    <v-col xs="2" sm="2">
+                      <div class="info-label">
+                        Justificação
+                        <InfoBox
+                          header="Justificação do DF"
+                          :text="myhelp.Classe.Campos.JustificacaoDF"
+                          helpColor="indigo darken-4"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col xs="10" sm="10">
+                      <div class="info-content">
+                        <div
+                          v-for="c in classe.df.justificacao"
+                          :key="c.tipoId"
+                        >
+                          <!-- Critério Legal ...................................-->
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
+                            <v-col xs="2" sm="2">
+                              <div class="info-label">Critério Legal</div>
+                            </v-col>
+                            <v-col xs="10" sm="10">
+                              <div class="info-content">
+                                {{ c.conteudo }}
+                                <br />
+                                <br />
+                                <ul>
+                                  <li v-for="l in c.legislacao" :key="l.legId">
+                                    <a :href="'/legislacao/' + l.legId">
+                                      {{ l.tipo }} {{ l.numero }}
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </v-col>
+                          </v-row>
+
+                          <!-- Critério de Densidade Informacional ..............-->
+                          <v-row
+                            v-if="
+                              c.tipoId == 'CriterioJustificacaoDensidadeInfo'
+                            "
+                          >
+                            <v-col xs="2" sm="2">
+                              <div class="info-label">
+                                Critério de Densidade Informacional
+                              </div>
+                            </v-col>
+                            <v-col xs="10" sm="10">
+                              <div class="info-content">
+                                {{
+                                  /* texto normalizado:
+                                  mylabels.textoCriterioDensidadeInfo
+                                  texto proveniente da FRD: */
+                                  c.conteudo
+                                }}
+                                <br />
+                                <br />
+                                <ul>
+                                  <li v-for="p in c.processos" :key="p.procId">
+                                    <a :href="'/classes/consultar/' + p.procId">
+                                      {{ p.procId.split("c")[1] }} -
+                                      {{ p.nome }}
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </v-col>
+                          </v-row>
+
+                          <!-- Critério de Complementaridade Informacional ..............-->
+                          <v-row
+                            v-if="
+                              c.tipoId ==
+                                'CriterioJustificacaoComplementaridadeInfo'
+                            "
+                          >
+                            <v-col xs="2" sm="2">
+                              <div class="info-label">
+                                Critério de Complementaridade Informacional
+                              </div>
+                            </v-col>
+                            <v-col xs="10" sm="10">
+                              <div class="info-content">
+                                {{
+                                  /* texto normalizado:
+                                  mylabels.textoCriterioComplementaridade
+                                  texto proveniente da FRD: */
+                                  c.conteudo
+                                }}
+                                <br />
+                                <br />
+                                <ul>
+                                  <li v-for="p in c.processos" :key="p.procId">
+                                    <a :href="'/classes/consultar/' + p.procId">
+                                      {{ p.procId.split("c")[1] }} -
+                                      {{ p.nome }}
+                                    </a>
+                                  </li>
+                                </ul>
+                              </div>
+                            </v-col>
+                          </v-row>
+                        </div>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
           </v-card-text>
         </v-card>
 
         <p v-else>A carregar...</p>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-
-import axios from "axios";
 import ClassesFilho from "@/components/classes/consulta/ClassesFilho.vue";
 import NotasAp from "@/components/classes/consulta/NotasAp.vue";
 import NotasEx from "@/components/classes/consulta/NotasEx.vue";
@@ -472,15 +570,15 @@ import Participantes from "@/components/classes/consulta/Participantes.vue";
 import ProcessosRelacionados from "@/components/classes/consulta/ProcessosRelacionados.vue";
 import Legislacao from "@/components/classes/consulta/Legislacao.vue";
 import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue";
-import InnerPageHeader from "@/components/generic/InnerPageHeader.vue";
 
 import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
-  props: ["idc"],
+  props: ["idc", "savedSearch"],
   data: () => ({
     classe: {},
     classeLoaded: false,
+
     filhosHeaders: [
       { text: "Código", align: "left", sortable: false, value: "codigo" },
       { text: "Título", value: "titulo" }
@@ -490,7 +588,6 @@ export default {
   }),
 
   components: {
-    InnerPageHeader,
     InfoBox,
     ClassesFilho,
     NotasAp,
@@ -507,14 +604,101 @@ export default {
   methods: {
     go: function(idClasse) {
       this.$router.push("/classes/consultar/c" + idClasse);
+    },
+    goToSearch() {
+      this.$router.push({
+        name: "classes",
+        params: { savedSearch: this.savedSearch }
+      });
     }
   },
-
   mounted: function() {
-    axios
-      .get(lhost + "/api/classes/" + this.idc)
-      .then(response => {
+    this.$request("get", "/classes/" + this.idc)
+      .then(async response => {
         this.classe = response.data;
+        debugger;
+        if (this.classe.df.justificacao) {
+          for (let i = 0; i < this.classe.df.justificacao.length; i++) {
+            if (this.classe.df.justificacao[i].processos) {
+              for (
+                let j = 0;
+                j < this.classe.df.justificacao[i].processos.length;
+                j++
+              ) {
+                let help =
+                  "/classes/" +
+                  this.classe.df.justificacao[i].processos[j].procId +
+                  "/meta";
+
+                await this.$request("get", help).then(response => {
+                  this.classe.df.justificacao[i].processos[j].nome =
+                    response.data.titulo;
+                });
+              }
+            }
+
+            if (this.classe.df.justificacao[i].legislacao) {
+              for (
+                let j = 0;
+                j < this.classe.df.justificacao[i].legislacao.length;
+                j++
+              ) {
+                await this.$request(
+                  "get",
+                  "/legislacao/" +
+                    this.classe.df.justificacao[i].legislacao[j].legId
+                ).then(response => {
+                  this.classe.df.justificacao[i].legislacao[j].tipo =
+                    response.data.tipo;
+                  this.classe.df.justificacao[i].legislacao[j].numero =
+                    response.data.numero;
+                });
+              }
+            }
+          }
+        }
+        if (this.classe.pca.justificacao) {
+          for (let h = 0; h < this.classe.pca.justificacao.length; h++) {
+            if (this.classe.pca.justificacao[h].processos) {
+              for (
+                let z = 0;
+                z < this.classe.pca.justificacao[h].processos.length;
+                z++
+              ) {
+                if (this.classe.pca.justificacao[h].processos[z].procId) {
+                  await this.$request(
+                    "get",
+                    "/classes/" +
+                      this.classe.pca.justificacao[h].processos[z].procId +
+                      "/meta"
+                  ).then(response => {
+                    this.classe.pca.justificacao[h].processos[z].nome =
+                      response.data.titulo;
+                  });
+                }
+              }
+            }
+
+            if (this.classe.pca.justificacao[h].legislacao) {
+              for (
+                let z = 0;
+                z < this.classe.pca.justificacao[h].legislacao.length;
+                z++
+              ) {
+                await this.$request(
+                  "get",
+                  "/legislacao/" +
+                    this.classe.pca.justificacao[h].legislacao[z].legId
+                ).then(response => {
+                  this.classe.pca.justificacao[h].legislacao[z].tipo =
+                    response.data.tipo;
+                  this.classe.pca.justificacao[h].legislacao[z].numero =
+                    response.data.numero;
+                });
+              }
+            }
+          }
+        }
         this.classeLoaded = true;
       })
       .catch(error => {
@@ -523,9 +707,24 @@ export default {
   }
 };
 </script>
-.myPanelHeader { color: #304FFE; }
 
 <style>
+.myPanelHeader {
+  color: #304ffe;
+}
+
+.separador {
+  color: white; 
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
 .info-label {
   color: #1a237e;
   padding: 5px;

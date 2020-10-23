@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" width="700">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" small color="indigo darken-4" dark>
+      <v-btn v-on="on" small color="indigo darken-4" dark @click.stop>
         Ver query
       </v-btn>
     </template>
@@ -15,17 +15,17 @@
 
       <v-card-text>
         <!-- eslint-disable-next-line -->
-        <span class="subheading" style="white-space: pre-wrap">{{ query }}</span>
+        <span class="subtitle-1" style="white-space: pre-wrap">{{ query }}</span>
       </v-card-text>
 
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn color="red darken-4" flat @click="goToInvariante()">
+        <v-btn color="red darken-4" text @click="goToInvariante()">
           Correr query
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="red darken-4" flat @click="dialog = false">
+        <v-btn color="red darken-4" text @click="dialog = false">
           Fechar
         </v-btn>
       </v-card-actions>

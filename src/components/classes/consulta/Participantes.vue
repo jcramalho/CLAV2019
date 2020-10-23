@@ -1,7 +1,7 @@
 <template>
-  <v-layout wrap ma-2>
+  <v-row>
     <!-- PARTICIPANTES NO PROCESSO -->
-    <v-flex xs2>
+    <v-col xs="2" sm="2">
       <div class="info-label">
         Participantes no processo
         <InfoBox
@@ -11,28 +11,16 @@
           dialogColor="#E0F2F1"
         />
       </div>
-    </v-flex>
-    <v-flex xs10>
+    </v-col>
+    <v-col xs="10" sm="10">
       <div class="info-content">
         <v-data-table
           :headers="headers"
           :items="myParticipantes"
           class="elevation-1"
-          hide-actions
+          hide-default-footer
         >
-          <template v-slot:headers="props">
-            <tr>
-              <th
-                v-for="h in props.headers"
-                :key="h.text"
-                class="table-header body-2 font-weight-bold"
-              >
-                {{ h.text }}
-              </th>
-            </tr>
-          </template>
-
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr>
               <td style="color: #1A237E;">{{ props.item.label }}</td>
               <td>
@@ -56,8 +44,8 @@
           </template>
         </v-data-table>
       </div>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -75,9 +63,12 @@ export default {
           text: "Tipo de Intervenção",
           align: "left",
           sortable: false,
-          value: "label"
+          value: "label",
+          class: ['table-header', 'body-2', 'font-weight-bold']
+
         },
-        { text: "Participantes", value: "participantes" }
+        { text: "Participantes", value: "participantes",
+        class: ['table-header', 'body-2', 'font-weight-bold']}
       ],
       participPorTipo: {
         Apreciador: [],
@@ -96,6 +87,26 @@ export default {
     go: function(idClasse) {
       this.$router.push("/entidades/" + idClasse);
       this.$router.go();
+    },
+
+    normaliza: function(tipo){
+      var res = ""
+      switch(tipo){
+        case "Assessor": res = "Assessorar";
+                                break;
+        case "Apreciador": res = "Apreciar";
+                                break; 
+        case "Comunicador": res = "Comunicar";
+                                break; 
+        case "Decisor": res = "Decidir";
+                                break; 
+        case "Executor": res = "Executar";
+                                break; 
+        case "Iniciador": res = "Iniciar";
+                                break;
+        default: res = "Desconhecido"                   
+      }
+      return res
     }
   },
 
@@ -109,7 +120,7 @@ export default {
       tipo = Object.keys(this.participPorTipo)[j];
       if (this.participPorTipo[tipo].length > 0) {
         this.myParticipantes.push({
-          label: tipo,
+          label: this.normaliza(tipo),
           participantes: this.participPorTipo[tipo]
         });
       }
@@ -127,7 +138,7 @@ a:link {
 a:hover {
   color: white;
   background-color: #1a237e;
-}
+} 
 
 .info-label {
   color: #1a237e;

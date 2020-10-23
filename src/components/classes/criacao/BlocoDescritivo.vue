@@ -1,46 +1,49 @@
 <template>
   <!-- BLOCO DESCRITIVO -->
-  <v-expansion-panel-content>
-    <template v-slot:header>
-      <v-toolbar color="teal darken-4 body-2 font-weight-bold" dark>
-        <v-toolbar-title>
-          Descritivo da Classe
-          <InfoBox
-            header="Descritivo da Classe"
-            :text="myhelp.Classe.BlocoDescritivo"
-            helpColor="#00695c"
-            dialogColor="#E0F2F1"
-          />
-        </v-toolbar-title>
-      </v-toolbar>
-    </template>
-    <v-layout wrap ma-2>
-      <!-- DESCRIÇÂO -->
-      <v-flex xs2>
-        <div class="info-label">
-          Descrição
-          <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" />
-        </div>
-      </v-flex>
-      <v-flex xs9>
-        <v-text-field
-          v-model="c.descricao"
-          label="Descrição"
-          solo
-          clearable
-        ></v-text-field>
-      </v-flex>
-    </v-layout>
+  <v-expansion-panel popout focusable>
+    <v-expansion-panel-header  class="expansion-panel-heading">
+      <div>
+        Descritivo da Classe
+        <InfoBox header="Descritivo da Classe" :text="myhelp.Classe.BlocoDescritivo" helpColor="white"/>
+      </div>
+      <template v-slot:actions>
+        <v-icon color="white">expand_more</v-icon>
+      </template>
+    </v-expansion-panel-header>
+    <v-expansion-panel-content>
+      <v-row>
+        <!-- DESCRIÇÂO -->
+        <v-col cols="2">
+          <div class="info-label">
+            Descrição
+            <InfoBox header="Descrição" :text="myhelp.Classe.Campos.Descricao" helpColor="indigo darken-4"/>
+          </div>
+        </v-col>
+        <v-col>
+          <v-textarea v-model="c.descricao" label="Descrição" rows="2" solo clearable auto-grow></v-textarea>
+          <!--v-text-field v-model="c.descricao" label="Descrição" solo clearable></v-text-field-->
+        </v-col>
+      </v-row>
 
-    <hr />
-    <BlocoDescritivoNotasAp :c="c" />
-    <hr />
-    <BlocoDescritivoExemplosNotasAp :c="c" />
-    <hr />
-    <BlocoDescritivoNotasEx :c="c" />
-    <hr />
-    <TermosIndiceOps :c="c" v-if="c.nivel == 3 && !c.temSubclasses4Nivel" />
-  </v-expansion-panel-content>
+      <hr style="border-top: 1px dashed #dee2f8;" />
+
+      <BlocoDescritivoNotasAp :c="c" />
+
+      <hr style="border-top: 1px dashed #dee2f8;" />
+
+      <BlocoDescritivoExemplosNotasAp 
+        v-if="c.nivel > 2"
+        :c="c" />
+
+      <hr style="border-top: 1px dashed #dee2f8;" />
+
+      <BlocoDescritivoNotasEx :c="c" />
+
+      <hr style="border-top: 1px dashed #dee2f8;" />
+
+      <TermosIndiceOps :c="c" v-if="c.nivel == 3 && !c.temSubclasses4Nivel" />
+    </v-expansion-panel-content>
+  </v-expansion-panel>
 </template>
 
 <script>
@@ -74,18 +77,33 @@ export default {
 
 <style>
 .info-label {
-  color: #00695c;
+  color: #283593; /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
 }
 
-.info-content {
+.separador {
+  color: white; 
   padding: 5px;
+  font-weight: 400;
   width: 100%;
-  border: 1px solid #1a237e;
+  background-color: #1A237E; 
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.expansion-panel-heading {
+  background-color: #283593 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
 }
 
 .is-collapsed li:nth-child(n + 5) {

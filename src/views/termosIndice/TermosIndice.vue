@@ -1,29 +1,34 @@
 <template>
-  <Listagem
-    v-bind:lista="termosIndice"
-    tipo="Termos de Índice"
-    v-bind:cabecalho="['Termo', 'Classe', 'Título da Classe']"
-    v-bind:campos="['termo', 'idClasse', 'tituloClasse']"
-  />
+  <div>
+    <Loading v-if="!termosReady" :message="'os termos de índice'" />
+    <Listagem
+      v-else
+      v-bind:lista="termosIndice"
+      tipo="Termos de Índice"
+      v-bind:cabecalho="['Termo', 'Classe', 'Título da Classe']"
+      v-bind:campos="['termo', 'idClasse', 'tituloClasse']"
+    />
+  </div>
 </template>
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
-import axios from "axios";
-const lhost = require("@/config/global").host;
+import Loading from "@/components/generic/Loading";
 
 export default {
   data: () => ({
     termosIndice: [],
-    campos: []
+    campos: [],
+    termosReady: false
   }),
   components: {
-    Listagem
+    Listagem,
+    Loading
   },
 
   mounted: async function() {
     try {
-      var response = await axios.get(lhost + "/api/termosIndice");
+      var response = await this.$request("get", "/termosIndice");
       this.termosIndice = await this.preparaLista(response.data);
     } catch (e) {
       return e;
@@ -41,6 +46,7 @@ export default {
             tituloClasse: listaTermos[i].tituloClasse
           });
         }
+        this.termosReady = true;
         return myTree;
       } catch (error) {
         return [];

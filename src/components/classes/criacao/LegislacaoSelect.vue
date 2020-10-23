@@ -1,9 +1,9 @@
 <template>
-  <v-layout row wrap ma-2>
-    <v-flex xs2>
-      <div class="info-label">Selecione os diplomas:</div>
-    </v-flex>
-    <v-flex xs9 v-if="legislacaoReady">
+  <v-row>
+    <v-col cols="2">
+      <div class="info-label">Selecione a legislação</div>
+    </v-col>
+    <v-col v-if="legislacaoReady">
       <v-card>
         <v-card-title>
           <v-text-field
@@ -17,12 +17,13 @@
         <v-data-table
           :headers="headers"
           :items="legs"
+          :items-per-page="5"
           :search="searchDiplomas"
           item-key="id"
           class="elevation-1"
-          rows-per-page-text="Linhas por página"
+          :footer-props="footer_props"
         >
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr @click="selectDiploma(props.item)">
               <td>{{ props.item.tipo }}</td>
               <td>{{ props.item.numero }}</td>
@@ -31,21 +32,23 @@
             </tr>
           </template>
 
-          <template v-slot:pageText="props">
-            Diplomas {{ props.pageStart }} - {{ props.pageStop }} de
-            {{ props.itemsLength }}
-          </template>
+          <template
+            v-slot:footer.page-text="props"
+          >Diplomas {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            A procura por "{{ search }}" não deu resultados.
-          </v-alert>
+          <v-alert
+            v-slot:no-results
+            :value="true"
+            color="error"
+            icon="warning"
+          >A procura por "{{ search }}" não deu resultados.</v-alert>
         </v-data-table>
       </v-card>
-    </v-flex>
-    <v-flex xs9 v-else>
-      <v-subheader>A carregar entidades...</v-subheader>
-    </v-flex>
-  </v-layout>
+    </v-col>
+    <v-col v-else>
+      <v-subheader>{{ mylabels.legislacao }}</v-subheader>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -55,13 +58,20 @@ export default {
   data: function() {
     return {
       searchDiplomas: "",
+      mylabels: require("@/config/labels").mensagensEspera,
 
       headers: [
         { text: "Tipo", align: "left", value: "tipo", sortable: false },
         { text: "Número", value: "numero", sortable: false },
         { text: "Sumário", value: "sumario", sortable: false },
         { text: "Data", value: "data" }
-      ]
+      ],
+
+      footer_props: {
+        "items-per-page-text": "Diplomas por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
 

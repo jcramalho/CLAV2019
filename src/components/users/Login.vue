@@ -45,7 +45,7 @@
             :top="true"
           >
             {{ text }}
-            <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+            <v-btn text @click="fecharSnackbar">Fechar</v-btn>
           </v-snackbar>
         </v-card>
       </v-flex>
@@ -54,9 +54,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "login",
   data() {
@@ -80,11 +77,10 @@ export default {
   methods: {
     loginUtilizador() {
       if (this.$refs.form.validate()) {
-        axios
-          .post(lhost + "/api/users/login", {
-            username: this.$data.form.email,
-            password: this.$data.form.password
-          })
+        this.$request("post", "/users/login", {
+          username: this.$data.form.email,
+          password: this.$data.form.password
+        })
           .then(res => {
             if (res.data.token != undefined && res.data.name != undefined) {
               // this.text = "Login efetuado com sucesso!";
@@ -93,6 +89,7 @@ export default {
               // this.done = true;
               this.$store.commit("guardaTokenUtilizador", res.data.token);
               this.$store.commit("guardaNomeUtilizador", res.data.name);
+              this.$store.commit("guardaEntidade", res.data.entidade);
               this.$router.push("/");
               // this.$store.state.name = res.data.name;
               // this.$store.state.token = res.data.token;
@@ -104,8 +101,9 @@ export default {
               this.done = false;
             }
           })
-          .catch(function(err) {
-            this.text = err;
+          .catch(err => {
+            this.text =
+              "Ocorreu um erro ao realizar o login: Por favor verifique as suas credenciais!";
             this.color = "error";
             this.snackbar = true;
             this.done = false;

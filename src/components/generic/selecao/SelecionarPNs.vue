@@ -1,16 +1,13 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs2>
-      <v-subheader
-        class="info-label"
-        style="border-color: white; border-style:solid; color: #1A237E;"
-        >Selecionar Processos de Negócio:</v-subheader
-      >
-    </v-flex>
-    <v-flex xs9 v-if="processosReady">
+  <v-row>
+    <v-col cols="2">
+      <v-subheader class="info-label">Selecionar Processos</v-subheader>
+    </v-col>
+    <v-col v-if="processosReady">
       <v-card>
         <v-card-title>
           <v-text-field
+            filled
             v-model="searchProcessos"
             append-icon="search"
             label="Filtrar Processos de negócio"
@@ -24,9 +21,9 @@
           :search="searchProcessos"
           item-key="id"
           class="elevation-1"
-          rows-per-page-text="Linhas por página"
+          :footer-props="footer_props"
         >
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr @click="selectProcesso(props.item)">
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
@@ -38,16 +35,22 @@
             {{ props.itemsLength }}
           </template>
 
-          <v-alert v-slot:no-results :value="true" color="error" icon="warning">
-            A procura por "{{ search }}" não deu resultados.
-          </v-alert>
+          <v-alert v-slot:no-results :value="true" color="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-card>
-    </v-flex>
-    <v-flex xs9 v-else>
-      <v-subheader>A carregar processos...</v-subheader>
-    </v-flex>
-  </v-layout>
+    </v-col>
+    <v-col v-else style="text-align:center;">
+      <p>A carregar processos...</p>
+      <v-progress-circular
+        indeterminate
+        size="100"
+        width="10"
+        color="indigo accent-4"
+      />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -57,7 +60,9 @@ export default {
   data: function() {
     return {
       searchProcessos: "",
-
+      footer_props: {
+        "items-per-page-text": "Linhas por página"
+      },
       processosHeaders: [
         { text: "Código", align: "left", value: "codigo" },
         { text: "Designação", value: "titulo" }
@@ -72,3 +77,17 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.info-label {
+  color: #1a237e; /* indigo darken-4 */
+  padding: 5px;
+  font-weight: 400;
+  width: auto;
+  height: auto;
+  background-color: #e8eaf6; /* indigo lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+</style>

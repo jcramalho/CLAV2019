@@ -44,9 +44,10 @@
                   :items="[
                     'Administrador de Perfil Tecnológico',
                     'Administrador de Perfil Funcional',
+                    'Utilizador Decisor',
                     'Utilizador Validador',
                     'Utilizador Avançado',
-                    'Utilizador Decisor',
+                    'Utilizador Arquivo Distrital',
                     'Utilizador Simples',
                     'Representante Entidade'
                   ]"
@@ -66,6 +67,18 @@
                 label="Password"
                 type="password"
                 :rules="regraPassword"
+                @input="verificaPassword()"
+                required
+              />
+              <v-text-field
+                id="rep_password"
+                prepend-icon="lock"
+                name="rep_password"
+                v-model="form.rep_password"
+                label="Repita a Password"
+                type="password"
+                :rules="regraPassword"
+                @input="verificaPassword()"
                 required
               />
             </v-form>
@@ -86,7 +99,7 @@
             :top="true"
           >
             {{ text }}
-            <v-btn flat @click="fecharSnackbar">Fechar</v-btn>
+            <v-btn text @click="fecharSnackbar">Fechar</v-btn>
           </v-snackbar>
         </v-card>
       </v-flex>
@@ -95,9 +108,6 @@
 </template>
 
 <script>
-const lhost = require("@/config/global").host;
-import axios from "axios";
-
 export default {
   name: "signup",
   async mounted() {
@@ -108,7 +118,7 @@ export default {
       regraNome: [v => !!v || "Nome é obrigatório."],
       regraEmail: [
         v => !!v || "Email é obrigatório.",
-        v => /.+@.+/.test(v) || "Email tem de ser válido."
+        v => /^.+@.+\..+$/.test(v) || "Email tem de ser válido."
       ],
       regraEntidade: [v => !!v || "Entidade é obrigatório."],
       regraPassword: [v => !!v || "Password é obrigatório."],
@@ -118,7 +128,8 @@ export default {
         email: "",
         entidade: "",
         type: "",
-        password: ""
+        password: "",
+        rep_password: ""
       },
       ent_list: [],
       snackbar: false,
@@ -128,10 +139,23 @@ export default {
       text: ""
     };
   },
+
   methods: {
+    verificaPassword() {
+      if (this.form.password != this.form.rep_password) {
+        if (this.regraPassword.length == 1) {
+          this.regraPassword = this.regraPassword.concat([
+            "A password deve ser igual!"
+          ]);
+        }
+      } else {
+        if (this.regraPassword.length == 2) {
+          this.regraPassword = this.regraPassword.slice(0, 1);
+        }
+      }
+    },
     async getEntidades() {
-      await axios
-        .get(lhost + "/api/entidades")
+      await this.$request("get", "/entidades")
         .then(res => {
           this.ent_list = res.data.map(ent => {
             return {
@@ -142,7 +166,7 @@ export default {
         })
         .catch(error => alert(error));
     },
-    registarUtilizador() {
+    async registarUtilizador() {
       if (this.$refs.form.validate()) {
         var parsedType;
         switch (this.$data.form.type) {
@@ -152,13 +176,16 @@ export default {
           case "Administrador de Perfil Funcional":
             parsedType = 6;
             break;
-          case "Utilizador Validador":
+          case "Utilizador Decisor":
             parsedType = 5;
             break;
-          case "Utilizador Avançado":
+          case "Utilizador Validador":
             parsedType = 4;
             break;
-          case "Utilizador Decisor":
+          case "Utilizador Avançado":
+            parsedType = 3.5;
+            break;
+          case "Utilizador Arquivo Distrital":
             parsedType = 3;
             break;
           case "Utilizador Simples":
@@ -168,34 +195,27 @@ export default {
             parsedType = 1;
             break;
         }
-        axios
-          .post(lhost + "/api/users/registar", {
+
+        try {
+          var response = await this.$request("post", "/users/registar", {
             name: this.$data.form.name,
             email: this.$data.form.email,
-            entidade: this.$data.form.entidade,
+            entidade: "ent_" + this.$data.form.entidade,
             type: parsedType,
             password: this.$data.form.password
-          })
-          .then(res => {
-            if (res.data === "Utilizador registado com sucesso!") {
-              this.text = "Utilizador registado com sucesso!";
-              this.color = "success";
-              this.snackbar = true;
-              this.done = true;
-            } else if (res.data === "Email já em uso!") {
-              this.text =
-                "Ocorreu um erro ao registar o utilizador: Email já em uso!";
-              this.color = "error";
-              this.snackbar = true;
-              this.done = false;
-            }
-          })
-          .catch(function(err) {
-            this.text = err;
-            this.color = "error";
-            this.snackbar = true;
-            this.done = false;
           });
+
+          this.$router.push(
+            "/users/listagem?sucesso=" + encodeURIComponent(response.data)
+          );
+        } catch (err) {
+          this.text =
+            "Ocorreu um erro ao realizar o registo: " +
+            (err.response.data[0].msg || err.response.data);
+          this.color = "error";
+          this.snackbar = true;
+          this.done = false;
+        }
       } else {
         this.text = "Por favor preencha todos os campos!";
         this.color = "error";

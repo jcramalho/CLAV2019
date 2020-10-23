@@ -20,7 +20,7 @@
             </span>
           </template>
 
-          <template v-slot:items="props">
+          <template v-slot:item="props">
             <tr>
               <td class="subheading">{{ props.item.data.split("T")[0] }}</td>
               <td class="subheading">{{ props.item.estado }}</td>
@@ -55,79 +55,84 @@
         </v-data-table>
       </v-flex>
 
-      <v-dialog v-model="distribuir" width="60%" >
-      <v-card>
-        <v-card-title class="headline">Distribuição do pedido</v-card-title>
+      <v-dialog v-model="distribuir" width="60%">
+        <v-card>
+          <v-card-title class="headline">Distribuição do pedido</v-card-title>
 
-        <v-card-text>
-          <div v-if="!selectedUser.name">
-          <p>Selecione o utilizador a quem deve ser atribuída a análise do pedido 
-            (basta clicar na linha correspondente):</p>
+          <v-card-text>
+            <div v-if="!selectedUser.name">
+              <p>
+                Selecione o utilizador a quem deve ser atribuída a análise do
+                pedido (basta clicar na linha correspondente):
+              </p>
 
-          <v-data-table
-            :headers="usersHeaders"
-            :items="usersRecords"
-            class="elevation-1"
-            hide-actions
-          >
-            <template v-slot:items="props">
-              <tr @click="selectedUser=props.item">
-                <td class="subheading">{{ props.item.name }}</td>
-                <td class="subheading">{{ props.item.entidade }}</td>
-              </tr>
-            </template>
-          </v-data-table>
-          </div>
+              <v-data-table
+                :headers="usersHeaders"
+                :items="usersRecords"
+                class="elevation-1"
+                hide-default-footer
+              >
+                <template v-slot:item="props">
+                  <tr @click="selectedUser = props.item">
+                    <td class="subheading">{{ props.item.name }}</td>
+                    <td class="subheading">
+                      {{ props.item.entidade.split("_")[1] }}
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </div>
 
-          <div v-else>
-            <p>Tarefa atribuída a: <b>{{ selectedUser.name }} ({{ selectedUser.entidade }})</b>.</p>
-            <div class="info-label">Despacho</div>
-            <v-textarea
-              v-model="despacho"
-              auto-grow
-              solo
-              label="Introduza o texto para o despacho (opcional)..."
-              rows="1"
-            ></v-textarea>
-          </div>
-        </v-card-text>
+            <div v-else>
+              <p>
+                Tarefa atribuída a:
+                <b>{{ selectedUser.name }} ({{ selectedUser.entidade.split("_")[1] }})</b>.
+              </p>
+              <div class="info-label">Despacho</div>
+              <v-textarea
+                v-model="despacho"
+                auto-grow
+                solo
+                label="Introduza o texto para o despacho (opcional)..."
+                rows="1"
+              ></v-textarea>
+            </div>
+          </v-card-text>
 
-        <v-card-actions>
-          <v-btn
-            color="indigo darken-4"
-            round dark
-            @click="guardarDistribuicao"
-          >
-            Guardar
-          </v-btn>
+          <v-card-actions>
+            <v-btn
+              color="indigo darken-4"
+              round
+              dark
+              @click="guardarDistribuicao"
+            >
+              Guardar
+            </v-btn>
 
-          <v-btn
-            color="red darken-4"
-            round dark
-            @click="cancelarDistribuicao"
-          >
-            Cancelar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
+            <v-btn
+              color="red darken-4"
+              round
+              dark
+              @click="cancelarDistribuicao"
+            >
+              Cancelar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import axios from "axios";
-const lhost = require("@/config/global").host;
-
 export default {
   data: () => ({
     pedidoParaDistribuir: {},
     distribuir: false,
     despacho: "",
     usersHeaders: [
-      {text: "Nome", value: "name", class:"title"},
-      {text: "Entidade", value: "entidade", class:"title"}
+      { text: "Nome", value: "name", class: "title" },
+      { text: "Entidade", value: "entidade", class: "title" }
     ],
     usersRecords: [],
     selectedUser: {},
@@ -161,7 +166,7 @@ export default {
   }),
   created: async function() {
     try {
-      var response = await axios.get(lhost + "/api/pedidos");
+      var response = await this.$request("get", "/pedidos");
       this.pedidos = response.data;
     } catch (e) {
       return e;
@@ -176,43 +181,45 @@ export default {
       this.$emit("pedidoSelected", item);
     },
 
-    distribuirPedido: async function(pedido){
+    distribuirPedido: async function(pedido) {
       try {
-        this.pedidoParaDistribuir = pedido
-        var response = await axios.get(lhost + "/api/users");
+        this.pedidoParaDistribuir = pedido;
+        var response = await this.$request("get", "/users");
         this.usersRecords = response.data;
-        this.distribuir = true
+        this.distribuir = true;
       } catch (e) {
         return e;
       }
     },
 
-    cancelarDistribuicao: function(){
-      this.distribuir = false
-      this.selectedUser = {}
-      this.despacho = ""
+    cancelarDistribuicao: function() {
+      this.distribuir = false;
+      this.selectedUser = {};
+      this.despacho = "";
     },
 
-    guardarDistribuicao: async function(){
-      try{
+    guardarDistribuicao: async function() {
+      try {
         var novaDistribuicao = {
-          estado: 'Distribuído',
+          estado: "Distribuído",
           responsavel: this.selectedUser.email,
           data: new Date(),
           despacho: this.despacho
-        }
-        this.pedidoParaDistribuir.estado = "Distribuído"
-        this.pedidoParaDistribuir.user = {token: this.$store.state.token}
-        var response = await axios.put(lhost + '/api/pedidos', { pedido: this.pedidoParaDistribuir, distribuicao: novaDistribuicao})
-        
-        this.distribuir = false
-        this.selectedUser = {}
-        this.despacho = ""
+        };
+        this.pedidoParaDistribuir.estado = "Distribuído";
+        this.pedidoParaDistribuir.user = { token: this.$store.state.token };
+        var response = await this.$request("put", "/pedidos", {
+          pedido: this.pedidoParaDistribuir,
+          distribuicao: novaDistribuicao
+        });
 
-        return this.pedidoParaDistribuir
-      }
-      catch(e){
-        return e
+        this.distribuir = false;
+        this.selectedUser = {};
+        this.despacho = "";
+
+        return this.pedidoParaDistribuir;
+      } catch (e) {
+        return e;
       }
     }
   }
