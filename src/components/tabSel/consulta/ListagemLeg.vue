@@ -67,7 +67,7 @@
         <template v-slot:item.link="{ item }">
           <v-tooltip bottom v-if="item.link">
                 <template v-slot:activator="{ on }">
-                  <v-btn icon color="red darken-3" :href="item.link" @click="downloadRADA(item.link)"
+                  <v-btn icon color="red darken-3" :href="item.link"
                   v-on="on">
                     <v-icon>picture_as_pdf</v-icon>
                   </v-btn>
@@ -163,42 +163,7 @@ export default {
   }),
 
   methods: {
-    download(path, filename) {
-      var element = document.createElement("a");
-
-      element.setAttribute("href", path);
-      element.setAttribute("download", filename);
-      element.style.display = "none";
-
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-    },
-
-    async downloadRADA(address) {
-      var mypath = address.split("CLAV:")[1];
-      var filename = address.split("RADA/")[1];
-      try {
-        var response = await this.$request("get", "ficheirosEstaticos?caminho=documentos/" + encodeURIComponent(mypath));
-
-        var blob = new Blob([response.data], {
-          type: 'application/pdf'
-        });
-
-        if (window.navigator.msSaveBlob) {
-          // FOR IE BROWSER
-          navigator.msSaveBlob(blob, filename);
-        } else {
-          // FOR OTHER BROWSERS
-          var url = URL.createObjectURL(blob);
-          this.download(url, filename);
-        }
-
-      } 
-      catch (erro) {
-        console.dir(erro)
-      }
-    },
+    
   }
 };
 </script>
