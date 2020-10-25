@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-8">
+  <v-card class="ma-8" v-if="ready">
     <v-card-title class="indigo darken-4 white--text" dark>
       {{ tipo }}
       <v-spacer></v-spacer>
@@ -67,7 +67,8 @@
         <template v-slot:item.link="{ item }">
           <v-tooltip bottom v-if="item.link">
                 <template v-slot:activator="{ on }">
-                  <v-btn icon color="red darken-3" :href="item.link"
+                  <v-btn icon color="red darken-3" 
+                    :href="pathAPI + '/ficheirosEstaticos?caminho=documentos%2FRADA%2F' + item.link.split('RADA/')[1] + '&' + authToken"
                   v-on="on">
                     <v-icon>picture_as_pdf</v-icon>
                   </v-btn>
@@ -137,9 +138,14 @@
 </template>
 
 <script>
+const lhost = require("@/config/global").host;
+
 export default {
   props: ["lista", "tipo"],
   data: () => ({
+    ready: false,
+    pathAPI: "",
+    authToken: "",
     search: "",
     headers: [
       {text: "Data", value: "data", width: "8%"},
@@ -162,8 +168,12 @@ export default {
     }
   }),
 
-  methods: {
-    
+  created: async function (){
+    this.authToken = await this.$getAuthToken();
+    this.authToken = this.authToken.replace(" ", "=");
+
+    this.pathAPI = lhost;
+    this.ready = true;
   }
 };
 </script>
