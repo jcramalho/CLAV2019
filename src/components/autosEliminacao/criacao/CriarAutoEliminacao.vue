@@ -183,26 +183,28 @@
           <v-stepper-step step="2">Identificação de classes / séries e agregações / unidades de instalação</v-stepper-step>
 
           <v-stepper-content step="2">
-            <!-- Adicionar Zona Controlo -->
-            <AdicionarZonaControlo
-              v-bind:classes="classes"
-              v-bind:entidades="entidades"
-              v-bind:auto="auto"
-              v-bind:classesCompletas="classesCompletas"
-              v-bind:donos="donos"
-              v-bind:tipo="tipo"
-            />
+            <Loading v-if="classes.length==0" :message="'Fonte de Legitimação'" />
+            <div v-else>
+              <!-- Adicionar Zona Controlo -->
+              <AdicionarZonaControlo
+                v-bind:classes="classes"
+                v-bind:entidades="entidades"
+                v-bind:auto="auto"
+                v-bind:classesCompletas="classesCompletas"
+                v-bind:donos="donos"
+                v-bind:tipo="tipo"
+              />
 
-            <!-- Zonas de Controlo -->
-            <ListaZonasControlo
-              v-bind:auto="auto"
-              v-bind:classes="classes"
-              v-bind:entidades="entidades"
-              v-bind:classesCompletas="classesCompletas"
-              v-bind:donos="donos"
-              v-bind:tipo="tipo"
-            />
-
+              <!-- Zonas de Controlo -->
+              <ListaZonasControlo
+                v-bind:auto="auto"
+                v-bind:classes="classes"
+                v-bind:entidades="entidades"
+                v-bind:classesCompletas="classesCompletas"
+                v-bind:donos="donos"
+                v-bind:tipo="tipo"
+              />
+            </div>
             <div class="mx-2">
               <v-btn
                 medium
@@ -384,13 +386,15 @@ import AdicionarZonaControlo from "@/components/autosEliminacao/criacao/Adiciona
 import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasControlo.vue";
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
+import Loading from "@/components/generic/Loading";
 
 export default {
   props: ["entidades"],
   components: {
     AdicionarZonaControlo,
     ListaZonasControlo,
-    InfoBox
+    InfoBox,
+    Loading
   },
   data: () => ({
     myhelp: help,

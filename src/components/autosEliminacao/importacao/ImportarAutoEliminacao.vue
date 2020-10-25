@@ -187,6 +187,8 @@
           <v-stepper-step :complete="steps > 2" step="2">Importação dos ficheiros de submissão</v-stepper-step>
 
           <v-stepper-content step="2">
+            <Loading v-if="classes.length==0" :message="'Fonte de Legitimação'" />
+            <div v-else>
             <v-row>
               <v-col :md="3">
                 <div class="info-label">Ficheiro classes / séries</div>
@@ -203,7 +205,7 @@
                 <input type="file" id="fileAgreg" @change="previewFileAgreg" />
               </v-col>
             </v-row>
-            
+            </div>
             <v-btn @click="steps=1; cleanFiles()" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
             <v-btn class="ma-2" color="indigo darken-4" dark @click="converter()" :disabled="!fileSerie" v-if="fileSerie">Validar Ficheiros e Continuar</v-btn>
             <v-btn class="ma-2" color="red darken-4" dark @click="cleanFiles">Limpar</v-btn>
@@ -376,12 +378,14 @@ const validador = require("@/plugins/conversor").validarCSVs;
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 import ValidarAE from "@/components/autosEliminacao/importacao/ValidarAutoEliminacao.vue"
+import Loading from "@/components/generic/Loading";
 
 export default {
   props: ["entidades"],
   components: {
     InfoBox,
-    ValidarAE
+    ValidarAE,
+    Loading
   },
   data: () => ({
     classes: [],
