@@ -3,7 +3,7 @@
     <v-col cols="12" xs="12" sm="3">
       <div class="info-label">
         Sistemas de informação
-        <InfoBox header="SI" :text="myhelp" />
+        <InfoBox header="Sistemas de Informação"/>
       </div>
     </v-col>
     <v-col cols="12" xs="12" sm="9" v-if="sistema.length > 0">
@@ -32,39 +32,39 @@
             <td>{{ props.item.numeroSI }}</td>
             <td>{{ props.item.nomeSI }}</td>
             <td>
-            <template>
-              <div class="text">
-                <v-dialog
-                  v-model="dialog"
-                  width="90%"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn small color="blue darken-2" dark rounded v-bind="attrs" v-on="on" @click="dialog = true">
-                      <v-icon dark>edit</v-icon>
-                    </v-btn>
-                  </template>
-
-                  <v-card>
-                    <v-card-title class="headline grey lighten-2">
-                      Sistema de informação
-                    </v-card-title>
-
-                    <v-divider></v-divider>
-
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        color="primary"
-                        text
-                        @click="dialog = false"
-                      >
-                        I accept
+              <template>
+                <div class="text">
+                  <v-dialog
+                    v-model="dialog"
+                    width="90%"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn small color="blue darken-2" dark rounded v-bind="attrs" v-on="on" @click="dialog = true">
+                        <v-icon dark>edit</v-icon>
                       </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </div>
-            </template>
+                    </template>
+
+                    <v-card>
+                      <v-card-title class="headline grey lighten-2">
+                        Sistema de informação
+                      </v-card-title>
+
+                      <v-divider></v-divider>
+                      <span>{{props.item}}</span>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="dialog = false"
+                        >
+                          I accept
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </div>
+              </template>
             </td>
             <td>
               <v-btn small color="red darken-2" dark rounded @click="unselectSistema(props.item)">

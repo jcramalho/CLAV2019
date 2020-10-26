@@ -4,7 +4,7 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         2.	Avaliação do sistema de informação (SI)
-        <InfoBox header="Avaliação SI" helpColor="white"/>
+        <InfoBox header="Avaliação SI" :text="myhelp.Ppd.Avaliacao.geral" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
@@ -54,7 +54,7 @@
               </v-card-title>
               <v-data-table
                 :headers="siRelacionadosHeaders"
-                :items="ppd.sistemasInfo"
+                :items="ppd.listaSistemasInfoAuxiliar"
                 :items-per-page="5"
                 :search="searchProcessos"
                 item-key="numeroSI"
@@ -484,10 +484,10 @@ export default {
       }
     },
     selectSistema: function(numeroSI, relacao) {
-      var index = this.ppd.sistemasInfo.findIndex(p => p.numeroSI === numeroSI);
-      this.ppd.sistemasInfo[index].relacao = relacao;
-      var selectedSistema = JSON.parse(JSON.stringify(this.ppd.sistemasInfo[index]));
-      this.ppd.sistemasInfo.splice(index, 1);
+      var index = this.ppd.listaSistemasInfoAuxiliar.findIndex(p => p.numeroSI === numeroSI);
+      this.ppd.listaSistemasInfoAuxiliar[index].relacao = relacao;
+      var selectedSistema = JSON.parse(JSON.stringify(this.ppd.listaSistemasInfoAuxiliar[index]));
+      this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
       this.$emit("newSistemasRelacionados", selectedSistema);
     },
 

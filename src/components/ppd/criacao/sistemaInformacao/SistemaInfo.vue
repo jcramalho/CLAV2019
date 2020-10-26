@@ -11,15 +11,19 @@
           <v-btn
             color="indigo darken-2"
             dark
-            rounded
             v-bind="attrs"
             v-on="on"
           >
             Novo SI
             <v-icon dark right>add_circle_outline</v-icon>
           </v-btn>
+          <v-btn color="indigo lighten-2" dark class="ma-2" @click="importarSI = true">
+            Importar SI
+            <v-icon dark right>file_upload</v-icon>
+          </v-btn>
         </v-col>
       </template>
+
       <v-card>
         <v-app-bar
           absolute
@@ -107,7 +111,6 @@
               />
             </v-expansion-panels>
           </v-row>
-
           <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
             <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
             <v-btn dark text @click="fecharErros">Fechar</v-btn>
@@ -115,6 +118,11 @@
         </v-sheet>
       </v-card>
     </v-dialog>
+    <ImportarSI
+      :ppd = "ppd"
+      :dialog="importarSI"
+      @fecharDialog="importarSI = false"
+    />
   </v-row>
 </template>
 
@@ -122,6 +130,7 @@
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
+import ImportarSI from "@/components/ppd/criacao/sistemaInformacao/importacao/ImportarSI.vue";
 import BlocoIdentificacao from "@/components/ppd/criacao/sistemaInformacao/BlocoIdentificacao.vue";
 import BlocoAvaliacao from "@/components/ppd/criacao/sistemaInformacao/BlocoAvaliacao.vue";
 import BlocoCaracterizacao from "@/components/ppd/criacao/sistemaInformacao/BlocoCaracterizacao.vue";
@@ -138,7 +147,8 @@ export default {
     BlocoIdentificacao,
     BlocoAvaliacao,
     BlocoCaracterizacao,
-    BlocoEstrategia
+    BlocoEstrategia,
+    ImportarSI
     },
 
   data: function() {
@@ -148,14 +158,14 @@ export default {
       valid: false,
       dialog: false,
       simNao: ["Sim","Não"],
-
+      importarSI: false,
       myhelp: help,
+
 
     };
   },
 
   created: async function() {
-    
   },
 
   methods: {
@@ -166,8 +176,8 @@ export default {
 
     unselectSistemasRelacionados: function(sistema) {
       // Recoloca o sistema nos selecionáveis
-      this.ppd.sistemasInfo.push(sistema);
-      var index = this.ppd.avaliacao.sistemasRelacionados.findIndex(e => e.id === sistema.id);
+      this.ppd.listaSistemasInfoAuxiliar.push(sistema);
+      var index = this.ppd.avaliacao.sistemasRelacionados.findIndex(e => e.numeroSI === sistema.numeroSI);
       this.ppd.avaliacao.sistemasRelacionados.splice(index, 1);
     },
 

@@ -63,7 +63,7 @@
           />
           <SistemaInfo
             :ppd="ppd"
-            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo)"
+            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo, ppd.listaSistemasInfoAuxiliar)"
             :entidades="entidades"
             :semaforos="semaforos"
             :listaLegislacao="listaLegislacao"
@@ -105,13 +105,14 @@ export default {
   data: () => ({
     // Objeto que guarda um ppd
     ppd: {
-
+      lixo : "",
       geral:{
         numeroPPD: "", //é necessário?
         nomePPD: "",
         mencaoResp: "",
         entSel: [],
       },
+      Sistemas: [],
       identificacao: {
         numeroSI: "",
         nomeSI: "",
@@ -183,6 +184,7 @@ export default {
       notasEx: [], //é necessário?
       termosInd: [], //é necessário?
 
+      listaSistemasInfoAuxiliar: [],
       sistemasInfo: [],
 
       user: {
@@ -298,21 +300,24 @@ export default {
       }
     },
 
-    newSistema: function(sis, lista) {
+    newSistema: function(sis, lista, listaAux) {
         lista.push(sis);
+        listaAux.push(sis);
     },
 
     selectSistema: function(sis) {
       this.ppd.sistemasInfo.push(sis);
+      this.ppd.listaSistemasInfoAuxiliar.push(sis);
       // Remove dos selecionáveis
-      var index = this.listaLegislacao.findIndex(l => l.id === sis.id);
+      var index = this.listaLegislacao.findIndex(l => l.numeroSI === sis.numeroSI);
       this.listaLegislacao.splice(index, 1);
     },
     unselectSistema: function(sistema) {
       // Recoloca o sistema nos selecionáveis
-      this.listaLegislacao.push(sistema);
-      var index = this.ppd.sistemasInfo.findIndex(e => e.id === sistema.id);
+      //this.listaLegislacao.push(sistema);
+      var index = this.ppd.sistemasInfo.findIndex(e => e.numeroSI === sistema.numeroSI);
       this.ppd.sistemasInfo.splice(index, 1);
+      this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
     },
 
 

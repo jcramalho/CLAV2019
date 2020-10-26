@@ -371,5 +371,32 @@ module.exports.help = {
       RADA: "Abreviatura de Relatório de Avaliação de Documentação Acumulada. <br/> Abrange as tabelas de seleção, inseridas em Relatórios de Avaliação de Documentação Acumulada, que não foram submetidos na Plataforma CLAV. Apesar de estes RADA não terem sido submetidos na CLAV, as suas tabelas de seleção foram importadas e estão disponíveis na plataforma.",
       RADA_CLAV: "Abreviatura de Relatório de Avaliação de Documentação Acumulada / Classificação e Avaliação da Informação Pública. <br/> Abrange as tabelas de seleção, inseridas em Relatórios de Avaliação de Documentação Acumulada submetidos na CLAV."
     }
+  },
+  Ppd:{
+    Identificacao:{
+      geral:"Devem ser identificados todos os Sistemas de Informação existentes enquanto contentores de informação produzida pela entidade.",
+
+    },
+    Avaliacao:{
+      geral: "<p>Informação determinante para identificar os sistemas com informação a preservar e indiciar o tipo"+
+      " de soluções de preservação.</p><p>A avaliação tem por base a fonte de legitimação em vigor na entidade, que contem"+
+      " a tabela de seleção com os prazos e destinos a aplicar à informação dos SI.</p><p>Os SI com informação cujo prazo"+
+      " de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de"+
+      " preservação digital.</p>O estado do sistema, o grau de utilização e a criticidade influenciam o tipo de solução de preservação a adotar para cada SI.",
+    },
+    Caracterizacao:{
+      geral:"<p>Apenas devem ser caracterizados os sistemas que tenham transitado da fase 2, i.e., os SI com informação cujo prazo de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de preservação digital. Não são objeto de preservação os SI abatidos, cuja informação passou para outro SI.</p>"+
+      "A recolha destes elementos informativos destina-se a:"+
+      "<ul><li>Avaliar algumas características e configurações da plataforma tecnológica de forma a identificar pontos fortes e fracos relativamente à adequação da mesma à preservação digital.</li>"+
+      "<li>Identificar lacunas que seja necessário colmatar de forma a adaptar a plataforma à preservação digital.</li>"+
+      "<li>Avaliar a dependência da informação relativamente a uma determinada tecnologia.</li>"+
+      "<li>Avaliar a robustez da plataforma quanto à segurança da informação.</li></ul>"+
+      "\n Esta fase encontra-se estruturada em seis blocos:"+
+      "<ol><li>Dependência tecnológica</li> <li>Crescimento do sistema</li> <li>Segurança geral da plataforma tecnológica</li>"+
+      "<li>Segurança específica dos sistemas</li> <li>Armazenamento</li> <li>Documentação</li></ol>",
+
+
+    },
+    Estrategia:{}
   }
 };

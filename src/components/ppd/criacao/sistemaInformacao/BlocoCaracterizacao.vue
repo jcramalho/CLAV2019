@@ -4,7 +4,7 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         3.  Caracterização do sistema de informação (SI)
-        <InfoBox header="Caracterização SI" :text="myhelp"  helpColor="white"/>
+        <InfoBox header="Caracterização SI" :text="myhelp.Ppd.Caracterizacao.geral"  helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>

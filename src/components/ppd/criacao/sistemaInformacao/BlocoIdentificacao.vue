@@ -4,7 +4,7 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         1.	Identificação do sistema de informação (SI)
-        <InfoBox header="Identificação SI" helpColor="white"/>
+        <InfoBox header="Identificação SI" :text="myhelp.Ppd.Identificacao.geral" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
