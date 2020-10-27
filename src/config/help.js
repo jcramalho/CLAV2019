@@ -404,10 +404,42 @@ module.exports.help = {
     },
     Avaliacao:{
       geral: "<p>Informação determinante para identificar os sistemas com informação a preservar e indiciar o tipo"+
-      " de soluções de preservação.</p><p>A avaliação tem por base a fonte de legitimação em vigor na entidade, que contem"+
-      " a tabela de seleção com os prazos e destinos a aplicar à informação dos SI.</p><p>Os SI com informação cujo prazo"+
-      " de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de"+
-      " preservação digital.</p>O estado do sistema, o grau de utilização e a criticidade influenciam o tipo de solução de preservação a adotar para cada SI.",
+        " de soluções de preservação.</p><p>A avaliação tem por base a fonte de legitimação em vigor na entidade, que contem"+
+        " a tabela de seleção com os prazos e destinos a aplicar à informação dos SI.</p><p>Os SI com informação cujo prazo"+
+        " de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de"+
+        " preservação digital.</p>O estado do sistema, o grau de utilização e a criticidade influenciam o tipo de solução de preservação a adotar para cada SI.",
+      descricao: "Indicar o âmbito e conteúdo do sistema de informação.",
+      decomposicao:"Nome dos subsistemas/aplicações que integram o sistema."+
+                  "Este campo só deve ser preenchido quando o sistema estiver estruturado em subsistemas e/ou módulos que correspondam a diferentes funções e/ou processos  de negócio.",
+      codClassificacao: "Código da classe/série  que enquadra o SI, constante da tabela de seleção da fonte de legitimação."+
+                  "Existem tabelas de seleção em que o identificador da classe/série é o Código de classificação, outras tabelas em que o identificador é o N.º de referência e, ainda, tabelas que contém simultaneamente um Código e um  N.º de referência.",
+      numeroClasse: "Número de referência da série que enquadra o SI, se aplicável"+
+                  "Existem tabelas de seleção em que o identificador da classe/série é o Código de classificação, outras tabelas em que o identificador é o N.º de referência e, ainda, tabelas que contém simultaneamente um Código e um  N.º de referência. ",
+      tituloClasse: "Registar o título da classe/série correspondente ao código de classificação / Nº de referência, de acordo com a tabela de seleção",
+      pcaClasse: "O prazo de conservação administrativo relativo à classe/série, tal como aparece na tabela de seleção.",
+      contagemPrazos: "A forma de contagem do prazo de conservação administrativo relativo à classe/série, tal como aparece na tabela de seleção.",
+      destinoClasse: "O Destino final relativo à classe/série, tal como aparecem na Tabela de seleção",
+      pcaDoSI: "O PCA do SI é o PCA da classe/série em que o SI se enquadra. No caso da equivalência SI/classe não ser linear, i.e., quando o SI se enquadra em várias classes/série, deve prevalecer o PCA mais elevado.",
+      destinoSI: "O DF do SI é o DF da classe/série em que o SI se enquadra. No caso da equivalência SI/classe não ser linear, i.e., quando o SI se enquadra em várias classes/série com DF distintos, deve prevalecer o DF conservação.",
+      siRelacionado: "Indicar nº de referência do sistema relacionado e o tipo de relação",
+      estadoSI: "Indicar se o sistema está:"+
+                "<p>Ativo (em exploração: cumpre objectivo operacional primário)</p>"+
+                "<p>Semi-Ativo (usado apenas para consulta esporádica: o SI foi substituído por outro mais actual; dados não foram migrados, ou foram migrados com erros)</p>"+
+                "<p>Inativo (sem qualquer  utilização administrativa, nem para inserção de dados, nem para pesquisa)</p>"+
+                "<p>Abatido (sistema descomissionado, cuja informação foi transferida para outro sistema)</p>",
+      utilizacaoSI: "Indicar o tipo de frequência e intensidade de utilização, pode estar relacionado com a passagem do tempo, ou seja o PCA, e está definitivamente relacionado com o estado em que se encontra o sistema:"+
+                    "<ol><li>O sistema é utilizado regularmente (todos os dias)</li>"+
+                    "<li>O sistema é usado menos regularmente (todas as semanas)</li>"+
+                    "<li>O sistema é utilizado com pouca regularidade (mensalmente ou semestralmente)</li>"+
+                    "<li>O sistema é pouco utilizado (anualmente)</li>"+
+                    "<li>O sistema nunca é utilizado (desconhecido).</li></ol>",
+      criticidadeSI: "Indicar a criticidade do SI, tomamdo em consideração o peso da informação para o cumprimento das atividades da organização:"+
+                    "<ol><li>Muito crítico. Sistema essencial para apoiar processos de negócio da instituição. Impacto extremo no caso de perda ou falha do sistema.</li>"+
+                    "<li>Crítico. Sistema importante para apoiar  os processos de negócio da instituição. Impacto elevado no caso de perda ou falha do sistema.</li>"+
+                    "<li>Pouco crítico. Sistema relevante para apoiar os processos de negócio. Impacto moderado no caso de perda ou falha do sistema.</li>"+
+                    "<li>Não crítico. Significativo para melhorar a eficiência, ou eficácia do negócio. Impacto leve no caso de perda ou falha do sistema.</li></ol>",
+      siObjetoPreservacao: "Os SI com informação cujo prazo de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de preservação digital. Não são objeto de preservação os SI abatidos, cuja informação passou para outro SI.",
+      
     },
     Caracterizacao:{
       geral:"<p>Apenas devem ser caracterizados os sistemas que tenham transitado da fase 2, i.e., os SI com informação cujo prazo de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de preservação digital. Não são objeto de preservação os SI abatidos, cuja informação passou para outro SI.</p>"+

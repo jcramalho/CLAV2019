@@ -10,6 +10,8 @@
       <v-data-table
         :headers="headers"
         :items="sistema"
+        item-key="numeroSI"
+        :sort-by="['numeroSI']"
         class="elevation-1"
         hide-default-footer
         :footer-props="footer_props"
@@ -40,7 +42,7 @@
                     width="90%"
                   >
                     <template v-slot:activator="{ on, attrs }">
-                      <v-btn small color="blue darken-2" dark rounded v-bind="attrs" v-on="on" @click="alterar = true">
+                      <v-btn small color="blue darken-2" dark rounded v-bind="attrs" v-on="on" @click="showSI(props.item)">
                         <v-icon dark>edit</v-icon>
                       </v-btn>
                     </template>
@@ -51,7 +53,8 @@
                       </v-card-title>
 
                       <v-divider></v-divider>
-                      <span>{{props.item}}</span>
+
+                      <span>{{siSpec}}</span>
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
@@ -59,7 +62,7 @@
                           text
                           @click="alterar = false"
                         >
-                          I accept
+                          Fechar
                         </v-btn>
                       </v-card-actions>
                     </v-card>
@@ -113,13 +116,19 @@ export default {
         "items-per-page-text": "Sistemas por página",
         "items-per-page-options": [5, 10, 20, -1],
         "items-per-page-all-text": "Todos"
-      }
+      },
+      siSpec: "",
     };
   },
 
   methods: {
     unselectSistema: function(sistema) {
       this.$emit("unselectSistema", sistema);
+    },
+
+    showSI: function(item){
+      this.alterar = true;
+      this.siSpec = item;
     }
   }
 };
