@@ -373,6 +373,16 @@ module.exports.help = {
     }
   },
   Ppd:{
+    titulo: "Denominação do Plano de Preservação Digital",
+    entidade: "Entidade responsável pela apresentação e aplicação do PPD",
+    responsabilidade: "Indicção do(s) responsável(eis) pelo apresentação do PPD",
+    novoSI: "Os elementos informativos relativos a cada SI encontram-se estruturados em quatro fases:"+
+            "<ul><li>	Fase 1 - Identificação do sistemas de informação </li>"+
+            "<li>Fase 2 - Avaliação e definição do criticidade do sistema de informação </li>" +
+            "<li>Fase 3 - Caracterização tecnológica do sistema de informação </li>"+
+            "<li>Fase 4 - Planeamento da estratégia de preservação do sistema de informação</li></ul>"+
+            "Para os SI externos, i.e., os SI que apenas são utilizados pela entidade para introdução de dados, sem qualquer tipo de gestão dos mesmos, apenas preencha os elementos informativos da fase 1."+
+            "\nApenas prosseguem para a fase 3 e fase 4, com preenchimento dos respetivos campos, os SI com prazo de conservação administrativa superior a 7anos ou com destino final de conservação, que não se encontrem em estado abatido.",
     Identificacao:{
       geral:"Devem ser identificados todos os Sistemas de Informação existentes enquanto contentores de informação produzida pela entidade.",
 

@@ -54,7 +54,7 @@
             <v-select
               :items="checkedAti"
               label="Indique o estado de atividade do sistema"
-              v-model="ppd.avaliacao.checkedAti"
+              v-model="ppd.si.avaliacao.checkedAti"
               dense
               solo
             ></v-select>

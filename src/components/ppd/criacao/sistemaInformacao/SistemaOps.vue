@@ -35,11 +35,12 @@
               <template>
                 <div class="text">
                   <v-dialog
-                    v-model="dialog"
+                    :retain-focus="false"
+                    v-model="alterar"
                     width="90%"
                   >
                     <template v-slot:activator="{ on, attrs }">
-                      <v-btn small color="blue darken-2" dark rounded v-bind="attrs" v-on="on" @click="dialog = true">
+                      <v-btn small color="blue darken-2" dark rounded v-bind="attrs" v-on="on" @click="alterar = true">
                         <v-icon dark>edit</v-icon>
                       </v-btn>
                     </template>
@@ -56,7 +57,7 @@
                         <v-btn
                           color="primary"
                           text
-                          @click="dialog = false"
+                          @click="alterar = false"
                         >
                           I accept
                         </v-btn>
@@ -100,7 +101,7 @@ export default {
   data: function() {
     return {
       myhelp: help,
-      dialog: false,
+      alterar: false,
       headers: [
         { text: "Número", value: "numeroSI" },
         { text: "Nome", value: "nomeSI" },

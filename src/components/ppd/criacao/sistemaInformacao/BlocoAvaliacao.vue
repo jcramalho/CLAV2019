@@ -12,8 +12,8 @@
           <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Sistemas informação</div>
           </v-col>
-          <v-col v-if="ppd.avaliacao.sistemasRelacionados.length > 0">
-            <v-data-table :headers="siRelacionadosHeadersShow" :items="ppd.avaliacao.sistemasRelacionados" class="elevation-1" hide-default-footer>
+          <v-col v-if="ppd.si.avaliacao.sistemasRelacionados.length > 0">
+            <v-data-table :headers="siRelacionadosHeadersShow" :items="ppd.si.avaliacao.sistemasRelacionados" class="elevation-1" hide-default-footer>
               <template v-slot:header="props">
                 <tr>
                   <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
@@ -226,7 +226,7 @@
             <v-select
               :items="checkedAti"
               label="Indique o estado de atividade do sistema"
-              v-model="ppd.avaliacao.checkedAti"
+              v-model="ppd.si.avaliacao.checkedAti"
               dense
               solo
             ></v-select>
@@ -236,7 +236,7 @@
           </v-col>
           <v-col cols="12" xs="12" sm="9" v-if="semaforos.legislacaoReady">
             <v-autocomplete
-              v-model="ppd.avaliacao.legislacao"
+              v-model="ppd.si.avaliacao.legislacao"
               :items="listaLegislacao"
               item-text="numero"
               item-value="numero"

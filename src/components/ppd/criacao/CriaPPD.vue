@@ -55,18 +55,23 @@
                   clearable
               ></v-textarea>
             </v-col>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Adicionar sistema de informação
+               <InfoBox header="Adicionar SI" :text="myhelp.Ppd.novoSI"/>
+              </div>
+            </v-col>
           </v-row>
           <!-- sisISLAÇÂO -->
-          <SistemaOps
-            :sistema="ppd.sistemasInfo"
-            @unselectSistema="unselectSistema($event)"
-          />
           <SistemaInfo
             :ppd="ppd"
             :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo, ppd.listaSistemasInfoAuxiliar)"
             :entidades="entidades"
             :semaforos="semaforos"
             :listaLegislacao="listaLegislacao"
+          />
+          <SistemaOps
+            :sistema="ppd.sistemasInfo"
+            @unselectSistema="unselectSistema($event)"
           />
         </v-card-text>
 
@@ -90,6 +95,7 @@ const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
+import InfoBox from "@/components/generic/infoBox.vue";
 import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
 import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
 //import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
@@ -97,6 +103,7 @@ import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vu
 
 export default {
   components: {
+    InfoBox,
     SistemaInfo,
     SistemaOps,
     //SistemaSelect
@@ -113,70 +120,71 @@ export default {
         entSel: [],
       },
       Sistemas: [],
-      identificacao: {
+      si:{
         numeroSI: "",
-        nomeSI: "",
-        adminSistema: [],
-        adminDados: [],
-        propSistemaPublico: [],
-        propSistemaPrivado: "",
-        propDados: [],
-        localDadosPublico: [],
-        localDadosPrivado: "",
-        userList: [],
-        defResponsavel: "",
-        defCheck: "",
-        insourcing: "",
-        insourcingCheck:"",
-        outsourcing: "",
-        outsourcingCheck: "",
-        notas: "",
+        nomeSI:"",
+        identificacao: {
+          adminSistema: [],
+          adminDados: [],
+          propSistemaPublico: [],
+          propSistemaPrivado: "",
+          propDados: [],
+          localDadosPublico: [],
+          localDadosPrivado: "",
+          userList: [],
+          defResponsavel: "",
+          defCheck: "",
+          insourcing: "",
+          insourcingCheck:"",
+          outsourcing: "",
+          outsourcingCheck: "",
+          notas: "",
+        },
+        avaliacao: {
+          codigo: "",
+          descricao: "",
+          checkedAti: "",
+          sistemasRelacionados: [],
+          legislacoes: [],
+        },
+        caracterizacao:{
+          dependenciaSoft: "",
+          modeloCres: "",
+          dimensao:"",
+          crescimento: "",
+          localSistema: "",
+          salaTec: "",
+          acessoSalaTec: "",
+          energiaRed: "",
+          energiaSoc: "",
+          alarme: "",
+          climatizacao: "",
+          seguranca: "",
+          comunicacaoEx: "",
+          planoContingencia: "",
+          planoMudEvolucao: "",
+          privAcesso: "",
+          catSegDados: "",
+          rotinaAuditoria: "",
+          logsRotinas: "",
+          integridadeInfo: "",
+          armazenamento: "",
+          replicacaoDados: "",
+          backupsRegular: "",
+          modeloBackup: "",
+          qualidadeBackup: "",
+          inventarioSoft: "",
+          inventarioHard: "",
+          documentacaoSis: "",
+          documentacaoProc: "",
+          controlVersaoDProc: "",
+          contratoAtivos: "",
+          planoRecuperacao: "",
+          notas: "",
+        },
+        estrategia:{},
       },
-      avaliacao: {
-        codigo: "",
-        descricao: "",
-        checkedAti: "",
-        sistemasRelacionados: [],
-        legislacoes: [],
-      },
-      caracterizacao:{
-        dependenciaSoft: "",
-        modeloCres: "",
-        dimensao:"",
-        crescimento: "",
-        localSistema: "",
-        salaTec: "",
-        acessoSalaTec: "",
-        energiaRed: "",
-        energiaSoc: "",
-        alarme: "",
-        climatizacao: "",
-        seguranca: "",
-        comunicacaoEx: "",
-        planoContingencia: "",
-        planoMudEvolucao: "",
-        privAcesso: "",
-        catSegDados: "",
-        rotinaAuditoria: "",
-        logsRotinas: "",
-        integridadeInfo: "",
-        armazenamento: "",
-        replicacaoDados: "",
-        backupsRegular: "",
-        modeloBackup: "",
-        qualidadeBackup: "",
-        inventarioSoft: "",
-        inventarioHard: "",
-        documentacaoSis: "",
-        documentacaoProc: "",
-        controlVersaoDProc: "",
-        contratoAtivos: "",
-        planoRecuperacao: "",
-        notas: "",
-      },
-      estrategia:{
 
-      },
       codigo: "", //é necessário?
       descricao: "", //é necessário?
       notasAp: [], //é necessário?
@@ -192,7 +200,6 @@ export default {
       },
     },
 
-    dialog: false,
 
     // Lista de todas as entidades existentes
     entidades: [],
@@ -301,8 +308,18 @@ export default {
     },
 
     newSistema: function(sis, lista, listaAux) {
-        lista.push(sis);
-        listaAux.push(sis);
+        var index = lista.findIndex(e => e.numeroSI === sis.numeroSI);
+        if(index != -1){
+          //lista[index] = sis;
+          //listaAux[index] = sis;
+          //teste
+          //lista.splice(index, 1);
+          //listaAux.splice(index, 1);
+        }
+        else{
+          lista.push(sis);
+          listaAux.push(sis);
+        }
     },
 
     selectSistema: function(sis) {
