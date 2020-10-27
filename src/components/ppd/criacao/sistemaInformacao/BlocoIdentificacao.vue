@@ -4,18 +4,20 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         1.	Identificação do sistema de informação (SI)
-        <InfoBox header="Identificação SI" helpColor="white"/>
+        <InfoBox header="Identificação SI" :text="myhelp.Ppd.Identificacao.geral" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Administrador do Sistema</div>
+          <div class="info-label">Administrador do Sistema
+            <InfoBox header="Administrador do Sistema" :text="myhelp.Ppd.Identificacao.adminSis"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="ppd.identificacao.adminSistema"
+            v-model="ppd.si.identificacao.adminSistema"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a administração operacional do sistema"
@@ -33,11 +35,13 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Administrador de Dados</div>
+          <div class="info-label">Administrador de Dados
+            <InfoBox header="Administrador de dados" :text="myhelp.Ppd.Identificacao.adminDados"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="ppd.identificacao.adminDados"
+            v-model="ppd.si.identificacao.adminDados"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a administração operacional dos dados"
@@ -55,11 +59,13 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Proprietário do SI - Entidade pública</div>
+          <div class="info-label">Proprietário do SI - Entidade pública
+            <InfoBox header="Proprietário do SI - Entidade pública" :text="myhelp.Ppd.Identificacao.proprietarioSIPublico"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="ppd.identificacao.propSistemaPublico"
+            v-model="ppd.si.identificacao.propSistemaPublico"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a propriedade intelectual/responsabilidade de gestão do SI"
@@ -78,12 +84,14 @@
 
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Proprietário do SI - Entidade privada</div>
+          <div class="info-label">Proprietário do SI - Entidade privada
+            <InfoBox header="Proprietário do SI - Entidade privada" :text="myhelp.Ppd.Identificacao.proprietarioSIPrivado"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
             :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-            v-model="ppd.identificacao.propSistemaPrivado"
+            v-model="ppd.si.identificacao.propSistemaPrivado"
             label="Indique o nome do organismo responsável pela gestão dos dados"
             solo
             clearable
@@ -91,11 +99,13 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Proprietário dos dados</div>
+          <div class="info-label">Proprietário dos dados
+            <InfoBox header="Proprietário dos dados" :text="myhelp.Ppd.Identificacao.proprietarioDados"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="ppd.identificacao.propDados"
+            v-model="ppd.si.identificacao.propDados"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a propriedade intelectual/responsabilidade de gestão dos dados"
@@ -114,11 +124,13 @@
 
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Localização dos dados - Entidade pública</div>
+          <div class="info-label">Localização dos dados - Entidade pública
+            <InfoBox header="Localização dos dados - Entidade pública" :text="myhelp.Ppd.Identificacao.localDadosPublico"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="ppd.identificacao.localDadosPublico"
+            v-model="ppd.si.identificacao.localDadosPublico"
             :items="entidades"
             item-text="label"
             placeholder="Selecione o organismo que tem a propriedade intelectual/responsabilidade de gestão dos dados"
@@ -136,12 +148,14 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Localização dos dados - Entidade privada</div>
+          <div class="info-label">Localização dos dados - Entidade privada
+            <InfoBox header="Localização dos dados - Entidade privada" :text="myhelp.Ppd.Identificacao.localDadosPrivado"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
             :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-            v-model="ppd.identificacao.localDadosPrivado"
+            v-model="ppd.si.identificacao.localDadosPrivado"
             label="Indique o nome da entidade privada onde os dados residem"
             solo
             clearable
@@ -150,10 +164,12 @@
 
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Definição formal de responsabilidades</div>
+          <div class="info-label">Definição formal de responsabilidades
+            <InfoBox header="Definição formal de responsabilidades" :text="myhelp.Ppd.Identificacao.defFormalResp"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-radio-group v-model="ppd.identificacao.defCheck" row>
+          <v-radio-group v-model="ppd.si.identificacao.defCheck" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -162,10 +178,10 @@
               color="indigo darken-3"
             ></v-radio>
           </v-radio-group>
-          <div v-if="ppd.identificacao.defCheck === 'Sim'">
+          <div v-if="ppd.si.identificacao.defCheck === 'Sim'">
               <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="ppd.identificacao.defResponsavel"
+              v-model="ppd.si.identificacao.defResponsavel"
               label="Indique a expressão dessa formalização de mandatos"
               solo
               clearable
@@ -174,10 +190,12 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Insourcing</div>
+          <div class="info-label">Insourcing
+            <InfoBox header="Insourcing" :text="myhelp.Ppd.Identificacao.insourcing"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-radio-group v-model="ppd.identificacao.insourcingCheck" row>
+          <v-radio-group v-model="ppd.si.identificacao.insourcingCheck" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -186,10 +204,10 @@
               color="indigo darken-3"
             ></v-radio>
           </v-radio-group>
-          <div v-if="ppd.identificacao.insourcingCheck === 'Sim'">
+          <div v-if="ppd.si.identificacao.insourcingCheck === 'Sim'">
               <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="ppd.identificacao.insourcing"
+              v-model="ppd.si.identificacao.insourcing"
               label="Indique a natureza dos serviços prestados"
               solo
               clearable
@@ -197,10 +215,12 @@
           </div>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Outsourcing</div>
+          <div class="info-label">Outsourcing
+            <InfoBox header="Outsourcing" :text="myhelp.Ppd.Identificacao.outsourcing"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
-          <v-radio-group v-model="ppd.identificacao.outsourcingCheck" row>
+          <v-radio-group v-model="ppd.si.identificacao.outsourcingCheck" row>
             <v-radio
               v-for="(p, i) in simNao"
               :key="i"
@@ -209,10 +229,10 @@
               color="indigo darken-3"
             ></v-radio>
           </v-radio-group>
-          <div v-if="ppd.identificacao.outsourcingCheck === 'Sim'">
+          <div v-if="ppd.si.identificacao.outsourcingCheck === 'Sim'">
               <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="ppd.identificacao.outsourcing"
+              v-model="ppd.si.identificacao.outsourcing"
               label="Indique a natureza dos serviços prestados"
               solo
               clearable
@@ -224,7 +244,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-textarea
-              v-model="ppd.identificacao.notas"
+              v-model="ppd.si.identificacao.notas"
               label=""
               solo
               clearable
@@ -243,14 +263,14 @@
           dark
           rounded
           elevation="24"
-          @click="insereNovoUser(ppd.identificacao.userList, 'na')"
+          @click="insereNovoUser(ppd.si.identificacao.userList, 'na')"
           >
             Novo utilizador
             <v-icon dark right>add_circle_outline</v-icon>
           </v-btn>
         </v-col>
         <v-col>
-          <v-row v-for="(user, index) in ppd.identificacao.userList" :key="index">
+          <v-row v-for="(user, index) in ppd.si.identificacao.userList" :key="index">
             <v-col cols="12" xs="12" sm="9">
               <v-textarea
               v-model="user.user"
@@ -267,13 +287,19 @@
               rounded
               small
               elevation="7"
-              @click="ppd.identificacao.userList.splice(index, 1)"
+              @click="ppd.si.identificacao.userList.splice(index, 1)"
               >
                 Remover
                 <v-icon dark right>remove_circle_outline</v-icon>
               </v-btn>
             </v-col>
           </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" xs="12" sm="15">
+          <div class="info-label">O preenchimento dos SI externos, i.e., que apenas são utilizados pela entidade, termina nesta fase. Não devem ser preenchidos campos das outras fases.
+          </div>
         </v-col>
       </v-row>
       <hr style="border: 3px solid indigo; border-radius: 3 px;" />

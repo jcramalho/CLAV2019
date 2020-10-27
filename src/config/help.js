@@ -371,5 +371,93 @@ module.exports.help = {
       RADA: "Abreviatura de Relatório de Avaliação de Documentação Acumulada. <br/> Abrange as tabelas de seleção, inseridas em Relatórios de Avaliação de Documentação Acumulada, que não foram submetidos na Plataforma CLAV. Apesar de estes RADA não terem sido submetidos na CLAV, as suas tabelas de seleção foram importadas e estão disponíveis na plataforma.",
       RADA_CLAV: "Abreviatura de Relatório de Avaliação de Documentação Acumulada / Classificação e Avaliação da Informação Pública. <br/> Abrange as tabelas de seleção, inseridas em Relatórios de Avaliação de Documentação Acumulada submetidos na CLAV."
     }
+  },
+  Ppd:{
+    titulo: "Denominação do Plano de Preservação Digital",
+    entidade: "Entidade responsável pela apresentação e aplicação do PPD",
+    responsabilidade: "Indicação do(s) responsável(eis) pelo apresentação do PPD",
+    novoSI: "Os elementos informativos relativos a cada SI encontram-se estruturados em quatro fases:"+
+            "<ul><li>	Fase 1 - Identificação do sistemas de informação </li>"+
+            "<li>Fase 2 - Avaliação e definição do criticidade do sistema de informação </li>" +
+            "<li>Fase 3 - Caracterização tecnológica do sistema de informação </li>"+
+            "<li>Fase 4 - Planeamento da estratégia de preservação do sistema de informação</li></ul>"+
+            "Para os SI externos, i.e., os SI que apenas são utilizados pela entidade para introdução de dados, sem qualquer tipo de gestão dos mesmos, apenas preencha os elementos informativos da fase 1."+
+            "\nApenas prosseguem para a fase 3 e fase 4, com preenchimento dos respetivos campos, os SI com prazo de conservação administrativa superior a 7anos ou com destino final de conservação, que não se encontrem em estado abatido.",
+    numeroSI: "Referenciar cada sistema de informação (SI) por um identificador. Pode ser um nº sequencial, um URN, ou outro tipo de identificador.",
+    nomeSI: "Registar, por extenso, a designação oficial do sistema ou, quando não exista, nome pelo qual é conhecido.",
+    Identificacao:{
+      geral:"Devem ser identificados todos os Sistemas de Informação existentes enquanto contentores de informação produzida pela entidade.",
+      adminSis: "Designação do organismo que tem a administração operacional do sistema de informação (ex.: assegura o armazenamento dos dados, monitorização do sistema). ",
+      adminDados: "Designação do organismo que tem a administração operacional dos dados (ex.: actualização dos dados).",
+      proprietarioSIPublico: "Designação do organismo que tem a propriedade intelectual e/ou responsabilidades de gestão global do sistema de informação (decide sobre o desenvolvimento, distribuição, desactivação, etc.)."+
+                             "Caso a propriedade do Sistema seja privada (uso condicionado à aquisição de licenças), referir o organismo que decide sobre a renovação ou não das licenças de utilização.",
+      proprietarioSIPrivado: "Designação da entidade privada que tem a propriedade do SI, aplica-se quando o uso condicionado à aquisição de licenças.",
+      proprietarioDados: "Designação do organismo que tem a propriedade intelectual e/ou responsabilidades de gestão global dos dados.",
+      localDadosPublico: "Indicar nome do(s) organismo(s) públicos onde os dados residem/estão armazenados.",
+      localDadosPrivado: "Indicar nome das entidades privadas onde os dados residem/estão armazenados.",
+      defFormalResp: 'Por "responsabilidades individuais" entende-se todo o tipo de permissões necessárias à gestão do sistema (monitorização, registo/alteração de permissões...) e dos dados (criação de dados, consulta, edição, eliminação…). '+
+                      "<p>Em caso afirmativo indicar qual a expressão dessa formalização (ex. despacho oficial, registo no próprio sistema de utilizadores e de permissões...)</p>",
+      insourcing: 'Considera-se "insourcing" quando o prestador de serviços é entidade do sector administrativo do Estado.'+
+                  "<p>Em caso afirmativo indicar a entidade prestadora dos serviços e a sua natureza (não considerar os contratos de manutenção, a menos que incluam o desenvolvimento do sistema).</p>",
+      outsourcing: 'Considera-se "outsourcing" quando o prestador de serviços é entidade do sector privado ou do sector público empresarial.'+
+                  "<p>Em caso afirmativo indicar a entidade prestadora dos serviços e a sua natureza  (não considerar os contratos de manutenção, a menos que incluam o desenvolvimento do sistema).</p>",
+    },
+    Avaliacao:{
+      geral: "<p>Informação determinante para identificar os sistemas com informação a preservar e indiciar o tipo"+
+        " de soluções de preservação.</p><p>A avaliação tem por base a fonte de legitimação em vigor na entidade, que contem"+
+        " a tabela de seleção com os prazos e destinos a aplicar à informação dos SI.</p><p>Os SI com informação cujo prazo"+
+        " de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de"+
+        " preservação digital.</p>O estado do sistema, o grau de utilização e a criticidade influenciam o tipo de solução de preservação a adotar para cada SI.",
+      descricao: "Indicar o âmbito e conteúdo do sistema de informação.",
+      decomposicao:"Nome dos subsistemas/aplicações que integram o sistema."+
+                  "Este campo só deve ser preenchido quando o sistema estiver estruturado em subsistemas e/ou módulos que correspondam a diferentes funções e/ou processos  de negócio.",
+      codClassificacao: "Código da classe/série  que enquadra o SI, constante da tabela de seleção da fonte de legitimação."+
+                  "Existem tabelas de seleção em que o identificador da classe/série é o Código de classificação, outras tabelas em que o identificador é o N.º de referência e, ainda, tabelas que contém simultaneamente um Código e um  N.º de referência.",
+      numeroClasse: "Número de referência da série que enquadra o SI, se aplicável"+
+                  "Existem tabelas de seleção em que o identificador da classe/série é o Código de classificação, outras tabelas em que o identificador é o N.º de referência e, ainda, tabelas que contém simultaneamente um Código e um  N.º de referência. ",
+      tituloClasse: "Registar o título da classe/série correspondente ao código de classificação / Nº de referência, de acordo com a tabela de seleção",
+      pcaClasse: "O prazo de conservação administrativo relativo à classe/série, tal como aparece na tabela de seleção.",
+      contagemPrazos: "A forma de contagem do prazo de conservação administrativo relativo à classe/série, tal como aparece na tabela de seleção.",
+      destinoClasse: "O Destino final relativo à classe/série, tal como aparecem na Tabela de seleção",
+      pcaDoSI: "O PCA do SI é o PCA da classe/série em que o SI se enquadra. No caso da equivalência SI/classe não ser linear, i.e., quando o SI se enquadra em várias classes/série, deve prevalecer o PCA mais elevado.",
+      destinoSI: "O DF do SI é o DF da classe/série em que o SI se enquadra. No caso da equivalência SI/classe não ser linear, i.e., quando o SI se enquadra em várias classes/série com DF distintos, deve prevalecer o DF conservação.",
+      siRelacionado: "Indicar nº de referência do sistema relacionado e o tipo de relação",
+      estadoSI: "Indicar se o sistema está:"+
+                "<p>Ativo (em exploração: cumpre objectivo operacional primário)</p>"+
+                "<p>Semi-Ativo (usado apenas para consulta esporádica: o SI foi substituído por outro mais actual; dados não foram migrados, ou foram migrados com erros)</p>"+
+                "<p>Inativo (sem qualquer  utilização administrativa, nem para inserção de dados, nem para pesquisa)</p>"+
+                "<p>Abatido (sistema descomissionado, cuja informação foi transferida para outro sistema)</p>",
+      utilizacaoSI: "Indicar o tipo de frequência e intensidade de utilização, pode estar relacionado com a passagem do tempo, ou seja o PCA, e está definitivamente relacionado com o estado em que se encontra o sistema:"+
+                    "<ol><li>O sistema é utilizado regularmente (todos os dias)</li>"+
+                    "<li>O sistema é usado menos regularmente (todas as semanas)</li>"+
+                    "<li>O sistema é utilizado com pouca regularidade (mensalmente ou semestralmente)</li>"+
+                    "<li>O sistema é pouco utilizado (anualmente)</li>"+
+                    "<li>O sistema nunca é utilizado (desconhecido).</li></ol>",
+      criticidadeSI: "Indicar a criticidade do SI, tomamdo em consideração o peso da informação para o cumprimento das atividades da organização:"+
+                    "<ol><li>Muito crítico. Sistema essencial para apoiar processos de negócio da instituição. Impacto extremo no caso de perda ou falha do sistema.</li>"+
+                    "<li>Crítico. Sistema importante para apoiar  os processos de negócio da instituição. Impacto elevado no caso de perda ou falha do sistema.</li>"+
+                    "<li>Pouco crítico. Sistema relevante para apoiar os processos de negócio. Impacto moderado no caso de perda ou falha do sistema.</li>"+
+                    "<li>Não crítico. Significativo para melhorar a eficiência, ou eficácia do negócio. Impacto leve no caso de perda ou falha do sistema.</li></ol>",
+      siObjetoPreservacao: "Os SI com informação cujo prazo de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de preservação digital. Não são objeto de preservação os SI abatidos, cuja informação passou para outro SI.",
+
+    },
+    Caracterizacao:{
+      geral:"<p>Apenas devem ser caracterizados os sistemas que tenham transitado da fase 2, i.e., os SI com informação cujo prazo de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de preservação digital. Não são objeto de preservação os SI abatidos, cuja informação passou para outro SI.</p>"+
+      "A recolha destes elementos informativos destina-se a:"+
+      "<ul><li>Avaliar algumas características e configurações da plataforma tecnológica de forma a identificar pontos fortes e fracos relativamente à adequação da mesma à preservação digital.</li>"+
+      "<li>Identificar lacunas que seja necessário colmatar de forma a adaptar a plataforma à preservação digital.</li>"+
+      "<li>Avaliar a dependência da informação relativamente a uma determinada tecnologia.</li>"+
+      "<li>Avaliar a robustez da plataforma quanto à segurança da informação.</li></ul>"+
+      "\n Esta fase encontra-se estruturada em seis blocos:"+
+      "<ol><li>Dependência tecnológica</li> <li>Crescimento do sistema</li> <li>Segurança geral da plataforma tecnológica</li>"+
+      "<li>Segurança específica dos sistemas</li> <li>Armazenamento</li> <li>Documentação</li></ol>",
+
+
+    },
+    Estrategia:{
+      geral:"A escolha de soluções de preservação deve ser feita para cada um dos sistemas identificados e que passaram para a fase 3."+
+          "Para este efeito é necessário utilizar os dados recolhidos nas fases anteriores, cruzados com os aspetos gestionários, nomeadamente: a política e gestão orçamental, o alinhamento da plataforma tecnológica com o negócio, recursos humanos e impacto de eventual mudança."+
+          "O planeamento é feito sobre duas perspetivas, que se complementam no tempo: a utilização operacional e a utilização como memória.",
+    }
   }
 };

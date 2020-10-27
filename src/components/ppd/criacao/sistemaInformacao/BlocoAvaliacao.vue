@@ -4,7 +4,7 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         2.	Avaliação do sistema de informação (SI)
-        <InfoBox header="Avaliação SI" helpColor="white"/>
+        <InfoBox header="Avaliação SI" :text="myhelp.Ppd.Avaliacao.geral" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
@@ -12,8 +12,8 @@
           <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Sistemas informação</div>
           </v-col>
-          <v-col v-if="ppd.avaliacao.sistemasRelacionados.length > 0">
-            <v-data-table :headers="siRelacionadosHeadersShow" :items="ppd.avaliacao.sistemasRelacionados" class="elevation-1" hide-default-footer>
+          <v-col v-if="ppd.si.avaliacao.sistemasRelacionados.length > 0">
+            <v-data-table :headers="siRelacionadosHeadersShow" :items="ppd.si.avaliacao.sistemasRelacionados" class="elevation-1" hide-default-footer>
               <template v-slot:header="props">
                 <tr>
                   <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
@@ -54,7 +54,7 @@
               </v-card-title>
               <v-data-table
                 :headers="siRelacionadosHeaders"
-                :items="ppd.sistemasInfo"
+                :items="ppd.listaSistemasInfoAuxiliar"
                 :items-per-page="5"
                 :search="searchProcessos"
                 item-key="numeroSI"
@@ -226,7 +226,7 @@
             <v-select
               :items="checkedAti"
               label="Indique o estado de atividade do sistema"
-              v-model="ppd.avaliacao.checkedAti"
+              v-model="ppd.si.avaliacao.checkedAti"
               dense
               solo
             ></v-select>
@@ -236,7 +236,7 @@
           </v-col>
           <v-col cols="12" xs="12" sm="9" v-if="semaforos.legislacaoReady">
             <v-autocomplete
-              v-model="ppd.avaliacao.legislacao"
+              v-model="ppd.si.avaliacao.legislacao"
               :items="listaLegislacao"
               item-text="numero"
               item-value="numero"
@@ -484,10 +484,10 @@ export default {
       }
     },
     selectSistema: function(numeroSI, relacao) {
-      var index = this.ppd.sistemasInfo.findIndex(p => p.numeroSI === numeroSI);
-      this.ppd.sistemasInfo[index].relacao = relacao;
-      var selectedSistema = JSON.parse(JSON.stringify(this.ppd.sistemasInfo[index]));
-      this.ppd.sistemasInfo.splice(index, 1);
+      var index = this.ppd.listaSistemasInfoAuxiliar.findIndex(p => p.numeroSI === numeroSI);
+      this.ppd.listaSistemasInfoAuxiliar[index].relacao = relacao;
+      var selectedSistema = JSON.parse(JSON.stringify(this.ppd.listaSistemasInfoAuxiliar[index]));
+      this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
       this.$emit("newSistemasRelacionados", selectedSistema);
     },
 

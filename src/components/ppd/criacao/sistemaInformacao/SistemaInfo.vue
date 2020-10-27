@@ -7,19 +7,24 @@
       transition="dialog-bottom-transition"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-col cols="12" xs="12" sm="3">
+        <v-col cols="12" xs="12" sm="4">
           <v-btn
             color="indigo darken-2"
             dark
-            rounded
+            class="ma-2"
             v-bind="attrs"
             v-on="on"
           >
             Novo SI
             <v-icon dark right>add_circle_outline</v-icon>
           </v-btn>
+          <v-btn color="indigo lighten-2" dark class="ma-2" @click="importarSI = true">
+            Importar SI
+            <v-icon dark right>file_upload</v-icon>
+          </v-btn>
         </v-col>
       </template>
+
       <v-card>
         <v-app-bar
           absolute
@@ -58,12 +63,14 @@
           <v-container style="height: 70px;"></v-container>
           <v-row >
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Número de referência SI</div>
+              <div class="info-label">Número de referência SI
+                <InfoBox header="Número de referência do Sistema de informação" :text="myhelp.Ppd.numeroSI"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="8">
               <v-text-field
                 :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                v-model="ppd.identificacao.numeroSI"
+                v-model="ppd.si.numeroSI"
                 label="Identificador do sistema de informação"
                 solo
                 clearable
@@ -71,12 +78,14 @@
             </v-col>
 
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Nome do SI</div>
+              <div class="info-label">Nome do SI
+                <InfoBox header="Nome do Sistema de informação" :text="myhelp.Ppd.nomeSI"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="8">
               <v-text-field
                 :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                v-model="ppd.identificacao.nomeSI"
+                v-model="ppd.si.nomeSI"
                 label="Designação oficial do sistema"
                 solo
                 clearable
@@ -94,7 +103,7 @@
                 :ppd="ppd"
                 :semaforos="semaforos"
                 :listaLegislacao="listaLegislacao"
-                @newSistemasRelacionados="newSistemasRelacionados($event, ppd.avaliacao.sistemasRelacionados)"
+                @newSistemasRelacionados="newSistemasRelacionados($event, ppd.si.avaliacao.sistemasRelacionados)"
                 @unselectSistemasRelacionados="unselectSistemasRelacionados($event)"
               />
               <!-- BLOCO CARACTERIZAÇÃO -->
@@ -107,7 +116,6 @@
               />
             </v-expansion-panels>
           </v-row>
-
           <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
             <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
             <v-btn dark text @click="fecharErros">Fechar</v-btn>
@@ -115,6 +123,11 @@
         </v-sheet>
       </v-card>
     </v-dialog>
+    <ImportarSI
+      :ppd = "ppd"
+      :dialog="importarSI"
+      @fecharDialog="importarSI = false"
+    />
   </v-row>
 </template>
 
@@ -122,23 +135,24 @@
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
+import InfoBox from "@/components/generic/infoBox.vue";
+import ImportarSI from "@/components/ppd/criacao/sistemaInformacao/importacao/ImportarSI.vue";
 import BlocoIdentificacao from "@/components/ppd/criacao/sistemaInformacao/BlocoIdentificacao.vue";
 import BlocoAvaliacao from "@/components/ppd/criacao/sistemaInformacao/BlocoAvaliacao.vue";
 import BlocoCaracterizacao from "@/components/ppd/criacao/sistemaInformacao/BlocoCaracterizacao.vue";
 import BlocoEstrategia from "@/components/ppd/criacao/sistemaInformacao/BlocoEstrategia.vue";
-
-//import InfoBox from "@/components/generic/infoBox.vue";
 
 
 export default {
   props: ["ppd", "semaforos", "listaLegislacao", "sistema", "entidades"],
 
   components: {
-  //    InfoBox,
+    InfoBox,
     BlocoIdentificacao,
     BlocoAvaliacao,
     BlocoCaracterizacao,
-    BlocoEstrategia
+    BlocoEstrategia,
+    ImportarSI
     },
 
   data: function() {
@@ -148,14 +162,14 @@ export default {
       valid: false,
       dialog: false,
       simNao: ["Sim","Não"],
-
+      importarSI: false,
       myhelp: help,
+
 
     };
   },
 
   created: async function() {
-    
   },
 
   methods: {
@@ -166,9 +180,9 @@ export default {
 
     unselectSistemasRelacionados: function(sistema) {
       // Recoloca o sistema nos selecionáveis
-      this.ppd.sistemasInfo.push(sistema);
-      var index = this.ppd.avaliacao.sistemasRelacionados.findIndex(e => e.id === sistema.id);
-      this.ppd.avaliacao.sistemasRelacionados.splice(index, 1);
+      this.ppd.listaSistemasInfoAuxiliar.push(sistema);
+      var index = this.ppd.si.avaliacao.sistemasRelacionados.findIndex(e => e.numeroSI === sistema.numeroSI);
+      this.ppd.si.avaliacao.sistemasRelacionados.splice(index, 1);
     },
 
     fecharErros: function() {
@@ -252,53 +266,53 @@ export default {
     },
 
     newSistema: async function() {
-      if(/*this.validaAll("O campo número do SI",this.ppd.identificacao.numeroSI) &&
-        this.validaAll("O campo  nome do SI",this.ppd.identificacao.nomeSI) &&
-        this.validaAll("O campo administrador do sistema",this.ppd.identificacao.adminSistema) &&
-        this.validaAll("O campo administrador de dados",this.ppd.identificacao.adminDados) &&
-        this.validaAll("O campo proprietário do SI - entidade pública",this.ppd.identificacao.propSistemaPublico) &&
-        this.validaAll("O campo proprietário do SI - entidade privada",this.ppd.identificacao.propSistemaPrivado) &&
-        this.validaAll("O campo proprietário dos dados",this.ppd.identificacao.propDados) &&
-        this.validaAll("O campo localização dos dados - entidade pública",this.ppd.identificacao.localDadosPublico) &&
-        this.validaAll("O campo localização dos dados - entidade privada",this.ppd.identificacao.localDadosPrivado) &&
-        this.validaDef(this.ppd.identificacao.defResponsavel, this.ppd.identificacao.defCheck) &&
-        this.validaInsourcing(this.ppd.identificacao.insourcing, this.ppd.identificacao.insourcingCheck) &&
-        this.validaOutsourcing(this.ppd.identificacao.outsourcing, this.ppd.identificacao.outsourcingCheck) &&
-        this.validaAll("O campo notas", this.ppd.identificacao.notas) &&
-        this.validaAll("O campo de utilizadores",this.ppd.identificacao.userList)*/1
+      if(/*this.validaAll("O campo número do SI",this.ppd.si.numeroSI) &&
+        this.validaAll("O campo  nome do SI",this.ppd.si.nomeSI) &&
+        this.validaAll("O campo administrador do sistema",this.ppd.si.identificacao.adminSistema) &&
+        this.validaAll("O campo administrador de dados",this.ppd.si.identificacao.adminDados) &&
+        this.validaAll("O campo proprietário do SI - entidade pública",this.ppd.si.identificacao.propSistemaPublico) &&
+        this.validaAll("O campo proprietário do SI - entidade privada",this.ppd.si.identificacao.propSistemaPrivado) &&
+        this.validaAll("O campo proprietário dos dados",this.ppd.si.identificacao.propDados) &&
+        this.validaAll("O campo localização dos dados - entidade pública",this.ppd.si.identificacao.localDadosPublico) &&
+        this.validaAll("O campo localização dos dados - entidade privada",this.ppd.si.identificacao.localDadosPrivado) &&
+        this.validaDef(this.ppd.si.identificacao.defResponsavel, this.ppd.si.identificacao.defCheck) &&
+        this.validaInsourcing(this.ppd.si.identificacao.insourcing, this.ppd.si.identificacao.insourcingCheck) &&
+        this.validaOutsourcing(this.ppd.si.identificacao.outsourcing, this.ppd.si.identificacao.outsourcingCheck) &&
+        this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
+        this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/1
       ){
         var sistema = {
-          numeroSI: this.ppd.identificacao.numeroSI,
-          nomeSI: this.ppd.identificacao.nomeSI,
-          adminSistema: this.ppd.identificacao.adminSistema,
-          adminDados: this.ppd.identificacao.adminDados,
-          propSistemaPublico: this.ppd.identificacao.propSistemaPublico,
-          propSistemaPrivado: this.ppd.identificacao.propSistemaPrivado,
-          propDados: this.ppd.identificacao.propDados,
-          localDadosPublico: this.ppd.identificacao.localDadosPublico,
-          localDadosPrivado: this.ppd.identificacao.localDadosPrivado,
-          userList: this.ppd.identificacao.userList,
-          defResponsavel: this.ppd.identificacao.defResponsavel,
-          expressaoResponsavel:this.ppd.identificacao.expressaoResponsavel,
-          insourcing: this.ppd.identificacao.insourcing,
-          outsourcing: this.ppd.identificacao.outsourcing,
-          notas: this.ppd.identificacao.notas,
+          numeroSI: this.ppd.si.numeroSI,
+          nomeSI: this.ppd.si.nomeSI,
+          adminSistema: this.ppd.si.identificacao.adminSistema,
+          adminDados: this.ppd.si.identificacao.adminDados,
+          propSistemaPublico: this.ppd.si.identificacao.propSistemaPublico,
+          propSistemaPrivado: this.ppd.si.identificacao.propSistemaPrivado,
+          propDados: this.ppd.si.identificacao.propDados,
+          localDadosPublico: this.ppd.si.identificacao.localDadosPublico,
+          localDadosPrivado: this.ppd.si.identificacao.localDadosPrivado,
+          userList: this.ppd.si.identificacao.userList,
+          defResponsavel: this.ppd.si.identificacao.defResponsavel,
+          expressaoResponsavel:this.ppd.si.identificacao.expressaoResponsavel,
+          insourcing: this.ppd.si.identificacao.insourcing,
+          outsourcing: this.ppd.si.identificacao.outsourcing,
+          notas: this.ppd.si.identificacao.notas,
         };
-        this.ppd.identificacao.numeroSI= "";
-        this.ppd.identificacao.nomeSI= "";
-        this.ppd.identificacao.adminSistema= [];
-        this.ppd.identificacao.adminDados= [];
-        this.ppd.identificacao.propSistemaPublico= [];
-        this.ppd.identificacao.propSistemaPrivado= "";
-        this.ppd.identificacao.propDados= [];
-        this.ppd.identificacao.localDadosPublico= [];
-        this.ppd.identificacao.localDadosPrivado= "";
-        this.ppd.identificacao.userList= [];
-        this.ppd.identificacao.defResponsavel= "";
-        this.ppd.identificacao.expressaoResponsavel="";
-        this.ppd.identificacao.insourcing= "";
-        this.ppd.identificacao.outsourcing= "";
-        this.ppd.identificacao.notas= "";
+        this.ppd.si.numeroSI= "";
+        this.ppd.si.nomeSI= "";
+        this.ppd.si.identificacao.adminSistema= [];
+        this.ppd.si.identificacao.adminDados= [];
+        this.ppd.si.identificacao.propSistemaPublico= [];
+        this.ppd.si.identificacao.propSistemaPrivado= "";
+        this.ppd.si.identificacao.propDados= [];
+        this.ppd.si.identificacao.localDadosPublico= [];
+        this.ppd.si.identificacao.localDadosPrivado= "";
+        this.ppd.si.identificacao.userList= [];
+        this.ppd.si.identificacao.defResponsavel= "";
+        this.ppd.si.identificacao.expressaoResponsavel="";
+        this.ppd.si.identificacao.insourcing= "";
+        this.ppd.si.identificacao.outsourcing= "";
+        this.ppd.si.identificacao.notas= "";
         this.dialog= false;
         this.$emit("newSistema", sistema);
       } else {

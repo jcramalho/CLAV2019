@@ -10,7 +10,9 @@
         <v-card-text>
           <v-row>
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Título</div>
+              <div class="info-label">Título
+                <InfoBox header="Título do PPD" :text="myhelp.Ppd.titulo"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="9">
               <v-text-field
@@ -22,7 +24,9 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Entidades</div>
+              <div class="info-label">Entidades
+                <InfoBox header="Entidades do PPD" :text="myhelp.Ppd.entidade"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
               <v-autocomplete
@@ -45,7 +49,9 @@
           </v-row>
           <v-row>
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Menção de responsabilidade</div>
+              <div class="info-label">Menção de responsabilidade
+                <InfoBox header="Identificação de responsabilidades pela elaboração do PPD " :text="myhelp.Ppd.responsabilidade"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="9">
               <v-textarea
@@ -55,18 +61,23 @@
                   clearable
               ></v-textarea>
             </v-col>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Adicionar sistema de informação
+               <InfoBox header="Adicionar SI" :text="myhelp.Ppd.novoSI"/>
+              </div>
+            </v-col>
           </v-row>
           <!-- sisISLAÇÂO -->
-          <SistemaOps
-            :sistema="ppd.sistemasInfo"
-            @unselectSistema="unselectSistema($event)"
-          />
           <SistemaInfo
             :ppd="ppd"
-            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo)"
+            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo, ppd.listaSistemasInfoAuxiliar)"
             :entidades="entidades"
             :semaforos="semaforos"
             :listaLegislacao="listaLegislacao"
+          />
+          <SistemaOps
+            :sistema="ppd.sistemasInfo"
+            @unselectSistema="unselectSistema($event)"
           />
         </v-card-text>
 
@@ -90,6 +101,7 @@ const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
+import InfoBox from "@/components/generic/infoBox.vue";
 import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
 import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
 //import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
@@ -97,6 +109,7 @@ import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vu
 
 export default {
   components: {
+    InfoBox,
     SistemaInfo,
     SistemaOps,
     //SistemaSelect
@@ -105,77 +118,79 @@ export default {
   data: () => ({
     // Objeto que guarda um ppd
     ppd: {
-
+      lixo : "",
       geral:{
         numeroPPD: "", //é necessário?
         nomePPD: "",
         mencaoResp: "",
         entSel: [],
       },
-      identificacao: {
+      Sistemas: [],
+      si:{
         numeroSI: "",
-        nomeSI: "",
-        adminSistema: [],
-        adminDados: [],
-        propSistemaPublico: [],
-        propSistemaPrivado: "",
-        propDados: [],
-        localDadosPublico: [],
-        localDadosPrivado: "",
-        userList: [],
-        defResponsavel: "",
-        defCheck: "",
-        insourcing: "",
-        insourcingCheck:"",
-        outsourcing: "",
-        outsourcingCheck: "",
-        notas: "",
+        nomeSI:"",
+        identificacao: {
+          adminSistema: [],
+          adminDados: [],
+          propSistemaPublico: [],
+          propSistemaPrivado: "",
+          propDados: [],
+          localDadosPublico: [],
+          localDadosPrivado: "",
+          userList: [],
+          defResponsavel: "",
+          defCheck: "",
+          insourcing: "",
+          insourcingCheck:"",
+          outsourcing: "",
+          outsourcingCheck: "",
+          notas: "",
+        },
+        avaliacao: {
+          codigo: "",
+          descricao: "",
+          checkedAti: "",
+          sistemasRelacionados: [],
+          legislacoes: [],
+        },
+        caracterizacao:{
+          dependenciaSoft: "",
+          modeloCres: "",
+          dimensao:"",
+          crescimento: "",
+          localSistema: "",
+          salaTec: "",
+          acessoSalaTec: "",
+          energiaRed: "",
+          energiaSoc: "",
+          alarme: "",
+          climatizacao: "",
+          seguranca: "",
+          comunicacaoEx: "",
+          planoContingencia: "",
+          planoMudEvolucao: "",
+          privAcesso: "",
+          catSegDados: "",
+          rotinaAuditoria: "",
+          logsRotinas: "",
+          integridadeInfo: "",
+          armazenamento: "",
+          replicacaoDados: "",
+          backupsRegular: "",
+          modeloBackup: "",
+          qualidadeBackup: "",
+          inventarioSoft: "",
+          inventarioHard: "",
+          documentacaoSis: "",
+          documentacaoProc: "",
+          controlVersaoDProc: "",
+          contratoAtivos: "",
+          planoRecuperacao: "",
+          notas: "",
+        },
+        estrategia:{},
       },
-      avaliacao: {
-        codigo: "",
-        descricao: "",
-        checkedAti: "",
-        sistemasRelacionados: [],
-        legislacoes: [],
-      },
-      caracterizacao:{
-        dependenciaSoft: "",
-        modeloCres: "",
-        dimensao:"",
-        crescimento: "",
-        localSistema: "",
-        salaTec: "",
-        acessoSalaTec: "",
-        energiaRed: "",
-        energiaSoc: "",
-        alarme: "",
-        climatizacao: "",
-        seguranca: "",
-        comunicacaoEx: "",
-        planoContingencia: "",
-        planoMudEvolucao: "",
-        privAcesso: "",
-        catSegDados: "",
-        rotinaAuditoria: "",
-        logsRotinas: "",
-        integridadeInfo: "",
-        armazenamento: "",
-        replicacaoDados: "",
-        backupsRegular: "",
-        modeloBackup: "",
-        qualidadeBackup: "",
-        inventarioSoft: "",
-        inventarioHard: "",
-        documentacaoSis: "",
-        documentacaoProc: "",
-        controlVersaoDProc: "",
-        contratoAtivos: "",
-        planoRecuperacao: "",
-        notas: "",
-      },
-      estrategia:{
 
-      },
       codigo: "", //é necessário?
       descricao: "", //é necessário?
       notasAp: [], //é necessário?
@@ -183,6 +198,7 @@ export default {
       notasEx: [], //é necessário?
       termosInd: [], //é necessário?
 
+      listaSistemasInfoAuxiliar: [],
       sistemasInfo: [],
 
       user: {
@@ -190,7 +206,6 @@ export default {
       },
     },
 
-    dialog: false,
 
     // Lista de todas as entidades existentes
     entidades: [],
@@ -298,21 +313,34 @@ export default {
       }
     },
 
-    newSistema: function(sis, lista) {
-        lista.push(sis);
+    newSistema: function(sis, lista, listaAux) {
+        var index = lista.findIndex(e => e.numeroSI === sis.numeroSI);
+        if(index != -1){
+          //lista[index] = sis;
+          //listaAux[index] = sis;
+          //teste
+          //lista.splice(index, 1);
+          //listaAux.splice(index, 1);
+        }
+        else{
+          lista.push(sis);
+          listaAux.push(sis);
+        }
     },
 
     selectSistema: function(sis) {
       this.ppd.sistemasInfo.push(sis);
+      this.ppd.listaSistemasInfoAuxiliar.push(sis);
       // Remove dos selecionáveis
-      var index = this.listaLegislacao.findIndex(l => l.id === sis.id);
+      var index = this.listaLegislacao.findIndex(l => l.numeroSI === sis.numeroSI);
       this.listaLegislacao.splice(index, 1);
     },
     unselectSistema: function(sistema) {
       // Recoloca o sistema nos selecionáveis
-      this.listaLegislacao.push(sistema);
-      var index = this.ppd.sistemasInfo.findIndex(e => e.id === sistema.id);
+      //this.listaLegislacao.push(sistema);
+      var index = this.ppd.sistemasInfo.findIndex(e => e.numeroSI === sistema.numeroSI);
       this.ppd.sistemasInfo.splice(index, 1);
+      this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
     },
 
 
