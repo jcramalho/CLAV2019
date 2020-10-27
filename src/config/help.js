@@ -383,9 +383,24 @@ module.exports.help = {
             "<li>Fase 4 - Planeamento da estratégia de preservação do sistema de informação</li></ul>"+
             "Para os SI externos, i.e., os SI que apenas são utilizados pela entidade para introdução de dados, sem qualquer tipo de gestão dos mesmos, apenas preencha os elementos informativos da fase 1."+
             "\nApenas prosseguem para a fase 3 e fase 4, com preenchimento dos respetivos campos, os SI com prazo de conservação administrativa superior a 7anos ou com destino final de conservação, que não se encontrem em estado abatido.",
+    numeroSI: "Referenciar cada sistema de informação (SI) por um identificador. Pode ser um nº sequencial, um URN, ou outro tipo de identificador.",
+    nomeSI: "Registar, por extenso, a designação oficial do sistema ou, quando não exista, nome pelo qual é conhecido.",
     Identificacao:{
       geral:"Devem ser identificados todos os Sistemas de Informação existentes enquanto contentores de informação produzida pela entidade.",
-
+      adminSis: "Designação do organismo que tem a administração operacional do sistema de informação (ex.: assegura o armazenamento dos dados, monitorização do sistema). ",
+      adminDados: "Designação do organismo que tem a administração operacional dos dados (ex.: actualização dos dados).",
+      proprietarioSIPublico: "Designação do organismo que tem a propriedade intelectual e/ou responsabilidades de gestão global do sistema de informação (decide sobre o desenvolvimento, distribuição, desactivação, etc.)."+
+                             "Caso a propriedade do Sistema seja privada (uso condicionado à aquisição de licenças), referir o organismo que decide sobre a renovação ou não das licenças de utilização.",
+      proprietarioSIPrivado: "Designação da entidade privada que tem a propriedade do SI, aplica-se quando o uso condicionado à aquisição de licenças.",
+      proprietarioDados: "Designação do organismo que tem a propriedade intelectual e/ou responsabilidades de gestão global dos dados.",
+      localDadosPublico: "Indicar nome do(s) organismo(s) públicos onde os dados residem/estão armazenados.",
+      localDadosPrivado: "Indicar nome das entidades privadas onde os dados residem/estão armazenados.",
+      defFormalResp: 'Por "responsabilidades individuais" entende-se todo o tipo de permissões necessárias à gestão do sistema (monitorização, registo/alteração de permissões...) e dos dados (criação de dados, consulta, edição, eliminação…). '+
+                      "<p>Em caso afirmativo indicar qual a expressão dessa formalização (ex. despacho oficial, registo no próprio sistema de utilizadores e de permissões...)</p>",
+      insourcing: 'Considera-se "insourcing" quando o prestador de serviços é entidade do sector administrativo do Estado.'+
+                  "<p>Em caso afirmativo indicar a entidade prestadora dos serviços e a sua natureza (não considerar os contratos de manutenção, a menos que incluam o desenvolvimento do sistema).</p>",
+      outsourcing: 'Considera-se "outsourcing" quando o prestador de serviços é entidade do sector privado ou do sector público empresarial.'+
+                  "<p>Em caso afirmativo indicar a entidade prestadora dos serviços e a sua natureza  (não considerar os contratos de manutenção, a menos que incluam o desenvolvimento do sistema).</p>",
     },
     Avaliacao:{
       geral: "<p>Informação determinante para identificar os sistemas com informação a preservar e indiciar o tipo"+

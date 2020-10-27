@@ -63,7 +63,9 @@
           <v-container style="height: 70px;"></v-container>
           <v-row >
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Número de referência SI</div>
+              <div class="info-label">Número de referência SI
+                <InfoBox header="Número de referência do Sistema de informação" :text="myhelp.Ppd.numeroSI"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="8">
               <v-text-field
@@ -76,7 +78,9 @@
             </v-col>
 
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Nome do SI</div>
+              <div class="info-label">Nome do SI
+                <InfoBox header="Nome do Sistema de informação" :text="myhelp.Ppd.nomeSI"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="8">
               <v-text-field
@@ -131,7 +135,7 @@
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
-//import InfoBox from "@/components/generic/infoBox.vue";
+import InfoBox from "@/components/generic/infoBox.vue";
 import ImportarSI from "@/components/ppd/criacao/sistemaInformacao/importacao/ImportarSI.vue";
 import BlocoIdentificacao from "@/components/ppd/criacao/sistemaInformacao/BlocoIdentificacao.vue";
 import BlocoAvaliacao from "@/components/ppd/criacao/sistemaInformacao/BlocoAvaliacao.vue";
@@ -143,7 +147,7 @@ export default {
   props: ["ppd", "semaforos", "listaLegislacao", "sistema", "entidades"],
 
   components: {
-    //InfoBox,
+    InfoBox,
     BlocoIdentificacao,
     BlocoAvaliacao,
     BlocoCaracterizacao,

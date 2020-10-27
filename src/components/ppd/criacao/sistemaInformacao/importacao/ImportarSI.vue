@@ -32,7 +32,6 @@
             color="amber accent-3"
             indeterminate
           ></v-progress-circular>
-          <span>A - {{ppd.sistemasInfo}}</span>
         </v-card-actions>
       </v-form>
     </v-card>

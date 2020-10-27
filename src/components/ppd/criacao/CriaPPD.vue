@@ -10,7 +10,9 @@
         <v-card-text>
           <v-row>
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Título</div>
+              <div class="info-label">Título
+                <InfoBox header="Título do PPD" :text="myhelp.Ppd.titulo"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="9">
               <v-text-field
@@ -22,7 +24,9 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Entidades</div>
+              <div class="info-label">Entidades
+                <InfoBox header="Entidades do PPD" :text="myhelp.Ppd.entidade"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
               <v-autocomplete
@@ -45,7 +49,9 @@
           </v-row>
           <v-row>
             <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Menção de responsabilidade</div>
+              <div class="info-label">Menção de responsabilidade
+                <InfoBox header="Identificação de responsabilidades pela elaboração do PPD " :text="myhelp.Ppd.responsabilidade"/>
+              </div>
             </v-col>
             <v-col cols="12" xs="12" sm="9">
               <v-textarea
