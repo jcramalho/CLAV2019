@@ -375,7 +375,7 @@ module.exports.help = {
   Ppd:{
     titulo: "Denominação do Plano de Preservação Digital",
     entidade: "Entidade responsável pela apresentação e aplicação do PPD",
-    responsabilidade: "Indicção do(s) responsável(eis) pelo apresentação do PPD",
+    responsabilidade: "Indicação do(s) responsável(eis) pelo apresentação do PPD",
     novoSI: "Os elementos informativos relativos a cada SI encontram-se estruturados em quatro fases:"+
             "<ul><li>	Fase 1 - Identificação do sistemas de informação </li>"+
             "<li>Fase 2 - Avaliação e definição do criticidade do sistema de informação </li>" +
@@ -439,7 +439,7 @@ module.exports.help = {
                     "<li>Pouco crítico. Sistema relevante para apoiar os processos de negócio. Impacto moderado no caso de perda ou falha do sistema.</li>"+
                     "<li>Não crítico. Significativo para melhorar a eficiência, ou eficácia do negócio. Impacto leve no caso de perda ou falha do sistema.</li></ol>",
       siObjetoPreservacao: "Os SI com informação cujo prazo de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de preservação digital. Não são objeto de preservação os SI abatidos, cuja informação passou para outro SI.",
-      
+
     },
     Caracterizacao:{
       geral:"<p>Apenas devem ser caracterizados os sistemas que tenham transitado da fase 2, i.e., os SI com informação cujo prazo de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de preservação digital. Não são objeto de preservação os SI abatidos, cuja informação passou para outro SI.</p>"+
@@ -454,6 +454,10 @@ module.exports.help = {
 
 
     },
-    Estrategia:{}
+    Estrategia:{
+      geral:"A escolha de soluções de preservação deve ser feita para cada um dos sistemas identificados e que passaram para a fase 3."+
+          "Para este efeito é necessário utilizar os dados recolhidos nas fases anteriores, cruzados com os aspetos gestionários, nomeadamente: a política e gestão orçamental, o alinhamento da plataforma tecnológica com o negócio, recursos humanos e impacto de eventual mudança."+
+          "O planeamento é feito sobre duas perspetivas, que se complementam no tempo: a utilização operacional e a utilização como memória.",
+    }
   }
 };
