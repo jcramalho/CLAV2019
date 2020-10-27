@@ -29,7 +29,7 @@
 
           <v-col v-if="item.text">
             <div v-if="item.campo === 'Link'" class="info-content">
-              <a :href="item.text" target="_blank">{{ item.text.split('/')[1] === 'rada' ? 'CLAV:' : ''}}{{ item.text }}</a>
+              <a :href="pathAPI + '/ficheirosEstaticos?caminho=documentos%2FRADA%2F' + item.text.split('RADA/')[1] + '&' + authToken" target="_blank">{{ item.text }}</a>
             </div>
             <div v-else-if="item.campo === 'Entidades'" class="info-content">
               <ul>
@@ -82,6 +82,7 @@
 
 <script>
 const help = require("@/config/help").help;
+const lhost = require("@/config/global").host;
 import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {
@@ -118,7 +119,19 @@ export default {
       Iniciador: "Iniciar",
     },
     myhelp: help,
+
+    pathAPI: "",
+    authToken: "",
+    ready: false
   }),
+
+  created: async function (){
+    this.authToken = await this.$getAuthToken();
+    this.authToken = this.authToken.replace(" ", "=");
+
+    this.pathAPI = lhost;
+    this.ready = true;
+  }
 };
 </script>
 
