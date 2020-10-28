@@ -1,7 +1,7 @@
 <template>
 <v-footer dark padless>
-    <v-card class="flex" flat>
-        <v-card-title id="footer-bar" class="hidden-sm-and-down px-4 py-0">
+    <v-card flat>
+        <v-card-title id="footer-bar" class="hidden-sm-and-down px-2 py-2">
             <p class="big-footer-letters">DGLAB -</p>
             <p class="regular-footer-letters pl-2">
                 Direção Geral do Livro, dos Arquivos e das Bibliotecas

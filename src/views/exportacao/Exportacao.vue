@@ -1,77 +1,102 @@
 <template>
-<v-content class="px-12">
-    <p class="content-title-1">
-        Exportação de Dados
-    </p>
-    <p class="content-text py-2">
-        Área destinada à exportação de dados das classes, entidades, tipologias, legislação e ontologia.
-    </p>
-    <v-row row wrap justify-center>
-        <v-col cols="12">
-            <v-card-text>
-                <v-autocomplete :items="exportacoesDisponiveis" label="Dados a exportar" v-model="tipo" :rules="regraTipo" required @change="
+<v-content :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }">
+
+    <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+        <v-row>
+            <v-col class="px-0 my-0">
+                <v-card flat style="border-radius: 10px !important;" class="pt-5 pb-1">
+                    <p class="content-title-1">
+                        Exportação de Dados
+                    </p>
+                    <div class="info-content" :class="{
+                    'margin-mdUp': $vuetify.breakpoint.mdAndUp,
+                    'margin-smDown': $vuetify.breakpoint.smAndDown
+                  }">
+                        <v-tooltip top color="info" open-delay="500">
+                            <template v-slot:activator="{ on }">
+                                <v-autocomplete :items="exportacoesDisponiveis" v-on="on" style="text-align: center !important;" class="centered-input mt-n1 mb-2 px-8" :rules="regraTipo" v-model="tipo" label="Dados a exportar" text hide-details single-line required clearable color="blue darken-3" @change="
                         queriesSel = {};
                         id = '';
-                    ">
-                </v-autocomplete>
-
-                <v-card v-if="tipo != '' && tipo.path.includes('/')" class="mb-4">
-                    <v-card-title class="indigo darken-4 white--text subtitle-1">
-                        Parâmetros do pedido
-                    </v-card-title>
-                    <v-card-text>
-                        <v-row>
-                            <v-col cols="12">
+                    "></v-autocomplete>
+                            </template>
+                            <span>
+                                Área destinada à exportação de dados das classes, entidades, tipologias, legislação e ontologia.
+                            </span>
+                        </v-tooltip>
+                    </div>
+                    <div class="px-5">
+                        <v-div v-if="tipo != '' && tipo.path.includes('/')">
+                            <div :class="{
+                            'px-3': $vuetify.breakpoint.mdAndUp
+                            }" class="separador">
+                                <v-icon dark>{{ paramsIcon }}</v-icon>
+                                <span>
+                                    Parâmetros do pedido
+                                </span>
+                            </div>
+                            <div>
                                 <v-form ref="id">
                                     <v-autocomplete :items="this[singToPlu(tipo.filename)]" label="Identificador" v-model="id" :rules="regraId" required>
                                     </v-autocomplete>
                                 </v-form>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
+                            </div>
+                        </v-div>
 
-                <v-card v-if="tipo != ''">
-                    <v-card-title class="indigo darken-4 white--text subtitle-1">
-                        Defina as query strings a usar na exportação
-                    </v-card-title>
-                    <v-card-text>
-                        <div v-for="(querystring, key) in queryStrings[tipo.filename]" :key="key">
+                        <div v-if="tipo != ''">
+
+                            <div :class="{
+                            'px-3': $vuetify.breakpoint.mdAndUp
+                            }" class="separador">
+                                Defina as query strings a usar na exportação
+                            </div>
+                            <div v-for="(querystring, key) in queryStrings[tipo.filename]" :key="key">
+                                <v-row>
+                                    <v-col cols="1" class="d-flex justify-center">
+                                        <InfoBox :header="querystring.label" :text="querystring.desc" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
+                                    </v-col>
+                                    <v-col cols="11">
+                                        <span v-if="querystring.enum.length > 0">
+                                            <v-autocomplete :items="querystring.enum" :label="querystring.label" v-model="queriesSel[key]" :multiple="querystring.multiple">
+                                            </v-autocomplete>
+                                        </span>
+                                        <span v-else>
+                                            <v-text-field :name="key" v-model="queriesSel[key]" :label="querystring.label" type="text" />
+                                        </span>
+                                    </v-col>
+                                </v-row>
+                            </div>
                             <v-row>
-                                <v-col cols="1" class="d-flex justify-center">
-                                    <InfoBox :header="querystring.label" :text="querystring.desc" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
+                                <v-col align="center">
+                                    <v-btn @click="cancelar" rounded class="white--text" :class="{
+                            'px-12': $vuetify.breakpoint.lgAndUp,
+                            'px-8': $vuetify.breakpoint.mdAndDown
+                          }" id="default-button">
+                                        <unicon name="arrow-back-icon" width="20" height="20" viewBox="0 0 20.71 37.261" fill="#ffffff" />
+                                        <p class="ml-2">Voltar</p>
+                                    </v-btn>
                                 </v-col>
-                                <v-col cols="11">
-                                    <span v-if="querystring.enum.length > 0">
-                                        <v-autocomplete :items="querystring.enum" :label="querystring.label" v-model="queriesSel[key]" :multiple="querystring.multiple">
-                                        </v-autocomplete>
-                                    </span>
-                                    <span v-else>
-                                        <v-text-field :name="key" v-model="queriesSel[key]" :label="querystring.label" type="text" />
-                                    </span>
+                                <v-col align="center">
+                                    <v-btn @click="executar" rounded class="white--text" :class="{
+                            'px-12': $vuetify.breakpoint.lgAndUp,
+                            'px-8': $vuetify.breakpoint.mdAndDown
+                          }" id="default-button">
+                                        <v-icon dark>{{ exportIcon }}</v-icon>
+                                        <span class="ml-3"> Exportar </span>
+                                    </v-btn>
                                 </v-col>
                             </v-row>
                         </div>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="indigo darken-4" dark @click="cancelar">
-                            Voltar
-                        </v-btn>
-                        <v-btn color="indigo darken-4" dark @click="executar">
-                            Exportar
-                        </v-btn>
-                        <v-spacer></v-spacer>
-                    </v-card-actions>
+                    </div>
                 </v-card>
-            </v-card-text>
-        </v-col>
-        <v-col>
-            <v-alert :value="text != ''" :type="alertType">
-                {{ text }}
-            </v-alert>
-        </v-col>
-    </v-row>
+                <v-alert :value="text != ''" :type="alertType">
+                    {{ text }}
+                </v-alert>
+            </v-col>
+        </v-row>
+    </v-container>
 </v-content>
 </template>
 
@@ -79,6 +104,12 @@
 import InfoBox from "@/components/generic/infoBox.vue";
 const lhost = require("@/config/global").host;
 var iconv = require("iconv-lite");
+import {
+    mdiTextBoxSearchOutline
+} from '@mdi/js';
+import {
+    mdiCloudPrintOutline
+} from '@mdi/js';
 
 export default {
     data: () => {
@@ -447,7 +478,9 @@ export default {
             regraTipo: [v => !!v || "Tipo de dados a exportar é obrigatório."],
             regraId: [v => !!v || "Identificador é obrigatório."],
             text: "",
-            alertType: "success"
+            alertType: "success",
+            paramsIcon: mdiTextBoxSearchOutline,
+            exportIcon: mdiCloudPrintOutline
         };
     },
 
@@ -699,3 +732,70 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+#text-field {
+    text-align: center !important;
+}
+
+.centered-input>>>input {
+    text-align: center;
+}
+
+#advanced-search-card {
+    padding: 8px;
+    background: #dee2f8;
+    color: #1a237e;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 0 20px 20px 0;
+}
+
+.separador {
+    color: white;
+    font-weight: 400;
+    padding: 22px;
+    margin-top: 20px;
+    align-content: center;
+    min-height: 55px;
+    background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
+    font-size: 14pt;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+}
+
+.info-content {
+    padding: 8px;
+    background-color: #f1f6f8 !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 10px;
+}
+
+#dark-background-list {
+    background-color: #0056b6 !important;
+}
+
+.v-btn__content {
+    color: black !important;
+}
+
+.margin-mdUp {
+    margin-right: 10% !important;
+    margin-left: 10% !important;
+}
+
+.margin-smDown {
+    margin-right: 2% !important;
+    margin-left: 2% !important;
+}
+
+.info-card {
+    background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+    text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+#treeview-card {
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.32);
+    border-radius: 10px;
+    background-color: #f4f5f7;
+}
+</style>
