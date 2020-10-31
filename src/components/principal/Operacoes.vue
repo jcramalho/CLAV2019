@@ -284,7 +284,7 @@ export default {
       let leg = null;
       if (tipo === "Legislação") {
         leg = this.legislacao.legislacao.find(
-          (legislacao) => legislacao.numero === this.dadosEditar.split(" ")[0]
+          legislacao => legislacao.numero === this.dadosEditar.split(" ")[0]
         );
       }
 
@@ -310,9 +310,7 @@ export default {
       var filtered = [];
       for (var i = 0; i < operacoes.length; i++) {
         var levelsSet = new Set();
-        operacoes[i].ops.forEach((b) =>
-          b.level.forEach((l) => levelsSet.add(l))
-        );
+        operacoes[i].ops.forEach(b => b.level.forEach(l => levelsSet.add(l)));
         var levels = Array.from(levelsSet);
 
         if (levels.includes(this.level)) {
@@ -321,7 +319,7 @@ export default {
             tooltip: operacoes[i].tooltip,
             html: operacoes[i].html,
             texto: operacoes[i].texto,
-            ops: operacoes[i].ops.filter((o) => o.level.includes(this.level)),
+            ops: operacoes[i].ops.filter(o => o.level.includes(this.level)),
           });
         }
       }
@@ -329,9 +327,9 @@ export default {
     },
 
     preparaEntidades(dados, entOuTip) {
-      let dadosTratados = dados.filter((dado) => dado.estado === "Ativa");
+      let dadosTratados = dados.filter(dado => dado.estado === "Ativa");
       dadosTratados = dadosTratados.map(
-        (dado) => `${dado.sigla} - ${dado.designacao}`
+        dado => `${dado.sigla} - ${dado.designacao}`
       );
 
       if (entOuTip === "Entidades") {
@@ -345,10 +343,10 @@ export default {
 
     preparaLegislacoes(legislacoes) {
       this.legislacao.legislacao = JSON.parse(JSON.stringify(legislacoes));
-      let dadosTratados = legislacoes.filter((leg) => leg.estado === "Ativo");
+      let dadosTratados = legislacoes.filter(leg => leg.estado === "Ativo");
 
       dadosTratados = dadosTratados.map(
-        (legislacao) =>
+        legislacao =>
           `${legislacao.numero} - ${legislacao.sumario} - ${legislacao.tipo}`
       );
 
@@ -499,8 +497,7 @@ export default {
         },
         {
           entidade: "Planos de Preservação Digital",
-          texto:
-            "A ser adicionado...",
+          texto: "A ser adicionado...",
           ops: [
             {
               label: "Consultar",
@@ -583,7 +580,7 @@ export default {
             }*/,
           ],
         },
-        
+
         {
           entidade: "Exportação de Dados",
           texto:
