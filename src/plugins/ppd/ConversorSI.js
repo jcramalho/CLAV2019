@@ -20,9 +20,118 @@ var importarSI = (file, ppd) => {
             si[i] = si[i].map(s => { return s.trim() });
         }
 
+        //falta confirmar se tem os campos todos
+        if(si[0][2] == "1_Administrador do SI"){
+            for(let i = 1; i<si.length; i++){
+                var sIdentificacao={
+                    numeroSI : si[i][0],
+                    nomeSI : si[i][1],
+                    identificacao:{
+                        adminSistema : si[i][2],
+                        adminDados : si[i][3],
+                        propSistemaPublico : si[i][4],
+                        propSistemaPrivado : si[i][5],
+                        propDados : si[i][6],
+                        localDadosPublico : si[i][7],
+                        localDadosPrivado : si[i][8],
+                        defCheck : si[i][9],
+                        defResponsavel : si[i][10],
+                        insourcingCheck : si[i][11],
+                        insourcing : si[i][12],
+                        outsourcingCheck : si[i][13],
+                        outsourcing : si[i][14],
+                        notas : si[i][15],
+                    },
+                    avaliacao:{
+                        descricao: si[i][16],
+                        decomposicao: si[i][17],
+                        codClasse: si[i][18],
+                        numeroClasse: si[i][19],
+                        tituloClasse: si[i][20],
+                        pcaClasse: si[i][21],
+                        formaContagemPrazos: si[i][22],
+                        destinoFinalClasse: si[i][23],
+                        pcaSI: si[i][24],
+                        desfinoFinalSI: si[i][25],
+                        siRelacionado: si[i][26],
+                        siRelacionadoRelacao: si[i][27],
+                        estadoSI: si[i][28],
+                        grauUtilizacaoSI: si[i][29],
+                        criticidadeSI: si[i][30],
+                        siObjetoPreservacao: si[i][31],
+                        notas: si[i][32]
+                    },
+                    caracterizacao: {
+                        dependenciaSoft: si[i][33],
+                        categoriaDados: si[i][34],
+                        formatosUtilizados: si[i][35],
+                        modeloCres: si[i][36],
+                        dimensao: si[i][37],
+                        crescimento: si[i][38],
+                        localSistema: si[i][39],
+                        salaTec: si[i][40],
+                        acessoSalaTec: si[i][41],
+                        energiaRed: si[i][42],
+                        energiaSoc: si[i][43],
+                        alarme: si[i][44],
+                        climatizacao: si[i][45],
+                        seguranca: si[i][46],
+                        comunicacaoEx: si[i][47],
+                        planoContingencia: si[i][48],
+                        planoMudEvolucao: si[i][49],
+                        privAcesso: si[i][50],
+                        catSegDados: si[i][51],
+                        rotinaAuditoria: si[i][52],
+                        logsRotinas: si[i][53],
+                        integridadeInfo: si[i][54],
+                        armazenamento: si[i][55],
+                        replicacaoDados: si[i][56],
+                        backupsRegular: si[i][57],
+                        modeloBackup: si[i][58],
+                        qualidadeBackup: si[i][59],
+                        inventarioSoft: si[i][60],
+                        inventarioHard: si[i][61],
+                        documentacaoSis: si[i][62],
+                        documentacaoProc: si[i][63],
+                        controlVersaoDProc: si[i][64],
+                        contratoAtivos: si[i][65],
+                        planoRecuperacao: si[i][66],
+                        notas: si[i][67],
+                    },
+                    estrategia: {
+                        uOperacionalIdentificacao: si[i][68],
+                        uOperacionalFundamentacao: si[i][69],
+                        uOperacionalLacunas: si[i][70],
+                        uMemoriaIdentificacao : si[i][71],
+                        uMemoriaFundamentacao : si[i][72],
+                        uMemoriaLacunas : si[i][73],
+                    }
+                }
+                allSI.push(sIdentificacao);
+            }
+        }
+        resolve({ allSI });
+    });
+}
+
+
+/*
+var importarSI = (file, ppd) => {
+
+    return new Promise((resolve, reject) => {
+
+        let parsedFile = Papa.parse(file, papa_config);
+        let si = parsedFile.data;
+        var allSI = [];
+
+        // limpar espaços que possam vir nos campos
+        for (let i = 0; i < si.length; i++) {
+            si[i] = si[i].map(s => { return s.trim() });
+        }
+
 
         if(si[0][2] == "Administrador do SI"){
-            //VERIFICAR SE TEM TODOS OS CAMPOS
+            //FALTA VERIFICAR SE TEM TODOS OS CAMPOS
             for(let i = 1; i<si.length; i++){
                 var sIdentificacao={
                     numeroSI : si[i][0],
@@ -157,50 +266,8 @@ var importarSI = (file, ppd) => {
         resolve({ allSI });
 
     });
-}
+}*/
 
 
-var importarIdentificacao = (file, ppd) => {
-    return new Promise((resolve, reject) => {
-
-        let parsedFile = Papa.parse(file, papa_config);
-        let si = parsedFile.data;
-
-        // limpar espaços que possam vir nos campos
-        for (let i = 0; i < si.length; i++) {
-            si[i] = si[i].map(s => { return s.trim() });
-        }
-
-        var allSI = [];
-        for(let i = 1; i<si.length; i++){
-            //ppd.lixo = si[1][0];
-            var sIdentificacao={
-                numeroSI : si[i][0],
-                nomeSI : si[i][1],
-                identificacao:{
-                    adminSistema : si[i][2],
-                    adminDados : si[i][3],
-                    propSistemaPublico : si[i][4],
-                    propSistemaPrivado : si[i][5],
-                    propDados : si[i][6],
-                    localDadosPublico : si[i][7],
-                    localDadosPrivado : si[i][8],
-                    defCheck : si[i][9],
-                    defResponsavel : si[i][10],
-                    insourcingCheck : si[i][11],
-                    insourcing : si[i][12],
-                    outsourcingCheck : si[i][13],
-                    outsourcing : si[i][14],
-                    notas : si[i][15],
-                }
-            }
-            allSI.push(sIdentificacao);
-        };
-        //ppd.identificacao = sIdentificacao;
-
-        resolve({ allSI });
-
-    });
-};
 
 export { importarSI };

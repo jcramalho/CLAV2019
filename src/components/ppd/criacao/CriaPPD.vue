@@ -61,6 +61,150 @@
                   clearable
               ></v-textarea>
             </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Fonte de legitimação </div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+              <v-radio-group v-model="loadCheck" row>
+                <v-radio
+                  v-for="(p, i) in fonteLegitimacao"
+                  :key="i"
+                  :label="p"
+                  :value="p"
+                  color="indigo darken-3"
+                ></v-radio>
+              </v-radio-group>
+              <div v-if="loadCheck === 'TS/LC'">
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="tabelasSelecao"
+                  item-text="titulo"
+                  return-object
+                  v-model="a"
+                  solo
+                  dense
+                />
+              </div>
+              <div v-else-if="loadCheck === 'PGD/LC'">
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="portariaLC"
+                  item-text="titulo"
+                  return-object
+                  v-model="a"
+                  solo
+                  dense
+                />
+              </div>
+              <div v-else-if="loadCheck === 'PGD'">
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="portaria"
+                  item-text="titulo"
+                  return-object
+                  v-model="fonteLegitimacaoSelected"
+                  solo
+                  dense
+                />
+              </div>
+              <div v-else-if="loadCheck === 'RADA'">
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="portariaRada"
+                  item-text="titulo"
+                  return-object
+                  v-model="a"
+                  solo
+                  dense
+                />
+              </div>
+              <div v-else>
+                    <v-autocomplete
+                      label="Selecione a fonte de legitimação"
+                      :items="tsRada"
+                      item-text="titulo"
+                      return-object
+                      v-model="a"
+                      solo
+                      dense
+                    ></v-autocomplete>
+                  </div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Selecionados</div>
+            </v-col>
+            <v-col v-if="selecionadosTabelaFL.length > 0">
+              <v-data-table
+                :headers="headersSelecionados"
+                :items="selecionadosTabelaFL"
+                class="elevation-1"
+                :footer-props="footer_props"
+                :page.sync="paginaSelect"
+              >
+                <template v-slot:header="props">
+                  <tr>
+                    <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
+                  </tr>
+                </template>
+
+                <template v-slot:item="props">
+                  <tr>
+                    <td>{{ props.item.codigo }}</td>
+                    <td>{{ props.item.referencia }}</td>
+                    <td>{{ props.item.titulo }}</td>
+                    <td>
+                      <v-btn small color="red darken-2" dark rounded @click="unselectClasse(props.item)">
+                        <v-icon dark>remove_circle_outline</v-icon>
+                      </v-btn>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-col>
+            <v-col v-else>
+              <v-alert :value="true" type="warning">Não tem nenhuma classe selecionada...</v-alert>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col xs="2" sm="2" class="mt-3">
+              <div class="info-label">
+                Tabela de Seleção
+              </div>
+            </v-col>
+            <v-col xs="3" sm="3"/>
+            <v-col xs="5" sm="5">
+              <v-text-field
+                v-if="!tree_ou_tabela"
+                label="Procurar"
+                v-model="search"
+                append-icon="search"
+                single-line
+                hide-details
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-data-table
+                :headers="headers"
+                :items="classeSelecionada"
+                item-key="idClasse"
+                :search="search"
+                class="elevation-1"
+                :sort-by="['codigo']"
+                :footer-props="footer_props"
+                :page.sync="paginaTabela"
+                @click:row="clicked">
+              >
+              </v-data-table>
+            </v-col>
+            <span>{{selecionadosTabelaFL}}</span>
+          </v-row>
+          <v-row>
             <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Adicionar sistema de informação
                <InfoBox header="Adicionar SI" :text="myhelp.Ppd.novoSI"/>
@@ -79,6 +223,7 @@
             :sistema="ppd.sistemasInfo"
             @unselectSistema="unselectSistema($event)"
           />
+
         </v-card-text>
 
         <v-snackbar
@@ -91,7 +236,17 @@
           <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
         </v-snackbar>
       </v-card>
-
+      <v-row align="center" justify="space-around">
+        <v-btn
+        color="indigo darken-2"
+        dark
+        class="ma-2"
+        rounded
+        @click="$router.push('/')"
+        >
+          Guardar
+        </v-btn>
+      </v-row>
     </v-col>
   </v-row>
 </template>
@@ -206,6 +361,50 @@ export default {
       },
     },
 
+    //para apagar!!!!!!!
+    a: "",
+    //---Fonte de legitimacao---
+    loadCheck: "",
+    fonteLegitimacaoSelected: "",
+    fonteLegitimacao: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
+    portaria: [],
+    portariaLC: [],
+    portariaRada: [],
+    tabelasSelecao: [],
+    tsRada: [],
+    tree_ou_tabela: false,
+    search: "",
+    classesTree: [],
+    classeSelecionada: [],
+    paginaTabela: 1,
+    paginaSelect: 1,
+    expanded: [],
+    selecionadosTabelaFL: [],
+
+    footer_props: {
+        "items-per-page-text": "Classes por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todos"
+    },
+    headers: [
+      {text: "Código", sortable: false, value: "codigo", sortable: true},
+      {text: "Referência", sortable: false, value: "referencia", sortable: true},
+      {text: "Título", sortable: false, value: "titulo"},
+      {text: "PCA", sortable: false, value: "pca"},
+      {text: "Destino Final", sortable: false, value: "df"},
+    ],
+    headersSelecionados:[
+      {text: "Código", sortable: false, value: "codigo"},
+      {text: "Referência", sortable: false, value: "referencia"},
+      {text: "Título", sortable: false, value: "titulo"},
+      { text: "Remover", align: "left", sortable: false, value: "" },
+    ],
+    headersLC: [
+      {text: "Código", sortable: false, value: "codigo"},
+      {text: "Título", sortable: false, value: "titulo"},
+      {text: "PCA", sortable: false, value: "pca"},
+      {text: "Destino Final", sortable: false, value: "df"}
+    ],
 
     // Lista de todas as entidades existentes
     entidades: [],
@@ -239,11 +438,122 @@ export default {
   }),
 
 
+ watch:{
+    "fonteLegitimacaoSelected": function() {
+
+      //if (this.fonteLegitimacaoSelected != "") {
+        this.loadConsultaPGD(this.fonteLegitimacaoSelected.id);
+      //}
+    },
+  },
 
   methods: {
 
 
-    
+  //-------Fonte Legitimacao-------
+    loadConsultaPGD: async function(id) {
+      try {
+        var response = await this.$request("get", "/pgd/"+id);
+        this.classeSelecionada = response.data;
+      }
+        catch (err) {
+          return err;
+      }
+    },
+
+
+    parseEntidades: async function(ent) {
+      try {
+        var entidades = "";
+        for (var i = 0; i < ent.length; i++) {
+          entidades = entidades + ent[i] + " ";
+        }
+        return entidades;
+      } catch (e) {
+        return {};
+      }
+    },
+    preparaLegislacao: async function(leg) {
+      try {
+        var myLegislacao = {
+          data: {
+            campo: "Data do diploma",
+            text: leg.data
+          },
+          sumario: {
+            campo: "Sumário",
+            text: leg.sumario
+          },
+          fonte: {
+            campo: "Fonte de legitimação",
+            text: leg.fonte
+          },
+          link: {
+            campo: "Link",
+            text: leg.link
+          },
+          entidades: {
+            campo: "Entidades",
+            text: await this.parseEntidades(leg.entidades)
+          }
+        };
+        return myLegislacao;
+      } catch (e) {
+        return {};
+      }
+    },
+    procuraClasse: function (classe, myClasses, classePai) {
+      var index = myClasses.map(cl => cl.classe).indexOf(classePai)
+      if(index>=0) myClasses[index].filhos.push(classe)
+      else
+        for(var c of myClasses) {
+          c.filhos = this.procuraClasse(classe,c.filhos,classePai)
+        }
+      return myClasses
+    },
+    prepararClasses: async function(classes) {
+      var myClasses = [];
+      for(var c of classes) {
+        c.filhos = []
+
+        if(c.nivel == 1) {
+          myClasses.push(c)
+        }
+        else {
+          myClasses = this.procuraClasse(c,myClasses,c.classePai)
+        }
+      }
+      return myClasses;
+    },
+    //--------------------
+    //----------------------------------------------
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
+
+    clicked(item) {
+      var index = this.classeSelecionada.findIndex(e => e.classe === item.classe);
+      this.selecionadosTabelaFL.push(item)
+      this.classeSelecionada.splice(index,1);
+    },
+
+    unselectClasse: function(item) {
+      this.classeSelecionada.push(item);
+      var index = this.selecionadosTabelaFL.findIndex(e => e.classe === item.classe);
+      this.selecionadosTabelaFL.splice(index, 1);
+    },
+
+  //-------Fonte Legitimacao-------
+
+
     // Faz load de todas as entidades
     loadEntidades: async function() {
       try {
@@ -361,11 +671,31 @@ export default {
   */
   created: async function() {
       try{
-            await this.loadEntidades();
-            await this.loadLegislacao();
+        await this.loadEntidades();
+        await this.loadLegislacao();
+        //var user = this.$verifyTokenUser();
+        //var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
+        //this.portariaLC = await this.prepararLeg(response.data);
+        var response2 = await this.$request("get", "/pgd");
+        this.portaria = await this.prepararLeg(response2.data);
+        //var response3 = await this.$request("get", "/legislacao?fonte=RADA");
+        //this.portariaRada = await this.prepararLeg(response3.data);
+        //var response4 = await this.$request("get","/rada");
+        //this.tsRada = response4.data
+        var response5 = await this.$request("get","/tabelasSelecao")
+        this.tabelasSelecao = response5.data.map(ts=>{return {
+            titulo: ts.designacao,
+            codigo: ts.id.split("clav#")[1]
+          }
+        });
       }
       catch(e){
-          console.log('Erro ao carregar a informação inicial: ' + e);
+        this.portariaLC = [];
+        this.portaria = [];
+        this.portariaRada = [];
+        this.tabelasSelecao = [];
+        this.tsRada = [];
+        console.log('Erro ao carregar a informação inicial: ' + e);
       }
   }
 
