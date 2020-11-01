@@ -202,7 +202,6 @@
               >
               </v-data-table>
             </v-col>
-            <span>{{selecionadosTabelaFL}}</span>
           </v-row>
           <v-row>
             <v-col cols="12" xs="12" sm="3">
@@ -302,14 +301,18 @@ export default {
           notas: "",
         },
         avaliacao: {
-          codigo: "",
           descricao: "",
           checkedAti: "",
+          checkedGrau: "",
+          checkedCriticidade: "",
           sistemasRelacionados: [],
+          objetoPreservacao: "",
           legislacoes: [],
         },
         caracterizacao:{
           dependenciaSoft: "",
+          categoriaDados: "",
+          formatos:"",
           modeloCres: "",
           dimensao:"",
           crescimento: "",

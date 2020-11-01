@@ -10,6 +10,20 @@
     <v-expansion-panel-content>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Descrição do SI
+              <InfoBox header="Descrição do SI" :text="myhelp.Ppd.Avaliacao.descricao"/>
+            </div>
+          </v-col>
+          <v-col cols="12" xs="12" sm="8">
+            <v-text-field
+              :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+              v-model="ppd.si.avaliacao.descricao"
+              label="Indique o âmbito e conteúdo do sistema de informação"
+              solo
+              clearable
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Sistemas informação</div>
           </v-col>
           <v-col v-if="ppd.si.avaliacao.sistemasRelacionados.length > 0">
@@ -93,7 +107,9 @@
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Atividade do SI</div>
+              <div class="info-label">Atividade do SI
+                <InfoBox header="Atividade do SI" :text="myhelp.Ppd.Avaliacao.estadoSI" />
+              </div>
           </v-col>
           <v-col
             class="d-flex"
@@ -107,6 +123,58 @@
               dense
               solo
             ></v-select>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Grau de utilização do SI
+                <InfoBox header="Grau de utilização do SI" :text="myhelp.Ppd.Avaliacao.utilizacaoSI" />
+              </div>
+          </v-col>
+          <v-col
+            class="d-flex"
+            cols="12"
+            sm="9"
+          >
+            <v-select
+              :items="checkedGrau"
+              label="Indique o grau de utilização do SI (1-5)"
+              v-model="ppd.si.avaliacao.checkedGrau"
+              dense
+              solo
+            ></v-select>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Criticidade do SI
+                <InfoBox header="Criticidade do SI" :text="myhelp.Ppd.Avaliacao.criticidadeSI" />
+              </div>
+          </v-col>
+          <v-col
+            class="d-flex"
+            cols="12"
+            sm="9"
+          >
+            <v-select
+              :items="checkedCriticidade"
+              label="Indique a criticidade do SI (1-4)"
+              v-model="ppd.si.avaliacao.checkedCriticidade"
+              dense
+              solo
+            ></v-select>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Objeto de preservação
+              <InfoBox header="Objeto de preservação" :text="myhelp.Ppd.Avaliacao.siObjetoPreservacao"/>
+            </div>
+          </v-col>
+          <v-col cols="12" xs="12" sm="9">
+            <v-radio-group v-model="ppd.si.avaliacao.objetoPreservacao" row>
+              <v-radio
+                v-for="(p, i) in simNao"
+                :key="i"
+                :label="p"
+                :value="p"
+                color="indigo darken-3"
+              ></v-radio>
+            </v-radio-group>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Legislação / Diplomas jurídico-administrativos</div>
@@ -188,8 +256,13 @@ export default {
         {label: "O (Output - quando a informação, no todo ou em parte, tem origem ou resulta do processamento de dados existentes no sistema em análise)",value:"Output"},
       ],
       checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"],
-
-
+      checkedGrau: ["O sistema é utilizado regularmente (todos os dias)",
+                    "O sistema é usado menos regularmente (todas as semanas)",
+                    "O sistema é utilizado com pouca regularidade (mensalmente ou semestralmente)",
+                    "O sistema é pouco utilizado (anualmente)",
+                    "O sistema nunca é utilizado (desconhecido)."],
+      checkedCriticidade: ["Muito crítico", "Crítico", "Pouco crítico", "Não crítico"],
+      simNao: ["Sim", "Não"],
 
 
     };

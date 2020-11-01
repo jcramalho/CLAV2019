@@ -10,37 +10,6 @@
     <v-expansion-panel-content>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Número de referência SI</div>
-        </v-col>
-        <v-col cols="12" xs="12" sm="9">
-          <v-text-field
-            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-            v-model="ppd.si.caracterizacao.nRef"
-            label="Identificador do sistema de informação"
-            solo
-            clearable
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Nome do SI</div>
-        </v-col>
-        <v-col cols="12" xs="12" sm="9">
-          <v-text-field
-            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-            v-model="ppd.si.caracterizacao.nomeSI"
-            label="Designação oficial do sistema"
-            solo
-            clearable
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <hr style="border: 3px solid indigo; border-radius: 2px;" />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Nível de dependência do Software</div>
         </v-col>
         <v-col
@@ -58,6 +27,38 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Categoria dos dados</div>
+        </v-col>
+        <v-col
+          class="d-flex"
+          cols="12"
+          sm="9"
+        >
+          <v-select
+            :items="categoriaDados"
+            label="Indique o tipo de categoria dos dados"
+            v-model="ppd.si.caracterizacao.categoriaDados"
+            dense
+            solo
+          ></v-select>
+        </v-col>
+
+        <v-col cols="12" xs="12" sm="3">
+          <div class="info-label">Formatos</div>
+        </v-col>
+        <v-col cols="12" xs="12" sm="9">
+          <v-text-field
+              :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+              v-model="ppd.si.caracterizacao.formatos"
+              label="Indique os formatos utilizados (ex: Mysql, doc, pdf, xlsx)"
+              solo
+              clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" xs="12" sm="12">
+            <div class="separador">Crescimento do sistema</div>
+        </v-col>
+        <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Modelo de crescimento</div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
@@ -68,18 +69,14 @@
             dense
             solo
           ></v-select>
-          <span>{{ppd.si.caracterizacao.modeloCres}}</span>
-          <div v-if="modeloCresCheck ==='Outra situação'">
-            <v-text-field
-              :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="ppd.si.caracterizacao.modeloCres"
-              label="Indique qual"
-              solo
-              clearable
-            ></v-text-field>
-          </div>
+          <v-text-field v-if="modeloCresCheck ==='Outra situação'"
+            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+            v-model="ppd.si.caracterizacao.modeloCres"
+            label="Indique qual"
+            solo
+            clearable
+          ></v-text-field>
         </v-col>
-
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Dimensão atual</div>
         </v-col>
@@ -104,7 +101,9 @@
               clearable
           ></v-text-field>
         </v-col>
-
+        <v-col cols="12" xs="12" sm="12">
+            <div class="separador">Segurança geral da plataforma tecnológica</div>
+        </v-col>
         <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Localização de Sistema</div>
         </v-col>
@@ -233,7 +232,6 @@
             ></v-radio>
           </v-radio-group>
         </v-col>
-
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Plano contingência</div>
         </v-col>
@@ -257,6 +255,9 @@
             dense
             solo
           ></v-select>
+        </v-col>
+        <v-col cols="12" xs="12" sm="12">
+            <div class="separador">Segurança específica dos sistemas</div>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Privilégios de acesso</div>
@@ -324,6 +325,9 @@
             solo
           ></v-select>
         </v-col>
+        <v-col cols="12" xs="12" sm="12">
+            <div class="separador">Armazenamento</div>
+        </v-col>
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Armazenamento dedicado</div>
         </v-col>
@@ -386,6 +390,9 @@
             solo
           ></v-select>
         </v-col>
+        <v-col cols="12" xs="12" sm="12">
+            <div class="separador">Documentação</div>
+        </v-col>
         <v-col cols="12" xs="12" sm="3">
           <div class="info-label">Inventário de Software</div>
         </v-col>
@@ -399,7 +406,7 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Inventário de HardWare</div>
+          <div class="info-label">Inventário de Hardware</div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -513,6 +520,12 @@ export default {
       dependenciaSoft: ["Uso exclusivo de SW não proprietário",
                         "Uso de SW proprietário, mas com adequadas facilidades de exportação de dados",
                         "Uso de SW proprietário com especificações fechadas, e sem adequadas facilidades de exportação de dados"],
+      categoriaDados: ["Dados tabulares (Ex. Sql, Mysql, Oracle, MS Access, etc)",
+                       "Grafos (Ex. Neo4J)",
+                       "Texto estruturado (doc, odt, pdf, etc)",
+                       "Folha de cálculo (xlsx, odf, etc)",
+                       "Multimédia (som, imagem - bitmap e vetorial-, vídeo)",
+                       "Misto (combinação de formatos, por ex. Sql + imagem + texto estruturado)"],
       modeloCres: ["Acumulção contínua - dados continuamente adicionados sem se proceder a expurgo",
                    "Substituição de dado - os dados são escritos por cima de registos anteriores criando diferentes versões de um registo qs quais podem ou não ser guardadas",
                    "Expurgo de registos que perdem utilidade operacional - periodicamente o sistema é purgado de dados que perdem utilidade operacional",
@@ -564,6 +577,7 @@ export default {
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
+  text-align: center;
 }
 
 .info-content {
