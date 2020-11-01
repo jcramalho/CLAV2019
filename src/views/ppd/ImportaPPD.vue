@@ -1,5 +1,5 @@
 <template>
-  <CriaPPD :importarPPD="false"/>
+  <CriaPPD :importarPPD="true"/>
 </template>
 
 <script>

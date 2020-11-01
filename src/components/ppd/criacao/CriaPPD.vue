@@ -206,17 +206,17 @@
           <v-row>
             <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Adicionar sistema de informação
-               <InfoBox header="Adicionar SI" :text="myhelp.Ppd.novoSI"/>
+              <InfoBox header="Adicionar SI" :text="myhelp.Ppd.novoSI"/>
               </div>
             </v-col>
           </v-row>
-          <!-- sisISLAÇÂO -->
           <SistemaInfo
             :ppd="ppd"
             :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo, ppd.listaSistemasInfoAuxiliar)"
             :entidades="entidades"
             :semaforos="semaforos"
             :listaLegislacao="listaLegislacao"
+            :importarPPD="importarPPD"
           />
           <SistemaOps
             :sistema="ppd.sistemasInfo"
@@ -262,6 +262,9 @@ import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vu
 
 
 export default {
+  props:[
+   "importarPPD"
+  ],
   components: {
     InfoBox,
     SistemaInfo,
