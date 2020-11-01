@@ -442,7 +442,7 @@ module.exports.help = {
 
     },
     Caracterizacao:{
-      geral:"<p>Apenas devem ser caracterizados os sistemas que tenham transitado da fase 2, i.e., os SI com informação cujo prazo de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de preservação digital. Não são objeto de preservação os SI abatidos, cuja informação passou para outro SI.</p>"+
+      geral: "<p>Apenas devem ser caracterizados os sistemas que tenham transitado da fase 2, i.e., os SI com informação cujo prazo de conservação administrativa seja superior a 7 anos ou com destino final de conservação devem ser objeto de preservação digital. Não são objeto de preservação os SI abatidos, cuja informação passou para outro SI.</p>"+
       "A recolha destes elementos informativos destina-se a:"+
       "<ul><li>Avaliar algumas características e configurações da plataforma tecnológica de forma a identificar pontos fortes e fracos relativamente à adequação da mesma à preservação digital.</li>"+
       "<li>Identificar lacunas que seja necessário colmatar de forma a adaptar a plataforma à preservação digital.</li>"+
@@ -451,8 +451,140 @@ module.exports.help = {
       "\n Esta fase encontra-se estruturada em seis blocos:"+
       "<ol><li>Dependência tecnológica</li> <li>Crescimento do sistema</li> <li>Segurança geral da plataforma tecnológica</li>"+
       "<li>Segurança específica dos sistemas</li> <li>Armazenamento</li> <li>Documentação</li></ol>",
+      dependenciaTecnologica: "Pretende identificar o gau de dependÊncia de uma determinada tecnologia que pode indiciar dificuldades futuras para migrar para tecnologia alternativa. Avalia igualmente o grau de utilização de software opensource.",
+      crescimentoSisma: "Recolhe informação destinada a calcular os recursos necessários para salvaguardar futuramente a informação, nomeadamente a capacidade de armazenamento.",
+      segurancaGeral: "Avalia o estado de segurança da plataforma tecnológica enquanto parte indissociável da operação e preservação de informação contida nos sistemas identificados.",
+      segurancaEspecifica: "Recolhe informação específica sobre segurança dos sistemas e do acesso à informação que eles contêm.",
+      armazenamentoGeral: "O armazenamento é uma componente indispensável na salvaguarda da informação. Por esse motivo é necessário recolher dados sobre as suas características e opções tomadas pela organização.",
+      documentacao: "A documentação da plataforma tecnológica, dos procedimentos rotineiros da sua gestão, bem como dos sistemas e dos dados que estes contêm é o objeto desta seção.",
 
-
+      dependenciaSoft: "Informação pertinente para a determinação da dependência tecnológica do SI."+
+                      "\nIndicar nível de dependência com fornecedores privados:"+
+                      "<ol><li>Uso exclusivo de sw não proprietário.</li>"+
+                      "<li>Uso de sw proprietário, mas com adequadas facilidades de exportação de dados.</li>"+
+                      "<li>Uso de sw proprietário com especificações fechadas, e sem adequadas facilidades de exportação de dados.</li></ol>",
+      categoriaDados: "Informação pertinente para a determinação da dependência tecnológica do SI."+
+                      "\nIndicar o tipo de categoria de dados:"+
+                      "<ol><li>Dados tabulares (Ex. Sql, Mysql, Oracle, MS Access, etc)</li>"+
+                      "<li>Texto estruturado (doc, odt, pdf, etc)</li>"+
+                      "<li>Folha de cálculo (xlsx, odf, etc)</li>"+
+                      "<li>Multimédia (som, imagem - bitmap e vetorial-, vídeo)</li>"+
+                      "<li>Misto (combinação de formatos, por ex. Sql + imagem + texto estruturado)</li></ol>",
+      formatos: "Informação pertinente para a determinação da dependência tecnológica do SI."+
+               "\nIndicar o formato utilizado.\nExemplos:"+
+               "<ul><li>Sql, Mysql, Oracle, MS Access</li>"+
+               "<li>Neo4J</li>"+
+               "<li>doc, odt, pdf</li>"+
+               "<li>xlsx, odf</li></ul>",
+      modeloCres: "Descrever o modelo de adição de dados ao sistema:"+
+                  "<ol><li>Acumulação contínua - dados continuamente adicionados sem se proceder a expurgo.</li>"+
+                  "<li>Substituição de dado - os dados são escritos por cima de registos anteriores criando diferentes versões de um registo os quais podem ou não ser guardadas.</li>"+
+                  "<li>Expurgo de registos que perdem utilidade operacional - periodicamente o sistema é purgado de dados que perderam utilidade operacional.</li>"+
+                  "<li>Outra situação - indique qual.</li></ol>",
+      dimensao: "Indique a dimensão em unidades binárias (Gb).",
+      crescimento: "Indique a dimensão em unidades binárias (Gb). Pode ser um valor aproximado.",
+      localSistema: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+                    "\nIndicar se os sistemas estão fisicamente localizados em servidores sediados num ponto central ou dispersos por vários pontos:"+
+                    "<ol><li>Centralizados</li>"+
+                    "<li>Descentralizados</li>"+
+                    "<li>Mista (alguns estão centralizados e outros descentralizados)</li></ol>",
+      salaTec: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+               "\nIndicar se a instituição tem uma sala especializada para alojar equipamentos informáticos de forma segura.",
+      acessoSalaTec: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica.",
+      energiaRed: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+                  "\nIndicar se os sistemas estão alojados em equipamentos suportados por fontes de energia redundantes que assegurem a continuidade do funcionamento dos sistemas em caso de rutura intempestiva.",
+      energiaSoc: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+                  "\nIndicar se os equipamentos que alojam os sistemas estão ligados a UPS que assegurem a continuidade de funcionamento em caso de quebra súbita de energia.",
+      alarme: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+              "\nIndicar se há segurança relativamente a incêndios:"+
+              "<ol><liSim há sistemas de alarme e de extinção.</li>"+
+              "<li>Não há sistemas de alarme ou de extinção.</li>"+
+              "<li>Há sistemas de alarme mas não de extinção.</li>"+
+              "<li>Outros.</li></ol>",
+      climatizacao: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+                    "\nIndicar se os equipamentos que alojam os sistemas estão num espaço com ar condicionado ou refrigeração adequada.",
+      seguranca: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+                 "\nIndicar se existe algum tipo de proteção relativamente a ciberataques:"+
+                 "<ol><li>Sim.</li>"+
+                 "<li>Não.</li>"+
+                 "<li>Em estudo.</li></ol>",
+      comunicacaoEx: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+                     "\nIndicar se há proteção do acesso externo a sistemas contendo informação.",
+      planoContingencia: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+                         "\nIndicar se existe plano de contingência para repor os serviços da plataforma em caso de incidente ou acidente:"+
+                         "<ol><li>Sim.</li>"+
+                         "<li>Não.</li>"+
+                         "<li>Em desenvolvimento.</li></ol>",
+      planoMudEvolucao: "Informação pertinente para a determinação da segurança geral da plataforma tecnológica."+
+                        "\nIndicar se existe um plano de gestão de mudança e evolução da plataforma:"+
+                        "<ol><li>Sim.</li>"+
+                        "<li>Não.</li>"+
+                        "<li>Em estudo.</li></ol>",
+      privAcesso: "Informação pertinente para a determinação da segurança específica do SI.\nExistência de privilégios de acesso diferenciados.",
+      catSegDados: "Informação pertinente para a determinação da segurança específica do SI."+
+                   "\nIndicar se a informação residente nos sistemas tem algum tipo de classificação de segurança (Por ex. de acordo com o SEGNAC):"+
+                   "<ol><li>Sim.</li>"+
+                   "<li>Para alguma informação do sistema.</li>"+
+                   "<li>Não.</li></ol>",
+      rotinaAuditoria: "Informação pertinente para a determinação da segurança específica do SI.\nIndicar se é efetuado registo de ocorrências sobre o sistema.",
+      logsRotinas: "Informação pertinente para a determinação da segurança específica do SI.",
+      integridadeInfo: "Informação pertinente para a determinação da segurança específica do SI."+
+                       "\nIndicar se é verificada a integridade da informação:"+
+                       "<ol><li>Reativamente em resposta a incidentes</li>"+
+                       "<li>Proativamente de forma rotineira</li>"+
+                       "<li>Proativamente de forma aleatória</li>"+
+                       "<li>Não é verificada</li></ol>",
+      armazenamento: "Informação pertinente sobre o armazenamento do SI."+
+                     "\nIndicar se a organização dispõe de armazenamento com maior ou menor grau de sofisticação,  especializado na conservação com segurança de dados:"+
+                     "<ol><li>Sim (NAS, CAS, SAN, outros).</li>"+
+                     "<li>Sim (arquivos óticos, e similares.</li>"+
+                     "<li>Não (informação reside em servidores, discos externos, etc).</li>"+
+                     "<li>Outros.</li></ol>",
+      replicacaoDados: "Informação pertinente sobre o armazenamento do SI."+
+                       "\nIndicar se é feita exportação de dados para outros suportes residentes em sistemas de armazenamento paralelos (internos ou externos à organização).",
+      backupsRegular: "Informação pertinente sobre o armazenamento do SI."+
+                      "<ol><li>Sim. De acordo com política formalizada.</li>"+
+                      "<li>Sim. Sem política formalizada.</li>"+
+                      "<li>Sim. Backups aleatórios ou ocasionais.</li>"+
+                      "<li>Não.</li></ol>",
+      modeloBackup: "Informação pertinente sobre o armazenamento do SI."+
+                    "\nIndicar o modelo de backup:"+
+                    "<ol><li>Incremental.</li>"+
+                    "<li>Diferencial.</li>"+
+                    "<li>Misto.</li>"+
+                    "<li>Outro.</li></ol>",
+      qualidadeBackup: "Informação pertinente sobre o armazenamento do SI."+
+                       "Indicar se são efetuados periodicamente testes à qualidade do backup. Normalmente recuperar dados aleatoriamente e verificar se estão íntegros e acessíveis:"+
+                       "<ol><li>Reativamente em resposta a incidentes.</li>"+
+                       "<li>Proativamente de forma rotineira.</li>"+
+                       "<li>Proativamente de forma aleatória.</li>"+
+                       "<li>Não é verificada.</li></ol>",
+      inventarioSoft: "Informação pertinente para determinar o nível de documentação do SI.\nIndicar se existe um inventário de SW:"+
+                      "<ol><li>Sim.</li>"+
+                      "<li>Não.</li>"+
+                      "<li>Em construção.</li></ol>",
+      inventarioHard: "Informação pertinente para determinar o nível de documentação do SI.\nIndicar se existe um inventário de HW:"+
+                      "<ol><li>Sim.</li>"+
+                      "<li>Não.</li>"+
+                      "<li>Em construção.</li></ol>",
+      documentacaoSis: "Informação pertinente para determinar o nível de documentação do SI.\nIndicar se existe metainformação e documentação do sistema."+
+                       "<ol><li>Existe toda a documentação considerada necessária para a utilização, recuperação e salvaguarda do sistema.</li>"+
+                       "<li>Existe alguma documentação mas não a consideramos suficiente para a utilização, recuperação ou salvaguarda do sistema.</li>"+
+                       "<li>Existe apenas documentação comercial não personalizada para o sistema na organização.</li>"+
+                       "<li>Sistema não documentado.</li></ol>",
+      documentacaoProc: "Informação pertinente para determinar o nível de documentação do SI.\nIndicar se os procedimentos técnicos informáticos de manutenção, gestão do sistema estão documentados, organizados e facilmente acessíveis pelo pessoal TIC:"+
+                        "<ol><li>Sim, todos</li>"+
+                        "<li>Alguns</li>"+
+                        "<li>Não</li></ol>",
+      controlVersaoDProc: "Informação pertinente para determinar o nível de documentação do SI.\nIndicar se há controlo de versões da documentação de procedimentos de forma a saber sempre qual a versão atualizada.",
+      contratoAtivos: "Informação pertinente para determinar o nível de documentação do SI.\nIndicar se existem contratos de manutenção ativos:"+
+                      "<ol><li>Sim</li>"+
+                      "<li>Não</li>"+
+                      "<li>N/A (Não aplicável. Manutenção assegurada internamente)</li></ol>",
+      planoRecuperacao: "Informação pertinente para determinar o nível de documentação do SI.\nIndicar se existe um plano de contingência em caso de paragem programada ou intempestiva de sistema:"+
+                        "<ol><li>Sim</li>"+
+                        "<li>Não</li>"+
+                        "<li>Em planeamento</li></ol>",
     },
     Estrategia:{
       geral:"A escolha de soluções de preservação deve ser feita para cada um dos sistemas identificados e que passaram para a fase 3."+
