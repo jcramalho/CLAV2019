@@ -136,7 +136,7 @@
     <!-- Dialog de Notas-->
     <v-dialog v-model="notaDialogApp.visivel" width="50%" persistent>
       <AdicionarNotaAplicacao
-        :notaAtual="notaDialog.nota"
+        :notaAtual="notaDialogApp.nota"
         @fechar="notaDialogApp.visivel = false"
         @adicionar="adicionarNotaAplicacao($event, notaDialogApp.campo)"
       />
