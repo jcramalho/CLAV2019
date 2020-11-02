@@ -33,6 +33,7 @@
             indeterminate
           ></v-progress-circular>
         </v-card-actions>
+        <span>AAAA - {{ppd.sistemasInfo}}</span>
       </v-form>
     </v-card>
   </v-dialog>

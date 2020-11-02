@@ -10,6 +10,20 @@
     <v-expansion-panel-content>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Descrição do SI
+              <InfoBox header="Descrição do SI" :text="myhelp.Ppd.Avaliacao.descricao"/>
+            </div>
+          </v-col>
+          <v-col cols="12" xs="12" sm="8">
+            <v-text-field
+              :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+              v-model="ppd.si.avaliacao.descricao"
+              label="Indique o âmbito e conteúdo do sistema de informação"
+              solo
+              clearable
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Sistemas informação</div>
           </v-col>
           <v-col v-if="ppd.si.avaliacao.sistemasRelacionados.length > 0">
@@ -93,130 +107,9 @@
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Fonte de legitimação </div>
-          </v-col>
-          <v-col cols="12" xs="12" sm="9">
-            <v-radio-group v-model="loadCheck" row>
-              <v-radio
-                v-for="(p, i) in fonteLegitimacao"
-                :key="i"
-                :label="p"
-                :value="p"
-                color="indigo darken-3"
-              ></v-radio>
-            </v-radio-group>
-            <div v-if="loadCheck === 'TS/LC'">
-              <v-autocomplete
-                label="Selecione a fonte de legitimação"
-                :items="tabelasSelecao"
-                item-text="titulo"
-                return-object
-                v-model="a"
-                solo
-                dense
-              />
-            </div>
-            <div v-else-if="loadCheck === 'PGD/LC'">
-              <v-autocomplete
-                label="Selecione a fonte de legitimação"
-                :items="portariaLC"
-                item-text="titulo"
-                return-object
-                v-model="a"
-                solo
-                dense
-              />
-            </div>
-            <div v-else-if="loadCheck === 'PGD'">
-              <v-autocomplete
-                label="Selecione a fonte de legitimação"
-                :items="portaria"
-                item-text="titulo"
-                return-object
-                v-model="fonteLegitimacaoSelected"
-                solo
-                dense
-              />
-            </div>
-            <div v-else-if="loadCheck === 'RADA'">
-              <v-autocomplete
-                label="Selecione a fonte de legitimação"
-                :items="portariaRada"
-                item-text="titulo"
-                return-object
-                v-model="a"
-                solo
-                dense
-              />
-            </div>
-            <div v-else>
-                  <v-autocomplete
-                    label="Selecione a fonte de legitimação"
-                    :items="tsRada"
-                    item-text="titulo"
-                    return-object
-                    v-model="a"
-                    solo
-                    dense
-                  ></v-autocomplete>
-                </div>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col xs="2" sm="2" class="mt-3">
-            <div class="info-label">
-              Tabela de Seleção
-            </div>
-          </v-col>
-          <v-col xs="3" sm="3"/>
-          <v-col xs="5" sm="5">
-            <v-text-field
-              v-if="!tree_ou_tabela"
-              label="Procurar"
-              v-model="search"
-              append-icon="search"
-              single-line
-              hide-details
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-list v-if="tree_ou_tabela">
-              <v-list-group
-                v-for="(classe, i) in classesTree"
-                :key="i"
-                multiple
-              >
-                <template v-slot:activator>
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <span v-if="classe.codigo">{{classe.codigo}} <span class="ml-7">{{classe.titulo}}</span></span>
-                      <span v-else class="ml-9">{{classe.titulo}}</span>
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </template>
-                  <ShowPGD :classe="classe"/>
-              </v-list-group>
-            </v-list>
-            <v-data-table v-else
-              :headers="headers"
-              :items="classeSelecionada"
-              item-key="idClasse"
-              :search="search"
-              class="elevation-1"
-              :footer-props="footer_props"
-              :page.sync="paginaTabela"
-              :expanded="expanded"
-              :single-expand="true"
-              @click:row="clicked">
-            >
-            </v-data-table>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Atividade do SI</div>
+              <div class="info-label">Atividade do SI
+                <InfoBox header="Atividade do SI" :text="myhelp.Ppd.Avaliacao.estadoSI" />
+              </div>
           </v-col>
           <v-col
             class="d-flex"
@@ -230,6 +123,58 @@
               dense
               solo
             ></v-select>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Grau de utilização do SI
+                <InfoBox header="Grau de utilização do SI" :text="myhelp.Ppd.Avaliacao.utilizacaoSI" />
+              </div>
+          </v-col>
+          <v-col
+            class="d-flex"
+            cols="12"
+            sm="9"
+          >
+            <v-select
+              :items="checkedGrau"
+              label="Indique o grau de utilização do SI (1-5)"
+              v-model="ppd.si.avaliacao.checkedGrau"
+              dense
+              solo
+            ></v-select>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Criticidade do SI
+                <InfoBox header="Criticidade do SI" :text="myhelp.Ppd.Avaliacao.criticidadeSI" />
+              </div>
+          </v-col>
+          <v-col
+            class="d-flex"
+            cols="12"
+            sm="9"
+          >
+            <v-select
+              :items="checkedCriticidade"
+              label="Indique a criticidade do SI (1-4)"
+              v-model="ppd.si.avaliacao.checkedCriticidade"
+              dense
+              solo
+            ></v-select>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Objeto de preservação
+              <InfoBox header="Objeto de preservação" :text="myhelp.Ppd.Avaliacao.siObjetoPreservacao"/>
+            </div>
+          </v-col>
+          <v-col cols="12" xs="12" sm="9">
+            <v-radio-group v-model="ppd.si.avaliacao.objetoPreservacao" row>
+              <v-radio
+                v-for="(p, i) in simNao"
+                :key="i"
+                :label="p"
+                :value="p"
+                color="indigo darken-3"
+              ></v-radio>
+            </v-radio-group>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Legislação / Diplomas jurídico-administrativos</div>
@@ -281,7 +226,7 @@ export default {
       myhelp: help,
       siTipoRelacao: [],
       loadCheck: "",
-      fonteLegitimacaoSelected: "",
+      
 
       siRelacionadosHeaders: [
         { text: "Relação", align: "left", value: "relacao" },
@@ -311,178 +256,25 @@ export default {
         {label: "O (Output - quando a informação, no todo ou em parte, tem origem ou resulta do processamento de dados existentes no sistema em análise)",value:"Output"},
       ],
       checkedAti: ["Ativo", "Semi-ativo","Inativo","Abatido"],
-      fonteLegitimacao: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
-
-      a: "",
-      portaria: [],
-      portariaLC: [],
-      portariaRada: [],
-      tabelasSelecao: [],
-      tsRada: [],
-
+      checkedGrau: ["O sistema é utilizado regularmente (todos os dias)",
+                    "O sistema é usado menos regularmente (todas as semanas)",
+                    "O sistema é utilizado com pouca regularidade (mensalmente ou semestralmente)",
+                    "O sistema é pouco utilizado (anualmente)",
+                    "O sistema nunca é utilizado (desconhecido)."],
+      checkedCriticidade: ["Muito crítico", "Crítico", "Pouco crítico", "Não crítico"],
+      simNao: ["Sim", "Não"],
 
 
-      //---------------------------------------------------------------------
-      //----
-      classes: [],
-      classesTree: [],
-      classeSelecionada: [],
-      //----
-
-      expanded: [],
-      tree_ou_tabela: false,
-      search: "",
-      paginaTabela: 1,
-      headers: [
-      {text: "Código", sortable: false, value: "codigo"},
-      {text: "Referência", sortable: false, value: "referencia"},
-      {text: "Título", sortable: false, value: "titulo"},
-      {text: "PCA", sortable: false, value: "pca"},
-      {text: "Destino Final", sortable: false, value: "df"},
-      ],
-      headersLC: [
-        {text: "Código", sortable: false, value: "codigo"},
-        {text: "Título", sortable: false, value: "titulo"},
-        {text: "PCA", sortable: false, value: "pca"},
-        {text: "Destino Final", sortable: false, value: "df"}
-      ],
     };
   },
 
-  created: async function() {
-    try {
-      //var user = this.$verifyTokenUser();
-      //var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
-      //this.portariaLC = await this.prepararLeg(response.data);
-      var response2 = await this.$request("get", "/pgd");
-      this.portaria = await this.prepararLeg(response2.data);
-      //var response3 = await this.$request("get", "/legislacao?fonte=RADA");
-      //this.portariaRada = await this.prepararLeg(response3.data);
-      //var response4 = await this.$request("get","/rada");
-      //this.tsRada = response4.data
-      var response5 = await this.$request("get","/tabelasSelecao")
-      this.tabelasSelecao = response5.data.map(ts=>{return {
-          titulo: ts.designacao,
-          codigo: ts.id.split("clav#")[1]
-        }
-      });
-    }catch (e) {
-      this.portariaLC = [];
-      this.portaria = [];
-      this.portariaRada = [];
-      this.tabelasSelecao = [];
-      this.tsRada = [];
-    }
 
-
-  },
-
-  watch:{
-    "fonteLegitimacaoSelected": function() {
-
-      //if (this.fonteLegitimacaoSelected != "") {
-        this.loadConsultaPGD(this.fonteLegitimacaoSelected.id);
-      //}
-    },
-  },
 
   methods: {
 
     //-----------
 
-    loadConsultaPGD: async function(id) {
-      try {
-        var response = await this.$request("get", "/pgd/"+id);
-        this.classeSelecionada = response.data;
-      }
-        catch (err) {
-          return err;
-      }
-    },
 
-    clicked(value) {
-      if(value.descricao || value.notaDF || value.notaPCA || value.formaContagem || value.subFormaContagem || value.designacaoParticipante || value.designacaoDono)
-        if(this.expanded[0] == value) this.expanded.pop();
-        else this.expanded = [value]
-    },
-
-    //--------------------
-    parseEntidades: async function(ent) {
-      try {
-        var entidades = "";
-        for (var i = 0; i < ent.length; i++) {
-          entidades = entidades + ent[i] + " ";
-        }
-        return entidades;
-      } catch (e) {
-        return {};
-      }
-    },
-    preparaLegislacao: async function(leg) {
-      try {
-        var myLegislacao = {
-          data: {
-            campo: "Data do diploma",
-            text: leg.data
-          },
-          sumario: {
-            campo: "Sumário",
-            text: leg.sumario
-          },
-          fonte: {
-            campo: "Fonte de legitimação",
-            text: leg.fonte
-          },
-          link: {
-            campo: "Link",
-            text: leg.link
-          },
-          entidades: {
-            campo: "Entidades",
-            text: await this.parseEntidades(leg.entidades)
-          }
-        };
-        return myLegislacao;
-      } catch (e) {
-        return {};
-      }
-    },
-    procuraClasse: function (classe, myClasses, classePai) {
-      var index = myClasses.map(cl => cl.classe).indexOf(classePai)
-      if(index>=0) myClasses[index].filhos.push(classe)
-      else
-        for(var c of myClasses) {
-          c.filhos = this.procuraClasse(classe,c.filhos,classePai)
-        }
-      return myClasses
-    },
-    prepararClasses: async function(classes) {
-      var myClasses = [];
-      for(var c of classes) {
-        c.filhos = []
-
-        if(c.nivel == 1) {
-          myClasses.push(c)
-        }
-        else {
-          myClasses = this.procuraClasse(c,myClasses,c.classePai)
-        }
-      }
-      return myClasses;
-    },
-    //--------------------
-    //----------------------------------------------
-    prepararLeg: async function(leg) {
-      try {
-        var myPortarias = [];
-        for (var l of leg) {
-          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
-        }
-        return myPortarias;
-      } catch (error) {
-        return [];
-      }
-    },
     selectSistema: function(numeroSI, relacao) {
       var index = this.ppd.listaSistemasInfoAuxiliar.findIndex(p => p.numeroSI === numeroSI);
       this.ppd.listaSistemasInfoAuxiliar[index].relacao = relacao;
