@@ -343,7 +343,7 @@ export default {
       this.dados[campo].push(novaNota);
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
-        dados: this.dados.campo,
+        dados: this.dados[campo],
         cor: "amarelo",
       };
 
@@ -396,6 +396,7 @@ export default {
 
         pedido.estado = estado;
 
+
         this.novoHistorico = adicionarNotaComRemovidos(
           this.historico[this.historico.length - 1],
           this.novoHistorico
@@ -422,6 +423,7 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
+        console.log(e);
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem =
           "Erro ao distribuir o pedido, por favor tente novamente";
