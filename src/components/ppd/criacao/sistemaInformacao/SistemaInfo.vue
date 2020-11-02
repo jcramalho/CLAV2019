@@ -9,6 +9,7 @@
       <template v-slot:activator="{ on, attrs }">
         <v-col cols="12" xs="12" sm="4">
           <v-btn
+            v-if="importarPPD === false"
             color="indigo darken-2"
             dark
             class="ma-2"
@@ -18,7 +19,7 @@
             Novo SI
             <v-icon dark right>add_circle_outline</v-icon>
           </v-btn>
-          <v-btn color="indigo lighten-2" dark class="ma-2" @click="importarSI = true">
+          <v-btn v-if="importarPPD === true" color="indigo lighten-2" dark class="ma-2" @click="importarSI = true">
             Importar SI
             <v-icon dark right>file_upload</v-icon>
           </v-btn>
@@ -144,7 +145,7 @@ import BlocoEstrategia from "@/components/ppd/criacao/sistemaInformacao/BlocoEst
 
 
 export default {
-  props: ["ppd", "semaforos", "listaLegislacao", "sistema", "entidades"],
+  props: ["ppd", "semaforos", "listaLegislacao", "sistema", "entidades", "importarPPD"],
 
   components: {
     InfoBox,
