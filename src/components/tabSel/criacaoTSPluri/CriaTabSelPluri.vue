@@ -27,7 +27,7 @@
             class="content-title-1 pt-5"
             style="color: #4da0d0 !important; text-align: center;  padding-bottom: 0.7rem !important;"
           >
-            Nova Tabela de Seleção (continuação do trabalho guardado)
+            Nova Tabela de Seleção Pluriorganizacional
           </p>
           <!-- CONTENT -->
           <v-card-text class="mt-0">
@@ -53,13 +53,12 @@
                     'mt-12': stepNo > 1,
                   }"
                   class="font-weight-medium"
-                  ><b>
-                    Identificação da entidade ou tipologia da tabela de
-                    seleção:</b
-                  ></font
+                  ><b> Entidades abrangidas pela TS</b></font
                 >
-                <span v-if="stepNo > 1 && tipoTS != 'tipologia'" class="mt-1">
+                <span v-if="stepNo > 1" class="mt-1">
                   <v-chip
+                    v-for="(e, i) in entSel"
+                    :key="i"
                     class="my-2 mx-4"
                     id="default-chip"
                     text-color="white"
@@ -72,38 +71,97 @@
                       fill="#ffffff"
                       class="mr-3"
                     />
-                    {{
-                      tabelaSelecao.idEntidade.split('_')[1] +
-                        ': ' +
-                        tabelaSelecao.designacaoEntidade
-                    }}
-                  </v-chip>
-                </span>
-                <span
-                  v-else-if="stepNo > 1 && tipoTS == 'tipologia'"
-                  class="mt-1"
-                >
-                  <v-chip
-                    class="my-2 mx-4"
-                    id="default-chip"
-                    text-color="white"
-                  >
-                    <unicon
-                      name="tipologia-ent-icon"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20.711 22.48"
-                      fill="#ffffff"
-                      class="mr-3"
-                    />
-                    {{
-                      tabelaSelecao.idTipologia.split('_')[1] +
-                        ': ' +
-                        tabelaSelecao.designacaoTipologia
-                    }}
+                    {{ e.label }}
                   </v-chip>
                 </span>
               </v-stepper-step>
+              <v-stepper-content
+                step="1"
+                class="pt-0"
+                :class="{
+                  'mx-8': $vuetify.breakpoint.lgAndUp,
+                  'mx-0': $vuetify.breakpoint.mdAndDown,
+                }"
+              >
+                <v-col
+                  v-if="entidadesReady"
+                  :class="{
+                    'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
+                  }"
+                >
+                  <v-form ref="ents" :lazy-validation="false" class="px-4">
+                    <v-tooltip top color="info" open-delay="1000">
+                      <template v-slot:activator="{ on }">
+                        <div
+                          class="info-content py-2 pl-6 pr-3 mt-2"
+                          style="min-height: 50px;"
+                          v-on="on"
+                        >
+                          <v-autocomplete
+                            class="pt-0"
+                            v-model="entSel"
+                            :items="entidades"
+                            :rules="[
+                              (v) =>
+                                (v && v.length > 1) ||
+                                'Tem de escolher pelo menos 2 entidades',
+                            ]"
+                            item-text="label"
+                            placeholder="Selecione as entidades abrangidas pela TS"
+                            multiple
+                            chips
+                            deletable-chips
+                            color="blue darken-3"
+                            return-object
+                          >
+                            <template v-slot:selection="data">
+                              <v-chip
+                                id="default-chip"
+                                text-color="white"
+                                dark
+                                v-bind="data.attrs"
+                                :input-value="data.selected"
+                                close
+                                @click="data.select"
+                                @click:close="remove(data.item)"
+                              >
+                                {{ data.item.label }}
+                              </v-chip>
+                            </template>
+                          </v-autocomplete>
+                        </div>
+                      </template>
+                      <span> Entidades abrangidas pela Tabela de Seleção</span>
+                    </v-tooltip>
+                  </v-form>
+
+                  <v-btn
+                    @click="entidadesSelecionadas()"
+                    rounded
+                    class="white--text mt-10 ml-4"
+                    :class="{
+                      'px-6': $vuetify.breakpoint.lgAndUp,
+                      'px-2': $vuetify.breakpoint.mdAndDown,
+                    }"
+                    color="success darken-1"
+                    id="botao-shadow"
+                  >
+                    <unicon
+                      name="continuar-icon"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20.71 37.261"
+                      fill="#ffffff"
+                    />
+                    <p class="ml-2">Continuar</p>
+                  </v-btn>
+                </v-col>
+                <v-col v-else>
+                  <v-alert dense type="info">
+                    Ainda não foi possível carregar as entidades...
+                  </v-alert>
+                </v-col>
+              </v-stepper-content>
               <v-divider></v-divider>
               <v-stepper-step
                 :complete="stepNo > 2"
@@ -118,17 +176,16 @@
                     'mt-12': stepNo > 1,
                   }"
                   class="font-weight-medium"
+                  ><b> Designação da Tabela de Seleção</b></font
                 >
-                  Designação da Tabela de Seleção</font
-                >
-                <span v-if="stepNo > 1" class="mt-1">
+                <span v-if="stepNo > 2" class="mt-1">
                   <v-chip
                     class="my-2 mx-4"
                     id="default-chip"
                     text-color="white"
                   >
                     <unicon
-                      name="description-icon"
+                      name="ts-icon"
                       width="20"
                       height="20"
                       viewBox="0 0 20.71 23.668"
@@ -152,7 +209,7 @@
                     'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
                   }"
                 >
-                  <v-form ref="nomeTS" class="px-4">
+                  <v-form ref="nomeTS" :lazy-validation="false" class="px-4">
                     <span class="subtitle-2 pb-3"
                       >Insira a designação para a tabela:</span
                     >
@@ -160,23 +217,18 @@
                       class="info-content py-2 pl-6 pr-3 mt-2"
                       style="min-height: 50px;"
                     >
-                      <unicon
-                        name="description-icon"
-                        width="25"
-                        height="25"
-                        viewBox="0 0 20.71 23.668"
-                        fill="#1976d2"
-                        class="mr-3"
-                        style="white-space: nowrap !important;"
-                      />
-                      <v-tooltip top color="info" open-delay="500">
+                      <v-tooltip top color="info" open-delay="1000">
                         <template v-slot:activator="{ on }">
                           <v-text-field
                             v-on="on"
                             class="mt-n3"
-                            :placeholder="tabelaSelecao.designacao"
+                            :rules="[
+                              (v) => !!v || 'A designação não pode ser vazia',
+                            ]"
+                            placeholder="Designação da Nova Tabela de Seleção"
                             v-model="tabelaSelecao.designacao"
-                            style="display: inline-block; width: 90%; white-space: nowrap !important;"
+                            color="blue darken-3"
+                            clearable
                           ></v-text-field>
                         </template>
                         <span> Designação para a tabela de seleção</span>
@@ -185,10 +237,27 @@
                   </v-form>
                 </v-col>
                 <v-btn
-                  @click="
-                    loadProcEspecificos();
-                    validaTSnome();
-                  "
+                  @click="stepNo = 1"
+                  rounded
+                  class="white--text mt-5 ml-8"
+                  :class="{
+                    'px-6': $vuetify.breakpoint.lgAndUp,
+                    'px-2': $vuetify.breakpoint.mdAndDown,
+                  }"
+                  style="background-color: rgb(153, 17, 17);"
+                  id="botao-shadow"
+                >
+                  <unicon
+                    name="arrow-back-icon"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20.71 37.261"
+                    fill="#ffffff"
+                  />
+                  <p class="ml-2">Retroceder</p>
+                </v-btn>
+                <v-btn
+                  @click="validaTSnome"
                   rounded
                   class="white--text mt-5 ml-4"
                   :class="{
@@ -209,13 +278,14 @@
                 </v-btn>
               </v-stepper-content>
               <v-divider></v-divider>
+
               <v-stepper-step :complete="stepNo > 3" step="3">
                 <font size="3"><b> Seleção dos Processos</b></font>
               </v-stepper-step>
               <v-stepper-content step="3">
                 <v-col
-                  v-if="listaProcessosReady"
                   cols="12"
+                  v-if="listaProcessosReady && entSelReady"
                   :class="{
                     'px-4': $vuetify.breakpoint.lgAndUp,
                     'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
@@ -228,16 +298,14 @@
                     <ListaProcessos
                       :listaProcs="listaProcessos"
                       :listaCodigosEsp="listaCodigosEsp"
-                      :participante="participante"
                     />
                   </div>
                 </v-col>
-
                 <v-col v-else
                   >Ainda não foi possível carregar a informação dos
                   Processos...</v-col
                 >
-                <v-row class="align-center pa-3" style="text-align:center;">
+                <v-row class="align-center" style="text-align:center;">
                   <!-- Voltar ao passo anterior ............................................-->
                   <v-col cols="12" md="4" lg="2">
                     <v-btn
@@ -245,10 +313,6 @@
                       @click="stepNo--"
                       rounded
                       class="white--text"
-                      :class="{
-                        'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown,
-                      }"
                       style="width: 100%; background-color: rgb(153, 17, 17);"
                       id="botao-shadow"
                     >
@@ -262,7 +326,6 @@
                       <p class="ml-2">Retroceder</p>
                     </v-btn>
                   </v-col>
-
                   <!-- Guardar o trabalho para continuar depois ..........................-->
                   <v-col cols="12" md="4" lg="2">
                     <v-btn
@@ -292,7 +355,6 @@
                       <p class="ml-2">Guardar Trabalho</p>
                     </v-btn>
                   </v-col>
-
                   <!-- Sair da criação da TS sem abortar o processo .........................-->
                   <v-col cols="12" md="4" lg="2">
                     <v-btn
@@ -322,7 +384,6 @@
                       <p class="ml-2">Continuar Depois</p>
                     </v-btn>
                   </v-col>
-
                   <!-- Validar a TS ........................................................-->
                   <v-col cols="12" md="4" lg="2">
                     <v-btn
@@ -348,6 +409,7 @@
                         v-if="validacaoTerminada && numeroErros == 0"
                         @continuar="fechoValidacao"
                       />
+
                       <DialogValidacaoErros
                         v-if="validacaoTerminada && numeroErros > 0"
                         :erros="mensagensErro"
@@ -356,7 +418,6 @@
                       <p class="ml-2">Validar</p>
                     </v-btn>
                   </v-col>
-
                   <!-- Submeter e criar o pedido ............................................-->
                   <v-col cols="12" md="4" lg="2">
                     <v-btn
@@ -423,7 +484,7 @@
 </template>
 
 <script>
-import ListaProcessos from '@/components/tabSel/criacaoTSOrg/ListaProcessos.vue';
+import ListaProcessos from '@/components/tabSel/criacaoTSPluri/ListaProcessos.vue';
 import DialogPendenteGuardado from '@/components/tabSel/criacaoTSPluri/DialogPendenteGuardado.vue';
 import DialogCancelar from '@/components/tabSel/criacaoTSPluri/DialogCancelar.vue';
 import DialogValidacaoOK from '@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue';
@@ -431,8 +492,6 @@ import DialogValidacaoErros from '@/components/tabSel/criacaoTSPluri/DialogValid
 import DialogSair from '@/components/tabSel/criacaoTSPluri/DialogSair.vue';
 
 export default {
-  props: ['obj'],
-
   components: {
     ListaProcessos,
     DialogPendenteGuardado,
@@ -443,48 +502,30 @@ export default {
   },
   data() {
     return {
-      // Objeto da TS
+      // Objeto Tabela de Seleção
       tabelaSelecao: {
-        idEntidade: '',
-        designacaoEntidade: '',
-        idTipologia: '',
-        designacaoTipologia: '',
-        designacaoTS: '',
-        tipologias: [],
+        designacao: '',
+        entidades: [],
         listaProcessos: {},
       },
-
-      // Fecho Transitivo dos processos
-      fechoTransitivo: {},
-
       // Numero do passo da criação de TS
-      // Na continuação não se permite alterar a entidade/tipologia alvo
-      stepNo: 2,
+      stepNo: 1,
 
-      entidadeDGLAB: false,
+      // Lista de todas as entidades existentes
       entidades: [],
+      // Lista com as entidades selecionadas
+      entSel: [],
+      // True quando a lista de entidades estiver carregada
       entidadesReady: false,
-      ent: '',
-      // Estrutura onde se guarda a entidade do utilizador
-      entidadeUtilizador: {},
-      // Flag de controlo: indica que a TS é para a entidade do utilizador
-      tipoTS: '',
-      // Flag de controlo: indica se a TS é para uma tipologia
-      tipologiaTS: false,
-      // Lista de todas as tipologias existentes
-      tipologias: [],
-      // True quando a lista de tipologias estiver carregada
-      tipologiasReady: false,
-      // Tipologia ou tipologias selecionadas
-      tipSel: [],
-      // Lista com todos os processos
-      listaProcessos: {},
-      // True quando a lista de todos os processos comuns existentes estiver completa
+      // Passa a true quando o utilizador tiver selecionado todas as entidades no primeiro passo
+      entSelReady: false,
+
+      // Flag de controlo do carregamento dos processos
       listaProcessosReady: false,
-      // Lista com os códigos dos processos específicos da entidade selecionada
+      // Lista com todos os processos e com a informação necessária à criação da TS
+      listaProcessos: {},
+      // Lista com os códigos dos processos específicos das entidades selecionadas
       listaCodigosEsp: [],
-      // Array que determina a seleção de paticipante de cada processo
-      participante: [],
 
       // Tratamento de erros da validação
       mensagensErro: [],
@@ -494,145 +535,34 @@ export default {
       exemplosNotasApSet: [],
       termosIndSet: [],
 
-      // Se houver gravações intermédias, há um pendente
+      // Pendente criado na BD
       pendente: {},
-
-      // Para o snackbar de pedido criado e trabalho guardado
+      // Dialog de confirmação da gravação do Pendente
       pendenteGuardado: false,
-      // Dialog de confirmação de eliminação de TS
-      eliminarTabela: false,
       // Dialog de confirmação de abandonar a operação
       sairOperacao: false,
+      // Dialog de confirmação de eliminação de TS
+      eliminarTabela: false,
+      // Dialog de confirmação finalização de TS
+      finalizaUltPasso: false,
     };
   },
+
   methods: {
     goBack() {
       this.$router.push('/ts/criar');
     },
-    debug: function(obj) {
-      alert(JSON.stringify(obj));
+    remove(item) {
+      const index = this.entSel.indexOf(item);
+      if (index >= 0) this.entSel.splice(index, 1);
     },
     validaTSnome: function() {
       if (this.$refs.nomeTS.validate()) {
         this.stepNo = 3;
       }
     },
-    // Vai à API buscar todas as entidades
-    loadEntidades: async function() {
-      try {
-        var response = await this.$request('get', '/entidades');
-        this.entidades = response.data.map(function(item) {
-          return {
-            sigla: item.sigla,
-            designacao: item.designacao,
-            id: item.id,
-            label: item.sigla + ' - ' + item.designacao,
-          };
-        });
-        this.entidadesReady = true;
-      } catch (err) {
-        console.log('Erro ao recuperar a lista de entidades: ' + err);
-      }
-    },
-
-    guardaEntidade: async function() {
-      this.tabelaSelecao.designacao =
-        'Tabela de Seleção de ' + this.ent.designacao;
-      this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
-      this.tabelaSelecao.idEntidade = 'ent_' + this.ent.sigla;
-      try {
-        await this.loadTipologias();
-      } catch (e) {
-        console.log('Erro ao carregar as tipologias: ' + e);
-      }
-      this.stepNo = this.stepNo + 1;
-    },
-
-    guardaTipologia: function() {
-      // id e designação
-      this.tabelaSelecao.designacao =
-        'Tabela de seleção de ' + this.tipSel.designacao;
-      this.tabelaSelecao.designacaoTipologia = this.tipSel.designacao;
-      this.tabelaSelecao.idTipologia = this.tipSel.id;
-      this.stepNo = this.stepNo + 1;
-    },
-
-    guardaEntidadeUtilizador: function() {
-      // id e designação
-      this.tabelaSelecao.designacao =
-        'Tabela de seleção de ' + this.entidadeUtilizador.designacao;
-      this.tabelaSelecao.designacaoEntidade = this.entidadeUtilizador.designacao;
-      this.tabelaSelecao.idEntidade = this.entidadeUtilizador.id;
-      this.stepNo = this.stepNo + 1;
-    },
-
-    // Vai à API buscar todas as tipologias a que pertence a entidade do utilizador
-    loadTipologiasUtilizador: async function() {
-      try {
-        // Tipologias onde a entidade se encontra
-        var tipologias = await this.$request(
-          'get',
-          '/entidades/' + this.tabelaSelecao.idEntidade + '/tipologias'
-        );
-        this.tipSel = tipologias.data.map(function(item) {
-          return {
-            sigla: item.sigla,
-            designacao: item.designacao,
-            id: item.id,
-            label: item.sigla + ' - ' + item.designacao,
-          };
-        });
-      } catch (e) {
-        console.log(
-          'Erro ao carregar as tipologias da entidade do utilizador: ' + e
-        );
-      }
-    },
-
-    // Vai à API buscar todas as tipologias
-    loadTipologias: async function() {
-      try {
-        var response = await this.$request('get', '/tipologias/');
-        this.tipologias = response.data.map(function(item) {
-          return {
-            sigla: item.sigla,
-            designacao: item.designacao,
-            id: item.id,
-            label: item.sigla + ' - ' + item.designacao,
-          };
-        });
-        this.tipologiasReady = true;
-      } catch (e) {
-        console.log('Erro ao carregar as tipologias: ' + e);
-      }
-    },
-
-    // Carrega apenas as tipologias da entidade selecionada
-    loadTipologiasDaEntidade: async function() {
-      try {
-        // Tipologias onde a entidade se encontra
-        var tipologias = await this.$request(
-          'get',
-          '/entidades/' + this.tabelaSelecao.idEntidade + '/tipologias'
-        );
-        this.tipSel = tipologias.data.map(function(item) {
-          return {
-            sigla: item.sigla,
-            designacao: item.designacao,
-            id: item.id,
-            label: item.sigla + ' - ' + item.designacao,
-          };
-        });
-        // Retira da lista de todas as tipologias as que já pertencem à entidade selecionada
-        for (var i = 0; i < this.tipSel.length; i++) {
-          var index = this.tipologias.findIndex(
-            (e) => e.id === this.tipSel[i].id
-          );
-          this.tipologias.splice(index, 1);
-        }
-      } catch (error) {
-        return error;
-      }
+    debug: function(data) {
+      alert(JSON.stringify(data));
     },
 
     // Carregamento dos processos
@@ -651,12 +581,11 @@ export default {
             this.listaProcessos.procs.push(response.data[i]);
             this.listaProcessos.procs[i].chave = i;
             this.listaProcessos.procs[i].edited = false;
-            this.listaProcessos.procs[i].descriptionEMergedited = false;
+            this.listaProcessos.procs[i].descriptionEdited = false;
             this.listaProcessos.procs[i].preSelected = 0;
             // Para poder ser filtrado na tabela
             this.listaProcessos.procs[i].preSelectedLabel = '';
-            this.listaProcessos.procs[i].dono = false;
-            this.listaProcessos.procs[i].participante = 'NP';
+            this.listaProcessos.procs[i].entidades = [];
           }
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcessosReady = true;
@@ -666,15 +595,66 @@ export default {
       }
     },
 
-    loadProcessosEspecificos: async function(entidade) {
+    // Faz load de todas as entidades
+    loadEntidades: async function() {
       try {
-        var url = '/classes?nivel=3&tipo=especifico&ents=' + entidade.id;
+        var response = await this.$request('get', '/entidades');
+        this.entidades = response.data.map(function(item) {
+          return {
+            sigla: item.sigla,
+            designacao: item.designacao,
+            id: item.id,
+            label: item.sigla + ' - ' + item.designacao,
+          };
+        });
+        this.entidadesReady = true;
+      } catch (err) {
+        return err;
+      }
+    },
+
+    // Quando se termina a seleção das entidades
+    entidadesSelecionadas: async function() {
+      try {
+        if (this.$refs.ents.validate()) {
+          this.entSel.sort((a, b) => (a.designacao > b.designacao ? 1 : -1));
+          this.tabelaSelecao.entidades = this.entSel;
+
+          for (let i = 0; i < this.listaProcessos.procs.length; i++) {
+            for (let j = 0; j < this.tabelaSelecao.entidades.length; j++) {
+              this.listaProcessos.procs[i].entidades.push({
+                sigla: this.tabelaSelecao.entidades[j].sigla,
+                designacao: this.tabelaSelecao.entidades[j].designacao,
+                id: this.tabelaSelecao.entidades[j].id,
+                label: this.tabelaSelecao.entidades[j].label,
+                dono: false,
+                participante: 'NP',
+              });
+            }
+          }
+          await this.loadProcessosEspecificos(this.tabelaSelecao.entidades);
+          this.entSelReady = true;
+          this.stepNo = 2;
+        }
+      } catch (e) {
+        console.log('Erro ao fundir as entidades nos processos: ' + e);
+      }
+    },
+
+    loadProcessosEspecificos: async function(entidades) {
+      try {
+        var url = '/classes?nivel=3&tipo=especifico&ents=';
+        for (var i = 0; i < entidades.length - 1; i++) {
+          url += this.tabelaSelecao.entidades[i].id + ',';
+        }
+        url += this.tabelaSelecao.entidades[i].id;
+
         var response = await this.$request('get', url);
 
         for (let j = 0; j < response.data.length; j++) {
           this.listaCodigosEsp.push(response.data[j].codigo);
         }
-        // Marcamos os processos que não são específicos desta entidade como restantes
+        // Marcamos os processos que não são específicos destas entidades como restantes
         var index;
         for (let j = 0; j < this.listaProcessos.procs.length; j++) {
           if (this.listaProcessos.procs[j].tipoProc != 'Processo Comum') {
@@ -692,120 +672,7 @@ export default {
       }
     },
 
-    // Carrega os processos específicos da entidade e das tipologias em causa
-    loadProcEspecificos: async function() {
-      try {
-        if (!this.listaProcEspReady) {
-          var url =
-            '/classes?nivel=3&tipo=especifico&ents=' +
-            this.tabelaSelecao.idEntidade;
-          if (this.tipSel.length || this.tipSel.length) {
-            url += '&tips=';
-          }
-          if (this.tipSel.length) {
-            for (var i = 0; i < this.tipSel.length - 1; i++) {
-              url += this.tipSel[i].id + ',';
-            }
-            url += this.tipSel[i].id;
-          }
-          var response = await this.$request('get', url);
-          for (var x = 0; x < response.data.length; x++) {
-            if (response.data[x].transversal === 'S') {
-              this.listaProcEsp.push({
-                classe: response.data[x].codigo,
-                designacao: response.data[x].titulo,
-                dono: false,
-                participante: false,
-              });
-            } else {
-              this.listaProcEsp.push({
-                classe: response.data[x].codigo,
-                designacao: response.data[x].titulo,
-                dono: true,
-              });
-            }
-          }
-          this.listaProcEsp.sort((a, b) => (a.classe > b.classe ? 1 : -1));
-          return this.listaProcEsp;
-        }
-      } catch (error) {
-        return error;
-      }
-    },
-
-    // Lança o pedido de submissão de uma TS
-    submeterTS: async function() {
-      //Valida se os processos a selecionar estão todos selecionados
-      if (
-        this.listaProcessos.numProcessosPreSelecionados -
-          this.listaProcessos.processosPreSelecionados !=
-        0
-      ) {
-        this.mensagensErro.push({
-          sobre: 'Escolha de processos',
-
-          mensagem: `Ainda tem ${this.listaProcessos
-            .numProcessosPreSelecionados -
-            this.listaProcessos
-              .processosPreSelecionados} processos por selecionar`,
-        });
-        this.numeroErros++;
-        this.validacaoTerminada = true;
-      } else {
-        // É preciso testar se há um Pendente criado para o apagar
-        if (this.pendente._id) {
-          try {
-            var response = await this.$request(
-              'delete',
-              '/pendentes/' + this.pendente._id
-            );
-          } catch (e) {
-            console.log('Erro ao remover o pendente na submissão da TS: ' + e);
-          }
-        }
-        try {
-          var userBD = this.$verifyTokenUser();
-          // Guardam-se apenas os processos que foram alterados
-          // Ao carregar será preciso fazer Merge com a LC
-          // É preciso forçar uma cópia para não perder a lista corrente
-          this.tabelaSelecao.listaProcessos = JSON.parse(
-            JSON.stringify(this.listaProcessos)
-          );
-          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-            (p) => p.dono || p.participante != 'NP'
-          );
-
-          var tsObj = {
-            idEntidade: this.tabelaSelecao.idEntidade,
-            designacaoEntidade: this.tabelaSelecao.designacaoEntidade,
-            designacao: this.tabelaSelecao.designacao,
-            idTipologia: this.tabelaSelecao.idTipologia,
-            designacaoTipologia: this.tabelaSelecao.designacaoTipologia,
-            listaProcessos: this.tabelaSelecao.listaProcessos,
-          };
-
-          var pedidoParams = {
-            tipoPedido: 'Criação',
-            tipoObjeto: 'TS Organizacional',
-            novoObjeto: { ts: tsObj },
-            user: { email: userBD.email },
-            entidade: userBD.entidade,
-            token: this.$store.state.token,
-            historico: [],
-          };
-
-          var codigoPedido = await this.$request(
-            'post',
-            '/pedidos',
-            pedidoParams
-          );
-          this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
-        } catch (error) {
-          console.log('Erro ao criar o pedido: ' + error);
-        }
-      }
-    },
-    // Guarda o trabalho de criação de uma TS
+    // Guarda a estrutura criada até ao momento nos Pendentes
     guardarTrabalho: async function() {
       try {
         var userBD = this.$verifyTokenUser();
@@ -816,13 +683,12 @@ export default {
           JSON.stringify(this.listaProcessos)
         );
         this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          (p) => p.dono || p.participante != 'NP'
+          (p) => p.edited
         );
 
         var pendenteParams = {
-          numInterv: 1,
           acao: 'Criação',
-          tipo: 'TS Organizacional',
+          tipo: 'TS Pluriorganizacional',
           objeto: this.tabelaSelecao,
           criadoPor: userBD.email,
           user: { email: userBD.email },
@@ -849,17 +715,91 @@ export default {
 
         this.pendente = response.data;
         this.pendenteGuardado = true;
-      } catch (e) {
-        console.log('Erro ao guardar trabalho: ' + e);
+      } catch (err) {
+        console.log('Erro ao guardar trabalho: ' + err);
       }
     },
-    // Elimina todo o trabalho feito até esse momento
-    eliminarTS: async function() {
+
+    // Lança o pedido de submissão de uma TS
+    submeterTS: async function() {
+      // É preciso testar se há um Pendente criado para o apagar
+      if (this.pendente._id) {
+        try {
+          var response = await this.$request(
+            'delete',
+            '/pendentes/' + this.pendente._id
+          );
+        } catch (e) {
+          console.log('Erro ao remover o pendente na submissão da TS: ' + e);
+        }
+      }
+
+      try {
+        //Valida se os processos a selecionar estão todos selecionados
+        if (
+          this.listaProcessos.numProcessosPreSelecionados -
+            this.listaProcessos.processosPreSelecionados !=
+          0
+        ) {
+          this.mensagensErro.push({
+            sobre: 'Escolha de processos',
+
+            mensagem: `Ainda tem ${this.listaProcessos
+              .numProcessosPreSelecionados -
+              this.listaProcessos
+                .processosPreSelecionados} processos por selecionar`,
+          });
+          this.numeroErros++;
+          this.validacaoTerminada = true;
+        } else {
+          var userBD = this.$verifyTokenUser();
+          // Guardam-se apenas os processos que foram alterados
+          this.tabelaSelecao.listaProcessos = this.listaProcessos;
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            (p) => p.edited
+          );
+
+          var pedidoParams = {
+            tipoPedido: 'Criação',
+            tipoObjeto: 'TS Pluriorganizacional',
+            novoObjeto: this.tabelaSelecao,
+            criadoPor: userBD.email,
+            user: { email: userBD.email },
+            entidade: userBD.entidade,
+            token: this.$store.state.token,
+            historico: [],
+          };
+
+          var response = await this.$request('post', '/pedidos', pedidoParams);
+          this.$router.push('/pedidos/submissao/' + response.data);
+        }
+      } catch (error) {
+        console.log('Erro no POST da TS: ' + error);
+      }
+    },
+
+    sair: async function() {
       this.$router.push('/');
     },
 
-    // Valida a TS construída até ao momento
-    validarTS: function() {
+    abortar: async function() {
+      if (this.pendente._id) {
+        try {
+          var response = await this.$request(
+            'delete',
+            '/pendentes/' + this.pendente._id
+          );
+        } catch (e) {
+          console.log('Erro ao eliminar o pendente: ' + e);
+        }
+      }
+      this.$router.push('/');
+    },
+
+    // Funções de validação --------------------------------------
+    // Validação da TS
+    validarTS: async function() {
+      //Valida se os processos a selecionar estão todos selecionados
       if (
         this.listaProcessos.numProcessosPreSelecionados -
           this.listaProcessos.processosPreSelecionados !=
@@ -874,110 +814,198 @@ export default {
         });
         this.numeroErros++;
       }
+      var processosSelecionados = this.listaProcessos.procs.filter(
+        (p) => p.edited
+      );
+      // Criação das estruturas auxiliares para a validação
+      for (let i = 0; i < processosSelecionados.length; i++) {
+        this.notasApSet = this.notasApSet.concat(
+          processosSelecionados[i].notasAp
+        );
+        this.exemplosNotasApSet = this.exemplosNotasApSet.concat(
+          processosSelecionados[i].exemplosNotasAp
+        );
+        this.termosIndSet = this.termosIndSet.concat(
+          processosSelecionados[i].termosInd
+        );
+      }
+      // Valida-se agora o bloco descritivo
+      for (let i = 0; i < processosSelecionados.length; i++) {
+        await this.validaBlocoDescritivo(processosSelecionados[i]);
+      }
       this.validacaoTerminada = true;
     },
 
-    // Quando a validação termina chama-se esta rotina para fazer reset ao estado da Validação
     fechoValidacao: async function() {
       this.numeroErros = 0;
       this.mensagensErro = [];
-      //this.notasApSet = [];
-      //this.exemplosNotasApSet = [];
-      //this.termosIndSet = [];
+      this.notasApSet = [];
+      this.exemplosNotasApSet = [];
+      this.termosIndSet = [];
       this.validacaoTerminada = false;
     },
 
-    // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
-    sair: async function() {
-      this.$router.push('/');
+    validaBlocoDescritivo: async function(p) {
+      this.validaDescricao(p);
+      this.validaNotasAp(p);
+      this.validaExemplosNotasAp(p);
+      this.validaNotasEx(p);
+      this.validaTIs(p);
     },
 
-    // Abortar a operação apagando o pendente se existir
-    abortar: async function() {
-      if (this.pendente && this.pendente._id) {
-        try {
-          var response = await this.$request(
-            'delete',
-            '/pendentes/' + this.pendente._id
-          );
-        } catch (e) {
-          console.log('Erro ao eliminar o pendente: ' + e);
+    validaDescricao: function(p) {
+      // Descrição
+      if (p.descricao == '') {
+        this.mensagensErro.push({
+          sobre: 'Descrição',
+          mensagem: 'A descrição não pode ser vazia.',
+        });
+        this.numeroErros++;
+      }
+    },
+
+    validaNotasAp: async function(p) {
+      var filtradas;
+      for (let i = 0; i < p.notasAp.length; i++) {
+        filtradas = this.notasApSet.filter((n) => n.nota == p.notasAp[i].nota);
+
+        if (filtradas.length > 1) {
+          this.mensagensErro.push({
+            sobre:
+              'Processo: ' + p.codigo + '; Nota de Aplicação(' + (i + 1) + ')',
+            mensagem:
+              '[' + p.notasAp[i].nota + '] noutro processo selecionado.',
+          });
+          this.numeroErros++;
         }
       }
-      this.$router.push('/');
-    },
-
-    // Carrega os fechos transitivos necessários para os que já estão selecionados
-    loadFechoTransitivo: async function() {
-      try {
-        var response = await this.$request('get', '/travessiaV2');
-        this.fechoTransitivo = response.data;
-      } catch (e) {
-        console.log('Erro ao carregar o fecho transitivo: ' + e);
+      if (this.notaDuplicada(p.notasAp)) {
+        this.mensagensErro.push({
+          sobre: 'Nota de Aplicação(' + (i + 1) + ')',
+          mensagem: 'A última nota encontra-se duplicada.',
+        });
+        this.numeroErros++;
       }
     },
 
-    // Faz a pré-seleção do fecho transitivo dos processos já selecionados
-    acrescentaFecho: function(processo) {
-      var fecho = this.fechoTransitivo[processo.codigo];
-      for (let i = 0; i < fecho.length; i++) {
-        var index = this.listaProcessos.procs.findIndex(
-          (p) => p.codigo == fecho[i]
+    notaDuplicada: function(notas) {
+      if (notas.length > 1) {
+        var lastNota = notas[notas.length - 1].nota;
+        var duplicados = notas.filter((n) => n.nota == lastNota);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
+      }
+    },
+
+    exemploDuplicado: function(exemplos) {
+      if (exemplos.length > 1) {
+        var lastExemplo = exemplos[exemplos.length - 1].exemplo;
+        var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
+      }
+    },
+
+    tiDuplicado: function(termos) {
+      if (termos.length > 1) {
+        var lastTermo = termos[termos.length - 1].termo;
+        var duplicados = termos.filter((t) => t.termo == lastTermo);
+        if (duplicados.length > 1) {
+          return true;
+        } else return false;
+      } else {
+        return false;
+      }
+    },
+
+    validaExemplosNotasAp: async function(p) {
+      var filtrados;
+      for (let i = 0; i < p.exemplosNotasAp.length; i++) {
+        filtrados = this.exemplosNotasApSet.filter(
+          (e) => e.exemplo == p.exemplosNotasAp[i].exemplo
         );
-        //Só acrescenta processos a selecionar que não tenham sido selecionados antes de guardar o trabalho
-        if (
-          index != -1 &&
-          !this.listaProcessos.procs[index].dono &&
-          this.listaProcessos.procs[index].participante == 'NP'
-        ) {
-          this.listaProcessos.procs[index].preSelected++;
-
-          if (this.listaProcessos.procs[index].preSelected == 1) {
-            this.listaProcessos.numProcessosPreSelecionados++;
-            this.listaProcessos.procs[index].preSelectedLabel =
-              'Pré-Selecionado';
-          }
+        if (filtrados.length > 1) {
+          this.mensagensErro.push({
+            sobre:
+              'Processo: ' +
+              p.codigo +
+              '; Exemplo de nota de Aplicação(' +
+              (i + 1) +
+              ')',
+            mensagem:
+              '[' +
+              p.exemplosNotasAp[i].exemplo +
+              '] noutro processo selecionado.',
+          });
+          this.numeroErros++;
         }
+      }
+      if (this.exemploDuplicado(p.exemplosNotasAp)) {
+        this.mensagensErro.push({
+          sobre: 'Exemplo de nota de Aplicação(' + (i + 1) + ')',
+          mensagem: 'O último exemplo encontra-se duplicado.',
+        });
+        this.numeroErros++;
       }
     },
 
-    // Merge do estado antigo dos processos com os que foram carregados da BD
-    mergeProcs: async function() {
-      // Merge com os processos que já estavam selecionados
-      var index;
-      for (let i = 0; i < this.tabelaSelecao.listaProcessos.procs.length; i++) {
-        index = this.listaProcessos.procs.findIndex(
-          (p) => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
+    validaNotasEx: async function(p) {
+      // Notas de Exclusão
+      if (this.notaDuplicada(p.notasEx)) {
+        this.mensagensErro.push({
+          sobre: 'Nota de Exclusão(' + p.notasEx.length + ')',
+          mensagem: 'A última nota encontra-se duplicada.',
+        });
+        this.numeroErros++;
+      }
+    },
+
+    validaTIs: async function(p) {
+      // Termos de Índice
+      var filtrados;
+      for (let i = 0; i < p.termosInd.length; i++) {
+        filtrados = this.termosIndSet.filter(
+          (t) => t.termo == p.termosInd[i].termo
         );
-        if (index != -1) {
-          this.listaProcessos.procs[
-            index
-          ] = this.tabelaSelecao.listaProcessos.procs[i];
-          this.acrescentaFecho(this.listaProcessos.procs[index]);
+        if (filtrados.length > 1) {
+          this.mensagensErro.push({
+            sobre:
+              'Processo: ' + p.codigo + '; Termo de Índice(' + (i + 1) + ')',
+            mensagem:
+              '[' + p.termosInd[i].termo + '] noutro processo selecionado.',
+          });
+          this.numeroErros++;
         }
       }
-      this.listaProcessos.numProcessosSelecionados = this.tabelaSelecao.listaProcessos.numProcessosSelecionados;
-      this.listaProcessos.numProcessosPreSelecionados = this.tabelaSelecao.listaProcessos.numProcessosPreSelecionados;
-      this.listaProcessos.processosPreSelecionados = this.tabelaSelecao.listaProcessos.processosPreSelecionados;
-      this.listaProcessosReady = true;
+      if (this.tiDuplicado(p.termosInd)) {
+        this.numeroErros++;
+        this.mensagensErro.push({
+          sobre: 'Termo de Índice(' + (i + 1) + ')',
+          mensagem: 'O último ti encontra-se duplicado.',
+        });
+      }
     },
+    // ----------Fim da validação ----------------------------
   },
-  created: async function() {
-    this.pendente = this.obj;
-    this.participante = this.obj.objeto.participante;
-    delete this.obj.objeto.participante;
-    this.tabelaSelecao = this.obj.objeto;
 
+  created: async function() {
     try {
+      //await this.infoUserEnt();
+      await this.loadEntidades();
       await this.loadProcessos();
-      await this.loadFechoTransitivo();
-      await this.mergeProcs();
     } catch (e) {
-      console.log('Erro no carregamento dinicial: ' + e);
+      console.log('Erro ao carregar a informação inicial: ' + e);
     }
   },
 };
 </script>
+
 <style scoped>
 #stepper-card {
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22);

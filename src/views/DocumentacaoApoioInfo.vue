@@ -5,9 +5,6 @@
       Área reservada à adição de documentação técnica de Apoio para a
       plataforma.
     </p>
-    <p class="content-text px-8 py-2">
-      EXPLICAR FUNCIONALIDADE DOS BOTÕES
-    </p>
 
     <v-container fluid style="text-align: center;">
       <v-row justify="center" align="center">
@@ -23,7 +20,7 @@
             class="white--text"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
-              'px-2': $vuetify.breakpoint.mdAndDown
+              'px-2': $vuetify.breakpoint.mdAndDown,
             }"
             id="default-button"
           >
@@ -49,7 +46,7 @@
             class="white--text"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
-              'px-2': $vuetify.breakpoint.mdAndDown
+              'px-2': $vuetify.breakpoint.mdAndDown,
             }"
             id="default-button"
           >
@@ -70,19 +67,19 @@
 
 <script>
 export default {
-  name: "DocumentacaoApoioInfo",
+  name: 'DocumentacaoApoioInfo',
   mounted() {
     window.scrollTo(0, 0);
   },
 
   methods: {
     go: function(url) {
-      if (url.startsWith("http")) {
+      if (url.startsWith('http')) {
         window.location.href = url;
       } else {
         this.$router.push(url);
       }
-    }
-  }
+    },
+  },
 };
 </script>

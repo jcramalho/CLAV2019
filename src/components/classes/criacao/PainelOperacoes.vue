@@ -13,7 +13,7 @@
           class="white--text"
           :class="{
             'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown
+            'px-2': $vuetify.breakpoint.mdAndDown,
           }"
           style="width: 100%;"
           id="default-button"
@@ -36,7 +36,7 @@
           class="white--text"
           :class="{
             'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown
+            'px-2': $vuetify.breakpoint.mdAndDown,
           }"
           style="width: 100%;"
           id="default-button"
@@ -63,10 +63,10 @@
           class="white--text"
           :class="{
             'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown
+            'px-2': $vuetify.breakpoint.mdAndDown,
           }"
           style="width: 100%;"
-          id="botao-verde"
+          id="botao-shadow"
         >
           <unicon
             name="adicionar-icon"
@@ -95,10 +95,10 @@
           class="white--text"
           :class="{
             'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown
+            'px-2': $vuetify.breakpoint.mdAndDown,
           }"
           style="width: 100%;"
-          id="botao-vermelho"
+          id="botao-shadow"
         >
           <unicon
             name="eliminar-icon"
@@ -244,25 +244,25 @@
 </template>
 
 <script>
-import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
-import DialogClasseCriada from "@/components/classes/criacao/DialogClasseCriada.vue";
+import ValidaClasseInfoBox from '@/components/classes/criacao/validaClasseInfoBox.vue';
+import DialogClasseCriada from '@/components/classes/criacao/DialogClasseCriada.vue';
 
 export default {
-  props: ["c", "pendenteId"],
+  props: ['c', 'pendenteId'],
   components: {
     ValidaClasseInfoBox,
-    DialogClasseCriada
+    DialogClasseCriada,
   },
   data() {
     return {
       pendenteGuardado: false,
-      pendenteGuardadoInfo: "",
+      pendenteGuardadoInfo: '',
       classeCriada: false,
       pedidoEliminado: false,
       pedidoCriado: false,
-      codigoPedido: "",
+      codigoPedido: '',
       loginErrorSnackbar: false,
-      loginErrorMessage: "Precisa de fazer login para criar a Classe!",
+      loginErrorMessage: 'Precisa de fazer login para criar a Classe!',
       numeroErros: 0,
       errosValidacao: false,
 
@@ -270,35 +270,35 @@ export default {
         1: /^[0-9]{3}$/,
         2: /^[0-9]{3}\.[0-9]{2}$/,
         3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
-      }
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
+      },
     };
   },
 
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
     // Permite guardar o trabalho para ser retomado depois
     guardarTrabalho: async function() {
       try {
-        if (this.$store.state.name === "") {
+        if (this.$store.state.name === '') {
           this.loginErrorSnackbar = true;
         } else {
           var userBD = this.$verifyTokenUser();
           var pendenteParams = {
             numInterv: 1,
-            acao: "Criação",
-            tipo: "Classe",
+            acao: 'Criação',
+            tipo: 'Classe',
             objeto: this.c,
             criadoPor: userBD.email,
             user: { email: userBD.email },
-            token: this.$store.state.token
+            token: this.$store.state.token,
           };
-          var response = this.$request("post", "/pendentes", pendenteParams);
+          var response = this.$request('post', '/pendentes', pendenteParams);
           this.pendenteGuardado = true;
           this.pendenteGuardadoInfo = JSON.stringify(response.data);
         }
@@ -308,15 +308,15 @@ export default {
     },
 
     criacaoPendenteTerminada: function() {
-      this.$router.push("/");
+      this.$router.push('/');
     },
 
     // Verifica se o código introduzido pelo utilizador já existe na BD....................
 
     verificaExistenciaCodigo: async function(codigo) {
       var response = await this.$request(
-        "get",
-        "/classes/codigo?valor=" + encodeURIComponent(codigo)
+        'get',
+        '/classes/codigo?valor=' + encodeURIComponent(codigo)
       );
       return response.data;
     },
@@ -324,7 +324,7 @@ export default {
     notaDuplicada: function(notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
-        var duplicados = notas.filter(n => n.nota == lastNota);
+        var duplicados = notas.filter((n) => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -336,7 +336,7 @@ export default {
     exemploDuplicado: function(exemplos) {
       if (exemplos.length > 1) {
         var lastExemplo = exemplos[exemplos.length - 1].exemplo;
-        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
+        var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -348,7 +348,7 @@ export default {
     tiDuplicado: function(termos) {
       if (termos.length > 1) {
         var lastTermo = termos[termos.length - 1].termo;
-        var duplicados = termos.filter(t => t.termo == lastTermo);
+        var duplicados = termos.filter((t) => t.termo == lastTermo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -390,14 +390,14 @@ export default {
       }
 
       // Título
-      if (this.c.titulo == "") {
+      if (this.c.titulo == '') {
         numeroErros++;
       } else {
         try {
-          alert("Existência de título");
+          alert('Existência de título');
           var existeTitulo = await this.$request(
-            "get",
-            "/classes/titulo?valor=" + encodeURIComponent(this.c.titulo)
+            'get',
+            '/classes/titulo?valor=' + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             numeroErros++;
@@ -408,7 +408,7 @@ export default {
       }
 
       // Descrição
-      if (this.c.descricao == "") {
+      if (this.c.descricao == '') {
         numeroErros++;
       }
 
@@ -416,8 +416,8 @@ export default {
       for (i = 0; i < this.c.notasAp.length; i++) {
         try {
           var existeNotaAp = await this.$request(
-            "get",
-            "/notasAp/notaAp?valor=" +
+            'get',
+            '/notasAp/notaAp?valor=' +
               encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
@@ -435,8 +435,8 @@ export default {
       for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
           var existeExemploNotaAp = await this.$request(
-            "get",
-            "/exemplosNotasAp/exemploNotaAp?valor=" +
+            'get',
+            '/exemplosNotasAp/exemploNotaAp?valor=' +
               encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
@@ -459,8 +459,8 @@ export default {
       for (i = 0; i < this.c.termosInd.length; i++) {
         try {
           var existeTI = await this.$request(
-            "get",
-            "/termosIndice/termoIndice?valor=" +
+            'get',
+            '/termosIndice/termoIndice?valor=' +
               encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
@@ -481,16 +481,16 @@ export default {
         if (
           this.c.pca.valor < 0 ||
           this.c.pca.valor > 200 ||
-          (!this.c.pca.valor && this.c.pca.notas == "")
+          (!this.c.pca.valor && this.c.pca.notas == '')
         ) {
           numeroErros++;
         }
         // PCA: forma e subforma de contagem
-        if (this.c.pca.formaContagem == "") {
+        if (this.c.pca.formaContagem == '') {
           numeroErros++;
         } else if (
-          this.c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal" &&
-          this.c.pca.subFormaContagem == ""
+          this.c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal' &&
+          this.c.pca.subFormaContagem == ''
         ) {
           numeroErros++;
         }
@@ -504,17 +504,17 @@ export default {
           if (
             subclasse.pca.valor < 0 ||
             subclasse.pca.valor > 200 ||
-            (!subclasse.pca.valor && subclasse.pca.notas == "")
+            (!subclasse.pca.valor && subclasse.pca.notas == '')
           ) {
             numeroErros++;
           }
           // PCA: forma e subforma de contagem
-          if (subclasse.pca.formaContagem == "") {
+          if (subclasse.pca.formaContagem == '') {
             numeroErros++;
           } else if (
             subclasse.pca.formaContagem ==
-              "vc_pcaFormaContagem_disposicaoLegal" &&
-            subclasse.pca.subFormaContagem == ""
+              'vc_pcaFormaContagem_disposicaoLegal' &&
+            subclasse.pca.subFormaContagem == ''
           ) {
             numeroErros++;
           }
@@ -556,13 +556,13 @@ export default {
       }
 
       // Título
-      if (this.c.titulo == "") {
+      if (this.c.titulo == '') {
         this.numeroErros++;
       } else {
         try {
           var existeTitulo = await this.$request(
-            "get",
-            "/classes/titulo?valor=" + encodeURIComponent(this.c.titulo)
+            'get',
+            '/classes/titulo?valor=' + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             this.numeroErros++;
@@ -573,7 +573,7 @@ export default {
       }
 
       // Descrição
-      if (this.c.descricao == "") {
+      if (this.c.descricao == '') {
         this.numeroErros++;
       }
 
@@ -581,8 +581,8 @@ export default {
       for (i = 0; i < this.c.notasAp.length; i++) {
         try {
           var existeNotaAp = await this.$request(
-            "get",
-            "/notasAp/notaAp?valor=" +
+            'get',
+            '/notasAp/notaAp?valor=' +
               encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
@@ -600,8 +600,8 @@ export default {
       for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
           var existeExemploNotaAp = await this.$request(
-            "get",
-            "/exemplosNotasAp/exemploNotaAp?valor=" +
+            'get',
+            '/exemplosNotasAp/exemploNotaAp?valor=' +
               encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
@@ -624,8 +624,8 @@ export default {
       for (i = 0; i < this.c.termosInd.length; i++) {
         try {
           var existeTI = await this.$request(
-            "get",
-            "/termosIndice/termoIndice?valor=" +
+            'get',
+            '/termosIndice/termoIndice?valor=' +
               encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
@@ -643,24 +643,24 @@ export default {
       // Sem subdivisão
       if (this.c.nivel == 3 && !this.c.temSubclasses4Nivel) {
         // PCA: prazo
-        if (!this.c.pca.valor && this.c.pca.notas == "") {
+        if (!this.c.pca.valor && this.c.pca.notas == '') {
           this.numeroErros++;
         } else if (this.c.pca.valor < 0 || this.c.pca.valor > 200) {
           this.numeroErros++;
         }
         // PCA: forma e subforma de contagem
-        if (this.c.pca.formaContagem == "") {
+        if (this.c.pca.formaContagem == '') {
           this.numeroErros++;
         } else if (
-          this.c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal" &&
-          this.c.pca.subFormaContagem == ""
+          this.c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal' &&
+          this.c.pca.subFormaContagem == ''
         ) {
           this.numeroErros++;
         }
         // DF
         if (
-          (!this.c.df.valor || this.c.df.valor == "NE") &&
-          this.c.df.notas == ""
+          (!this.c.df.valor || this.c.df.valor == 'NE') &&
+          this.c.df.notas == ''
         ) {
           this.numeroErros++;
         }
@@ -673,35 +673,35 @@ export default {
           // Unicidade do título
           if (
             this.c.subclasses.filter(
-              s => s.titulo == this.c.subclasses[i].titulo
+              (s) => s.titulo == this.c.subclasses[i].titulo
             ).length > 1
           ) {
             this.mensagensErro.push({
-              sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
-              mensagem: "Está repetido noutra subclasse."
+              sobre: 'Título da subclasse ' + this.c.subclasses[i].codigo,
+              mensagem: 'Está repetido noutra subclasse.',
             });
           }
           // PCA: prazo
           subclasse = this.c.subclasses[i];
-          if (!subclasse.pca.valor && subclasse.pca.notas == "") {
+          if (!subclasse.pca.valor && subclasse.pca.notas == '') {
             this.numeroErros++;
           } else if (subclasse.pca.valor < 0 || subclasse.pca.valor > 200) {
             this.numeroErros++;
           }
           // PCA: forma e subforma de contagem
-          if (subclasse.pca.formaContagem == "") {
+          if (subclasse.pca.formaContagem == '') {
             this.numeroErros++;
           } else if (
             subclasse.pca.formaContagem ==
-              "vc_pcaFormaContagem_disposicaoLegal" &&
-            subclasse.pca.subFormaContagem == ""
+              'vc_pcaFormaContagem_disposicaoLegal' &&
+            subclasse.pca.subFormaContagem == ''
           ) {
             this.numeroErros++;
           }
           // DF
           if (
-            (!subclasse.df.valor || subclasse.df.valor == "NE") &&
-            subclasse.df.notas == ""
+            (!subclasse.df.valor || subclasse.df.valor == 'NE') &&
+            subclasse.df.notas == ''
           ) {
             this.numeroErros++;
           }
@@ -714,25 +714,25 @@ export default {
 
     criarClasse: async function() {
       try {
-        if (this.$store.state.name === "") {
+        if (this.$store.state.name === '') {
           this.loginErrorSnackbar = true;
         } else {
           var erros = await this.validarClasse2();
           if (erros == 0) {
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
-              tipoPedido: "Criação",
-              tipoObjeto: "Classe_N" + this.c.nivel,
+              tipoPedido: 'Criação',
+              tipoObjeto: 'Classe_N' + this.c.nivel,
               novoObjeto: this.c,
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: []
+              historico: [],
             };
 
             var response = await this.$request(
-              "post",
-              "/pedidos",
+              'post',
+              '/pedidos',
               pedidoParams
             );
             this.codigoPedido = JSON.stringify(response.data);
@@ -743,13 +743,13 @@ export default {
         }
       } catch (error) {
         console.log(
-          "Erro na criação do pedido: " + JSON.stringify(error.response.data)
+          'Erro na criação do pedido: ' + JSON.stringify(error.response.data)
         );
       }
     },
 
     criacaoClasseTerminada: function() {
-      this.$router.push("/lcinfo");
+      this.$router.push('/lcinfo');
     },
 
     // Cancela a criação da classe
@@ -758,9 +758,9 @@ export default {
     },
 
     cancelarCriacaoClasse: function() {
-      this.$router.push("/lcinfo");
-    }
-  }
+      this.$router.push('/lcinfo');
+    },
+  },
 };
 </script>
 <style scoped>
