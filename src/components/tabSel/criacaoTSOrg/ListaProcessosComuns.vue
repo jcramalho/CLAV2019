@@ -21,11 +21,11 @@
       <tr
         :style="{
           backgroundColor:
-            listaResComuns.findIndex(p => p == props.item.classe) != -1 &&
+            listaResComuns.findIndex((p) => p == props.item.classe) != -1 &&
             !props.item.dono &&
             !props.item.participante
               ? 'orange'
-              : 'transparent'
+              : 'transparent',
         }"
       >
         <td>
@@ -92,7 +92,7 @@
         </td>
       </tr>
     </template>
-    <template v-slot:footer.page-text="props">
+    <template v-slot:[`footer.page-text`]="props">
       Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
       {{ props.itemsLength }}
     </template>
@@ -101,35 +101,35 @@
 
 <script>
 export default {
-  props: ["lista", "it"],
+  props: ['lista', 'it'],
   data: () => ({
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
-        text: "Classe",
-        value: "classe",
-        width: "15%"
+        text: 'Classe',
+        value: 'classe',
+        width: '15%',
       },
       {
-        text: "Designação",
-        value: "designacao",
-        width: "55%"
+        text: 'Designação',
+        value: 'designacao',
+        width: '55%',
       },
       {
-        text: "Dono",
-        value: "dono",
-        width: "10%"
+        text: 'Dono',
+        value: 'dono',
+        width: '10%',
       },
       {
-        text: "Participante",
-        value: "participante",
-        width: "20%"
-      }
+        text: 'Participante',
+        value: 'participante',
+        width: '20%',
+      },
     ],
     procsFooterProps: {
-      "items-per-page-text": "Processos por página",
-      "items-per-page-options": [10, 20, 100, -1],
-      "items-per-page-all-text": "Todos"
+      'items-per-page-text': 'Processos por página',
+      'items-per-page-options': [10, 20, 100, -1],
+      'items-per-page-all-text': 'Todos',
     },
     // Lista dos processos comuns resultantes das travessias
     listaResComuns: [],
@@ -143,7 +143,7 @@ export default {
     travessias: [],
     listaSistemaDecrementada: [],
     // Tipos de participação
-    tipoParticipacao: []
+    tipoParticipacao: [],
   }),
   methods: {
     // Calculo da travessia do processo passado como parametro (vai buscar a informação à estrutura carregada na variável "travessias")
@@ -186,8 +186,8 @@ export default {
           }
         }
 
-        this.$emit("procPreSelResTravCom", this.listaResRestantes);
-        this.$emit("contadorProcPreSelCom", this.listaResComuns);
+        this.$emit('procPreSelResTravCom', this.listaResRestantes);
+        this.$emit('contadorProcPreSelCom', this.listaResComuns);
       } catch (err) {
         return err;
       }
@@ -234,53 +234,53 @@ export default {
         this.listaSistemaDecrementada.push(processo);
 
         this.$emit(
-          "contadorComDecrementarSistema",
+          'contadorComDecrementarSistema',
           this.listaSistemaDecrementada
         );
       }
 
-      this.$emit("procPreSelResTravCom", this.listaResRestantes);
-      this.$emit("contadorProcPreSelCom", this.listaResComuns);
+      this.$emit('procPreSelResTravCom', this.listaResRestantes);
+      this.$emit('contadorProcPreSelCom', this.listaResComuns);
     },
     // Para colocar e retirar qualquer processo da lista de processos comuns selecionados
     selProcComum: async function(processo) {
       if (!this.procComunsSel.includes(processo)) {
         this.procComunsSel.push(processo);
-        this.$emit("contadorProcSelCom", this.procComunsSel);
-        this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
+        this.$emit('contadorProcSelCom', this.procComunsSel);
+        this.$emit('contadorProcSelComUtilizador', this.procComunsSel);
       }
     },
     desSelProcComum: async function(processo) {
       var index = this.procComunsSel.findIndex(
-        e => e.classe === processo.classe
+        (e) => e.classe === processo.classe
       );
       this.procComunsSel.splice(index, 1);
-      this.$emit("contadorProcSelCom", this.procComunsSel);
-      this.$emit("contadorProcSelComUtilizador", this.procComunsSel);
+      this.$emit('contadorProcSelCom', this.procComunsSel);
+      this.$emit('contadorProcSelComUtilizador', this.procComunsSel);
     },
     // Lista com todos os tipos de intervenção possíveis
     tipoPar: async function() {
       var resPar = await this.$request(
-        "get",
-        "/vocabularios/vc_processoTipoParticipacao"
+        'get',
+        '/vocabularios/vc_processoTipoParticipacao'
       );
       for (var i = 0; i < resPar.data.length; i++) {
         this.tipoParticipacao.push(resPar.data[i].termo);
       }
-      this.tipoParticipacao.push("Não Sel");
+      this.tipoParticipacao.push('Não Sel');
     },
     verificaTipoPar: async function(part, item) {
-      if (item.participante == "Não Sel") {
+      if (item.participante == 'Não Sel') {
         item.participante = false;
         this.uncheck(item.classe, item.participante);
         this.desSelProcComum(item.classe);
       }
-    }
+    },
   },
   mounted: async function() {
     try {
       // Vai a API de dados buscar todos os cálculos das travessias
-      var res = await this.$request("get", "/travessia");
+      var res = await this.$request('get', '/travessia');
       var trav = res.data;
       for (var j = 0; j < trav.length; j++) {
         this.travessias[trav[j].processo] = trav[j].travessia;
@@ -292,9 +292,9 @@ export default {
           this.calcRel(this.lista[i].classe);
           if (!this.procComunsSel.includes(this.lista[i])) {
             this.procComunsSel.push(this.lista[i]);
-            this.$emit("contadorProcSelCom", this.procComunsSel);
-            if (this.it == "1") {
-              this.$emit("contadorProcSelComSistema", this.procComunsSel);
+            this.$emit('contadorProcSelCom', this.procComunsSel);
+            if (this.it == '1') {
+              this.$emit('contadorProcSelComSistema', this.procComunsSel);
             }
           }
         } else if (this.lista[i].participante == null) {
@@ -305,6 +305,6 @@ export default {
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

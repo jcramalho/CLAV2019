@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp,
+    }"
+  >
     <ContinuaClasse v-if="objLoaded && tipoClasse" :obj="objeto" />
     <ContinuaTSOrg v-else-if="objLoaded && tipoTSOrg" :obj="objeto" />
     <ContinuaTSPluri v-else-if="objLoaded && tipoTSPluri" :obj="objeto" />
@@ -10,16 +15,16 @@
       Por algum motivo não foi possível carregar o trabalho pretendido. Contacte
       o administrador.
     </v-alert>
-  </div>
+  </v-content>
 </template>
 
 <script>
-import ContinuaClasse from "@/components/classes/criacao/ContinuaClasse"; // @ is an alias to /src
-import ContinuaPendente from "@/components/pendentes/ContinuaPendente";
-import ContinuaTSOrg from "@/components/tabSel/criacaoTSOrg/ContCriaTabSelOrg";
-import ContinuaTSPluri from "@/components/tabSel/criacaoTSPluri/ContCriaTabSelPluri";
-import ContinuaAutoEliminacao from "@/components/autosEliminacao/criacao/ContinuarAutoEliminacao";
-import ContinuaRADA from "@/components/rada/pendenteRada";
+import ContinuaClasse from '@/components/classes/criacao/ContinuaClasse'; // @ is an alias to /src
+import ContinuaPendente from '@/components/pendentes/ContinuaPendente';
+import ContinuaTSOrg from '@/components/tabSel/criacaoTSOrg/ContCriaTabSelOrg';
+import ContinuaTSPluri from '@/components/tabSel/criacaoTSPluri/ContCriaTabSelPluri';
+import ContinuaAutoEliminacao from '@/components/autosEliminacao/criacao/ContinuarAutoEliminacao';
+import ContinuaRADA from '@/components/rada/pendenteRada';
 
 export default {
   components: {
@@ -28,7 +33,7 @@ export default {
     ContinuaTSOrg,
     ContinuaTSPluri,
     ContinuaAutoEliminacao,
-    ContinuaRADA
+    ContinuaRADA,
   },
 
   data: () => ({
@@ -38,38 +43,38 @@ export default {
     tipoTSOrg: false,
     tipoTSPluri: false,
     tipoAE: false,
-    tipoRADA: false
+    tipoRADA: false,
   }),
 
   created: function() {
-    this.$request("get", "/pendentes/" + this.$route.params.idPendente)
-      .then(response => {
+    this.$request('get', '/pendentes/' + this.$route.params.idPendente)
+      .then((response) => {
         this.objeto = response.data;
         switch (this.objeto.tipo) {
-          case "Classe":
+          case 'Classe':
             this.tipoClasse = true;
             break;
-          case "TS Organizacional":
+          case 'TS Organizacional':
             this.tipoTSOrg = true;
             break;
-          case "TS Pluriorganizacional":
+          case 'TS Pluriorganizacional':
             this.tipoTSPluri = true;
             break;
-          case "Auto de Eliminação":
+          case 'Auto de Eliminação':
             this.tipoAE = true;
             break;
-          case "RADA":
+          case 'RADA':
             this.tipoRADA = true;
             break;
-          case "PGD":
+          case 'PGD':
             this.tipoPGD = true;
             break;
         }
         this.objLoaded = true;
       })
-      .catch(error => {
+      .catch((error) => {
         return error;
       });
-  }
+  },
 };
 </script>

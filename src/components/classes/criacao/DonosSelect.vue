@@ -12,7 +12,7 @@
             v-model="searchEntidades"
             append-icon="search"
             label="Procurar / filtrar entidades"
-            class="mt-n2 mb-3 mx-6"
+            class="mt-n2 mb-3 mx-6 font-weight-medium"
             color="blue darken-3"
             clearable
             single-line
@@ -47,18 +47,9 @@
               </tr>
             </template>
 
-            <template v-slot:footer.page-text="props"
+            <template v-slot:[`footer.page-text`]="props"
               >{{ props.pageStart }} - {{ props.pageStop }} de
               {{ props.itemsLength }}</template
-            >
-
-            <v-alert
-              v-slot:no-results
-              :value="true"
-              class="error"
-              icon="warning"
-              style="border-radius: 40px;"
-              >A procura por "{{ search }}" não deu resultados.</v-alert
             >
           </v-data-table>
         </div>
@@ -72,36 +63,36 @@
 
 <script>
 export default {
-  props: ["entidades", "entidadesReady"],
+  props: ['entidades', 'entidadesReady'],
 
   data: function() {
     return {
-      searchEntidades: "",
-      mylabels: require("@/config/labels").mensagensEspera,
+      searchEntidades: '',
+      mylabels: require('@/config/labels').mensagensEspera,
 
       entidadesHeaders: [
-        { text: "Sigla", align: "left", value: "sigla" },
-        { text: "Designação", value: "designacao" },
-        { text: "Tipo", value: "tipo" }
+        { text: 'Sigla', align: 'left', value: 'sigla' },
+        { text: 'Designação', value: 'designacao' },
+        { text: 'Tipo', value: 'tipo' },
       ],
 
       footer_props: {
-        "items-per-page-text": "Entidades por página",
-        "items-per-page-options": [5, 10, 20, -1],
-        "items-per-page-all-text": "Todas"
-      }
+        'items-per-page-text': 'Entidades por página',
+        'items-per-page-options': [5, 10, 20, -1],
+        'items-per-page-all-text': 'Todas',
+      },
     };
   },
 
   methods: {
     go: function(idClasse) {
-      this.$router.push("/entidades/" + idClasse);
+      this.$router.push('/entidades/' + idClasse);
       this.$router.go();
     },
     selectEntidade: function(entidade) {
-      this.$emit("selectEntidade", entidade);
-    }
-  }
+      this.$emit('selectEntidade', entidade);
+    },
+  },
 };
 </script>
 <style scoped>

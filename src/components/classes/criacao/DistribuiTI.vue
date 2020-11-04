@@ -38,7 +38,7 @@
                   </td>
                 </tr>
               </template>
-              <template v-slot:footer.page-text="props">
+              <template v-slot:[`footer.page-text`]="props">
                 Termos: {{ props.pageStart }} - {{ props.pageStop }} de
                 {{ props.itemsLength }}
               </template>
@@ -77,7 +77,7 @@
 
 <script>
 export default {
-  props: ["c"],
+  props: ['c'],
 
   data: function() {
     return {
@@ -86,27 +86,27 @@ export default {
 
       headers: [
         {
-          text: "Termo",
-          value: "termo",
-          class: ["table-header", "subtitle-2", "font-weight-bold"]
+          text: 'Termo',
+          value: 'termo',
+          class: ['table-header', 'subtitle-2', 'font-weight-bold'],
         },
         {
-          text: "Distribuição pelas subclasses",
-          value: "subclasse",
-          class: ["table-header", "subtitle-2", "font-weight-bold"]
-        }
+          text: 'Distribuição pelas subclasses',
+          value: 'subclasse',
+          class: ['table-header', 'subtitle-2', 'font-weight-bold'],
+        },
       ],
       footer_props: {
-        "items-per-page-text": "Termos por página",
-        "items-per-page-options": [5, 10, 20, -1],
-        "items-per-page-all-text": "Todos"
-      }
+        'items-per-page-text': 'Termos por página',
+        'items-per-page-options': [5, 10, 20, -1],
+        'items-per-page-all-text': 'Todos',
+      },
     };
   },
 
   created: function() {
     this.tis = JSON.parse(JSON.stringify(this.c.termosInd));
-    if (typeof this.tis[0].subclasse === "undefined") {
+    if (typeof this.tis[0].subclasse === 'undefined') {
       // Se ainda não foi feita uma distribuição
       for (var i = 0; i < this.tis.length; i++)
         this.tis[i].subclasse = this.c.subclasses[0].codigo;
@@ -115,7 +115,7 @@ export default {
 
   mounted: function() {
     this.dialog = true;
-  }
+  },
 };
 </script>
 <style scoped>

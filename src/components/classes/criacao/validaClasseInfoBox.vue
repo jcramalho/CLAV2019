@@ -7,7 +7,7 @@
       class="white--text"
       :class="{
         'px-8': $vuetify.breakpoint.lgAndUp,
-        'px-2': $vuetify.breakpoint.mdAndDown
+        'px-2': $vuetify.breakpoint.mdAndDown,
       }"
       style="width: 100%;"
       id="default-button"
@@ -23,7 +23,7 @@
     </v-btn>
 
     <!-- Erros na Validação ....................... -->
-    <v-dialog v-model="dialog" width="80%">
+    <v-dialog v-model="dialog" width="80%" persistent>
       <v-card dark class="info-card">
         <v-card-title class="headline mb-4">
           Erros detetados na validação: {{ mensagensErro.length }}
@@ -85,7 +85,7 @@
 
 <script>
 export default {
-  props: ["c"],
+  props: ['c'],
   data() {
     return {
       dialog: false,
@@ -98,29 +98,29 @@ export default {
         1: /^[0-9]{3}$/,
         2: /^[0-9]{3}\.[0-9]{2}$/,
         3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
       },
 
       formatoCodigo: {
-        1: "ddd (d - digito)",
-        2: "ddd.dd (d - digito)",
-        3: "ddd.dd.ddd (d - digito)",
-        4: "ddd.dd.ddd.dd (d - digito)"
-      }
+        1: 'ddd (d - digito)',
+        2: 'ddd.dd (d - digito)',
+        3: 'ddd.dd.ddd (d - digito)',
+        4: 'ddd.dd.ddd.dd (d - digito)',
+      },
     };
   },
 
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
     notaDuplicada: function(notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
-        var duplicados = notas.filter(n => n.nota == lastNota);
+        var duplicados = notas.filter((n) => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -132,7 +132,7 @@ export default {
     exemploDuplicado: function(exemplos) {
       if (exemplos.length > 1) {
         var lastExemplo = exemplos[exemplos.length - 1].exemplo;
-        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
+        var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -144,7 +144,7 @@ export default {
     tiDuplicado: function(termos) {
       if (termos.length > 1) {
         var lastTermo = termos[termos.length - 1].termo;
-        var duplicados = termos.filter(t => t.termo == lastTermo);
+        var duplicados = termos.filter((t) => t.termo == lastTermo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -157,8 +157,8 @@ export default {
 
     verificaExistenciaCodigo: async function(codigo) {
       var response = await this.$request(
-        "get",
-        "/classes/codigo?valor=" + encodeURIComponent(codigo)
+        'get',
+        '/classes/codigo?valor=' + encodeURIComponent(codigo)
       );
       return response.data;
     },
@@ -171,27 +171,27 @@ export default {
         if (this.c.nivel > 1) {
           if (!this.c.pai.codigo) {
             this.mensagensErro.push({
-              sobre: "Código do Pai",
+              sobre: 'Código do Pai',
               mensagem:
-                "Para classes de níveis superiores a 1 deve especificar um pai."
+                'Para classes de níveis superiores a 1 deve especificar um pai.',
             });
             this.numeroErros++;
           } else {
             if (!this.c.codigo.includes(this.c.pai.codigo)) {
               this.mensagensErro.push({
-                sobre: "Código",
+                sobre: 'Código',
                 mensagem:
-                  "O código do pai deve ser prefixo do código da classe."
+                  'O código do pai deve ser prefixo do código da classe.',
               });
               this.numeroErros++;
             }
           }
           if (!this.codeFormats[this.c.nivel].test(this.c.codigo)) {
             this.mensagensErro.push({
-              sobre: "Código",
+              sobre: 'Código',
               mensagem:
-                "Formato de código inválido! Deve ser: " +
-                this.formatoCodigo[this.c.nivel]
+                'Formato de código inválido! Deve ser: ' +
+                this.formatoCodigo[this.c.nivel],
             });
             this.numeroErros++;
           }
@@ -200,22 +200,22 @@ export default {
           var existe = await this.verificaExistenciaCodigo(this.c.codigo);
           if (existe) {
             this.mensagensErro.push({
-              sobre: "Código",
-              mensagem: "Código já existente na base de dados..."
+              sobre: 'Código',
+              mensagem: 'Código já existente na base de dados...',
             });
             this.numeroErros++;
           }
         } catch (e) {
           this.numeroErros++;
           this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência do código."
+            sobre: 'Acesso à Ontologia',
+            mensagem: 'Não consegui verificar a existência do código.',
           });
         }
       } else {
         this.mensagensErro.push({
-          sobre: "Código",
-          mensagem: "O código da classe não foi especificado."
+          sobre: 'Código',
+          mensagem: 'O código da classe não foi especificado.',
         });
         this.numeroErros++;
       }
@@ -223,30 +223,30 @@ export default {
 
     validaTitulo: async function() {
       // Título
-      if (this.c.titulo == "") {
+      if (this.c.titulo == '') {
         this.mensagensErro.push({
-          sobre: "Título",
-          mensagem: "O título não pode ser vazio."
+          sobre: 'Título',
+          mensagem: 'O título não pode ser vazio.',
         });
         this.numeroErros++;
       } else {
         try {
           var existeTitulo = await this.$request(
-            "get",
-            "/classes/titulo?valor=" + encodeURIComponent(this.c.titulo)
+            'get',
+            '/classes/titulo?valor=' + encodeURIComponent(this.c.titulo)
           );
           if (existeTitulo.data) {
             this.mensagensErro.push({
-              sobre: "Título",
-              mensagem: "Título já existente na BD."
+              sobre: 'Título',
+              mensagem: 'Título já existente na BD.',
             });
             this.numeroErros++;
           }
         } catch (e) {
           this.numeroErros++;
           this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência do título."
+            sobre: 'Acesso à Ontologia',
+            mensagem: 'Não consegui verificar a existência do título.',
           });
         }
       }
@@ -259,10 +259,10 @@ export default {
 
     validaDescricao: function() {
       // Descrição
-      if (this.c.descricao == "") {
+      if (this.c.descricao == '') {
         this.mensagensErro.push({
-          sobre: "Descrição",
-          mensagem: "A descrição não pode ser vazia."
+          sobre: 'Descrição',
+          mensagem: 'A descrição não pode ser vazia.',
         });
         this.numeroErros++;
       }
@@ -273,29 +273,29 @@ export default {
       for (let i = 0; i < this.c.notasAp.length; i++) {
         try {
           var existeNotaAp = await this.$request(
-            "get",
-            "/notasAp/notaAp?valor=" +
+            'get',
+            '/notasAp/notaAp?valor=' +
               encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             this.mensagensErro.push({
-              sobre: "Nota de Aplicação(" + (i + 1) + ")",
-              mensagem: "[" + this.c.notasAp[i].nota + "] já existente na BD."
+              sobre: 'Nota de Aplicação(' + (i + 1) + ')',
+              mensagem: '[' + this.c.notasAp[i].nota + '] já existente na BD.',
             });
             this.numeroErros++;
           }
         } catch (e) {
           this.numeroErros++;
           this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência da NotaAp."
+            sobre: 'Acesso à Ontologia',
+            mensagem: 'Não consegui verificar a existência da NotaAp.',
           });
         }
       }
       if (this.notaDuplicada(this.c.notasAp)) {
         this.mensagensErro.push({
-          sobre: "Nota de Aplicação(" + (i + 1) + ")",
-          mensagem: "A última nota encontra-se duplicada."
+          sobre: 'Nota de Aplicação(' + (i + 1) + ')',
+          mensagem: 'A última nota encontra-se duplicada.',
         });
         this.numeroErros++;
       }
@@ -306,32 +306,32 @@ export default {
       for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
           var existeExemploNotaAp = await this.$request(
-            "get",
-            "/exemplosNotasAp/exemploNotaAp?valor=" +
+            'get',
+            '/exemplosNotasAp/exemploNotaAp?valor=' +
               encodeURIComponent(this.c.exemplosNotasAp[i].exemplo)
           );
           if (existeExemploNotaAp.data) {
             this.mensagensErro.push({
-              sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
+              sobre: 'Exemplo de nota de Aplicação(' + (i + 1) + ')',
               mensagem:
-                "[" +
+                '[' +
                 this.c.exemplosNotasAp[i].exemplo +
-                "] já existente na BD."
+                '] já existente na BD.',
             });
             this.numeroErros++;
           }
         } catch (e) {
           this.numeroErros++;
           this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência do exemploNotaAp."
+            sobre: 'Acesso à Ontologia',
+            mensagem: 'Não consegui verificar a existência do exemploNotaAp.',
           });
         }
       }
       if (this.exemploDuplicado(this.c.exemplosNotasAp)) {
         this.mensagensErro.push({
-          sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
-          mensagem: "O último exemplo encontra-se duplicado."
+          sobre: 'Exemplo de nota de Aplicação(' + (i + 1) + ')',
+          mensagem: 'O último exemplo encontra-se duplicado.',
         });
         this.numeroErros++;
       }
@@ -341,8 +341,8 @@ export default {
       // Notas de Exclusão
       if (this.notaDuplicada(this.c.notasEx)) {
         this.mensagensErro.push({
-          sobre: "Nota de Exclusão(" + this.c.notasEx.length + ")",
-          mensagem: "A última nota encontra-se duplicada."
+          sobre: 'Nota de Exclusão(' + this.c.notasEx.length + ')',
+          mensagem: 'A última nota encontra-se duplicada.',
         });
         this.numeroErros++;
       }
@@ -353,31 +353,31 @@ export default {
       for (let i = 0; i < this.c.termosInd.length; i++) {
         try {
           var existeTI = await this.$request(
-            "get",
-            "/termosIndice/termoIndice?valor=" +
+            'get',
+            '/termosIndice/termoIndice?valor=' +
               encodeURIComponent(this.c.termosInd[i].termo)
           );
           if (existeTI.data) {
             this.mensagensErro.push({
-              sobre: "Termo de Índice(" + (i + 1) + ")",
+              sobre: 'Termo de Índice(' + (i + 1) + ')',
               mensagem:
-                "[" + this.c.termosInd[i].termo + "] já existente na BD."
+                '[' + this.c.termosInd[i].termo + '] já existente na BD.',
             });
             this.numeroErros++;
           }
         } catch (e) {
           this.numeroErros++;
           this.mensagensErro.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Não consegui verificar a existência do Termo de índice."
+            sobre: 'Acesso à Ontologia',
+            mensagem: 'Não consegui verificar a existência do Termo de índice.',
           });
         }
       }
       if (this.tiDuplicado(this.c.termosInd)) {
         this.numeroErros++;
         this.mensagensErro.push({
-          sobre: "Termo de Índice(" + (i + 1) + ")",
-          mensagem: "O último ti encontra-se duplicado."
+          sobre: 'Termo de Índice(' + (i + 1) + ')',
+          mensagem: 'O último ti encontra-se duplicado.',
         });
       }
     },
@@ -393,14 +393,14 @@ export default {
     validaBlocoContexto: function() {
       // Um PN Transversal tem de ter 1 dono ou 1 participante
       if (
-        this.c.procTrans == "S" &&
+        this.c.procTrans == 'S' &&
         this.c.donos.length == 0 &&
         this.c.participantes.length == 0
       ) {
         this.mensagensErro.push({
-          sobre: "Invariante da Transversalidade",
+          sobre: 'Invariante da Transversalidade',
           mensagem:
-            "Um processo Transversal deve ter um dono ou um participante."
+            'Um processo Transversal deve ter um dono ou um participante.',
         });
         this.numeroErros++;
       }
@@ -411,45 +411,45 @@ export default {
       // Sem subdivisão
       if (this.c.nivel == 3 && !this.c.temSubclasses4Nivel) {
         // PCA: prazo
-        if (!this.c.pca.valor && this.c.pca.notas == "") {
+        if (!this.c.pca.valor && this.c.pca.notas == '') {
           this.mensagensErro.push({
-            sobre: "PCA (prazo)",
-            mensagem: "Tem de indicar o PCA ou preencher o campo da nota."
+            sobre: 'PCA (prazo)',
+            mensagem: 'Tem de indicar o PCA ou preencher o campo da nota.',
           });
           this.numeroErros++;
         } else if (this.c.pca.valor < 0 || this.c.pca.valor > 200) {
           this.mensagensErro.push({
-            sobre: "PCA (prazo)",
-            mensagem: "Prazo fora dos limites."
+            sobre: 'PCA (prazo)',
+            mensagem: 'Prazo fora dos limites.',
           });
           this.numeroErros++;
         }
         // PCA: forma e subforma de contagem
-        if (this.c.pca.formaContagem == "") {
+        if (this.c.pca.formaContagem == '') {
           this.mensagensErro.push({
-            sobre: "PCA (forma de contagem)",
-            mensagem: "A forma de contagem não pode ser vazia."
+            sobre: 'PCA (forma de contagem)',
+            mensagem: 'A forma de contagem não pode ser vazia.',
           });
           this.numeroErros++;
         } else if (
-          this.c.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal" &&
-          this.c.pca.subFormaContagem == ""
+          this.c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal' &&
+          this.c.pca.subFormaContagem == ''
         ) {
           this.mensagensErro.push({
-            sobre: "PCA (subforma de contagem)",
+            sobre: 'PCA (subforma de contagem)',
             mensagem:
-              'Quando a forma de contagem é "Disposição legal" a subforma não pode ser vazia.'
+              'Quando a forma de contagem é "Disposição legal" a subforma não pode ser vazia.',
           });
           this.numeroErros++;
         }
         // DF
         if (
-          (!this.c.df.valor || this.c.df.valor == "NE") &&
-          this.c.df.notas == ""
+          (!this.c.df.valor || this.c.df.valor == 'NE') &&
+          this.c.df.notas == ''
         ) {
           this.mensagensErro.push({
-            sobre: "DF",
-            mensagem: "Tem de indicar o DF ou preencher o campo da nota."
+            sobre: 'DF',
+            mensagem: 'Tem de indicar o DF ou preencher o campo da nota.',
           });
           this.numeroErros++;
         }
@@ -465,60 +465,60 @@ export default {
           // Unicidade do título
           if (
             this.c.subclasses.filter(
-              s => s.titulo == this.c.subclasses[i].titulo
+              (s) => s.titulo == this.c.subclasses[i].titulo
             ).length > 1
           ) {
             this.mensagensErro.push({
-              sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
-              mensagem: "Está repetido noutra subclasse."
+              sobre: 'Título da subclasse ' + this.c.subclasses[i].codigo,
+              mensagem: 'Está repetido noutra subclasse.',
             });
           }
           // PCA: prazo
           subclasse = this.c.subclasses[i];
           if (
-            (!subclasse.pca.valor || subclasse.pca.valor == "") &&
-            subclasse.pca.notas == ""
+            (!subclasse.pca.valor || subclasse.pca.valor == '') &&
+            subclasse.pca.notas == ''
           ) {
             this.mensagensErro.push({
-              sobre: "PCA (prazo) da subclasse " + subclasse.codigo,
-              mensagem: "O prazo é de preenchimento obrigatório."
+              sobre: 'PCA (prazo) da subclasse ' + subclasse.codigo,
+              mensagem: 'O prazo é de preenchimento obrigatório.',
             });
             this.numeroErros++;
           } else if (subclasse.pca.valor < 0 || subclasse.pca.valor > 200) {
             this.mensagensErro.push({
-              sobre: "PCA (prazo) da subclasse " + subclasse.codigo,
-              mensagem: "O prazo está fora dos limites."
+              sobre: 'PCA (prazo) da subclasse ' + subclasse.codigo,
+              mensagem: 'O prazo está fora dos limites.',
             });
             this.numeroErros++;
           }
           // PCA: forma e subforma de contagem
-          if (subclasse.pca.formaContagem == "") {
+          if (subclasse.pca.formaContagem == '') {
             this.mensagensErro.push({
-              sobre: "PCA (forma de contagem) da subclasse " + subclasse.codigo,
-              mensagem: "A forma de contagem não pode ser vazia."
+              sobre: 'PCA (forma de contagem) da subclasse ' + subclasse.codigo,
+              mensagem: 'A forma de contagem não pode ser vazia.',
             });
             this.numeroErros++;
           } else if (
             subclasse.pca.formaContagem ==
-              "vc_pcaFormaContagem_disposicaoLegal" &&
-            subclasse.pca.subFormaContagem == ""
+              'vc_pcaFormaContagem_disposicaoLegal' &&
+            subclasse.pca.subFormaContagem == ''
           ) {
             this.mensagensErro.push({
               sobre:
-                "PCA (subforma de contagem) da subclasse " + subclasse.codigo,
+                'PCA (subforma de contagem) da subclasse ' + subclasse.codigo,
               mensagem:
-                'Quando a forma de contagem é "Disposição legal" a subforma não pode ser vazia.'
+                'Quando a forma de contagem é "Disposição legal" a subforma não pode ser vazia.',
             });
             this.numeroErros++;
           }
           // DF
           if (
-            (!subclasse.df.valor || subclasse.df.valor == "NE") &&
-            subclasse.df.notas == ""
+            (!subclasse.df.valor || subclasse.df.valor == 'NE') &&
+            subclasse.df.notas == ''
           ) {
             this.mensagensErro.push({
-              sobre: "DF",
-              mensagem: "Tem de indicar o DF ou preencher o campo da nota."
+              sobre: 'DF',
+              mensagem: 'Tem de indicar o DF ou preencher o campo da nota.',
             });
             this.numeroErros++;
           }
@@ -545,8 +545,8 @@ export default {
     limpaErros: function() {
       this.numeroErros = 0;
       this.mensagensErro = [];
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

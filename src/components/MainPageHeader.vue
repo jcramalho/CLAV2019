@@ -3,13 +3,13 @@
     <!--Navbar para xl/lg/md/sm screens-->
     <v-app-bar app dense hide-on-scroll id="default-toolbar" class="white--text toolbar hidden-xs-only">
         <v-toolbar-title @click="goRoute('/')" style="cursor:pointer;" :class="{
-          'toolbar-title-sm': $vuetify.breakpoint.smOnly
+          'toolbar-title-sm': $vuetify.breakpoint.smOnly,
         }">
             <v-tooltip bottom color="info">
                 <template v-slot:activator="{ on }">
                     <span v-on="on" :class="{
                 'title-letters-lg': $vuetify.breakpoint.lgAndUp,
-                'title-letters-md': $vuetify.breakpoint.mdAndDown
+                'title-letters-md': $vuetify.breakpoint.mdAndDown,
               }" class="d-inline font-weight-bold text-wrap">CLAV -</span>
                 </template>
                 <span>Voltar à página inicial</span>
@@ -17,13 +17,13 @@
             <span v-if="this.$store.state.name == ''" :class="{
             'subtitle-letter-lg': $vuetify.breakpoint.lgAndUp,
             'subtitle-letter-md': $vuetify.breakpoint.mdAndDown,
-            'subtitle-letter-sm': $vuetify.breakpoint.smOnly
+            'subtitle-letter-sm': $vuetify.breakpoint.smOnly,
           }" class="d-inline font-weight-light text-wrap">Classificação e Avaliação da Informação Pública</span>
             <span v-if="this.$store.state.name != ''" :class="{
             'subtitle-letter-lg': $vuetify.breakpoint.lgAndUp,
             'subtitle-letter-md': $vuetify.breakpoint.mdAndDown,
-            'subtitle-letter-sm': $vuetify.breakpoint.smOnly
-          }" class="d-inline font-weight-light text-wrap">{{ this.$store.state.entidade.split("_")[1] }}</span>
+            'subtitle-letter-sm': $vuetify.breakpoint.smOnly,
+          }" class="d-inline font-weight-light text-wrap">{{ this.$store.state.entidade.split('_')[1] }}</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-snackbar v-model="snackbar" :timeout="timeout" :color="color" :top="true">
@@ -34,7 +34,7 @@
         </v-snackbar>
         <v-btn v-if="this.$store.state.name === ''" to="/users/autenticacao" rounded color="#399D44" :class="{
           'px-12': $vuetify.breakpoint.lgAndUp,
-          'px-8': $vuetify.breakpoint.mdAndDown
+          'px-8': $vuetify.breakpoint.mdAndDown,
         }" class="green--text text--darken-3 mt-1" id="authenticate-button">
             <unicon name="login-icon" width="21" height="21" viewBox="0 0 20.711 20.862" fill="#ffffff" />
             <p class="d-inline ml-3 white--text">Iniciar Sessão</p>
@@ -46,7 +46,7 @@
         </v-btn>
         <v-btn v-if="this.$store.state.name != ''" @click="drawerDefinicoes" text rounded dark id="user-button">
             <p>{{ $store.state.name }}</p>
-            <unicon name="arrow-down-icon" width="15" height="15" viewBox="0 0 26.358 20.71" fill="#e5e5e5" />
+            <unicon name="arrow-down-icon" width="15" height="15" viewBox="0 0 37.262 20.71" fill="#e5e5e5" />
         </v-btn>
         <template v-slot:extension>
             <v-tabs grow dark show-arrows hide-slider id="tab-bar" :icons-and-text="$vuetify.breakpoint.mdAndDown">
@@ -92,7 +92,7 @@
                 Classificação e Avaliação da Informação Pública
             </p>
             <p class="subtitle-letter-md font-weight-light d-inline text-wrap" v-if="this.$store.state.name != ''">
-                {{ this.$store.state.entidade.split("_")[1] }}
+                {{ this.$store.state.entidade.split('_')[1] }}
             </p>
         </v-toolbar-title>
         <v-spacer></v-spacer>
@@ -103,7 +103,7 @@
         </v-btn>
         <v-btn v-if="this.$store.state.name != ''" @click="drawerDefinicoes" text dark rounded class="mr-8" id="user-button">
             <p class="text-wrap">{{ $store.state.name }}</p>
-            <unicon name="arrow-down-icon" width="15" height="15" viewBox="0 0 26.358 20.71" fill="#e5e5e5" />
+            <unicon name="arrow-down-icon" width="15" height="15" viewBox="0 0 37.262 20.71" fill="#e5e5e5" />
         </v-btn>
         <v-dialog v-model="dialog" fullscreen hide-overlay transition="fade-transition">
             <template v-slot:activator="{ on }">
@@ -119,7 +119,7 @@
                     <v-toolbar-title v-if="this.$store.state.name != ''" @click="goRoute('/')" style="cursor:pointer;">
                         <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
                         <p class="subtitle-letter-md font-weight-light d-inline text-wrap">
-                            {{ this.$store.state.entidade.split("_")[1] }}
+                            {{ this.$store.state.entidade.split('_')[1] }}
                         </p>
                     </v-toolbar-title>
                     <v-spacer></v-spacer>
@@ -134,9 +134,9 @@
                 <v-list rounded color="rgba(0,0,0,0)" dark two-line>
                     <v-container class="pa-0" v-for="tab in tabsAcessiveis" :key="tab.titulo">
                         <v-list-item v-if="!tab.menu" @click="
-                            goRoute(tab.url);
-                            dialog = false;
-                        ">
+                  goRoute(tab.url);
+                  dialog = false;
+                ">
                             <v-list-item-title class="px-2 font-weight-bold">
                                 <unicon v-if="tab.icon" :name="tab.icon.nome" width="24" height="24" :viewBox="tab.icon.viewbox" fill="#f3f7fc" />
                                 <p class="d-inline mobile-menu-link">{{ tab.titulo }}</p>
@@ -171,7 +171,7 @@
 <script>
 import {
     mapGetters
-} from "vuex";
+} from 'vuex';
 
 export default {
     props: ["n"],
@@ -399,9 +399,9 @@ export default {
         async token(oldToken, newToken) {
             this.level = this.$userLevel();
         },
-        "$route.meta.tabAtiva": function (newValue) {
+        '$route.meta.tabAtiva': function (newValue) {
             this.tabAtiva = newValue;
-        }
+        },
     },
     created: async function () {
         this.level = this.$userLevel();
@@ -417,9 +417,11 @@ export default {
                 var levelsSet = new Set();
 
                 if (navbar[i].menu) {
-                    navbar[i].menu.forEach(m => m.level.forEach(l => levelsSet.add(l)));
+                    navbar[i].menu.forEach((m) =>
+                        m.level.forEach((l) => levelsSet.add(l))
+                    );
                 } else {
-                    navbar[i].level.forEach(l => levelsSet.add(l));
+                    navbar[i].level.forEach((l) => levelsSet.add(l));
                 }
 
                 var levels = Array.from(levelsSet);
@@ -427,38 +429,38 @@ export default {
                     levels.includes(this.level) &&
                     navbar[i].menu &&
                     ((this.level > 0 &&
-                            this.$store.state.token != "" &&
-                            this.$store.state.name != "") ||
+                            this.$store.state.token != '' &&
+                            this.$store.state.name != '') ||
                         this.level === 0)
                 ) {
                     filtered.push({
                         titulo: navbar[i].titulo,
                         icon: navbar[i].icon,
-                        menu: navbar[i].menu.filter(o => o.level.includes(this.level))
+                        menu: navbar[i].menu.filter((o) => o.level.includes(this.level)),
                     });
                 } else if (
                     levels.includes(this.level) &&
                     !navbar[i].menu &&
                     ((this.level > 0 &&
-                            this.$store.state.token != "" &&
-                            this.$store.state.name != "") ||
+                            this.$store.state.token != '' &&
+                            this.$store.state.name != '') ||
                         this.level === 0)
                 ) {
                     filtered.push({
                         titulo: navbar[i].titulo,
                         icon: navbar[i].icon,
                         level: navbar[i].level,
-                        url: navbar[i].url
+                        url: navbar[i].url,
                     });
                 }
             }
             return filtered;
         },
         drawerNotificacoes() {
-            this.$emit("drawerNotificacoes");
+            this.$emit('drawerNotificacoes');
         },
         drawerDefinicoes() {
-            this.$emit("drawerDefinicoes");
+            this.$emit('drawerDefinicoes');
         },
         fecharSnackbar() {
             this.snackbar = false;
@@ -466,8 +468,8 @@ export default {
         async testJWT() {
             var res = this.$verifyTokenUser();
             alert(JSON.stringify(res));
-        }
-    }
+        },
+    },
 };
 </script>
 
