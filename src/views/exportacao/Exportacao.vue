@@ -7,7 +7,7 @@
     <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
         <v-row>
             <v-col class="px-0 my-0">
-                <v-card flat style="border-radius: 10px !important;" class="pt-5 pb-1">
+                <v-card flat style="border-radius: 10px !important;" class="pt-5 pb-5">
                     <p class="content-title-1">
                         Exportação de Dados
                     </p>
@@ -20,15 +20,15 @@
                                 <v-autocomplete :items="exportacoesDisponiveis" v-on="on" style="text-align: center !important;" class="centered-input mt-n1 mb-2 px-8" :rules="regraTipo" v-model="tipo" label="Dados a exportar" text hide-details single-line required clearable color="blue darken-3" @change="
                         queriesSel = {};
                         id = '';
-                    "></v-autocomplete>
+                    " @click.clear="tipo = ''"></v-autocomplete>
                             </template>
                             <span>
                                 Área destinada à exportação de dados das classes, entidades, tipologias, legislação e ontologia.
                             </span>
                         </v-tooltip>
                     </div>
-                    <div class="px-5">
-                        <v-div v-if="tipo != '' && tipo.path.includes('/')">
+                    <div v-if="tipo" class="px-5">
+                        <v-div v-if="(tipo ? tipo.path.includes('/') : false)">
                             <div :class="{
                             'px-3': $vuetify.breakpoint.mdAndUp
                             }" class="separador">
@@ -38,26 +38,36 @@
                                 </span>
                             </div>
                             <div>
-                                <v-form ref="id">
-                                    <v-autocomplete :items="this[singToPlu(tipo.filename)]" label="Identificador" v-model="id" :rules="regraId" required>
-                                    </v-autocomplete>
-                                </v-form>
+                                <v-row>
+                                    <v-col cols="12" lg="2">
+                                        <div class="info-label">Identificador</div>
+                                    </v-col>
+                                    <v-col cols="12" lg="10">
+                                        <v-form ref="id">
+                                            <v-autocomplete :items="this[singToPlu(tipo.filename)]" label="Identificador" v-model="id" :rules="regraId" required>
+                                            </v-autocomplete>
+                                        </v-form>
+                                    </v-col>
+                                </v-row>
                             </div>
                         </v-div>
 
-                        <div v-if="tipo != ''">
-
+                        <div>
                             <div :class="{
                             'px-3': $vuetify.breakpoint.mdAndUp
                             }" class="separador">
+                                <v-icon dark>{{ exportIcon }}</v-icon>
                                 Defina as query strings a usar na exportação
                             </div>
                             <div v-for="(querystring, key) in queryStrings[tipo.filename]" :key="key">
                                 <v-row>
-                                    <v-col cols="1" class="d-flex justify-center">
-                                        <InfoBox :header="querystring.label" :text="querystring.desc" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
+                                    <v-col cols="12" lg="2" class="d-flex justify-center">
+                                        <div class="info-label">
+                                            {{ querystring.label }}
+                                            <InfoBox :header="querystring.label" :text="querystring.desc" helpColor="indigo darken-4" dialogColor="#E0F2F1" />
+                                        </div>
                                     </v-col>
-                                    <v-col cols="11">
+                                    <v-col cols="12" lg="10">
                                         <span v-if="querystring.enum.length > 0">
                                             <v-autocomplete :items="querystring.enum" :label="querystring.label" v-model="queriesSel[key]" :multiple="querystring.multiple">
                                             </v-autocomplete>
@@ -112,6 +122,7 @@ import {
 } from '@mdi/js';
 
 export default {
+    name: 'exportacao',
     data: () => {
         let fs = {
             label: "Formato de saída",
@@ -761,6 +772,18 @@ export default {
     font-size: 14pt;
     font-weight: bold;
     border-radius: 10px 10px 0 0;
+}
+
+.info-label {
+    color: #1a237e !important;
+    padding: 8px;
+    width: 100%;
+    background-color: #dee2f8;
+    font-weight: bold;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 6px;
+    text-align: center;
 }
 
 .info-content {
