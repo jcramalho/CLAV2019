@@ -75,10 +75,33 @@
                               dense
                             ></v-text-field>
                           </v-col>
+                          <v-col cols="12" xs="12" sm="2" v-if="siSpec.identificacao.adminSistema.length > 0">
+                            <div class="info-label">Administrador do Sistema
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" v-if="siSpec.identificacao.adminSistema.length > 0">
+                            <v-text-field
+                              :value="siSpec.identificacao.adminSistema"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" v-if="siSpec.identificacao.adminDados.length > 0">
+                            <div class="info-label">Administrador dos Dados
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" v-if="siSpec.identificacao.adminDados.length > 0">
+                            <v-text-field
+                              :value="siSpec.identificacao.adminDados"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
                         </v-row>
                       </div>
                       <v-divider></v-divider>
-                      <span>{{siSpec}}</span>
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
@@ -141,7 +164,28 @@ export default {
         "items-per-page-options": [5, 10, 20, -1],
         "items-per-page-all-text": "Todos"
       },
-      siSpec: "",
+      siSpec: {
+        numeroSI: [],
+        nomeSI: [],
+        identificacao:{
+          adminSistema: [],
+          adminDados: [],
+          propSistemaPublico: [],
+          propSistemaPrivado: [],
+          propDados: [],
+          localDadosPublico: [],
+          localDadosPrivado: [],
+          userList: [],
+          defResponsavel: [],
+          expressaoResponsavel:[],
+          insourcing: [],
+          outsourcing: [],
+          notas: [],
+        },
+        avaliacao:{},
+        caracterizacao:{},
+        estrategia:{}
+      }
     };
   },
 
@@ -152,7 +196,31 @@ export default {
 
     showSI: function(item){
       this.alterar = true;
-      this.siSpec = item;
+      //this.siSpec = item;
+      this.item2Show(item);
+    },
+
+    item2Show: function(item){
+      this.siSpec.numeroSI = item.numeroSI,
+      this.siSpec.numeroSI= item.numeroSI,
+      this.siSpec.nomeSI= item.nomeSI,
+      //this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema,
+      this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
+      this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
+      this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico,
+      this.siSpec.identificacao.propSistemaPrivado= item.identificacao.propSistemaPrivado,
+      this.siSpec.identificacao.propDados= item.identificacao.propDados,
+      this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico,
+      this.siSpec.identificacao.localDadosPrivado= item.identificacao.localDadosPrivado,
+      this.siSpec.identificacao.userList= item.identificacao.userList,
+      this.siSpec.identificacao.defResponsavel= item.identificacao.defResponsavel,
+      this.siSpec.identificacao.expressaoResponsavel=item.identificacao.expressaoResponsavel,
+      this.siSpec.identificacao.insourcing= item.identificacao.insourcing,
+      this.siSpec.identificacao.outsourcing= item.identificacao.outsourcing,
+      this.siSpec.identificacao.notas= item.identificacao.notas,
+      this.siSpec.avaliacao={},
+      this.siSpec.caracterizacao={},
+      this.siSpec.estrategia={}
     }
   }
 };
