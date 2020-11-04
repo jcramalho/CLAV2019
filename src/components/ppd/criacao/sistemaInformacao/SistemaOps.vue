@@ -6,7 +6,7 @@
         <InfoBox header="Sistemas de Informação"/>
       </div>
     </v-col>
-    <v-col cols="12" xs="12" sm="9" v-if="sistema.length > 0">
+    <v-col v-if="sistema.length > 0">
       <v-data-table
         :headers="headers"
         :items="sistema"
@@ -28,18 +28,16 @@
           </tr>
         </template>
 
-
         <template v-slot:item="props">
           <tr>
             <td>{{ props.item.numeroSI }}</td>
             <td>{{ props.item.nomeSI }}</td>
             <td>
               <template>
-                <div class="text">
+                <div>
                   <v-dialog
                     :retain-focus="false"
                     v-model="alterar"
-                    width="90%"
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn small color="blue darken-2" dark rounded v-bind="attrs" v-on="on" @click="showSI(props.item)">
@@ -51,9 +49,35 @@
                       <v-card-title class="headline grey lighten-2">
                         Sistema de informação
                       </v-card-title>
-
+                      <div class="v-card__text mt-4">
+                        <v-row>
+                          <v-col cols="12" xs="12" sm="2">
+                            <div class="info-label">Número SI
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4">
+                            <v-text-field
+                              :value="siSpec.numeroSI"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2">
+                            <div class="info-label">Nome SI
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4">
+                            <v-text-field
+                              :value="siSpec.nomeSI"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </div>
                       <v-divider></v-divider>
-
                       <span>{{siSpec}}</span>
                       <v-card-actions>
                         <v-spacer></v-spacer>

@@ -51,13 +51,6 @@
             >
               Cancelar
             </v-btn>
-            <v-btn
-              dark
-              text
-              @click="newSistema()"
-            >
-              Guardar
-            </v-btn>
           </v-toolbar-items>
         </v-app-bar>
         <v-sheet id="scrolling" class="overflow-y-auto overflow-x-hidden">
@@ -116,6 +109,17 @@
                 :ppd="ppd"
               />
             </v-expansion-panels>
+          </v-row>
+            <v-row align="center" justify="space-around">
+            <v-btn
+            color="indigo darken-2"
+            dark
+            class="ma-2"
+            rounded
+            @click="newSistema()"
+            >
+              Guardar
+            </v-btn>
           </v-row>
           <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
             <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
@@ -285,19 +289,24 @@ export default {
         var sistema = {
           numeroSI: this.ppd.si.numeroSI,
           nomeSI: this.ppd.si.nomeSI,
-          adminSistema: this.ppd.si.identificacao.adminSistema,
-          adminDados: this.ppd.si.identificacao.adminDados,
-          propSistemaPublico: this.ppd.si.identificacao.propSistemaPublico,
-          propSistemaPrivado: this.ppd.si.identificacao.propSistemaPrivado,
-          propDados: this.ppd.si.identificacao.propDados,
-          localDadosPublico: this.ppd.si.identificacao.localDadosPublico,
-          localDadosPrivado: this.ppd.si.identificacao.localDadosPrivado,
-          userList: this.ppd.si.identificacao.userList,
-          defResponsavel: this.ppd.si.identificacao.defResponsavel,
-          expressaoResponsavel:this.ppd.si.identificacao.expressaoResponsavel,
-          insourcing: this.ppd.si.identificacao.insourcing,
-          outsourcing: this.ppd.si.identificacao.outsourcing,
-          notas: this.ppd.si.identificacao.notas,
+          identificacao:{
+            adminSistema: this.ppd.si.identificacao.adminSistema,
+            adminDados: this.ppd.si.identificacao.adminDados,
+            propSistemaPublico: this.ppd.si.identificacao.propSistemaPublico,
+            propSistemaPrivado: this.ppd.si.identificacao.propSistemaPrivado,
+            propDados: this.ppd.si.identificacao.propDados,
+            localDadosPublico: this.ppd.si.identificacao.localDadosPublico,
+            localDadosPrivado: this.ppd.si.identificacao.localDadosPrivado,
+            userList: this.ppd.si.identificacao.userList,
+            defResponsavel: this.ppd.si.identificacao.defResponsavel,
+            expressaoResponsavel:this.ppd.si.identificacao.expressaoResponsavel,
+            insourcing: this.ppd.si.identificacao.insourcing,
+            outsourcing: this.ppd.si.identificacao.outsourcing,
+            notas: this.ppd.si.identificacao.notas,
+          },
+          avaliacao:{},
+          caracterizacao:{},
+          estrategia:{}
         };
         this.ppd.si.numeroSI= "";
         this.ppd.si.nomeSI= "";
