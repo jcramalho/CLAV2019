@@ -112,23 +112,25 @@
                 <v-stepper-step :complete="steps > 2" step="2">Importação dos ficheiros de submissão</v-stepper-step>
 
                 <v-stepper-content step="2">
-                    <v-row>
-                        <v-col :md="3">
-                            <div class="info-label">Ficheiro classes / séries</div>
-                        </v-col>
-                        <v-col class="mt-2">
-                            <input type="file" id="fileSerie" @change="previewFileSerie" />
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col :md="3">
-                            <div class="info-label">Ficheiro agregações / unidades de instalação</div>
-                        </v-col>
-                        <v-col class="mt-2">
-                            <input type="file" id="fileAgreg" @change="previewFileAgreg" />
-                        </v-col>
-                    </v-row>
-
+                    <Loading v-if="classes.length==0" :message="'Fonte de Legitimação'" />
+                    <div v-else>
+                        <v-row>
+                            <v-col :md="3">
+                                <div class="info-label">Ficheiro classes / séries</div>
+                            </v-col>
+                            <v-col class="mt-2">
+                                <input type="file" id="fileSerie" @change="previewFileSerie" />
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col :md="3">
+                                <div class="info-label">Ficheiro agregações / unidades de instalação</div>
+                            </v-col>
+                            <v-col class="mt-2">
+                                <input type="file" id="fileAgreg" @change="previewFileAgreg" />
+                            </v-col>
+                        </v-row>
+                    </div>
                     <v-btn @click="steps=1; cleanFiles()" color="indigo darken-4" dark class="ma-2">Voltar</v-btn>
                     <v-btn class="ma-2" color="indigo darken-4" dark @click="converter()" :disabled="!fileSerie" v-if="fileSerie">Validar Ficheiros e Continuar</v-btn>
                     <v-btn class="ma-2" color="red darken-4" dark @click="cleanFiles">Limpar</v-btn>
@@ -280,12 +282,14 @@ const validador = require("@/plugins/conversor").validarCSVs;
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 import ValidarAE from "@/components/autosEliminacao/importacao/ValidarAutoEliminacao.vue"
+import Loading from "@/components/generic/Loading";
 
 export default {
     props: ["entidades"],
     components: {
         InfoBox,
-        ValidarAE
+        ValidarAE,
+        Loading
     },
     data: () => ({
         classes: [],
@@ -323,6 +327,13 @@ export default {
     methods: {
         validar: async function () {
             for (var zc of this.auto.zonaControlo) {
+                if (zc.nrAgregacoes == 0 && zc.agregacoes.length == 0) {
+                    this.errosVal.erros.push({
+                        sobre: "Nº de Agregações",
+                        mensagem: "O numero de agregações deve ser superior a 0 (zero)"
+                    })
+                    this.errosVal.numErros++;
+                }
                 if (zc.notasPCA && !zc.validaNotaPCA) {
                     this.errosVal.erros.push({
                         sobre: "Notas do PCA",
@@ -435,6 +446,12 @@ export default {
                 .then(() => {
                     conversor(this.fileSerie, this.fileAgreg, this.tipo)
                         .then(async res => {
+                            //VERIFICA SE O FICHEIRO DE CLASSES ESTÁ VAZIO
+                            if (res.auto.zonaControlo.length === 0) {
+                                this.flagAE = true;
+                                this.erro = "Verificar se preencheu o ficheiro das classes / séries."
+                            }
+
                             var currentDate = new Date();
                             this.auto.zonaControlo = res.auto.zonaControlo;
                             if (this.tipo == "TS_LC") {
@@ -446,9 +463,9 @@ export default {
                                     if (!classe) {
                                         this.flagAE = true;
                                         this.erro =
-                                            "Codigo da classe <b>" +
-                                            zc.codigo +
-                                            "</b> não foi encontrado na Lista Consolidada";
+                                            "<p>A junção de código de classe e número de referência está a ser utilizada como identificador.</p>" +
+                                            "<p>O código <b>" + zc.codigo +
+                                            "</b> introduzido não pertence a nenhuma junção entre código e referência nas classes presentes em " + this.auto.legislacao.split(" - ")[0] + ".</p>";
                                         return; //ERROS
                                     }
                                     var pca = classe.pca.valor;
@@ -489,27 +506,30 @@ export default {
                                 }
                                 this.auto.zonaControlo.forEach(zc => {
                                     var classe = this.classes.find(
-                                        elem => elem.codigo == zc.codigo && elem.referencia == zc.referencia
+                                        elem => {
+                                            var codigo = elem.codigo || ''
+                                            var referencia = elem.referencial || ''
+                                            return codigo == zc.codigo && referencia == zc.referencia
+                                        }
                                     )
 
                                     if (!classe) {
                                         this.flagAE = true;
                                         if (zc.codigo && zc.referencia)
                                             this.erro =
-                                            "Codigo da classe <b>" +
-                                            zc.codigo +
-                                            "</b> e Referência <b>" + zc.referencia +
-                                            "</b> não foram encontrados em " + this.auto.legislacao.split(" - ")[0];
+                                            "<p>A junção de código de classe e número de referência está a ser utilizada como identificador.</p>" +
+                                            "<p>O código <b>" + zc.codigo + "</b> e Referência <b>" + zc.referencia +
+                                            "</b> introduzidos não pertencem a nenhuma junção entre código e referência nas classes presentes em " + this.auto.legislacao.split(" - ")[0] + ".</p>";
                                         else if (zc.codigo)
                                             this.erro =
-                                            "Codigo da classe <b>" +
-                                            zc.codigo +
-                                            "</b> não foi encontrado em " + this.auto.legislacao.split(" - ")[0];
+                                            "<p>A junção de código de classe e número de referência está a ser utilizada como identificador.</p>" +
+                                            "<p>O código <b>" + zc.codigo +
+                                            "</b> introduzido não pertence a nenhuma junção entre código e referência nas classes presentes em " + this.auto.legislacao.split(" - ")[0] + ".</p>";
                                         else
                                             this.erro =
-                                            "Referência <b>" +
-                                            zc.referencia +
-                                            "</b> não foi encontrada em " + this.auto.legislacao.split(" - ")[0];
+                                            "<p>A junção de código de classe e número de referência está a ser utilizada como identificador.</p>" +
+                                            "<p>A Referência <b>" + zc.referencia +
+                                            "</b> introduzida não pertence a nenhuma junção entre código e referência nas classes presentes em " + this.auto.legislacao.split(" - ")[0] + ".</p>";
                                         return; //ERROS
                                     } else if ((this.tipo == "PGD" || this.tipo == "RADA") && classe.df.valor == "C") {
                                         this.flagAE = true;
@@ -688,7 +708,11 @@ export default {
                     "/legislacao"
                 )
 
-                var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[1])
+                var legAux = this.auto.legislacao.split(" - ")
+                legAux = legAux[0].split(" ")
+                var indLeg = legAux.length - 1;
+
+                var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[indLeg])
 
                 if (this.tipo == "PGD")
                     var response2 = await this.$request(

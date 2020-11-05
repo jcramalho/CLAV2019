@@ -26,7 +26,7 @@
             <AvancarPedido :utilizadores="utilizadoresParaAnalisar" :texto="{
             textoTitulo: 'Distribuição',
             textoAlert: 'análise',
-            textoBotao: 'Distribuir'
+            textoBotao: 'Distribuir',
           }" :pedido="pedidoParaDistribuir.codigo" @fecharDialog="fecharDialog()" @avancarPedido="atribuirPedido($event)" />
         </v-dialog>
     </v-col>
@@ -114,7 +114,7 @@ export default {
                     if (p.estado === "Em Despacho") return p;
                 });
                 this.pedidosValidados = pedidos.filter((p) => {
-                    if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
+                    if (p.estado === "Apreciado" || p.estado === "Reapreciado" || p.estado === "Devolvido para validação") return p;
                 });
                 this.pedidosDevolvidos = pedidos.filter(
                     (p) => p.estado === "Devolvido"
@@ -131,168 +131,95 @@ export default {
             }
         },
 
-        data() {
-            return {
-                pedidoParaDistribuir: {},
-                distribuir: false,
-                utilizadoresParaAnalisar: [],
-                pedidosSubmetidos: [],
-                pedidosDistribuidos: [],
-                pedidosValidados: [],
-                pedidosDevolvidos: [],
-                pedidosProcessados: [],
-                pesquisaPedidos: {
-                    painel: undefined,
-                    pesquisa: "",
-                    pagina: 1
-                }
-            };
+        fecharDialog() {
+            this.distribuir = false;
         },
 
-        async created() {
-            await this.carregaPedidos();
+        distribuiPedido(dados) {
+            this.pedidoParaDistribuir = dados;
+            this.distribuir = true;
+        },
 
-            const storage = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
+        async listaUtilizadoresParaAnalisar() {
+            const response = await this.$request("get", "/users");
 
-            if (storage !== null && storage !== undefined) {
-                if (storage.limpar) localStorage.removeItem("pesquisa-pedidos");
-                else this.pesquisaPedidos = storage;
+            const utilizadoresFiltrados = filtraNivel(
+                response.data,
+                NIVEIS_ANALISAR_PEDIDO
+            );
 
-                localStorage.removeItem("pesquisa-pedidos");
+            this.utilizadoresParaAnalisar = utilizadoresFiltrados;
+        },
+
+        analisaPedido(pedido) {
+            this.$router.push("/pedidos/analisar/" + pedido.codigo);
+        },
+        despacharPedido(pedido) {
+            this.$router.push("/pedidos/despachar/" + pedido.codigo);
+        },
+
+        validaPedido(pedido) {
+            this.$router.push("/pedidos/validar/" + pedido.codigo);
+        },
+
+        async atribuirPedido(dados) {
+            try {
+                let pedido = JSON.parse(JSON.stringify(this.pedidoParaDistribuir));
+
+                let estado = "Distribuído";
+
+                let dadosUtilizador = this.$verifyTokenUser();
+
+                pedido.estado = estado;
+
+                pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
+
+                const novaDistribuicao = {
+                    estado: estado,
+                    responsavel: dadosUtilizador.email,
+                    proximoResponsavel: {
+                        nome: dados.utilizadorSelecionado.name,
+                        entidade: dados.utilizadorSelecionado.entidade,
+                        email: dados.utilizadorSelecionado.email,
+                    },
+                    data: new Date(),
+                    despacho: dados.mensagemDespacho,
+                };
+
+                await this.$request("put", "/pedidos", {
+                    pedido: pedido,
+                    distribuicao: novaDistribuicao,
+                });
+
+                this.carregaPedidos();
+                // this.$router.push("/pedidos");
+                this.fecharDialog();
+            } catch (e) {
+                console.log("e :", e);
             }
         },
-        methods: {
-            temPermissaoDistribuir() {
-                return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
-            },
-
-            async carregaPedidos() {
-                try {
-                    let pedidos = await this.$request("get", "/pedidos");
-                    pedidos = pedidos.data;
-
-                    this.pedidosSubmetidos = pedidos.filter(
-                        (p) => p.estado === "Submetido"
-                    );
-                    this.pedidosDistribuidos = pedidos.filter((p) => {
-                        if (p.estado === "Distribuído" || p.estado === "Redistribuído")
-                            return p;
-                    });
-                    this.pedidosValidados = pedidos.filter((p) => {
-                        if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
-                    });
-                    this.pedidosDevolvidos = pedidos.filter(
-                        (p) => p.estado === "Devolvido"
-                    );
-                    this.pedidosProcessados = pedidos.filter(
-                        (p) => p.estado === "Validado"
-                    );
-
-                    if (this.temPermissaoDistribuir())
-                        await this.listaUtilizadoresParaAnalisar();
-                } catch (e) {
-                    console.warn("e", e);
-                    return e;
-                }
-            },
-
-            fecharDialog() {
-                this.distribuir = false;
-            },
-
-            distribuiPedido(dados) {
-                this.pedidoParaDistribuir = dados;
-                this.distribuir = true;
-            },
-
-            async listaUtilizadoresParaAnalisar() {
-                const response = await this.$request("get", "/users");
-
-                const utilizadoresFiltrados = filtraNivel(
-                    response.data,
-                    NIVEIS_ANALISAR_PEDIDO
-                );
-
-                this.utilizadoresParaAnalisar = utilizadoresFiltrados;
-            },
-
-            analisaPedido(pedido) {
-                this.$router.push("/pedidos/analisar/" + pedido.codigo);
-            },
-
-            validaPedido(pedido) {
-                this.$router.push("/pedidos/validar/" + pedido.codigo);
-            },
-            analisaPedido(pedido) {
-                this.$router.push("/pedidos/analisar/" + pedido.codigo);
-            },
-            despacharPedido(pedido) {
-                this.$router.push("/pedidos/despachar/" + pedido.codigo);
-            },
-
-            validaPedido(pedido) {
-                this.$router.push("/pedidos/validar/" + pedido.codigo);
-            },
-
-            async atribuirPedido(dados) {
-                try {
-                    let pedido = JSON.parse(JSON.stringify(this.pedidoParaDistribuir));
-
-                    let estado = "Distribuído";
-
-                    let dadosUtilizador = this.$verifyTokenUser();
-
-                    pedido.estado = estado;
-
-                    pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
-
-                    const novaDistribuicao = {
-                        estado: estado,
-                        responsavel: dadosUtilizador.email,
-                        proximoResponsavel: {
-                            nome: dados.utilizadorSelecionado.name,
-                            entidade: dados.utilizadorSelecionado.entidade,
-                            email: dados.utilizadorSelecionado.email,
-                        },
-                        data: new Date(),
-                        despacho: dados.mensagemDespacho,
-                    };
-
-                    await this.$request("put", "/pedidos", {
-                        pedido: pedido,
-                        distribuicao: novaDistribuicao,
-                    });
-
-                    this.carregaPedidos();
-                    // this.$router.push("/pedidos");
-                    this.fecharDialog();
-                } catch (e) {
-                    console.log("e :", e);
-                }
-            },
-        },
-    }
-}
+    },
+};
 </script>
 
-<style scoped>
+<style>
 .info-label {
-    color: #1a237e !important;
-    padding: 8px;
+    color: #283593;
+    /* indigo darken-3 */
+    padding: 5px;
+    font-weight: 400;
     width: 100%;
-    background-color: #dee2f8;
+    background-color: #e8eaf6;
+    /* indigo lighten-5 */
     font-weight: bold;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
-    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-    border-radius: 6px;
-    text-align: center;
+    margin: 5px;
+    border-radius: 3px;
 }
 
 .info-content {
-    padding: 8px;
-    background-color: #f1f6f8 !important;
-    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-    border-radius: 10px;
+    padding: 5px;
+    width: 100%;
+    border: 1px solid #1a237e;
 }
 
 .is-collapsed li:nth-child(n + 5) {

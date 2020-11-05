@@ -3,10 +3,9 @@
     <Loading v-if="loading" :message="'pedido'" />
     <span v-else>
       <v-card shaped class="ma-8">
-        <v-card-title
-          class="indigo darken-4 white--text"
-          dark
-        >Informação sobre o pedido: {{ numeroPedido }}</v-card-title>
+        <v-card-title class="indigo darken-4 white--text" dark
+          >Informação sobre o pedido: {{ numeroPedido }}</v-card-title
+        >
 
         <v-card-text>
           <div class="ma-2">
@@ -28,17 +27,29 @@
               {{ tipoPedido }}
               <v-spacer />
 
-              <v-chip v-if="pedido.estado === 'Validado'" outlined color="green">
+              <v-chip
+                v-if="pedido.estado === 'Validado'"
+                outlined
+                color="green"
+              >
                 {{ pedido.estado }}
                 <v-icon right>assignment_turned_in</v-icon>
               </v-chip>
 
-              <v-chip v-else-if="pedido.estado === 'Devolvido'" outlined color="red">
+              <v-chip
+                v-else-if="pedido.estado === 'Devolvido'"
+                outlined
+                color="red"
+              >
                 {{ pedido.estado }}
                 <v-icon right>assignment_late</v-icon>
               </v-chip>
 
-              <v-chip v-else-if="pedido.estado === 'Submetido'" outlined color="blue">
+              <v-chip
+                v-else-if="pedido.estado === 'Submetido'"
+                outlined
+                color="blue"
+              >
                 {{ pedido.estado }}
                 <v-icon right>send</v-icon>
               </v-chip>
@@ -53,7 +64,12 @@
 
             <v-card-text>
               <span v-if="pedido.objeto.acao !== 'Criação'">
-                <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
+                <v-alert
+                  type="info"
+                  width="90%"
+                  class="m-auto mb-2 mt-2"
+                  outlined
+                >
                   <span v-if="pedido.objeto.tipo === 'Legislação'">
                     <b>{{ pedido.objeto.tipo }}:</b>
                     {{ dadosOriginais.diplomaFonte }}
@@ -76,12 +92,20 @@
 
                 <v-divider class="m-auto mb-2" />
               </span>
-              <ShowTSPluri v-if="pedido.objeto.tipo=='TS Pluriorganizacional'" :p="pedido" />
-              <ShowTSOrg v-else-if="pedido.objeto.tipo=='TS Organizacional'" :p="pedido" />
+              <ShowTSPluri
+                v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'"
+                :p="pedido"
+              />
+              <ShowTSOrg
+                v-else-if="pedido.objeto.tipo == 'TS Organizacional'"
+                :p="pedido"
+              />
               <div v-else v-for="(info, campo) in dados" :key="campo">
                 <v-row
                   v-if="
                     campo !== 'id' &&
+                      campo !== 'user' &&
+                      !camposEscondidos.find(item => item === campo) &&
                       info !== '' &&
                       info !== null &&
                       info !== undefined
@@ -101,8 +125,14 @@
                     />
 
                     <!-- Entidades -->
-                    <v-card v-else-if="campo === 'entidadesSel'" shaped class="rounded-t">
-                      <v-card-title class="cardTitle">{{ transformaKeys(campo) }}</v-card-title>
+                    <v-card
+                      v-else-if="campo === 'entidadesSel'"
+                      shaped
+                      class="rounded-t"
+                    >
+                      <v-card-title class="cardTitle">{{
+                        transformaKeys(campo)
+                      }}</v-card-title>
 
                       <v-card-text class="mt-2">
                         <v-data-table
@@ -117,15 +147,22 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                            >Nenhuma entidade selecionada...</v-alert>
+                              >Nenhuma entidade selecionada...</v-alert
+                            >
                           </template>
                         </v-data-table>
                       </v-card-text>
                     </v-card>
 
                     <!-- Processos -->
-                    <v-card v-else-if="campo === 'processosSel'" shaped class="rounded-t">
-                      <v-card-title class="cardTitle">{{ transformaKeys(campo) }}</v-card-title>
+                    <v-card
+                      v-else-if="campo === 'processosSel'"
+                      shaped
+                      class="rounded-t"
+                    >
+                      <v-card-title class="cardTitle">{{
+                        transformaKeys(campo)
+                      }}</v-card-title>
 
                       <v-card-text class="mt-2">
                         <v-data-table
@@ -140,15 +177,22 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                            >Nenhum processo selecionado...</v-alert>
+                              >Nenhum processo selecionado...</v-alert
+                            >
                           </template>
                         </v-data-table>
                       </v-card-text>
                     </v-card>
 
                     <!-- Tipologias -->
-                    <v-card v-else-if="campo === 'tipologiasSel'" shaped class="rounded-t">
-                      <v-card-title class="cardTitle">{{ transformaKeys(campo) }}</v-card-title>
+                    <v-card
+                      v-else-if="campo === 'tipologiasSel'"
+                      shaped
+                      class="rounded-t"
+                    >
+                      <v-card-title class="cardTitle">{{
+                        transformaKeys(campo)
+                      }}</v-card-title>
 
                       <v-card-text class="mt-2">
                         <v-data-table
@@ -163,7 +207,39 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                            >Nenhuma tipologias de entidade selecionada...</v-alert>
+                              >Nenhuma tipologias de entidade
+                              selecionada...</v-alert
+                            >
+                          </template>
+                        </v-data-table>
+                      </v-card-text>
+                    </v-card>
+
+                    <!-- Notas de Aplicaçao/Exclusao -->
+                    <v-card
+                      v-else-if="campo === 'notasAp' || campo === 'notasEx'"
+                      shaped
+                      class="rounded-t"
+                    >
+                      <v-card-title class="cardTitle">{{
+                        transformaKeys(campo)
+                      }}</v-card-title>
+
+                      <v-card-text class="mt-2">
+                        <v-data-table
+                          :headers="notasAppHeaders"
+                          :items="info"
+                          class="elevation-1"
+                          :footer-props="notasAppFooterProps"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                              >Nenhuma Nota adicionada...</v-alert
+                            >
                           </template>
                         </v-data-table>
                       </v-card-text>
@@ -184,7 +260,8 @@
             dark
             class="mb-2 mr-4"
             @click="verRelatorio"
-          >Ver Relatório</v-btn>
+            >Ver Relatório</v-btn
+          >
         </v-card-actions>
       </v-card>
     </span>
@@ -211,7 +288,7 @@ export default {
     ErroAPIDialog,
     Loading,
     ShowTSPluri,
-    ShowTSOrg
+    ShowTSOrg,
   },
 
   data() {
@@ -220,33 +297,56 @@ export default {
       erroPedido: false,
       loading: true,
       pedido: {},
+      camposEscondidos: [
+        "temSubclasses4Nivel",
+        "temSubclasses4NivelPCA",
+        "temSubclasses4NivelDF",
+        "subdivisao4Nivel01Sintetiza02",
+        "tipoProc",
+        "procTrans",
+        "donos",
+        "participantes",
+        "processosRelacionados",
+        "legislacao",
+        "pca",
+        "df",
+        "subclasses",
+      ],
       entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
       entidadesFooterProps: {
         "items-per-page-text": "Entidades por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas"
+        "items-per-page-all-text": "Todas",
       },
       processosHeaders: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" }
+        { text: "Título", value: "titulo", class: "subtitle-1" },
       ],
       processosFooterProps: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos"
+        "items-per-page-all-text": "Todos",
       },
       tipologiasHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
       tipologiasFooterProps: {
         "items-per-page-text": "Tipologias por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas"
-      }
+        "items-per-page-all-text": "Todas",
+      },
+      notasAppHeaders: [
+        { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
+      ],
+      notasAppFooterProps: {
+        "items-per-page-text": "Notas por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas",
+      },
     };
   },
 
@@ -280,7 +380,7 @@ export default {
 
     dataPedido() {
       return this.pedido.data.split("T")[0];
-    }
+    },
   },
 
   async created() {
@@ -308,7 +408,7 @@ export default {
       } else {
         this.erros.push({
           sobre: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia."
+          mensagem: "Ocorreu um erro ao aceder à ontologia.",
         });
       }
     }
@@ -402,8 +502,8 @@ export default {
 
     transformaKeys(key) {
       return mapKeys(key);
-    }
-  }
+    },
+  },
 };
 </script>
 

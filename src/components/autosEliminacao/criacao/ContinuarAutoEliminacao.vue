@@ -26,12 +26,14 @@
                 <v-stepper-step step="2">Identificação de classes / séries e agregações / unidades de instalação</v-stepper-step>
 
                 <v-stepper-content step="2">
-                    <!-- Adicionar Zona Controlo -->
-                    <AdicionarZonaControlo v-bind:classes="classes" v-bind:entidades="entidades" v-bind:auto="auto" v-bind:classesCompletas="classesCompletas" v-bind:donos="donos" v-bind:tipo="tipo" />
+                    <Loading v-if="classes.length==0" :message="'Fonte de Legitimação'" />
+                    <div v-else>
+                        <!-- Adicionar Zona Controlo -->
+                        <AdicionarZonaControlo v-bind:classes="classes" v-bind:entidades="entidades" v-bind:auto="auto" v-bind:classesCompletas="classesCompletas" v-bind:donos="donos" v-bind:tipo="tipo" />
 
-                    <!-- Zonas de Controlo -->
-                    <ListaZonasControlo v-bind:auto="auto" v-bind:classes="classes" v-bind:entidades="entidades" v-bind:classesCompletas="classesCompletas" v-bind:donos="donos" v-bind:tipo="tipo" />
-
+                        <!-- Zonas de Controlo -->
+                        <ListaZonasControlo v-bind:auto="auto" v-bind:classes="classes" v-bind:entidades="entidades" v-bind:classesCompletas="classesCompletas" v-bind:donos="donos" v-bind:tipo="tipo" />
+                    </div>
                     <div class="mx-2">
                         <v-btn medium color="indigo darken-4" dark @click="guardarTrabalho" :disabled="
                   !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
@@ -165,12 +167,14 @@
 import AdicionarZonaControlo from "@/components/autosEliminacao/criacao/AdicionarZonaControlo.vue";
 import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasControlo.vue";
 const help = require("@/config/help").help;
+import Loading from "@/components/generic/Loading";
 
 export default {
     props: ["obj"],
     components: {
         AdicionarZonaControlo,
-        ListaZonasControlo
+        ListaZonasControlo,
+        Loading
     },
     data: () => ({
         entidades: [],
@@ -301,6 +305,10 @@ export default {
         submit: async function () {
             this.erro = ""
             for (var zc of this.auto.zonaControlo) {
+                if (zc.nrAgregacoes == 0 && zc.agregacoes.length == 0) {
+                    this.erroDialog = true;
+                    this.erro = "O numero de agregações deve ser superior a 0 (zero) em " + zc.codigo + " " + zc.referencia + ".\n"
+                }
                 if (zc.destino == "C" && zc.dono.length === 0 && this.tipo != 'RADA_CLAV' && this.tipo != 'RADA' && this.tipo != 'PGD') {
                     this.erroDialog = true;
                     this.erro = "Dono do PN não preenchido em " + zc.codigo + " - " + zc.titulo + ".\n"
@@ -426,7 +434,11 @@ export default {
                     "/legislacao"
                 )
 
-                var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[1])
+                var legAux = this.auto.legislacao.split(" - ")
+                legAux = legAux[0].split(" ")
+                var indLeg = legAux.length - 1;
+
+                var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[indLeg])
 
                 if (this.tipo == "PGD")
                     var response2 = await this.$request(
@@ -464,7 +476,7 @@ export default {
                 if (this.tipo == "PGD" || this.tipo == "RADA") this.classesCompletas = this.classesCompletas.filter(c => c.df.valor != "C")
 
                 this.classes = this.classesCompletas.map(c => {
-                    if (c.codigo && c.referencia) return "" + c.codigo + " " + c.referencia + " - " + c.titulo
+                    if (c.codigo && c.referencia) return "" + c.codigo + " - " + c.referencia + " - " + c.titulo
                     else if (c.codigo) return "" + c.codigo + " - " + c.titulo
                     else if (c.referencia) return "" + c.referencia + " - " + c.titulo
                 })
@@ -492,7 +504,7 @@ export default {
                 })
                 this.classesCompletas = this.classesCompletas.filter(c => c.df.valor != "C")
                 this.classes = this.classesCompletas.map(c => {
-                    if (c.codigo && c.referencia) return "" + c.codigo + " " + c.referencia + " - " + c.titulo
+                    if (c.codigo && c.referencia) return "" + c.codigo + " - " + c.referencia + " - " + c.titulo
                     else if (c.codigo) return "" + c.codigo + " - " + c.titulo
                     else if (c.referencia) return "" + c.referencia + " - " + c.titulo
                 })
@@ -502,10 +514,10 @@ export default {
             }
         }
     }
-}
+};
 </script>
 
-<style scoped>
+<style>
 .info-label {
     color: #1a237e;
     /* green darken-3 */

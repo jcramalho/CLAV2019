@@ -46,14 +46,16 @@
                 <div class="info-label">Tipo</div>
             </v-col>
             <v-col>
-                <div class="info-content">{{ p.objeto.acao }} - {{ p.objeto.tipo }}</div>
+                <div class="info-content">
+                    {{ p.objeto.acao }} - {{ p.objeto.tipo }}
+                </div>
             </v-col>
         </v-row>
 
         <v-card class="mt-3">
             <v-card-title class="pa-2 indigo darken-4 title white--text">Distribuição</v-card-title>
             <v-card-text>
-                <v-data-table :headers="distHeaders" :items="p.distribuicao" class="elevation-1" hide-default-footer>
+                <v-data-table :headers="distHeaders" :items="p.distribuicao" class="elevation-1" hide-default-footer :items-per-page="p.distribuicao.length">
                     <template v-slot:item="props">
                         <tr>
                             <td class="subheading">{{ props.item.estado }}</td>
@@ -69,6 +71,7 @@
         <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
         <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
+        <ShowClasseL1 v-else-if="p.objeto.tipo == 'Classe_N1' || p.objeto.tipo == 'Classe_N2'" :p="p" @verHistorico="verHistorico()" />
         <ShowEntidade v-else-if="p.objeto.tipo == 'Entidade'" :p="p" @verHistorico="verHistorico()" />
 
         <ShowAE v-else-if="
@@ -78,7 +81,7 @@
         <ShowTipologia v-else-if="p.objeto.tipo === 'Tipologia'" :p="p" @verHistorico="verHistorico()" />
         <ShowLegislacao v-else-if="p.objeto.tipo == 'Legislação'" :p="p" @verHistorico="verHistorico()" />
         <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
-        <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
+        <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" @verHistorico="verHistorico()" />
         <ShowDefault v-else :p="p" />
     </v-card-text>
 
@@ -90,10 +93,14 @@
             p.estado === 'Apreciado' ||
             p.estado === 'Redistribuído' ||
             p.estado === 'Reapreciado') &&
-            temPermissaoSubstituirResponsavel()
+          temPermissaoSubstituirResponsavel()
         " color="indigo accent-4" dark @click="substituir()" rounded>Substituir Responsável</v-btn>
 
-        <v-btn v-if="p.estado === 'Apreciado' || p.estado === 'Reapreciado'" color="indigo accent-4" dark @click="reapreciar()" rounded>Reapreciar pedido</v-btn>
+        <v-btn v-if="
+          p.estado === 'Apreciado' ||
+          p.estado === 'Reapreciado' ||
+          (p.objeto.tipo === 'RADA' && p.estado === 'Em Despacho')
+        " color="indigo accent-4" dark @click="reapreciar()" rounded>Reapreciar pedido</v-btn>
     </v-card-actions>
 
     <!-- Substituir responsável dialog -->
@@ -122,6 +129,7 @@ import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
+import ShowClasseL1 from "@/components/pedidos/consulta/showClasseL1.vue";
 import ShowDefault from "@/components/pedidos/consulta/showDefault.vue";
 import ShowAE from "@/components/pedidos/consulta/showAE.vue";
 import ShowEntidade from "@/components/pedidos/consulta/showEntidade";
@@ -136,7 +144,7 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 import {
     NIVEIS_ANALISAR_PEDIDO,
-    NIVEIS_SUBSTITUIR_RESPONSAVEL
+    NIVEIS_SUBSTITUIR_RESPONSAVEL,
 } from "@/utils/consts";
 import {
     filtraNivel
@@ -150,6 +158,7 @@ export default {
         ShowRADA,
         ShowTSOrg,
         ShowClasse,
+        ShowClasseL1,
         ShowDefault,
         ShowAE,
         ShowEntidade,
@@ -159,7 +168,7 @@ export default {
         SubstituirResponsavel,
         ShowPGD,
         VerHistorico,
-        AvancarPedido
+        AvancarPedido,
     },
 
     data() {
@@ -189,7 +198,7 @@ export default {
                 {
                     text: "Objeto",
                     value: "objeto"
-                }
+                },
             ],
             distHeaders: [{
                     text: "Estado",
@@ -210,8 +219,8 @@ export default {
                     text: "Despacho",
                     value: "despacho",
                     class: "subtitle-1"
-                }
-            ]
+                },
+            ],
         };
     },
 
@@ -240,7 +249,10 @@ export default {
             try {
                 let pedido = JSON.parse(JSON.stringify(this.p));
 
-                const estado = "Redistribuído";
+                const estado =
+                    this.p.estado == "Em Despacho" ?
+                    "Devolvido para validação" :
+                    "Redistribuído";
 
                 let dadosUtilizador = this.$verifyTokenUser();
 
@@ -254,15 +266,15 @@ export default {
                     proximoResponsavel: {
                         nome: dados.utilizadorSelecionado.name,
                         entidade: dados.utilizadorSelecionado.entidade,
-                        email: dados.utilizadorSelecionado.email
+                        email: dados.utilizadorSelecionado.email,
                     },
                     data: new Date(),
-                    despacho: dados.mensagemDespacho
+                    despacho: dados.mensagemDespacho,
                 };
 
                 await this.$request("put", "/pedidos", {
                     pedido: pedido,
-                    distribuicao: novaDistribuicao
+                    distribuicao: novaDistribuicao,
                 });
 
                 this.fecharReapreciarDialog();
@@ -295,7 +307,7 @@ export default {
                 "pesquisa-pedidos",
                 JSON.stringify({
                     ...pesquisa,
-                    limpar: false
+                    limpar: false,
                 })
             );
 
@@ -316,8 +328,8 @@ export default {
 
         substituir() {
             this.substituirResponsavelDialog = true;
-        }
-    }
+        },
+    },
 };
 </script>
 

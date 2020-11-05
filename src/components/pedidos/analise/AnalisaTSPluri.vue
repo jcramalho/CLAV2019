@@ -35,7 +35,7 @@
         </v-alert>
       </template>
 
-      <template v-slot:footer.page-text="props">
+      <template v-slot:[`footer.page-text`]="props">
         {{ props.pageStart }} - {{ props.pageStop }} de
         {{ props.itemsLength }}
       </template>
@@ -101,7 +101,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 export default {
   props: ["p"],
   components: {
-    PO,
+    PO
   },
 
   data() {
@@ -112,13 +112,13 @@ export default {
         { text: "Código", value: "codigo", class: "subtitle-1" },
         { text: "Título", value: "titulo", class: "subtitle-1" },
         { text: "Dono", value: "dono", class: "subtitle-1" },
-        { text: "Participante", value: "participante", class: "subtitle-1" },
+        { text: "Participante", value: "participante", class: "subtitle-1" }
       ],
       tsFooterProps: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos",
-      },
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
   methods: {
@@ -132,7 +132,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -143,7 +143,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
@@ -170,26 +170,26 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email,
+            email: dados.utilizadorSelecionado.email
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
       } catch (e) {
         //console.log("e :", e);
       }
-    },
+    }
   },
 
   mounted() {
     this.json = JSON.stringify(this.p, null, 2);
-  },
+  }
 };
 </script>

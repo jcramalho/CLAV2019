@@ -280,9 +280,9 @@ export default {
                     else if (zc.referencia) return zc.referencia + " - " + zc.titulo == this.classe
                 }
             );
-            var uiPapel = parseFloat(this.uiPapel.replace(',', '.')) || 0;
-            var uiDigital = parseFloat(this.uiDigital.replace(',', '.')) || 0;
-            var uiOutros = parseFloat(this.uiOutros.replace(',', '.')) || 0;
+            var uiPapel = parseFloat(this.uiPapel.replace(/,/g, '.')) || 0;
+            var uiDigital = parseFloat(this.uiDigital.replace(/,/g, '.')) || 0;
+            var uiOutros = parseFloat(this.uiOutros.replace(/,/g, '.')) || 0;
             var dataInicio = parseInt(this.dataInicio) || 0;
             var dataFim = parseInt(this.dataFim) || 0;
             if (!this.classe || !this.dataInicio || !this.dataFim) {

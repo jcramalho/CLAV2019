@@ -87,6 +87,7 @@
 
 <script>
 const help = require("@/config/help").help;
+const lhost = require("@/config/global").host;
 import InfoBox from "@/components/generic/infoBox.vue";
 
 export default {

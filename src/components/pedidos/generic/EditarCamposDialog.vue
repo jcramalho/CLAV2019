@@ -246,6 +246,62 @@
       </v-row>
     </v-card-text>
 
+    <!-- Se o pedido for uma Entidade -->
+    <v-card-text v-if="tipoPedido === 'Classe_N1'">
+      <v-row v-if="campo.key === 'nivel'">
+        <v-col cols="2">
+          <div class="info-label">
+            Nivel
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            label="Nivel"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.key === 'codigo'">
+        <v-col cols="2">
+          <div class="info-label">
+            Codigo
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            label="codigo"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row v-if="campo.key === 'titulo'">
+        <v-col cols="2">
+          <div class="info-label">
+            Título
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            label="titulo"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </v-card-text>
+
     <v-card-actions>
       <v-spacer />
       <v-btn color="red darken-4" text rounded dark @click="fechar()">

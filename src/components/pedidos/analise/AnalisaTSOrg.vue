@@ -24,10 +24,12 @@
       :footer-props="tsFooterProps"
     >
       <template v-slot:no-data>
-        <v-alert :value="true" color="error" icon="warning">Não existem processos para mostrar...</v-alert>
+        <v-alert :value="true" color="error" icon="warning"
+          >Não existem processos para mostrar...</v-alert
+        >
       </template>
 
-      <template v-slot:footer.page-text="props">
+      <template v-slot:[`footer.page-text`]="props">
         {{ props.pageStart }} - {{ props.pageStop }} de
         {{ props.itemsLength }}
       </template>
@@ -46,7 +48,7 @@
               x-small
             >
               {{ p.objeto.dados.ts.idEntidade }}
-              {{p.objeto.dados.ts.idTipologia}}
+              {{ p.objeto.dados.ts.idTipologia }}
             </v-chip>
           </td>
           <td>
@@ -57,7 +59,8 @@
               outlined
               label
               x-small
-            >{{ props.item.participante }}</v-chip>
+              >{{ props.item.participante }}</v-chip
+            >
           </td>
         </tr>
       </template>

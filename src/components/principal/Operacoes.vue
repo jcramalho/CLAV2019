@@ -204,7 +204,7 @@ export default {
                         tooltip: operacoes[i].tooltip,
                         html: operacoes[i].html,
                         texto: operacoes[i].texto,
-                        ops: operacoes[i].ops.filter(o => o.level.includes(this.level))
+                        ops: operacoes[i].ops.filter(o => o.level.includes(this.level)),
                     });
                 }
             }

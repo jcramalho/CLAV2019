@@ -64,14 +64,6 @@ const gerarHeaderConteudo = (rada) => {
       { text: rada.dataAprovacao, fontSize: 11 }
     ]
   }
-
-  const dataRevogacao = {
-    text: [
-      { text: '\nData de Revogação: ', fontSize: 11, bold: true },
-      { text: rada.dataRevogacao, fontSize: 11 }
-    ]
-  }
-
   const despacho = {
     text: [
       { text: "\nDespacho: ", fontSize: 11, bold: true },
@@ -83,8 +75,17 @@ const gerarHeaderConteudo = (rada) => {
   content.push(entResp);
   content.push(aprovadoPor);
   content.push(dataAprovacao);
-  content.push(dataRevogacao);
   content.push(despacho);
+
+  if (!!rada.dataRevogacao) {
+    const dataRevogacao = {
+      text: [
+        { text: '\nData de Revogação: ', fontSize: 11, bold: true },
+        { text: rada.dataRevogacao, fontSize: 11 }
+      ]
+    }
+    content.push(dataRevogacao);
+  }
 
 };
 

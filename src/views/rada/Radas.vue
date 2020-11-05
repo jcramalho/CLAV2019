@@ -4,6 +4,7 @@
         'Data de Aprovação',
         'Título',
         'Entidades Responsáveis',
+        'Estado',
         'Acessos',
       ]" :campos="['titulo', 'dataAprovacao', 'entResp']" @download="fazerDownloadRADA" @ver="redirecionar" />
     <!--Loading v-if="!fontesRADAReady" :message="'fontes de legitimação'" /-->
