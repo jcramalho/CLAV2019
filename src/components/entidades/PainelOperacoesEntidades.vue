@@ -102,7 +102,7 @@ z<template>
     </v-row>
     <!-- Erros de Validação -->
     <v-row justify-center>
-      <v-dialog v-model="errosValidacao" width="60%">
+      <v-dialog v-model="errosValidacao" persistent width="60%">
         <v-card dark class="info-card">
           <v-card-title class="headline mb-2"
             >Erros detetados na validação</v-card-title
@@ -132,20 +132,9 @@ z<template>
       </v-dialog>
     </v-row>
 
-    <!-- Pedido de "Ação" de entidade submetido com sucesso -->
-    <v-row justify-center>
-      <v-dialog v-model="dialogEntidadeCriada" persistent max-width="60%">
-        <DialogEntidadeSucesso
-          :e="e"
-          :codigoPedido="codigoPedido"
-          :acao="acao"
-        />
-      </v-dialog>
-    </v-row>
-
     <!-- Cancelamento da criação de uma entidade: confirmação -->
     <v-row justify-center>
-      <v-dialog v-model="pedidoEliminado" persistent max-width="60%">
+      <v-dialog v-model="pedidoEliminado" persistent width="60%">
         <v-card dark class="info-card">
           <v-card-title class="headline mb-2">
             Cancelamento e eliminação do pedido de
@@ -254,6 +243,9 @@ export default {
     fecharErro() {
       this.erroDialog = false;
       this.erros = [];
+    },
+    formatarLabel: function(action) {
+      return action.toLowerCase();
     },
 
     async validarEntidadeCriacao() {

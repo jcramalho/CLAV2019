@@ -8,7 +8,7 @@
               v-on="on"
               v-model="search"
               append-icon="search"
-              label="Procurar / filtrar tabelas"
+              label="Procurar / filtrar tabela"
               text
               single-line
               hide-details
@@ -18,7 +18,7 @@
             ></v-text-field>
           </template>
 
-          <span> Filtrar tabelas</span>
+          <span> Filtrar tabela</span>
         </v-tooltip>
 
         <v-data-table

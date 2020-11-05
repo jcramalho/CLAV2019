@@ -75,7 +75,7 @@
     </v-row>
     <!-- Erros de Validação -->
     <v-row justify-center>
-      <v-dialog v-model="errosValidacao" width="60%">
+      <v-dialog v-model="errosValidacao" persistent width="60%">
         <v-card dark class="info-card">
           <v-card-title class="headline mb-2"
             >Erros detetados na validação</v-card-title
@@ -106,16 +106,20 @@
     </v-row>
 
     <!-- Cancelamento da criação de uma legislacao: confirmação -->
-    <v-dialog v-model="pedidoEliminado" width="50%">
-      <v-card>
-        <v-card-title>Cancelamento do pedido.</v-card-title>
-        <v-card-text>
-          <p>Selecionou o cancelamento do pedido.</p>
-          <p>Toda a informação introduzida será eliminada.</p>
-          <p>
-            Confirme a decisão para ser reencaminhado para a página principal.
-          </p>
-        </v-card-text>
+    <v-dialog v-model="pedidoEliminado" persistent width="60%">
+      <v-card dark class="info-card">
+        <v-card-title class="headline mb-2"
+          >Cancelamento do pedido</v-card-title
+        >
+        <div class="info-content px-3 mx-6 mb-2">
+          <v-card-text class="pa-2 px-4 font-weight-medium">
+            <p>Selecionou o cancelamento do pedido.</p>
+            <p>Toda a informação introduzida será eliminada.</p>
+            <p>
+              Confirme a decisão para ser reencaminhado para a página principal.
+            </p>
+          </v-card-text>
+        </div>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn

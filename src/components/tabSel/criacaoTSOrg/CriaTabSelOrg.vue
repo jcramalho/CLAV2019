@@ -159,6 +159,7 @@
                           'px-2': $vuetify.breakpoint.mdAndDown,
                         }"
                         color="success darken-1"
+                        id="botao-shadow"
                       >
                         <unicon
                           name="continuar-icon"
@@ -213,6 +214,7 @@
                           'px-2': $vuetify.breakpoint.mdAndDown,
                         }"
                         color="success darken-1"
+                        id="botao-shadow"
                       >
                         <unicon
                           name="continuar-icon"
