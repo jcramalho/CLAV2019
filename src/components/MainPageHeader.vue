@@ -52,7 +52,26 @@
         @click="drawerEstatisticas"
         icon
       >
-        <v-icon large>assessment</v-icon>
+        <v-badge color="red" overlap v-if="n > 0">
+          <unicon
+            name="perfil-icon"
+            width="24"
+            height="24"
+            viewBox="0 0 20.71 23.677"
+            fill="#e5e5e5"
+          />
+          <template v-slot:badge>
+            {{ n }}
+          </template>
+        </v-badge>
+        <unicon
+          v-else
+          name="perfil-icon"
+          width="24"
+          height="24"
+          viewBox="0 0 20.71 23.677"
+          fill="#e5e5e5"
+        />
       </v-btn>
       <v-btn
         v-if="this.$store.state.name != ''"

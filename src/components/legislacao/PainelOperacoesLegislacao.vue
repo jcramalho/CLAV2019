@@ -51,17 +51,22 @@
           >Cancelar Revogação</v-btn
         >
       </v-col>
-
-      <!-- Erros de Validação -->
-      <v-dialog v-model="errosValidacao" width="30%">
-        <v-card>
-          <v-card-title>Erros detetados na validação</v-card-title>
-          <v-card-text>
-            <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
-            </p>
-          </v-card-text>
+    </v-row>
+    <!-- Erros de Validação -->
+    <v-row justify-center>
+      <v-dialog v-model="errosValidacao" persistent width="60%">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2"
+            >Erros detetados na validação</v-card-title
+          >
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                Há erros de validação. Selecione "Validar" para ver exatamente
+                quais e proceder à sua correção.
+              </p>
+            </v-card-text>
+          </div>
           <v-card-actions>
             <v-spacer />
             <v-btn color="red darken-4" dark @click="errosValidacao = false"
@@ -97,6 +102,47 @@
         </v-card>
       </v-dialog>
     </v-row>
+
+    <!-- Cancelamento da criação de uma legislacao: confirmação -->
+    <v-dialog v-model="pedidoEliminado" persistent width="60%">
+      <v-card dark class="info-card">
+        <v-card-title class="headline mb-2"
+          >Cancelamento do pedido</v-card-title
+        >
+        <div class="info-content px-3 mx-6 mb-2">
+          <v-card-text class="pa-2 px-4 font-weight-medium">
+            <p>Selecionou o cancelamento do pedido.</p>
+            <p>Toda a informação introduzida será eliminada.</p>
+            <p>
+              Confirme a decisão para ser reencaminhado para a página principal.
+            </p>
+          </v-card-text>
+        </div>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="success darken-1"
+            rounded
+            dark
+            elevation="0"
+            class="px-4"
+            @click="cancelarCriacaoLegislacao"
+          >
+            Confirmo
+          </v-btn>
+          <v-btn
+            color="red darken-4"
+            rounded
+            dark
+            elevation="0"
+            class="px-4"
+            @click="pedidoEliminado = false"
+          >
+            Enganei-me, desejo continuar o trabalho
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-row>
       <v-snackbar

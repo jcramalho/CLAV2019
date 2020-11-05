@@ -10,13 +10,7 @@
         <v-list-item-content class="info-label">
           <v-list-item-title
             v-if="item.codigo && item.referencia"
-            v-text="
-                item.codigo +
-                ' - ' +
-                item.referencia +
-                ' - ' +
-                item.titulo
-            "
+            v-text="item.codigo + ' - ' + item.referencia + ' - ' + item.titulo"
           ></v-list-item-title>
           <v-list-item-title
             v-else-if="item.codigo"
@@ -59,7 +53,9 @@
               <div class="info-label">Prazo de Conservação Administrativa</div>
             </v-col>
             <v-col class="mt-2">
-              <span v-if="item.prazoConservacao=='1'">{{ item.prazoConservacao }} Ano</span>
+              <span v-if="item.prazoConservacao == '1'"
+                >{{ item.prazoConservacao }} Ano</span
+              >
               <span v-else>{{ item.prazoConservacao }} Anos</span>
             </v-col>
           </v-row>
@@ -68,15 +64,15 @@
               <div class="info-label">Prazo de Conservação Administrativa</div>
             </v-col>
             <v-col>
-              <v-text-field 
-                v-model="item.prazo" 
-                label="Insira o PCA em Anos" 
-                hint="Exemplo: 10" 
+              <v-text-field
+                v-model="item.prazo"
+                label="Insira o PCA em Anos"
+                hint="Exemplo: 10"
                 filled
                 solo
                 dense
                 clearable
-                />
+              />
             </v-col>
           </v-row>
           <v-row>
@@ -84,10 +80,16 @@
               <div class="info-label">Destino Final</div>
             </v-col>
             <v-col>
-              {{item.destino}}
+              {{ item.destino }}
             </v-col>
           </v-row>
-          <div v-if="(tipo=='TS_LC' || tipo=='PGD_LC') && item.destino==='Conservação' || item.destino==='C'">
+          <div
+            v-if="
+              ((tipo == 'TS_LC' || tipo == 'PGD_LC') &&
+                item.destino === 'Conservação') ||
+                item.destino === 'C'
+            "
+          >
             <v-row>
               <v-col cols="3">
                 <div class="info-label">
@@ -98,21 +100,23 @@
                 Participante
               </v-col>
             </v-row>
-            <v-row v-if="tipo!='RADA_CLAV' && tipo!='RADA' && tipo!='PGD'">
+            <v-row
+              v-if="tipo != 'RADA_CLAV' && tipo != 'RADA' && tipo != 'PGD'"
+            >
               <v-col cols="3">
                 <div class="info-label">Dono do PN</div>
               </v-col>
-              <v-col >
-              <v-autocomplete
-                label="Selecione as entidades donas do processo"
-                :items="donos"
-                v-model="item.dono"
-                deletable-chips
-                solo
-                dense
-                chips
-                multiple
-              ></v-autocomplete>
+              <v-col>
+                <v-autocomplete
+                  label="Selecione as entidades donas do processo"
+                  :items="donos"
+                  v-model="item.dono"
+                  deletable-chips
+                  solo
+                  dense
+                  chips
+                  multiple
+                ></v-autocomplete>
               </v-col>
             </v-row>
           </div>
@@ -136,12 +140,9 @@
                 N.º de agregações
               </div>
             </v-col>
-            <v-col v-if="item.agregacoes.length==0" class="mt-2">
-              <v-text-field
-                v-model="item.nrAgregacoes"
-                single-line
-                dense
-              /></v-col>
+            <v-col v-if="item.agregacoes.length == 0" class="mt-2">
+              <v-text-field v-model="item.nrAgregacoes" single-line dense />
+            </v-col>
             <v-col v-else class="mt-2">{{ item.nrAgregacoes }}</v-col>
           </v-row>
           <v-row v-if="item.uiPapel">
@@ -171,68 +172,87 @@
           <v-row style="margin:0px !important;">
             <v-checkbox dense v-if="item.notasPCA" v-model="item.validaNotaPCA">
               <template v-slot:label>
-                <span  style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a condição do PCA <b>"{{item.notasPCA}}"</b></span>
+                <span style="font-size: small"
+                  >Confirmo que as agregações que pretendo eliminar cumprem a
+                  condição do PCA <b>"{{ item.notasPCA }}"</b></span
+                >
               </template>
             </v-checkbox>
           </v-row>
           <v-row style="margin:0px !important;">
             <v-checkbox dense v-if="item.notaDF" v-model="item.validaNotaDF">
               <template v-slot:label>
-                <span style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem a condição do DF <b>"{{item.notaDF}}"</b></span>
+                <span style="font-size: small"
+                  >Confirmo que as agregações que pretendo eliminar cumprem a
+                  condição do DF <b>"{{ item.notaDF }}"</b></span
+                >
               </template>
             </v-checkbox>
           </v-row>
-          <v-row style="margin:0px !important;" v-for="(just,index) in item.justificaDF" :key="index" >
-            <v-checkbox dense v-if="(tipo=='TS_LC' || tipo=='PGD_LC') && item.destino=='CP'" v-model="item.validaJustificaDF">
+          <v-row
+            style="margin:0px !important;"
+            v-for="(just, index) in item.justificaDF"
+            :key="index"
+          >
+            <v-checkbox
+              dense
+              v-if="
+                (tipo == 'TS_LC' || tipo == 'PGD_LC') && item.destino == 'CP'
+              "
+              v-model="item.validaJustificaDF"
+            >
               <template v-slot:label>
-                <div style="font-size: small">Confirmo que as agregações que pretendo eliminar cumprem as condição de justificação do DF <b>"{{just}}"</b></div>
+                <div style="font-size: small">
+                  Confirmo que as agregações que pretendo eliminar cumprem as
+                  condição de justificação do DF <b>"{{ just }}"</b>
+                </div>
               </template>
             </v-checkbox>
           </v-row>
-        <div class="ma-1" v-if="item.agregacoes.length>0">
-          <v-row justify="space-between" class="info-label">
-            <v-col>Lista de Agregações</v-col>
-            <v-col>
-              <v-text-field
-                v-model="search"
-                append-icon="search"
-                label="Procura"
-                single-line
-                hide-details
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <Agregacoes 
-            v-bind:agregacoes="item.agregacoes" 
-            v-bind:df="item.destino"
-            v-bind:pca="item.prazo"
-            v-bind:dataInicio="item.dataInicio"
-            v-bind:search="search"
-            v-bind:tipo="tipo"
-          />
-        </div>
-      </v-list-item-title>
-    </v-list-item-content>
-  </v-list-group>
-</v-list>
+          <div class="ma-1" v-if="item.agregacoes.length > 0">
+            <v-row justify="space-between" class="info-label">
+              <v-col>Lista de Agregações</v-col>
+              <v-col>
+                <v-text-field
+                  v-model="search"
+                  append-icon="search"
+                  label="Procura"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <Agregacoes
+              v-bind:agregacoes="item.agregacoes"
+              v-bind:df="item.destino"
+              v-bind:pca="item.prazo"
+              v-bind:dataInicio="item.dataInicio"
+              v-bind:search="search"
+              v-bind:tipo="tipo"
+            />
+          </div>
+        </v-list-item-title>
+      </v-list-item-content>
+    </v-list-group>
+  </v-list>
 </template>
 
 <script>
-import Agregacoes from "@/components/autosEliminacao/importacao/ListaAgregacoes.vue";
+import Agregacoes from '@/components/autosEliminacao/importacao/ListaAgregacoes.vue';
 
 export default {
-  props: ["auto","donos","submit","tipo"],
+  props: ['auto', 'donos', 'submit', 'tipo'],
   components: {
-    Agregacoes
+    Agregacoes,
   },
   data: () => ({
-    df: ["Eliminação", "Conservação"],
-    search: ""
-  })
+    df: ['Eliminação', 'Conservação'],
+    search: '',
+  }),
 };
 </script>
 
-<style>
+<style scoped>
 .panel-custom .panel-heading {
   background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
 }
@@ -265,10 +285,12 @@ export default {
 }
 
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
+  color: #1a237e;
+  /* indigo darken-4 */
   font-weight: 400;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #e8eaf6;
+  /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }
@@ -282,7 +304,7 @@ export default {
 
 .panel-info-custom .panel-body {
   font-size: 1pc;
-  font-family: "Times New Roman", Times, serif;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 .panel-noticiabox .panel-body {
