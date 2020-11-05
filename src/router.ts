@@ -51,6 +51,12 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
+      path: "/planosDePreservacaoDigital",
+      name: "planosDePreservacaoDigital",
+      component: () => import("./views/PlanosDePreserDigInfo.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
       path: "/docs",
       name: "docs",
       component: () => import("./views/ApiDadosInfo.vue"),

@@ -447,6 +447,11 @@ export default {
               url: '/autosEliminacaoInfo',
             },
             {
+              opcao: 'Planos de preservação digital',
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: '/planosDePreservacaoDigital',
+            },
+            {
               opcao: 'Entidades',
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
               url: '/entidades',

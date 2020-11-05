@@ -43,12 +43,12 @@
                     <p class="ml-2">Consultar</p>
                 </v-btn>
             </v-col>
-            <v-col cols="12" md="4">
-                <v-btn v-if="
+            <v-col cols="12" md="4" v-if="
               [1, 3, 3.5, 4, 5, 6, 7].includes(this.$userLevel()) &&
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
-            " @click="$router.push('/classes/criar')" rounded class="white--text" :class="{
+            ">
+                <v-btn @click="$router.push('/classes/criar')" rounded class="white--text" :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown
             }" id="default-button">
@@ -56,12 +56,12 @@
                     <p class="ml-2">Criar Classe</p>
                 </v-btn>
             </v-col>
-            <v-col cols="12" md="4">
-                <v-btn v-if="
+            <v-col cols="12" md="4" v-if="
               [4, 5, 6, 7].includes(this.$userLevel()) &&
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
-            " @click="$router.push('/classes/editar')" rounded class="white--text" :class="{
+            ">
+                <v-btn @click="$router.push('/classes/editar')" rounded class="white--text" :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown
             }" id="default-button">
