@@ -531,7 +531,11 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.v-stepper__wrapper {
+    overflow: auto !important;
+}
+
 .expansion-panel-heading {
   color: #1a237e !important;
   background-image: linear-gradient(to bottom, #e8eaf6 0, #8c9eff 100%);
