@@ -4,10 +4,10 @@
         <div class="info-content pa-4">
             <v-tooltip top color="info" open-delay="500">
                 <template v-slot:activator="{ on }">
-                    <v-text-field v-on="on" v-model="search" append-icon="search" label="Procurar / filtrar tabelas" text single-line hide-details clearable color="blue darken-3" class="mt-n2 mb-3 mx-6 font-weight-medium"></v-text-field>
+                    <v-text-field v-on="on" v-model="search" append-icon="search" label="Procurar / filtrar tabela" text single-line hide-details clearable color="blue darken-3" class="mt-n2 mb-3 mx-6 font-weight-medium"></v-text-field>
                 </template>
 
-                <span> Filtrar tabelas</span>
+                <span> Filtrar tabela</span>
             </v-tooltip>
 
             <v-data-table class="content-table" v-if="tipo == 'TABELAS DE SELEÇÃO INSERIDAS NA CLAV'" :headers="headersTS" :items="lista" :search="search" :footer-props="footer_props">

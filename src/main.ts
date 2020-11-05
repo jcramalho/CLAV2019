@@ -68,6 +68,14 @@ import {
   participadoIcon,
   editadoIcon,
   tsIcon,
+  pedidoAprTecnIcon,
+  pedidoAprovadoIcon,
+  pedidoDespachoIcon,
+  pedidoDevolvidoIcon,
+  pedidoEmValidacaoIcon,
+  pedidoNovoIcon,
+  devolverIcon,
+  equipaIcon,
 } from './custom-icons';
 
 //import BootstrapVue from "bootstrap-vue";
@@ -140,6 +148,14 @@ Unicon.add([
   participadoIcon,
   editadoIcon,
   tsIcon,
+  pedidoAprTecnIcon,
+  pedidoAprovadoIcon,
+  pedidoDespachoIcon,
+  pedidoDevolvidoIcon,
+  pedidoEmValidacaoIcon,
+  pedidoNovoIcon,
+  devolverIcon,
+  equipaIcon,
 ]);
 Vue.use(Unicon);
 

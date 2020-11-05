@@ -76,7 +76,7 @@
                                         <v-btn @click="guardaEntidade" rounded class="white--text mt-5 ml-4" :class="{
                           'px-6': $vuetify.breakpoint.lgAndUp,
                           'px-2': $vuetify.breakpoint.mdAndDown,
-                        }" color="success darken-1">
+                        }" color="success darken-1" id="botao-shadow">
                                             <unicon name="continuar-icon" width="20" height="20" viewBox="0 0 20.71 37.261" fill="#ffffff" />
                                             <p class="ml-2">Continuar</p>
                                         </v-btn>
@@ -104,7 +104,7 @@
                                         <v-btn @click="guardaTipologia" rounded class="white--text mt-5 ml-4" :class="{
                           'px-6': $vuetify.breakpoint.lgAndUp,
                           'px-2': $vuetify.breakpoint.mdAndDown,
-                        }" color="success darken-1">
+                        }" color="success darken-1" id="botao-shadow">
                                             <unicon name="continuar-icon" width="20" height="20" viewBox="0 0 20.71 37.261" fill="#ffffff" />
                                             <p class="ml-2">Continuar</p>
                                         </v-btn>
