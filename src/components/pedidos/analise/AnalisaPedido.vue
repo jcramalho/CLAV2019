@@ -93,11 +93,13 @@
             <AnalisaTSPluri
               v-else-if="pedido.objeto.tipo.includes('TS Pluri')"
               :p="pedido"
+              fase="analise"
             />
 
             <AnalisaTSOrg
               v-else-if="pedido.objeto.tipo.includes('TS ')"
               :p="pedido"
+              fase="analise"
             />
 
             <AnalisaDefault v-else :p="pedido" />

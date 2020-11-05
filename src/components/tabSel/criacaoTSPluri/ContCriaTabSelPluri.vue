@@ -468,7 +468,7 @@ export default {
             user: { email: userBD.email },
             entidade: userBD.entidade,
             token: this.$store.state.token,
-            historico: []
+            historico: await this.criaHistoricoTS(userBD)
           };
 
           var response = await this.$request("post", "/pedidos", pedidoParams);
@@ -495,6 +495,69 @@ export default {
       } catch (e) {
         console.log("Erro ao eliminar o pendente: " + e);
       }
+    },
+    criaHistoricoTS: async function(userBD) {
+      let historico = [
+        {
+          data: {
+            cor: "verde",
+            dados: new Date(),
+            nota: null
+          },
+          entProd: {
+            cor: "verde",
+            dados: userBD.entidade.split("_")[1] + "(" + userBD.email + ")",
+            nota: null
+          },
+          ts: {
+            designacao: {
+              cor: "verde",
+              dados: this.tabelaSelecao.designacao,
+              nota: null
+            },
+            entidades: {
+              cor: "verde",
+              dados: this.tabelaSelecao.entidades.map(e => {
+                return JSON.parse(JSON.stringify(e));
+              }),
+              nota: null
+            },
+            classes: {
+              cor: "verde",
+              dados: this.tabelaSelecao.listaProcessos.procs.map(c => {
+                return {
+                  cor: "verde",
+                  dados: JSON.parse(JSON.stringify(c)),
+                  nota: null
+                };
+              }),
+              nota: null
+            }
+          }
+        }
+      ];
+      // Cria histórico para cada processo
+      for (let i = 0; i < historico[0].ts.classes.dados.length; i++) {
+        Object.keys(historico[0].ts.classes.dados[i].dados).map(p => {
+          historico[0].ts.classes.dados[i].dados[p] = {
+            cor: "verde",
+            dados: historico[0].ts.classes.dados[i].dados[p],
+            nota: null
+          };
+          if (p === "pca" || p === "df") {
+            Object.keys(historico[0].ts.classes.dados[i].dados[p].dados).map(
+              d => {
+                historico[0].ts.classes.dados[i].dados[p].dados[d] = {
+                  cor: "verde",
+                  dados: historico[0].ts.classes.dados[i].dados[p].dados[d],
+                  nota: null
+                };
+              }
+            );
+          }
+        });
+      }
+      return historico;
     },
 
     // Funções de validação --------------------------------------

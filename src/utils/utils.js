@@ -121,6 +121,10 @@ export function mapKeys(key) {
       descricao = "Notas de Exclusão";
       break;
 
+    case "entProd":
+      descricao = "Entidade Produtora";
+      break;
+
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;
@@ -158,7 +162,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null,
+            nota: null
           };
         }
       } else if (objSubmetido[key] instanceof Array) {
@@ -166,13 +170,13 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key])
           };
         } else if (!comparaArraySel(objSubmetido[key], objOriginal[key])) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key])
           };
         }
       }
@@ -183,7 +187,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
         historico[key] = {
           cor: "verde",
           dados: objSubmetido[key],
-          nota: null,
+          nota: null
         };
       }
     }
@@ -199,7 +203,7 @@ export function converterDadosOriginais(dados) {
     dadosConvertidos[key] = {
       cor: null,
       dados: dados[key],
-      nota: null,
+      nota: null
     };
   }
 
@@ -314,7 +318,7 @@ export function gerarDadosRelatorio(pedido) {
     tipoPedido: "",
     numeroPedido: "",
     alteracaoInfo: "",
-    estadoPedido: "",
+    estadoPedido: ""
   };
 
   Object.keys(pedidoSubmetido).forEach(item => {
@@ -374,7 +378,7 @@ export function gerarDadosRelatorio(pedido) {
     relatorio.comparacao.push({
       campo: mapKeys(campo),
       submetido: pedidoSubmetido[campo],
-      finalizado: pedidoFinalizado[campo],
+      finalizado: pedidoFinalizado[campo]
     });
   });
 
@@ -532,5 +536,5 @@ export default {
   identificaItemAdicionado,
   identificaItemEmTabela,
   adicionarNotaComRemovidos,
-  mapKeysRADA,
+  mapKeysRADA
 };

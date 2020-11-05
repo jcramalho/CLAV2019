@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row v-if="!valida">
     <!-- LEGISLAÇÂO -->
     <v-col xs="2" sm="2">
       <div class="info-label">
@@ -35,6 +35,26 @@
       </div>
     </v-col>
   </v-row>
+  <div v-else>
+    <v-data-table
+      :headers="headers"
+      :items="legs"
+      class="elevation-1"
+      hide-default-footer
+    >
+      <template v-slot:item="props">
+        <tr>
+          <td>{{ props.item.tipo }}</td>
+          <td>
+            <a :href="'/legislacao/' + props.item.idLeg">
+              {{ props.item.numero }}</a
+            >
+          </td>
+          <td>{{ props.item.sumario }}</td>
+        </tr>
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script>
@@ -42,7 +62,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["legs"],
+  props: ["legs", "valida"],
   components: { InfoBox },
 
   data: function() {
