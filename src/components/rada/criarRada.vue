@@ -8,7 +8,7 @@
         </v-alert>
         <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
             <!-- Informação Geral -->
-            <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
+            <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" step="1">
                 <font size="4">
                     <b>Informação Geral</b>
                 </font>
@@ -18,7 +18,7 @@
             </v-stepper-content>
 
             <!-- Relatório Expositivo -->
-            <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
+            <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" step="2">
                 <font size="4">
                     <b>Relatório Expositivo</b>
                 </font>
@@ -28,7 +28,7 @@
             </v-stepper-content>
 
             <!-- Tabela de Seleção -->
-            <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" :step="3">
+            <v-stepper-step color="amber accent-3" :key="3" :complete="e1 > 3" step="3">
                 <font size="4">
                     <b>Tabela de Seleção</b>
                 </font>
@@ -511,6 +511,10 @@ export default {
 </script>
 
 <style scoped>
+.v-stepper__wrapper {
+    overflow: auto !important;
+}
+
 .expansion-panel-heading {
     color: #1a237e !important;
     background-image: linear-gradient(to bottom, #e8eaf6 0, #8c9eff 100%);
