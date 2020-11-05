@@ -1,180 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <!-- Header -->
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading"
-            >Editar Diploma ({{ legislacaoOriginal.tipo }} -
-            {{ legislacaoOriginal.numero }})</v-toolbar-title
-          >
-        </v-app-bar>
-
-        <!-- Content -->
-        <v-card-text class="ma-0 pa-0">
-          <v-stepper v-model="etapa" vertical>
-            <!-- Step 1 -->
-            <v-stepper-step :complete="etapa > 1" step="1" editable>
-              Escolha a operação
-            </v-stepper-step>
-
-            <v-stepper-content step="1">
-              <div class="ma-4">
-                <v-radio-group v-model="acao" row>
-                  <v-radio label="Editar" value="Alteração"></v-radio>
-                  <v-radio
-                    v-if="legislacao.estado === 'Ativo'"
-                    label="Revogar"
-                    value="Revogação"
-                  ></v-radio>
-                </v-radio-group>
-              </div>
-
-              <v-btn color="primary" @click="etapa = 2">
-                Continuar
-              </v-btn>
-            </v-stepper-content>
-
-            <!-- Step 2 -->
-            <v-stepper-step :complete="etapa > 2" step="2">{{
-              acao
-            }}</v-stepper-step>
-
-            <v-stepper-content step="2">
-              <div v-if="acao === 'Alteração'">
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">Sumário</div>
-                  </v-col>
-                  <v-col>
-                    <v-text-field
-                      filled
-                      clearable
-                      color="indigo"
-                      single-line
-                      v-model="legislacao.sumario"
-                      label="Sumário"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">Link</div>
-                  </v-col>
-                  <v-col>
-                    <v-text-field
-                      v-model="legislacao.link"
-                      filled
-                      clearable
-                      color="indigo"
-                      single-line
-                      label="Link"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <!-- Blocos expansivos -->
-                <v-expansion-panels>
-                  <v-expansion-panel popout focusable>
-                    <v-expansion-panel-header class="expansion-panel-heading">
-                      <div>
-                        Entidade responsável pela publicação
-                      </div>
-
-                      <template v-slot:actions>
-                        <v-icon color="white">expand_more</v-icon>
-                      </template>
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <DesSelEnt
-                        :entidades="entSel"
-                        tipo="legislacao"
-                        @unselectEntidade="unselectEntidade($event)"
-                      />
-
-                      <hr style="border-top: 1px dashed #dee2f8;" />
-
-                      <SelEnt
-                        :entidadesReady="entidadesReady"
-                        :entidades="entidades"
-                        @selectEntidade="selectEntidade($event)"
-                      />
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-
-                  <!-- Segundo bloco expansivo -->
-                  <v-expansion-panel popout focusable>
-                    <v-expansion-panel-header class="expansion-panel-heading">
-                      <div>
-                        Processos de negócio que regula ou enquadra
-                      </div>
-
-                      <template v-slot:actions>
-                        <v-icon color="white">expand_more</v-icon>
-                      </template>
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <DesSelProc
-                        :processos="procSel"
-                        @unselectProcesso="unselectProcesso($event)"
-                      />
-
-                      <hr style="border-top: 1px dashed #dee2f8;" />
-
-                      <SelProc
-                        :processosReady="processosReady"
-                        :processos="processos"
-                        @selectProcesso="selectProcesso($event)"
-                      />
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </div>
-
-              <div v-else>
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">
-                      Data de revogação
-                    </div>
-                  </v-col>
-                  <v-col>
-                    <SelecionarData
-                      :d="legislacao.dataRevogacao"
-                      :label="'Data: AAAA-MM-DD'"
-                      @dataSelecionada="legislacao.dataRevogacao = $event"
-                    />
-                  </v-col>
-                </v-row>
-              </div>
-            </v-stepper-content>
-          </v-stepper>
-
-          <!-- j  -->
-        </v-card-text>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
-        >
-          {{ text }}
-          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
-
-      <!-- Painel Operações -->
-      <PainelOpsLeg
-        v-if="etapa === 2"
-        :l="legislacao"
-        :original="legislacaoOriginal"
-        :acao="acao"
-      />
-    </v-col>
-  </v-row>
-=======
   <v-container fluid class="pa-0 ma-0" style="max-width:100%">
     <v-row>
       <!-- HEADER -->
@@ -521,7 +345,6 @@
       </v-col>
     </v-row>
   </v-container>
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
 </template>
 
 <script>
@@ -535,11 +358,7 @@ import SelProc from '@/components/generic/selecao/SelecionarPNs.vue';
 import PainelOpsLeg from '@/components/legislacao/PainelOperacoesLegislacao';
 
 export default {
-<<<<<<< HEAD
-  props: ["l"],
-=======
   props: ['l'],
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
 
   components: {
     DesSelEnt,
@@ -554,30 +373,17 @@ export default {
     return {
       etapa: 1,
       legislacao: {
-<<<<<<< HEAD
-        numero: "",
-        sumario: "",
-        tipo: "",
-        data: "",
-        link: "",
-        dataRevogacao: "",
-=======
         numero: '',
         sumario: '',
         tipo: '',
         data: '',
         link: '',
         dataRevogacao: '',
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
         entidadesSel: [],
         processosSel: [],
       },
       legislacaoOriginal: {},
-<<<<<<< HEAD
-      acao: "Alteração",
-=======
       acao: 'Alteração',
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
 
       tiposDiploma: [],
 
@@ -595,32 +401,20 @@ export default {
 
       // para mostrar mensagens de erro
       snackbar: false,
-<<<<<<< HEAD
-      text: "",
-=======
       text: '',
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
     };
   },
 
   methods: {
-<<<<<<< HEAD
-=======
     goBack() {
       this.$router.push('/legislacao');
     },
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
     // Vai a API buscar todos os tipos de diplomas legislativos
     loadTipoDiploma: async function() {
       try {
         let response = await this.$request(
-<<<<<<< HEAD
-          "get",
-          "/vocabularios/vc_tipoDiplomaLegislativo"
-=======
           'get',
           '/vocabularios/vc_tipoDiplomaLegislativo'
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
         );
         for (let i = 0; i < response.data.length; i++) {
           this.tiposDiploma[i] = response.data[i].termo;
@@ -651,11 +445,7 @@ export default {
     // Vai à API buscar todas as entidades
     loadEntidades: async function() {
       try {
-<<<<<<< HEAD
-        let response = await this.$request("get", "/entidades");
-=======
         let response = await this.$request('get', '/entidades');
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
         this.entidades = response.data.map((item) => {
           return {
             sigla: item.sigla,
@@ -688,20 +478,12 @@ export default {
     // Vai à API buscar todas as classes de nivel 3
     loadClasses: async function() {
       try {
-<<<<<<< HEAD
-        let response = await this.$request("get", "/classes?nivel=3");
-=======
         let response = await this.$request('get', '/classes?nivel=3');
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
         this.processos = response.data.map(function(item) {
           return {
             codigo: item.codigo,
             titulo: item.titulo,
-<<<<<<< HEAD
-            id: item.id.split("#")[1],
-=======
             id: item.id.split('#')[1],
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
           };
         });
         this.processosReady = true;
@@ -737,26 +519,6 @@ export default {
         });
       }
     } catch (e) {
-<<<<<<< HEAD
-      this.text = "Erro ao carregar os dados, por favor tente novamente";
-      this.snackbar = true;
-    }
-
-    try {
-      if (this.legislacao.processosSel.length != 0) {
-        this.legislacao.processosSel.forEach((proc) => {
-          this.procSel.push(proc);
-
-          // Remove dos selecionáveis
-          let index = this.processos.findIndex((p) => p.id === proc.id);
-          this.processos.splice(index, 1);
-        });
-      }
-    } catch (e) {
-      this.text = "Erro ao carregar os dados, por favor tente novamente";
-      this.snackbar = true;
-    }
-=======
       this.text = 'Erro ao carregar os dados, por favor tente novamente';
       this.snackbar = true;
     }
@@ -775,35 +537,11 @@ export default {
       this.text = 'Erro ao carregar os dados, por favor tente novamente';
       this.snackbar = true;
     }
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
   },
 };
 </script>
 
 <style scoped>
-<<<<<<< HEAD
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
-}
-
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-=======
 #stepper-card {
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22);
 }
@@ -847,6 +585,5 @@ export default {
   border: 1px solid #dee2f8;
   border-radius: 0 0 10px 10px;
   box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
->>>>>>> 68b5ff0d... Gestao Plataforma -> Pedidos refactored e small design fix
 }
 </style>

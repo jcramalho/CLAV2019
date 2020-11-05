@@ -74,6 +74,8 @@ import {
   pedidoDevolvidoIcon,
   pedidoEmValidacaoIcon,
   pedidoNovoIcon,
+  devolverIcon,
+  equipaIcon,
 } from './custom-icons';
 
 //import BootstrapVue from "bootstrap-vue";
@@ -152,6 +154,8 @@ Unicon.add([
   pedidoDevolvidoIcon,
   pedidoEmValidacaoIcon,
   pedidoNovoIcon,
+  devolverIcon,
+  equipaIcon,
 ]);
 Vue.use(Unicon);
 

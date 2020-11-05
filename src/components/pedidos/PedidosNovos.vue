@@ -163,10 +163,10 @@
                       @click="devolverPedido(item)"
                     >
                       <unicon
-                        name="pedido-devolvido-icon"
+                        name="devolver-icon"
                         width="25"
                         height="25"
-                        viewBox="0 0 20.712 20.71"
+                        viewBox="0 0 20.71 12.943"
                         fill="#0D47A1"
                       />
                     </v-btn>
