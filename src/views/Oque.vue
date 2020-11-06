@@ -14,7 +14,7 @@
     </p>
     <p class="content-text px-8 py-2">
         É igualmente destinada ao cidadão, particularmente através da
-        disponibilização do catálogo de processos de negócioda Administração
+        disponibilização do catálogo de processos de negócio da Administração
         Pública, que integra a Lista Consolidada.
     </p>
 </v-content>
