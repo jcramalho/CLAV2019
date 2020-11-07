@@ -327,7 +327,7 @@ export default {
     },
 
     preparaEntidades(dados, entOuTip) {
-      let dadosTratados = dados.filter(dado => dado.estado === "Ativa");
+      let dadosTratados = dados//.filter(dado => dado.estado === "Ativa");
       dadosTratados = dadosTratados.map(
         dado => `${dado.sigla} - ${dado.designacao}`
       );
