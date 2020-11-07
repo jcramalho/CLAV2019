@@ -630,7 +630,7 @@ export default {
       //let csvContent = "data:text/csv;charset=utf-8,";
       let headers;
       let csvContent;
-      let fileName = this.titulo.replace(/ /g, "_");
+      let fileName = "TS-exportada-" + this.ts.entidades.join('-')
       headers =
         "Código,N.º Referência,Título,Descrição,Dono PN,Participante PN,PCA,Nota PCA,Forma de Contagem PCA,DF,Nota DF";
       csvContent = [
