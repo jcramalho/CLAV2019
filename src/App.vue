@@ -10,7 +10,7 @@
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
-    <v-content>
+    <v-main>
       <router-view />
 
       <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" />
@@ -18,7 +18,7 @@
         v-if="this.$store.state.name != '' && level >= 3"
         :drawer="drawE"
       />
-    </v-content>
+    </v-main>
 
     <PageFooter />
   </v-app>

@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-main>
     <v-card>
       <v-card-title>
         <h1>Listagem de Chaves API</h1>
@@ -285,7 +285,7 @@
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
-  </v-content>
+  </v-main>
 </template>
 
 <script>
