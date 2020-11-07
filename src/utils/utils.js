@@ -38,8 +38,8 @@ export function comparaArraySel(arrA, arrB) {
     return true;
   }
 
-  const keysA = arrA.map((el) => el[key]).sort();
-  const keysB = arrB.map((el) => el[key]).sort();
+  const keysA = arrA.map(el => el[key]).sort();
+  const keysB = arrB.map(el => el[key]).sort();
 
   arraysIguais = JSON.stringify(keysA) === JSON.stringify(keysB);
 
@@ -113,6 +113,18 @@ export function mapKeys(key) {
       descricao = "SIOE";
       break;
 
+    case "notasAp":
+      descricao = "Notas de Aplicação";
+      break;
+
+    case "notasEx":
+      descricao = "Notas de Exclusão";
+      break;
+
+    case "entProd":
+      descricao = "Entidade Produtora";
+      break;
+
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;
@@ -150,7 +162,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null,
+            nota: null
           };
         }
       } else if (objSubmetido[key] instanceof Array) {
@@ -158,13 +170,13 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key])
           };
         } else if (!comparaArraySel(objSubmetido[key], objOriginal[key])) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key])
           };
         }
       }
@@ -175,7 +187,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
         historico[key] = {
           cor: "verde",
           dados: objSubmetido[key],
-          nota: null,
+          nota: null
         };
       }
     }
@@ -191,7 +203,7 @@ export function converterDadosOriginais(dados) {
     dadosConvertidos[key] = {
       cor: null,
       dados: dados[key],
-      nota: null,
+      nota: null
     };
   }
 
@@ -200,15 +212,15 @@ export function converterDadosOriginais(dados) {
 
 export function identificaItemAdicionado(item, lista, historicoAnterior) {
   if (lista === "entidadesSel") {
-    return !historicoAnterior.entidadesSel.dados.some((ent) => {
+    return !historicoAnterior.entidadesSel.dados.some(ent => {
       return ent.sigla === item.sigla;
     });
   } else if (lista === "tipologiasSel") {
-    return !historicoAnterior.tipologiasSel.dados.some((tip) => {
+    return !historicoAnterior.tipologiasSel.dados.some(tip => {
       return tip.sigla === item.sigla;
     });
   } else if (lista === "processosSel") {
-    return !historicoAnterior.processosSel.dados.some((proc) => {
+    return !historicoAnterior.processosSel.dados.some(proc => {
       return proc.codigo === item.codigo;
     });
   }
@@ -217,7 +229,7 @@ export function identificaItemAdicionado(item, lista, historicoAnterior) {
 }
 
 export function identificaItemEmTabela(item, listaA, siglaOuCodigo) {
-  return !listaA.dados.some((dado) => {
+  return !listaA.dados.some(dado => {
     return dado[siglaOuCodigo] === item;
   });
 }
@@ -242,10 +254,10 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
     return null;
   }
 
-  listaAnterior.forEach((itemAnterior) => {
+  listaAnterior.forEach(itemAnterior => {
     if (
       !listaAtual.some(
-        (itemAtual) => itemAtual[siglaOuCodigo] === itemAnterior[siglaOuCodigo]
+        itemAtual => itemAtual[siglaOuCodigo] === itemAnterior[siglaOuCodigo]
       )
     )
       notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
@@ -306,14 +318,14 @@ export function gerarDadosRelatorio(pedido) {
     tipoPedido: "",
     numeroPedido: "",
     alteracaoInfo: "",
-    estadoPedido: "",
+    estadoPedido: ""
   };
 
-  Object.keys(pedidoSubmetido).forEach((item) => {
+  Object.keys(pedidoSubmetido).forEach(item => {
     if (item !== "estado" && item !== "id") campos.push(item);
   });
 
-  campos.forEach((campo) => {
+  campos.forEach(campo => {
     if (pedidoSubmetido[campo].nota !== null) {
       let formatarNota = "";
       formatarNota = pedidoSubmetido[campo].nota.replace(
@@ -366,7 +378,7 @@ export function gerarDadosRelatorio(pedido) {
     relatorio.comparacao.push({
       campo: mapKeys(campo),
       submetido: pedidoSubmetido[campo],
-      finalizado: pedidoFinalizado[campo],
+      finalizado: pedidoFinalizado[campo]
     });
   });
 
@@ -524,5 +536,5 @@ export default {
   identificaItemAdicionado,
   identificaItemEmTabela,
   adicionarNotaComRemovidos,
-  mapKeysRADA,
+  mapKeysRADA
 };

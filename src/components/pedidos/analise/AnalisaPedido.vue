@@ -7,7 +7,6 @@
           <v-card-title class="indigo darken-4 title white--text" dark>
             Análise do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
-
             <v-spacer />
             <v-tooltip
               v-if="
@@ -25,9 +24,8 @@
                   color="white"
                   v-on="on"
                   class="ml-4"
+                  >history</v-icon
                 >
-                  history
-                </v-icon>
               </template>
               <span>Ver histórico de alterações...</span>
             </v-tooltip>
@@ -39,9 +37,8 @@
                   color="white"
                   v-on="on"
                   class="ml-2"
+                  >comment</v-icon
                 >
-                  comment
-                </v-icon>
               </template>
               <span>Ver despachos...</span>
             </v-tooltip>
@@ -75,6 +72,15 @@
               :p="pedido"
             />
 
+            <AnalisaClasseN1
+              v-else-if="
+                pedido.objeto.tipo === 'Classe_N3' ||
+                  pedido.objeto.tipo === 'Classe_N1' ||
+                  pedido.objeto.tipo === 'Classe_N2'
+              "
+              :p="pedido"
+            />
+
             <AnalisaAE
               v-else-if="
                 pedido.objeto.tipo.includes('AE ') ||
@@ -84,9 +90,16 @@
               :tipo="pedido.objeto.tipo"
             />
 
-            <AnalisaTS
+            <AnalisaTSPluri
+              v-else-if="pedido.objeto.tipo.includes('TS Pluri')"
+              :p="pedido"
+              fase="analise"
+            />
+
+            <AnalisaTSOrg
               v-else-if="pedido.objeto.tipo.includes('TS ')"
               :p="pedido"
+              fase="analise"
             />
 
             <AnalisaDefault v-else :p="pedido" />
@@ -108,7 +121,7 @@
                 outlined
               >
                 <span v-if="pedido.objeto.tipo === 'Legislação'">
-                  <b> {{ pedido.objeto.tipo }}: </b>
+                  <b>{{ pedido.objeto.tipo }}:</b>
                   {{ pedido.objeto.dadosOriginais.diplomaFonte }}
                   - {{ pedido.objeto.dadosOriginais.numero }} -
                   {{ pedido.objeto.dadosOriginais.sumario }}
@@ -120,7 +133,7 @@
                       pedido.objeto.tipo === 'Tipologia'
                   "
                 >
-                  <b> {{ pedido.objeto.tipo }}: </b>
+                  <b>{{ pedido.objeto.tipo }}:</b>
                   {{ pedido.objeto.dadosOriginais.sigla }}
                   - {{ pedido.objeto.dadosOriginais.designacao }}
                 </span>
@@ -157,9 +170,7 @@
       top
     >
       {{ snackbar.texto }}
-      <v-btn dark text @click="snackbar.visivel = false">
-        Fechar
-      </v-btn>
+      <v-btn dark text @click="snackbar.visivel = false">Fechar</v-btn>
     </v-snackbar>
 
     <!-- Dialog de erros -->
@@ -188,7 +199,9 @@ import AnalisaRADA from "@/components/pedidos/analise/AnalisaRADA";
 import AnalisaEntidade from "@/components/pedidos/analise/AnalisaEntidade";
 import AnalisaTipologiaEntidade from "@/components/pedidos/analise/AnalisaTipologiaEntidade";
 import AnalisaAE from "@/components/pedidos/analise/AnalisaAE";
-import AnalisaTS from "@/components/pedidos/analise/AnalisaTS";
+import AnalisaTSPluri from "@/components/pedidos/analise/AnalisaTSPluri";
+import AnalisaTSOrg from "@/components/pedidos/analise/AnalisaTSOrg";
+import AnalisaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
 
 import AnalisaEditaEntidade from "@/components/pedidos/analise/AnalisaEditaEntidade";
 import AnalisaEditaLegislacao from "@/components/pedidos/analise/AnalisaEditaLegislacao";
@@ -216,11 +229,13 @@ export default {
     AnalisaEditaLegislacao,
     AnalisaEditaTipologiaEntidade,
     AnalisaAE,
-    AnalisaTS,
+    AnalisaTSPluri,
+    AnalisaTSOrg,
+    AnalisaClasseN1,
     AnalisaDefault,
     VerDespachos,
     ErroDialog,
-    VerHistorico,
+    VerHistorico
   },
 
   data() {
@@ -229,11 +244,11 @@ export default {
       loading: true,
       snackbar: {
         visivel: false,
-        texto: "Test",
+        texto: "Test"
       },
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       pedido: {},
       despachosDialog: false,
@@ -241,9 +256,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" },
+        { text: "Despacho", value: "despacho" }
       ],
-      etapas: [],
+      etapas: []
     };
   },
 
@@ -285,7 +300,7 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
-    },
-  },
+    }
+  }
 };
 </script>

@@ -1,0 +1,756 @@
+<template>
+  <v-row class="ma-1">
+    <v-col>
+      <!-- HEADER -->
+      <v-card>
+        <v-app-bar color="indigo darken-4" dark>
+          <v-toolbar-title class="card-heading">Criar Plano de Preservação Digital</v-toolbar-title>
+        </v-app-bar>
+
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Título
+                <InfoBox header="Título do PPD" :text="myhelp.Ppd.titulo"/>
+              </div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+              <v-text-field
+                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                v-model="ppd.geral.nomePPD"
+                label="Título"
+                solo
+                clearable
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Entidades
+                <InfoBox header="Entidades do PPD" :text="myhelp.Ppd.entidade"/>
+              </div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
+              <v-autocomplete
+                v-model="ppd.geral.entSel"
+                :items="entidades"
+                item-text="label"
+                placeholder="Selecione as entidades abrangidas pelo PPD"
+                multiple
+                chips
+                deletable-chips
+                return-object
+              >
+              </v-autocomplete>
+            </v-col>
+            <v-col v-else>
+              <v-alert dense type="info">
+                Ainda não foi possível carregar as entidades...
+              </v-alert>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Menção de responsabilidade
+                <InfoBox header="Identificação de responsabilidades pela elaboração do PPD " :text="myhelp.Ppd.responsabilidade"/>
+              </div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+              <v-textarea
+                  v-model="ppd.geral.mencaoResp"
+                  label=""
+                  solo
+                  clearable
+              ></v-textarea>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Fonte de legitimação </div>
+            </v-col>
+            <v-col cols="12" xs="12" sm="9">
+              <v-radio-group v-model="loadCheck" row>
+                <v-radio
+                  v-for="(p, i) in fonteLegitimacao"
+                  :key="i"
+                  :label="p"
+                  :value="p"
+                  color="indigo darken-3"
+                ></v-radio>
+              </v-radio-group>
+              <div v-if="loadCheck === 'TS/LC'">
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="tabelasSelecao"
+                  item-text="titulo"
+                  return-object
+                  v-model="a"
+                  solo
+                  dense
+                />
+              </div>
+              <div v-else-if="loadCheck === 'PGD/LC'">
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="portariaLC"
+                  item-text="titulo"
+                  return-object
+                  v-model="a"
+                  solo
+                  dense
+                />
+              </div>
+              <div v-else-if="loadCheck === 'PGD'">
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="portaria"
+                  item-text="titulo"
+                  return-object
+                  v-model="fonteLegitimacaoSelected"
+                  solo
+                  dense
+                />
+              </div>
+              <div v-else-if="loadCheck === 'RADA'">
+                <v-autocomplete
+                  label="Selecione a fonte de legitimação"
+                  :items="portariaRada"
+                  item-text="titulo"
+                  return-object
+                  v-model="a"
+                  solo
+                  dense
+                />
+              </div>
+              <div v-else>
+                    <v-autocomplete
+                      label="Selecione a fonte de legitimação"
+                      :items="tsRada"
+                      item-text="titulo"
+                      return-object
+                      v-model="a"
+                      solo
+                      dense
+                    ></v-autocomplete>
+                  </div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Selecionados</div>
+            </v-col>
+            <v-col v-if="selecionadosTabelaFL.length > 0">
+              <v-data-table
+                :headers="headersSelecionados"
+                :items="selecionadosTabelaFL"
+                class="elevation-1"
+                :footer-props="footer_props"
+                :page.sync="paginaSelect"
+              >
+                <template v-slot:header="props">
+                  <tr>
+                    <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
+                  </tr>
+                </template>
+
+                <template v-slot:item="props">
+                  <tr>
+                    <td>{{ props.item.codigo }}</td>
+                    <td>{{ props.item.referencia }}</td>
+                    <td>{{ props.item.titulo }}</td>
+                    <td>
+                      <v-btn small color="red darken-2" dark rounded @click="unselectClasse(props.item)">
+                        <v-icon dark>remove_circle_outline</v-icon>
+                      </v-btn>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-col>
+            <v-col v-else>
+              <v-alert :value="true" type="warning">Não tem nenhuma classe selecionada...</v-alert>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col xs="2" sm="2" class="mt-3">
+              <div class="info-label">
+                Tabela de Seleção
+              </div>
+            </v-col>
+            <v-col xs="3" sm="3"/>
+            <v-col xs="5" sm="5">
+              <v-text-field
+                v-if="!tree_ou_tabela"
+                label="Procurar"
+                v-model="search"
+                append-icon="search"
+                single-line
+                hide-details
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-data-table
+                :headers="headers"
+                :items="classeSelecionada"
+                item-key="idClasse"
+                :search="search"
+                class="elevation-1"
+                :sort-by="['codigo']"
+                :footer-props="footer_props"
+                :page.sync="paginaTabela"
+                @click:row="clicked">
+              >
+              </v-data-table>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Adicionar sistema de informação
+              <InfoBox header="Adicionar SI" :text="myhelp.Ppd.novoSI"/>
+              </div>
+            </v-col>
+          </v-row>
+          <SistemaInfo
+            :ppd="ppd"
+            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo, ppd.listaSistemasInfoAuxiliar)"
+            :entidades="entidades"
+            :semaforos="semaforos"
+            :listaLegislacao="listaLegislacao"
+            :importarPPD="importarPPD"
+          />
+          <SistemaOps
+            :sistema="ppd.sistemasInfo"
+            @unselectSistema="unselectSistema($event)"
+          />
+
+        </v-card-text>
+
+        <v-snackbar
+          v-model="loginErrorSnackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
+          {{ loginErrorMessage }}
+          <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
+        </v-snackbar>
+      </v-card>
+      <v-row align="center" justify="space-around">
+        <v-btn
+        color="indigo darken-2"
+        dark
+        class="ma-2"
+        rounded
+        @click="$router.push('/')"
+        >
+          Guardar
+        </v-btn>
+      </v-row>
+    </v-col>
+  </v-row>
+</template>
+
+<script>
+const nanoid = require("nanoid");
+const help = require("@/config/help").help;
+const criteriosLabels = require("@/config/labels").criterios;
+
+import InfoBox from "@/components/generic/infoBox.vue";
+import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
+import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
+//import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
+
+
+export default {
+  props:[
+   "importarPPD"
+  ],
+  components: {
+    InfoBox,
+    SistemaInfo,
+    SistemaOps,
+    //SistemaSelect
+  },
+
+  data: () => ({
+    // Objeto que guarda um ppd
+    ppd: {
+      lixo : "",
+      geral:{
+        numeroPPD: "", //é necessário?
+        nomePPD: "",
+        mencaoResp: "",
+        entSel: [],
+      },
+      Sistemas: [],
+      si:{
+        numeroSI: "",
+        nomeSI:"",
+        identificacao: {
+          adminSistema: [],
+          adminDados: [],
+          propSistemaPublico: [],
+          propSistemaPrivado: "",
+          propDados: [],
+          localDadosPublico: [],
+          localDadosPrivado: "",
+          userList: [],
+          defResponsavel: "",
+          defCheck: "",
+          insourcing: "",
+          insourcingCheck:"",
+          outsourcing: "",
+          outsourcingCheck: "",
+          notas: "",
+        },
+        avaliacao: {
+          descricao: "",
+          checkedAti: "",
+          checkedGrau: "",
+          checkedCriticidade: "",
+          sistemasRelacionados: [],
+          objetoPreservacao: "",
+          legislacoes: [],
+        },
+        caracterizacao:{
+          dependenciaSoft: "",
+          categoriaDados: "",
+          formatos:"",
+          modeloCres: "",
+          dimensao:"",
+          crescimento: "",
+          localSistema: "",
+          salaTec: "",
+          acessoSalaTec: "",
+          energiaRed: "",
+          energiaSoc: "",
+          alarme: "",
+          climatizacao: "",
+          seguranca: "",
+          comunicacaoEx: "",
+          planoContingencia: "",
+          planoMudEvolucao: "",
+          privAcesso: "",
+          catSegDados: "",
+          rotinaAuditoria: "",
+          logsRotinas: "",
+          integridadeInfo: "",
+          armazenamento: "",
+          replicacaoDados: "",
+          backupsRegular: "",
+          modeloBackup: "",
+          qualidadeBackup: "",
+          inventarioSoft: "",
+          inventarioHard: "",
+          documentacaoSis: "",
+          documentacaoProc: "",
+          controlVersaoDProc: "",
+          contratoAtivos: "",
+          planoRecuperacao: "",
+          notas: "",
+        },
+        estrategia:{},
+      },
+
+      codigo: "", //é necessário?
+      descricao: "", //é necessário?
+      notasAp: [], //é necessário?
+      exemplosNotasAp: [], //é necessário?
+      notasEx: [], //é necessário?
+      termosInd: [], //é necessário?
+
+      listaSistemasInfoAuxiliar: [],
+      sistemasInfo: [],
+
+      user: {
+        token: ""
+      },
+    },
+
+    //para apagar!!!!!!!
+    a: "",
+    //---Fonte de legitimacao---
+    loadCheck: "",
+    fonteLegitimacaoSelected: "",
+    fonteLegitimacao: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
+    portaria: [],
+    portariaLC: [],
+    portariaRada: [],
+    tabelasSelecao: [],
+    tsRada: [],
+    tree_ou_tabela: false,
+    search: "",
+    classesTree: [],
+    classeSelecionada: [],
+    paginaTabela: 1,
+    paginaSelect: 1,
+    expanded: [],
+    selecionadosTabelaFL: [],
+
+    footer_props: {
+        "items-per-page-text": "Classes por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todos"
+    },
+    headers: [
+      {text: "Código", sortable: false, value: "codigo", sortable: true},
+      {text: "Referência", sortable: false, value: "referencia", sortable: true},
+      {text: "Título", sortable: false, value: "titulo"},
+      {text: "PCA", sortable: false, value: "pca"},
+      {text: "Destino Final", sortable: false, value: "df"},
+    ],
+    headersSelecionados:[
+      {text: "Código", sortable: false, value: "codigo"},
+      {text: "Referência", sortable: false, value: "referencia"},
+      {text: "Título", sortable: false, value: "titulo"},
+      { text: "Remover", align: "left", sortable: false, value: "" },
+    ],
+    headersLC: [
+      {text: "Código", sortable: false, value: "codigo"},
+      {text: "Título", sortable: false, value: "titulo"},
+      {text: "PCA", sortable: false, value: "pca"},
+      {text: "Destino Final", sortable: false, value: "df"}
+    ],
+
+    // Lista de todas as entidades existentes
+    entidades: [],
+    // Lista com as entidades selecionadas
+    entSel: [],
+    // Passa a true quando o utilizador tiver selecionado todas as entidades no primeiro passo
+    entSelReady: false,
+
+    myhelp: help,
+
+    listaLegislacao: [],
+
+    loginErrorSnackbar: false,
+
+    loginErrorMessage: "Precisa de fazer login para criar um PLano de preservação digital!",
+    mensValCodigo: "",
+
+
+    semaforos: {
+      entidadesReady: false,
+      legislacaoReady: false,
+
+      sistemaReady: false,
+      pcaFormasContagemReady: false,
+      pcaSubFormasContagemReady: false,
+      critLegalAdicionadoPCA: false,
+      critLegalAdicionadoDF: false,
+      critGestionarioAdicionado: false
+    },
+
+  }),
+
+
+ watch:{
+    "fonteLegitimacaoSelected": function() {
+
+      //if (this.fonteLegitimacaoSelected != "") {
+        this.loadConsultaPGD(this.fonteLegitimacaoSelected.id);
+      //}
+    },
+  },
+
+  methods: {
+
+
+  //-------Fonte Legitimacao-------
+    loadConsultaPGD: async function(id) {
+      try {
+        var response = await this.$request("get", "/pgd/"+id);
+        this.classeSelecionada = response.data;
+      }
+        catch (err) {
+          return err;
+      }
+    },
+
+
+    parseEntidades: async function(ent) {
+      try {
+        var entidades = "";
+        for (var i = 0; i < ent.length; i++) {
+          entidades = entidades + ent[i] + " ";
+        }
+        return entidades;
+      } catch (e) {
+        return {};
+      }
+    },
+    preparaLegislacao: async function(leg) {
+      try {
+        var myLegislacao = {
+          data: {
+            campo: "Data do diploma",
+            text: leg.data
+          },
+          sumario: {
+            campo: "Sumário",
+            text: leg.sumario
+          },
+          fonte: {
+            campo: "Fonte de legitimação",
+            text: leg.fonte
+          },
+          link: {
+            campo: "Link",
+            text: leg.link
+          },
+          entidades: {
+            campo: "Entidades",
+            text: await this.parseEntidades(leg.entidades)
+          }
+        };
+        return myLegislacao;
+      } catch (e) {
+        return {};
+      }
+    },
+    procuraClasse: function (classe, myClasses, classePai) {
+      var index = myClasses.map(cl => cl.classe).indexOf(classePai)
+      if(index>=0) myClasses[index].filhos.push(classe)
+      else
+        for(var c of myClasses) {
+          c.filhos = this.procuraClasse(classe,c.filhos,classePai)
+        }
+      return myClasses
+    },
+    prepararClasses: async function(classes) {
+      var myClasses = [];
+      for(var c of classes) {
+        c.filhos = []
+
+        if(c.nivel == 1) {
+          myClasses.push(c)
+        }
+        else {
+          myClasses = this.procuraClasse(c,myClasses,c.classePai)
+        }
+      }
+      return myClasses;
+    },
+    //--------------------
+    //----------------------------------------------
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
+
+    clicked(item) {
+      var index = this.classeSelecionada.findIndex(e => e.classe === item.classe);
+      this.selecionadosTabelaFL.push(item)
+      this.classeSelecionada.splice(index,1);
+    },
+
+    unselectClasse: function(item) {
+      this.classeSelecionada.push(item);
+      var index = this.selecionadosTabelaFL.findIndex(e => e.classe === item.classe);
+      this.selecionadosTabelaFL.splice(index, 1);
+    },
+
+  //-------Fonte Legitimacao-------
+
+
+    // Faz load de todas as entidades
+    loadEntidades: async function() {
+      try {
+        var response = await this.$request("get", "/entidades");
+        this.entidades = response.data.map(function(item) {
+          return {
+            sigla: item.sigla,
+            identificacao: item.designacao,
+            id: item.id,
+            label: item.sigla + " - " + item.designacao
+          };
+        });
+        this.semaforos.entidadesReady = true;
+      }
+        catch (err) {
+          return err;
+      }
+    },
+
+    // Quando se termina a seleção das entidades
+    entidadesSelecionadas: async function(){
+      try{
+        this.geral.entSel.sort((a, b) => a.identificacao > b.identificacao ? 1 : -1 );
+        this.ppd.entidades = this.geral.entSel;
+
+        for(let i=0; i < this.listaProcessos.procs.length; i++){
+            for(let j=0; j < this.ppd.entidades.length; j++){
+                this.listaProcessos.procs[i].entidades.push({
+                    sigla: this.ppd.entidades[j].sigla,
+                    identificacao: this.ppd.entidades[j].identificacao,
+                    id: this.ppd.entidades[j].id,
+                    label: this.ppd.entidades[j].label,
+                    dono: false,
+                    participante: "NP"
+                });
+            }
+        }
+        await this.loadProcessosEspecificos(this.ppd.entidades);
+        this.entSelReady = true;
+      }
+      catch(e){
+        console.log("Erro ao fundir as entidades nos processos: " + e);
+      }
+    },
+
+
+    loadLegislacao: async function() {
+      try {
+        var response = await this.$request("get", "/legislacao?estado=Ativo");
+        this.listaLegislacao = response.data
+          .map(function(item) {
+            return {
+              tipo: item.tipo,
+              numero: item.numero,
+              sumario: item.sumario,
+              data: item.data,
+              selected: false,
+              id: item.id
+            };
+          })
+          .sort(function(a, b) {
+            return -1 * a.data.localeCompare(b.data);
+          });
+        this.semaforos.legislacaoReady = true;
+      } catch (error) {
+        return error;
+      }
+    },
+
+    newSistema: function(sis, lista, listaAux) {
+        var index = lista.findIndex(e => e.numeroSI === sis.numeroSI);
+        if(index != -1){
+          //lista[index] = sis;
+          //listaAux[index] = sis;
+          //teste
+          //lista.splice(index, 1);
+          //listaAux.splice(index, 1);
+        }
+        else{
+          lista.push(sis);
+          listaAux.push(sis);
+        }
+    },
+
+    selectSistema: function(sis) {
+      this.ppd.sistemasInfo.push(sis);
+      this.ppd.listaSistemasInfoAuxiliar.push(sis);
+      // Remove dos selecionáveis
+      var index = this.listaLegislacao.findIndex(l => l.numeroSI === sis.numeroSI);
+      this.listaLegislacao.splice(index, 1);
+    },
+    unselectSistema: function(sistema) {
+      // Recoloca o sistema nos selecionáveis
+      //this.listaLegislacao.push(sistema);
+      var index = this.ppd.sistemasInfo.findIndex(e => e.numeroSI === sistema.numeroSI);
+      this.ppd.sistemasInfo.splice(index, 1);
+      this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
+    },
+
+
+  },
+
+  /* em principio nao vai ser necessario porque vou buscar a info toda logo no inicio
+  watch:{
+    "classe.nivel": function() {
+
+      if (this.classe.nivel > 1) {
+        this.loadEntidades();
+      }
+      if (this.classe.nivel >= 3 && !this.semaforos.legislacaoReady) {
+        this.loadLegislacao();
+      }
+    },
+  },
+  */
+  created: async function() {
+      try{
+        await this.loadEntidades();
+        await this.loadLegislacao();
+        //var user = this.$verifyTokenUser();
+        //var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
+        //this.portariaLC = await this.prepararLeg(response.data);
+        var response2 = await this.$request("get", "/pgd");
+        this.portaria = await this.prepararLeg(response2.data);
+        //var response3 = await this.$request("get", "/legislacao?fonte=RADA");
+        //this.portariaRada = await this.prepararLeg(response3.data);
+        //var response4 = await this.$request("get","/rada");
+        //this.tsRada = response4.data
+        var response5 = await this.$request("get","/tabelasSelecao")
+        this.tabelasSelecao = response5.data.map(ts=>{return {
+            titulo: ts.designacao,
+            codigo: ts.id.split("clav#")[1]
+          }
+        });
+      }
+      catch(e){
+        this.portariaLC = [];
+        this.portaria = [];
+        this.portariaRada = [];
+        this.tabelasSelecao = [];
+        this.tsRada = [];
+        console.log('Erro ao carregar a informação inicial: ' + e);
+      }
+  }
+
+};
+</script>
+
+<style>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.info-label {
+  color: #283593; /* indigo darken-3 */
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #e8eaf6; /* indigo lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.expansion-panel-heading {
+  background-color: #283593 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
+}
+
+.card-heading {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
+}
+</style>

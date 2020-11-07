@@ -149,9 +149,7 @@
               create
             </v-icon>
 
-            <v-icon @click="abrirNotaDialog(campo)">
-              add_comment
-            </v-icon>
+            <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
           </v-col>
         </v-row>
       </div>
@@ -693,12 +691,29 @@ export default {
           numeroErros = this.validarRevogacao(
             pedido.objeto.dados.dataRevogacao
           );
-          if (numeroErros === 0)
+          if (numeroErros === 0) {
             await this.$request(
               "put",
               `/legislacao/${this.dadosOriginais.id}/revogar`,
               { dataRevogacao: pedido.objeto.dados.dataRevogacao }
             );
+
+            //Pedir a legislação para posteriormente revogar os instrumentos que aprovou
+            // TODO legislação tem que ser alterada para incluir o campo "aprovou"
+            let responseLeg = await this.$request(
+              "get",
+              "/legislacao/" + this.p.objeto.dadosOriginais.id
+            );
+
+            let legislacao = responseLeg.data;
+
+            await this.$request(
+              "put",
+              "/rada/revogar/" +
+                legislacao.aprovou.split("#")[1].split("rada_")[1],
+              { dataRevogacao: pedido.objeto.dados.dataRevogacao }
+            );
+          }
         } else {
           numeroErros = this.validar(pedido.objeto.dados);
 

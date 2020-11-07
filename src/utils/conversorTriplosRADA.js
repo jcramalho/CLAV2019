@@ -5,6 +5,7 @@ export async function converterParaTriplosRADA(obj, subformasContagem, dataAprov
     classes_rada = obj.tsRada.classes;
 
     let triplos = `clav:rada_${obj.id} rdf:type owl:NamedIndividual, clav:RADA;
+                            clav:estado "Em vigor";
                             clav:contemRE clav:rada_${obj.id}_re ;
                             clav:contemTS clav:rada_${obj.id}_ts ;
                             clav:codigo "${obj.id}" ;

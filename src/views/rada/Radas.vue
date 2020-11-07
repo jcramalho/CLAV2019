@@ -8,9 +8,10 @@
         'Data de Aprovação',
         'Título',
         'Entidades Responsáveis',
+        'Estado',
         'Acessos',
       ]"
-      :campos="['titulo', 'dataAprovacao', 'entResp']"
+      :campos="['titulo', 'dataAprovacao', 'entResp', 'estado']"
       @download="fazerDownloadRADA"
       @ver="redirecionar"
     />
@@ -43,9 +44,7 @@ export default {
       let rada = response.data;
 
       if (!!rada) {
-        let r = await this.$request("get", "/legislacao/" + rada.despachoAprovacao.split('#')[1]);
-        
-        gerarPDF(rada, r.data);
+        gerarPDF(rada);
       }
     },
   },

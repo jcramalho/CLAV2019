@@ -113,7 +113,7 @@ export default {
   props: ["idp"],
 
   components: {
-    ErroAPIDialog,
+    ErroAPIDialog
   },
 
   data() {
@@ -122,7 +122,7 @@ export default {
       erroPedido: false,
       pedidoCarregado: false,
       pedido: {},
-      objetoPedido: {},
+      objetoPedido: {}
     };
   },
 
@@ -133,7 +133,7 @@ export default {
       this.pedido = {
         codigo: data.codigo,
         data: data.data.split("T")[0],
-        tipoPedido: `${data.objeto.acao} - ${data.objeto.tipo}`,
+        tipoPedido: `${data.objeto.acao} - ${data.objeto.tipo}`
       };
 
       this.objetoPedido = data.objeto;
@@ -147,14 +147,14 @@ export default {
 
       if (parsedError !== undefined) {
         if (parsedError.status === 422) {
-          parsedError.data.forEach((erro) => {
+          parsedError.data.forEach(erro => {
             this.erros.push({ parametro: erro.param, mensagem: erro.msg });
           });
         }
       } else {
         this.erros.push({
           parametro: "Acesso à Ontologia",
-          mensagem: "Ocorreu um erro ao aceder à ontologia.",
+          mensagem: "Ocorreu um erro ao aceder à ontologia."
         });
       }
     }
@@ -195,6 +195,14 @@ export default {
           this.$router.push(`/legislacao/${id}`);
           break;
 
+        case "TS Organizacional":
+          this.$router.push(`/ts/${id}`);
+          break;
+
+        case "TS Pluriorganizacional":
+          this.$router.push(`/ts/${id}`);
+          break;
+
         default:
           this.$router.push("/");
           break;
@@ -204,7 +212,7 @@ export default {
     fecharErro() {
       this.erroPedido = false;
       this.$router.push("/");
-    },
-  },
+    }
+  }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row v-if="!valida">
     <!-- PARTICIPANTES NO PROCESSO -->
     <v-col xs="2" sm="2">
       <div class="info-label">
@@ -46,6 +46,37 @@
       </div>
     </v-col>
   </v-row>
+  <div v-else>
+    <v-data-table
+      :headers="headers"
+      :items="myParticipantes"
+      class="elevation-1"
+      hide-default-footer
+    >
+      <template v-slot:item="props">
+        <tr>
+          <td style="color: #1A237E;">{{ props.item.label }}</td>
+          <td>
+            <ul>
+              <li v-for="p in props.item.participantes" :key="p.label">
+                <a
+                  v-if="p.idTipo == 'Entidade'"
+                  :href="'/entidades/' + p.idParticipante"
+                >
+                  {{ p.sigla }}
+                  ({{ p.idTipo }}) - {{ p.designacao }}
+                </a>
+                <a v-else :href="'/tipologias/' + p.idParticipante">
+                  {{ p.sigla }}
+                  ({{ p.idTipo }}) - {{ p.designacao }}
+                </a>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script>
@@ -53,7 +84,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["entidades"],
+  props: ["entidades", "valida"],
   components: { InfoBox },
 
   data: function() {

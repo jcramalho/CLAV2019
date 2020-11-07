@@ -25,9 +25,8 @@
                   color="white"
                   v-on="on"
                   class="ml-4"
+                  >history</v-icon
                 >
-                  history
-                </v-icon>
               </template>
               <span>Ver histórico de alterações...</span>
             </v-tooltip>
@@ -39,9 +38,8 @@
                   color="white"
                   v-on="on"
                   class="ml-2"
+                  >comment</v-icon
                 >
-                  comment
-                </v-icon>
               </template>
               <span>Ver despachos...</span>
             </v-tooltip>
@@ -59,7 +57,11 @@
               :p="pedido"
             />
 
-            <ValidaRADA v-if="pedido.objeto.tipo === 'RADA'" :p="pedido" fase="validacao" />
+            <ValidaRADA
+              v-if="pedido.objeto.tipo === 'RADA'"
+              :p="pedido"
+              fase="validacao"
+            />
             <ValidaLegislacao
               v-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
@@ -67,6 +69,15 @@
 
             <ValidaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
+
+            <AnalisaClasseN1
+              v-else-if="
+                pedido.objeto.tipo === 'Classe_N3' ||
+                  pedido.objeto.tipo === 'Classe_N1' ||
+                  pedido.objeto.tipo === 'Classe_N2'
+              "
               :p="pedido"
             />
 
@@ -79,7 +90,17 @@
               :tipo="pedido.objeto.tipo"
             />
 
-            <ValidaTS v-if="pedido.objeto.tipo.includes('TS ')" :p="pedido" />
+            <ValidaTSPluri
+              v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'"
+              :p="pedido"
+              fase="validacao"
+            />
+
+            <ValidaTSOrg
+              v-if="pedido.objeto.tipo == 'TS Organizacional'"
+              :p="pedido"
+              fase="validacao"
+            />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
@@ -98,7 +119,7 @@
                 outlined
               >
                 <span v-if="pedido.objeto.tipo === 'Legislação'">
-                  <b> {{ pedido.objeto.tipo }}: </b>
+                  <b>{{ pedido.objeto.tipo }}:</b>
                   {{ pedido.objeto.dadosOriginais.diplomaFonte }}
                   - {{ pedido.objeto.dadosOriginais.numero }} -
                   {{ pedido.objeto.dadosOriginais.sumario }}
@@ -110,7 +131,7 @@
                       pedido.objeto.tipo === 'Tipologia'
                   "
                 >
-                  <b> {{ pedido.objeto.tipo }}: </b>
+                  <b>{{ pedido.objeto.tipo }}:</b>
                   {{ pedido.objeto.dadosOriginais.sigla }}
                   - {{ pedido.objeto.dadosOriginais.designacao }}
                 </span>
@@ -163,8 +184,10 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
-import ValidaTS from "@/components/pedidos/validacao/ValidaTS";
+import ValidaTSPluri from "@/components/pedidos/analise/AnalisaTSPluri";
+import ValidaTSOrg from "@/components/pedidos/analise/AnalisaTSOrg";
 import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
+import AnalisaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
@@ -187,13 +210,15 @@ export default {
     ValidaEditaEntidade,
     ValidaEditaLegislacao,
     ValidaEditaTipologiaEntidade,
+    AnalisaClasseN1,
     ValidaAE,
-    ValidaTS,
+    ValidaTSPluri,
+    ValidaTSOrg,
     Loading,
     VerDespachos,
     ErroDialog,
     ValidaRADA,
-    VerHistorico,
+    VerHistorico
   },
 
   data() {
@@ -203,7 +228,7 @@ export default {
       pedido: {},
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       pedidoLoaded: false,
       despachosDialog: false,
@@ -211,16 +236,20 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" },
+        { text: "Despacho", value: "despacho" }
       ],
-      etapas: [],
+      etapas: []
     };
   },
 
   async created() {
     try {
       const { data } = await this.$request("get", "/pedidos/" + this.idp);
-      if (data.estado !== "Apreciado" && data.estado !== "Reapreciado")
+      if (
+        data.estado !== "Apreciado" &&
+        data.estado !== "Reapreciado" &&
+        data.estado !== "Devolvido para validação"
+      )
         throw new URIError("Este pedido não pertence a este estado.");
 
       this.pedido = data;
@@ -253,7 +282,7 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
-    },
-  },
+    }
+  }
 };
 </script>

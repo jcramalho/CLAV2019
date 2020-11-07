@@ -141,7 +141,7 @@ import DialogSair from "@/components/classes/criacao/DialogSair.vue";
 export default {
   props: ["o"],
   components: {
-    ValidaClasseInfoBox, DialogCancelar, DialogPendenteGuardado, DialogSair
+    ValidaClasseInfoBox,
   },
   data() {
     return {
@@ -164,20 +164,19 @@ export default {
         1: /^[0-9]{3}$/,
         2: /^[0-9]{3}\.[0-9]{2}$/,
         3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
-      }
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
+      },
     };
   },
 
-  created: function(){
-      this.c = this.o.objeto;
-      this.pendente = this.o;
+  created: function() {
+    this.c = this.o.objeto;
   },
 
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
@@ -196,7 +195,7 @@ export default {
             objeto: this.o.objeto,
             criadoPor: userBD.email,
             user: { email: userBD.email },
-            token: this.$store.state.token
+            token: this.$store.state.token,
           };
           // É preciso testar se há um Pendente criado para não criar um novo
           if(this.pendente._id){
@@ -574,13 +573,17 @@ export default {
       // Com subdivisão
       else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
-        
+
         for (i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
-          if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
+          if (
+            this.c.subclasses.filter(
+              s => s.titulo == this.c.subclasses[i].titulo
+            ).length > 1
+          ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
-              mensagem: "Está repetido noutra subclasse."
+              mensagem: "Está repetido noutra subclasse.",
             });
           }
           // PCA: prazo
@@ -629,7 +632,7 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: []
+              historico: [],
             };
 
             var response = await this.$request(
@@ -668,8 +671,8 @@ export default {
         }
       }
       this.$router.push("/");
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

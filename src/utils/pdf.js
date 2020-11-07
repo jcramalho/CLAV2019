@@ -1,9 +1,8 @@
-import { mdiAppleKeyboardControl } from "@mdi/js";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-let pdf = {};
+let pdf = { pageMargins: [40, 160, 40, 80] };
 
 let content = [];
 
@@ -15,9 +14,30 @@ let styles = {
 };
 
 const gerarHeader = () => {
+  pdf.images = {
+    DGLAB: `${window.location.origin}/img/RP_DGLAB.jpg`,
+  };
+
   pdf.header = {
-    text: "Cabeçalho...Cabeçalho...Cabeçalho...Cabeçalho...Cabeçalho...",
-    margin: [10, 10],
+    stack: [
+      {
+        image: "DGLAB",
+        width: 150,
+        height: 80,
+        alignment: "center",
+        margin: [0, 30, 0, 20],
+      },
+      {
+        text: "NOTIFICAÇÃO",
+        style: "titulo",
+      },
+    ],
+  };
+
+  styles.titulo = {
+    fontSize: 14,
+    bold: true,
+    alignment: "center",
   };
 };
 
@@ -25,14 +45,44 @@ const gerarFooter = () => {
   pdf.footer = (currentPage, pageCount) => {
     return {
       columns: [
-        "Rodapé Esquerda",
         {
-          text: `Página ${currentPage.toString()} de ${pageCount}`,
+          stack: [
+            {
+              text: [
+                { text: "CLAV", bold: true },
+                " - Classificação e Avaliação da Informação Pública\n\n",
+              ],
+            },
+            {
+              columns: [
+                {
+                  text: "https://clav.dglab.gov.pt/",
+                  link: "https://clav.dglab.gov.pt/",
+                  style: "links",
+                },
+                {
+                  text: "clav@dglab.gov.pt",
+                  link: "clav@dglab.gov.pt",
+                  style: "links",
+                },
+              ],
+            },
+          ],
+          width: "auto",
+        },
+        {
+          text: `${currentPage.toString()}`,
           alignment: "right",
         },
       ],
-      margin: [10, 10],
+      margin: [40, 0],
     };
+  };
+
+  styles.links = {
+    color: "blue",
+    decoration: "underline",
+    fontSize: 10,
   };
 };
 
@@ -355,6 +405,8 @@ export const gerarPDF = (relatorio) => {
 
   resetPDF();
 };
+
+export const geraNotificacaoAprovado = () => {};
 
 export default {
   gerarPDF,

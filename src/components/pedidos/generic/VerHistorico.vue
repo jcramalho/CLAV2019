@@ -16,7 +16,8 @@
             color="white"
             v-on="on"
             class="ml-4"
-          >table_chart</v-icon>
+            >table_chart</v-icon
+          >
         </template>
         <span>Comparar duas etapas do histórico em formato tabela...</span>
       </v-tooltip>
@@ -27,7 +28,7 @@
         <v-window v-model="onboarding" class="mt-2">
           <v-window-item v-for="(h, i) in dados" :key="i">
             <v-card shaped class="rounded-card pa-4" :color="corFundo[i]">
-              <v-card-text v-if="pedido.objeto.tipo != 'RADA'">
+              <v-card-text v-if="tipoPedido()">
                 <div v-for="(info, campo) in h" :key="campo">
                   <v-row
                     v-if="
@@ -41,14 +42,18 @@
                       <div
                         class="info-descricao"
                         :class="`info-descricao-${info.cor}`"
-                      >{{ transformaKeys(campo) }}</div>
+                      >
+                        {{ transformaKeys(campo) }}
+                      </div>
                     </v-col>
 
                     <v-col>
                       <div
                         v-if="!(info.dados instanceof Array)"
                         class="info-conteudo"
-                      >{{ info.dados }}</div>
+                      >
+                        {{ info.dados }}
+                      </div>
 
                       <div v-else>
                         <v-data-table
@@ -64,16 +69,18 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                            >Nenhuma entidade selecionada...</v-alert>
+                              >Nenhuma entidade selecionada...</v-alert
+                            >
                           </template>
 
-                          <template v-slot:item.sigla="{ item }">
+                          <template v-slot:[`item.sigla`]="{ item }">
                             <v-badge
                               v-if="novoItemAdicionado(item, campo)"
                               right
                               dot
                               inline
-                            >{{ item.sigla }}</v-badge>
+                              >{{ item.sigla }}</v-badge
+                            >
 
                             <span v-else>{{ item.sigla }}</span>
                           </template>
@@ -92,16 +99,18 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                            >Nenhuma tipologia selecionada...</v-alert>
+                              >Nenhuma tipologia selecionada...</v-alert
+                            >
                           </template>
 
-                          <template v-slot:item.sigla="{ item }">
+                          <template v-slot:[`item.sigla`]="{ item }">
                             <v-badge
                               v-if="novoItemAdicionado(item, campo)"
                               right
                               dot
                               inline
-                            >{{ item.sigla }}</v-badge>
+                              >{{ item.sigla }}</v-badge
+                            >
 
                             <span v-else>{{ item.sigla }}</span>
                           </template>
@@ -120,22 +129,27 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                            >Nenhum processo selecionado...</v-alert>
+                              >Nenhum processo selecionado...</v-alert
+                            >
                           </template>
 
-                          <template v-slot:item.codigo="{ item }">
+                          <template v-slot:[`item.codigo`]="{ item }">
                             <v-badge
                               v-if="novoItemAdicionado(item, campo)"
                               right
                               dot
                               inline
-                            >{{ item.codigo }}</v-badge>
+                              >{{ item.codigo }}</v-badge
+                            >
 
                             <span v-else>{{ item.codigo }}</span>
                           </template>
                         </v-data-table>
 
-                        <div class="info-conteudo" v-else-if="campo === 'zonaControlo'">
+                        <div
+                          class="info-conteudo"
+                          v-else-if="campo === 'zonaControlo'"
+                        >
                           <ZonaControlo :info="info" />
                         </div>
 
@@ -149,7 +163,9 @@
                     <v-col cols="1">
                       <v-tooltip v-if="info.nota" bottom>
                         <template v-slot:activator="{ on }">
-                          <v-icon v-on="on" @click="verNota(info.nota)">message</v-icon>
+                          <v-icon v-on="on" @click="verNota(info.nota)"
+                            >message</v-icon
+                          >
                         </template>
                         <span>Ver nota relativa ao campo...</span>
                       </v-tooltip>
@@ -157,8 +173,11 @@
                   </v-row>
                 </div>
               </v-card-text>
-              <v-card-text v-else>
+              <v-card-text v-else-if="pedido.objeto.tipo === 'RADA'">
                 <VerHistoricoRADA :historico="h" />
+              </v-card-text>
+              <v-card-text v-else-if="pedido.objeto.tipo.includes('TS ')">
+                <VerHistoricoTS :historico="h" :tipo="pedido.objeto.tipo" />
               </v-card-text>
             </v-card>
           </v-window-item>
@@ -169,7 +188,11 @@
             <v-icon medium>chevron_left</v-icon>
           </v-btn>
           <v-item-group v-model="onboarding" class="text-center" mandatory>
-            <v-item v-for="(n, i) in dados" :key="`btn-${i}`" v-slot:default="{ active, toggle }">
+            <v-item
+              v-for="(n, i) in dados"
+              :key="`btn-${i}`"
+              v-slot:default="{ active, toggle }"
+            >
               <v-btn :input-value="active" icon @click="toggle">
                 <b>{{ i + 1 }}</b>
               </v-btn>
@@ -198,21 +221,32 @@
 
     <v-card-actions>
       <v-spacer />
-      <v-btn color="red darken-4" text rounded dark @click="cancelar()">Fechar</v-btn>
+      <v-btn color="red darken-4" text rounded dark @click="cancelar()"
+        >Fechar</v-btn
+      >
     </v-card-actions>
 
     <!-- Ver historico em tabela dialog -->
     <v-dialog v-model="dialogVerHistoricoEmTabela" width="90%" persistent>
       <VerHistoricoEmTabela
-        v-if="pedido.objeto.tipo != 'RADA'"
+        v-if="tipoPedido()"
         :historico="dados"
         :distribuicao="distribuicaoFormatada"
         @fecharDialog="dialogVerHistoricoEmTabela = false"
       />
       <VerHistoricoRADATabela
-        v-else
+        v-else-if="pedido.objeto.tipo === 'RADA'"
         :historico="dados"
         :distribuicao="distribuicaoFormatada"
+        @fecharDialog="dialogVerHistoricoEmTabela = false"
+      />
+      <VerHistoricoTSTabela
+        v-else-if="
+          pedido.objeto.tipo === 'TS Organizacional' || 'TS Pluriorganizacional'
+        "
+        :historico="dados"
+        :distribuicao="distribuicaoFormatada"
+        :tipoPedido="pedido.objeto.tipo"
         @fecharDialog="dialogVerHistoricoEmTabela = false"
       />
     </v-dialog>
@@ -220,19 +254,29 @@
     <!-- Ver nota dialog -->
     <v-dialog v-model="dialogVerNota.visivel" width="50%">
       <v-card>
-        <v-card-title class="indigo darken-4 title white--text">Nota</v-card-title>
+        <v-card-title class="indigo darken-4 title white--text"
+          >Nota</v-card-title
+        >
 
         <v-card-text>
           <v-row>
             <v-col>
-              <v-textarea :value="dialogVerNota.nota" auto-grow outlined readonly color="indigo" />
+              <v-textarea
+                :value="dialogVerNota.nota"
+                auto-grow
+                outlined
+                readonly
+                color="indigo"
+              />
             </v-col>
           </v-row>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer />
-          <v-btn class="red darken-4" dark @click="fecharDialogVerNota()">Fechar</v-btn>
+          <v-btn class="red darken-4" dark @click="fecharDialogVerNota()"
+            >Fechar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -244,13 +288,15 @@ import {
   mapKeys,
   converterDadosOriginais,
   identificaItemAdicionado,
-  renomearRepetidosEmArray,
+  renomearRepetidosEmArray
 } from "@/utils/utils";
 
 import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
 import VerHistoricoEmTabela from "@/components/pedidos/generic/VerHistoricoEmTabela";
 import VerHistoricoRADA from "@/components/pedidos/analise/rada/generic/VerHistoricoRADA";
 import VerHistoricoRADATabela from "@/components/pedidos/analise/rada/generic/VerHistoricoRADATabela";
+import VerHistoricoTS from "@/components/pedidos/analise/tabSel/generic/VerHistoricoTS";
+import VerHistoricoTSTabela from "@/components/pedidos/analise/tabSel/generic/VerHistoricoTSTabela";
 
 export default {
   props: ["pedido"],
@@ -260,6 +306,8 @@ export default {
     VerHistoricoEmTabela,
     VerHistoricoRADA,
     VerHistoricoRADATabela,
+    VerHistoricoTS,
+    VerHistoricoTSTabela
   },
 
   data() {
@@ -270,40 +318,40 @@ export default {
       dialogVerHistoricoEmTabela: false,
       dialogVerNota: {
         visivel: false,
-        nota: "",
+        nota: ""
       },
       etapaReferente: "",
       onboarding: 0,
       dados: [],
       entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
       ],
       footerPropsEntidades: {
         "items-per-page-text": "Entidades por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
+        "items-per-page-all-text": "Todas"
       },
 
       tipologiasHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
       ],
       footerPropsTipologias: {
         "items-per-page-text": "Tipologias por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
+        "items-per-page-all-text": "Todas"
       },
 
       processosHeaders: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" },
+        { text: "Título", value: "titulo", class: "subtitle-1" }
       ],
       footerPropsProcessos: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos",
-      },
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
 
@@ -321,7 +369,7 @@ export default {
 
     // Cor Fundo
     const cores = [];
-    this.distribuicaoFormatada.forEach((element) => {
+    this.distribuicaoFormatada.forEach(element => {
       switch (element) {
         case "Objeto Atual no Sistema":
         case "Submetido":
@@ -359,13 +407,13 @@ export default {
 
     distribuicao() {
       return this.pedido.distribuicao;
-    },
+    }
   },
 
   watch: {
     onboarding(novoValor, antigoValor) {
       this.etapaReferente = this.distribuicaoFormatada[novoValor];
-    },
+    }
   },
 
   methods: {
@@ -384,7 +432,7 @@ export default {
       );
 
       // Cria array com todos os estados
-      const estados = distribuicaoAlterada.map((etapa) => etapa.estado);
+      const estados = distribuicaoAlterada.map(etapa => etapa.estado);
 
       // Renomeia os estados repeticos (adiciona #x na frente do estado onde x é o numero de vezes repetido)
       let estadosRenomeados = renomearRepetidosEmArray(estados);
@@ -423,7 +471,14 @@ export default {
       this.onboarding = 0;
       this.$emit("fecharDialog");
     },
-  },
+    tipoPedido() {
+      return (
+        this.pedido.objeto.tipo != "RADA" &&
+        this.pedido.objeto.tipo != "TS Organizacional" &&
+        this.pedido.objeto.tipo != "TS Pluriorganizacional"
+      );
+    }
+  }
 };
 </script>
 

@@ -32,6 +32,13 @@
           @click="criarClasse"
         >
           Criar classe
+          <DialogClasseCriada
+            v-if="classeCriada"
+            :c="c"
+            :codigoPedido="codigoPedido"
+            acao="criação"
+            @sair="classeCriada = false"
+          />
         </v-btn>
       </v-col>
 
@@ -115,14 +122,14 @@
 
 <script>
 import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
-import DialogCancelar from "@/components/classes/criacao/DialogCancelar.vue";
-import DialogPendenteGuardado from "@/components/classes/criacao/DialogPendenteGuardado.vue";
-import DialogSair from "@/components/classes/criacao/DialogSair.vue";
+import DialogClasseCriada from "@/components/classes/criacao/DialogClasseCriada.vue";
+import { criarHistorico } from "@/utils/utils";
 
 export default {
   props: ["c", "pendenteId"],
   components: {
-    ValidaClasseInfoBox, DialogCancelar, DialogPendenteGuardado, DialogSair
+    ValidaClasseInfoBox,
+    DialogClasseCriada,
   },
   data() {
     return {
@@ -143,15 +150,15 @@ export default {
         1: /^[0-9]{3}$/,
         2: /^[0-9]{3}\.[0-9]{2}$/,
         3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
-      }
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
+      },
     };
   },
 
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
@@ -169,7 +176,7 @@ export default {
             objeto: this.c,
             criadoPor: userBD.email,
             user: { email: userBD.email },
-            token: this.$store.state.token
+            token: this.$store.state.token,
           };
 
           // É preciso testar se há um Pendente criado para não criar um novo
@@ -552,13 +559,17 @@ export default {
       // Com subdivisão
       else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
-        
+
         for (i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
-          if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
+          if (
+            this.c.subclasses.filter(
+              s => s.titulo == this.c.subclasses[i].titulo
+            ).length > 1
+          ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
-              mensagem: "Está repetido noutra subclasse."
+              mensagem: "Está repetido noutra subclasse.",
             });
           }
           // PCA: prazo
@@ -607,17 +618,24 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: []
+              historico: [criarHistorico(this.c)],
             };
 
-            var codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
+            const codigoPedido = await this.$request(
+              "post",
+              "/pedidos",
+              pedidoParams
+            );
+
             this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }
         }
       } catch (error) {
-        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
+        console.log(
+          "Erro na criação do pedido: " + JSON.stringify(error.response.data)
+        );
       }
     },
 
@@ -642,7 +660,7 @@ export default {
       }
       this.$router.push("/");
     },
-  }
+  },
 };
 </script>
 <style>
