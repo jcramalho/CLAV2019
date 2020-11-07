@@ -10,7 +10,7 @@
                 <v-icon>get_app</v-icon>
               </v-btn>
             </template>
-            <span>Transferir Tabela de Seleção</span>
+            <span>Exportar Tabela de Seleção</span>
           </v-tooltip>
     </v-card-title>
 

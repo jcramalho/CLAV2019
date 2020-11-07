@@ -28,17 +28,6 @@ export default {
     id: ""
   }),
   methods: {
-    parseEntidades: async function(ent) {
-      try {
-        var entidades = "";
-        for (var i = 0; i < ent.length; i++) {
-          entidades = entidades + ent[i] + " ";
-        }
-        return entidades;
-      } catch (e) {
-        return {};
-      }
-    },
     preparaLegislacao: async function(leg) {
       try {
         var myLegislacao = {
@@ -60,7 +49,7 @@ export default {
           },
           entidades: {
             campo: "Entidades",
-            text: await this.parseEntidades(leg.entidades)
+            text: leg.entidades
           }
         };
         return myLegislacao;
