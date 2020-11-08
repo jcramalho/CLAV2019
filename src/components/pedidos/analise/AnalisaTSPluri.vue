@@ -44,6 +44,16 @@
         tipo="array"
         arrayValue="label"
       />
+
+      <ValidaCampo
+        v-if="p.objeto.dados.listaProcessos.procsAselecionar.length > 0"
+        :dadosOriginais="p.objeto.dados.listaProcessos"
+        :novoHistorico="novoHistorico.ts"
+        campoValue="procsAselecionar"
+        campoText="Processos por selecionar"
+        :permitirEditar="false"
+        tipo="procsAselecionar"
+      />
       <v-row>
         <v-col xs="2" sm="2" class="mt-3">
           <div class="info-label">Tabela de Seleção</div>

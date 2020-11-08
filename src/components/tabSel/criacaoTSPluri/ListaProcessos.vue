@@ -291,6 +291,10 @@ export default {
           if (this.listaProcs.procs[index].preSelected == 1) {
             this.listaProcs.numProcessosPreSelecionados++;
             this.listaProcs.procs[index].preSelectedLabel = "Pré-Selecionado";
+            this.listaProcs.procsAselecionar.push({
+              codigo: this.listaProcs.procs[index].codigo,
+              titulo: this.listaProcs.procs[index].titulo
+            });
           }
         }
       }
@@ -305,6 +309,12 @@ export default {
           if (this.listaProcs.procs[index].preSelected == 0) {
             this.listaProcs.numProcessosPreSelecionados--;
             this.listaProcs.procs[index].preSelectedLabel = "";
+            this.listaProcs.procsAselecionar.splice(
+              this.listaProcs.procsAselecionar.findIndex(
+                p => p.codigo == this.listaProcs.procs[index].codigo
+              ),
+              1
+            );
           }
         }
       }
