@@ -659,6 +659,15 @@ export default {
           p => p.dono || p.participante != "NP"
         );
 
+        this.tabelaSelecao.listaProcessos.procs.map(p =>
+          this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
+            this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
+              c => c.codigo === p.codigo
+            ),
+            1
+          )
+        );
+
         var tsObj = {
           idEntidade: this.tabelaSelecao.idEntidade,
           designacaoEntidade: this.tabelaSelecao.designacaoEntidade,

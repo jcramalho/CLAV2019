@@ -488,6 +488,14 @@ export default {
         this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
           p => p.edited
         );
+        this.tabelaSelecao.listaProcessos.procs.map(p =>
+          this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
+            this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
+              c => c.codigo === p.codigo
+            ),
+            1
+          )
+        );
 
         var pedidoParams = {
           tipoPedido: "Criação",
