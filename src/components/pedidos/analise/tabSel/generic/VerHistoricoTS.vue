@@ -38,6 +38,13 @@
       arrayValue="label"
     />
 
+    <VerHistoricoCampo
+      v-if="historico.ts.procsAselecionar.dados.length > 0"
+      :historicoCampo="historico.ts.procsAselecionar"
+      campoText="Processos por selecionar"
+      tipo="procsAselecionar"
+    />
+
     <v-expansion-panels class="ma-1">
       <v-expansion-panel class="ma-1" popout focusable>
         <v-expansion-panel-header
