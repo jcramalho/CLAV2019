@@ -24,6 +24,7 @@ var importarSI = (file, ppd) => {
         if(si[0][2] == "1_Administrador do SI"){
             for(let i = 1; i<si.length; i++){
                 var sIdentificacao={
+                    importado: true,
                     numeroSI : si[i][0],
                     nomeSI : si[i][1],
                     identificacao:{

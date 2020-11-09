@@ -97,6 +97,8 @@
                 :ppd="ppd"
                 :semaforos="semaforos"
                 :listaLegislacao="listaLegislacao"
+                :classesSI="classesSI"
+                :classesDaFonteL="classesDaFonteL"
                 @newSistemasRelacionados="newSistemasRelacionados($event, ppd.si.avaliacao.sistemasRelacionados)"
                 @unselectSistemasRelacionados="unselectSistemasRelacionados($event)"
               />
@@ -149,7 +151,7 @@ import BlocoEstrategia from "@/components/ppd/criacao/sistemaInformacao/BlocoEst
 
 
 export default {
-  props: ["ppd", "semaforos", "listaLegislacao", "sistema", "entidades", "importarPPD"],
+  props: ["ppd", "semaforos", "listaLegislacao", "sistema", "entidades", "importarPPD", "classesSI", "classesDaFonteL"],
 
   components: {
     InfoBox,

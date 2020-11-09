@@ -46,9 +46,7 @@
                     </template>
 
                     <v-card>
-                      <v-card-title class="headline grey lighten-2">
-                        Sistema de informação
-                      </v-card-title>
+                      <v-card-title class="expansion-panel-heading">Sitema de informação</v-card-title>
                       <div class="v-card__text mt-4">
                         <v-row>
                           <v-col cols="12" xs="12" sm="2">
@@ -57,6 +55,7 @@
                           </v-col>
                           <v-col cols="12" xs="12" sm="4">
                             <v-text-field
+                              label="Não possui"
                               :value="siSpec.numeroSI"
                               readonly
                               solo
@@ -69,37 +68,399 @@
                           </v-col>
                           <v-col cols="12" xs="12" sm="4">
                             <v-text-field
+                              label="Não possui"
                               :value="siSpec.nomeSI"
                               readonly
                               solo
                               dense
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" xs="12" sm="2" v-if="siSpec.identificacao.adminSistema.length > 0">
+                          <div class="separador">Identificação</div>
+                          <v-col cols="12" xs="12" sm="2">
                             <div class="info-label">Administrador do Sistema
                             </div>
                           </v-col>
-                          <v-col cols="12" xs="12" sm="4" v-if="siSpec.identificacao.adminSistema.length > 0">
+                          <v-col cols="12" xs="12" sm="4">
                             <v-text-field
+                              label="Não possui"
                               :value="siSpec.identificacao.adminSistema"
                               readonly
                               solo
                               dense
                             ></v-text-field>
                           </v-col>
-                          <v-col cols="12" xs="12" sm="2" v-if="siSpec.identificacao.adminDados.length > 0">
+                          <v-col cols="12" xs="12" sm="2">
                             <div class="info-label">Administrador dos Dados
                             </div>
                           </v-col>
-                          <v-col cols="12" xs="12" sm="4" v-if="siSpec.identificacao.adminDados.length > 0">
+                          <v-col cols="12" xs="12" sm="4">
                             <v-text-field
+                              label="Não possui"
                               :value="siSpec.identificacao.adminDados"
                               readonly
                               solo
                               dense
                             ></v-text-field>
                           </v-col>
+                          <v-col cols="12" xs="12" sm="2">
+                            <div class="info-label">Proprietário do SI - Entidade pública
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4">
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.identificacao.propSistemaPublico"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2">
+                            <div class="info-label">Proprietário do SI - Entidade privada
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4">
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.identificacao.propSistemaPrivado"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2">
+                            <div class="info-label">Proprietário dos dados
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4">
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.identificacao.propDados"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2">
+                            <div class="info-label">Localização dos dados - Entidade pública
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4">
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.identificacao.localDadosPublico"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Localização dos dados - Entidade privada
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.identificacao.localDadosPrivado"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Definição formal de responsabilidades
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.identificacao.defResponsavel"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Insourcing
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.identificacao.insourcing"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Outsourcing
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.identificacao.outsourcing"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Notas
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.identificacao.notas"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
                         </v-row>
+                        <div class="separador">Avaliação</div>
+                        <v-row>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Descrição
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="10" >
+                            <v-textarea
+                              label="Não possui"
+                              :value="siSpec.avaliacao.descricao"
+                              readonly
+                              rows="3"
+                              max-rows="6"
+                              solo
+                              dense
+                            ></v-textarea>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Decomposição
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.decomposicao"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Código de classificação da classe / série
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.codClasse"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">N.º de ref.ª da classe / série
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.numeroClasse"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Título da classe / série
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.tituloClasse"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">PCA da classe / série
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.pcaClasse"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Forma de contagem dos prazos
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.formaContagemPrazos"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Destino Final da classe / série
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.destinoFinalClasse"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">PCA do SI
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.pcaSI"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Destino final do SI
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.desfinoFinalSI"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">SI relacionado: n.º de referência
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.siRelacionado"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">SI relacionado: tipo de relação
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.siRelacionadoRelacao"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Atividade do SI
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.estadoSI"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Grau de utilização do SI
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.grauUtilizacaoSI"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Criticidade do SI
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.criticidadeSI"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">SI é objeto de preservação
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.siObjetoPreservacao"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="2" >
+                            <div class="info-label">Notas
+                            </div>
+                          </v-col>
+                          <v-col cols="12" xs="12" sm="4" >
+                            <v-text-field
+                              label="Não possui"
+                              :value="siSpec.avaliacao.notas"
+                              readonly
+                              solo
+                              dense
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                        <div class="separador">Caracterização</div>
+                        <v-row>
+                          <v-col cols="12" xs="12" sm="12" >
+                            <div class="info-label">Em construção...
+                            </div>
+                          </v-col>
+                        </v-row>
+                        <div class="separador">Estratégia</div>
+                        <v-row>
+                          <v-col cols="12" xs="12" sm="12" >
+                            <div class="info-label">Em construção...
+                            </div>
+                          </v-col>
+                        </v-row>
+
                       </div>
                       <v-divider></v-divider>
                       <v-card-actions>
@@ -155,7 +516,7 @@ export default {
       headers: [
         { text: "Número", value: "numeroSI" },
         { text: "Nome", value: "nomeSI" },
-        { text: "Alterar", value: ""},
+        { text: "Ver", value: ""},
         { text: "Remover", value: "" }
       ],
 
@@ -201,27 +562,52 @@ export default {
     },
 
     item2Show: function(item){
-      this.siSpec.numeroSI = item.numeroSI,
-      this.siSpec.numeroSI= item.numeroSI,
-      this.siSpec.nomeSI= item.nomeSI,
-      //this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema,
-      this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
-      this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
-      this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico,
-      this.siSpec.identificacao.propSistemaPrivado= item.identificacao.propSistemaPrivado,
-      this.siSpec.identificacao.propDados= item.identificacao.propDados,
-      this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico,
-      this.siSpec.identificacao.localDadosPrivado= item.identificacao.localDadosPrivado,
-      this.siSpec.identificacao.userList= item.identificacao.userList,
-      this.siSpec.identificacao.defResponsavel= item.identificacao.defResponsavel,
-      this.siSpec.identificacao.expressaoResponsavel=item.identificacao.expressaoResponsavel,
-      this.siSpec.identificacao.insourcing= item.identificacao.insourcing,
-      this.siSpec.identificacao.outsourcing= item.identificacao.outsourcing,
-      this.siSpec.identificacao.notas= item.identificacao.notas,
-      this.siSpec.avaliacao={},
-      this.siSpec.caracterizacao={},
-      this.siSpec.estrategia={}
+      this.siSpec.numeroSI= item.numeroSI;
+      this.siSpec.nomeSI= item.nomeSI;
+      this.siSpec.identificacao.propSistemaPrivado= item.identificacao.propSistemaPrivado;
+      this.siSpec.identificacao.localDadosPrivado= item.identificacao.localDadosPrivado;
+      this.siSpec.identificacao.userList= item.identificacao.userList;
+      this.siSpec.identificacao.defResponsavel= item.identificacao.defResponsavel;
+      this.siSpec.identificacao.expressaoResponsavel=item.identificacao.expressaoResponsavel;
+      this.siSpec.identificacao.insourcing= item.identificacao.insourcing;
+      this.siSpec.identificacao.outsourcing= item.identificacao.outsourcing;
+      this.siSpec.identificacao.notas= item.identificacao.notas;
+      this.siSpec.avaliacao.descricao= item.avaliacao.descricao;
+      this.siSpec.avaliacao.decomposicao= item.avaliacao.decomposicao;
+      this.siSpec.avaliacao.codClasse= item.avaliacao.codClasse;
+      this.siSpec.avaliacao.numeroClasse= item.avaliacao.numeroClasse;
+      this.siSpec.avaliacao.tituloClasse= item.avaliacao.tituloClasse;
+      this.siSpec.avaliacao.pcaClasse= item.avaliacao.pcaClasse;
+      this.siSpec.avaliacao.formaContagemPrazos= item.avaliacao.formaContagemPrazos;
+      this.siSpec.avaliacao.destinoFinalClasse= item.avaliacao.destinoFinalClasse;
+      this.siSpec.avaliacao.pcaSI= item.avaliacao.pcaSI;
+      this.siSpec.avaliacao.desfinoFinalSI= item.avaliacao.desfinoFinalSI;
+      this.siSpec.avaliacao.siRelacionado= item.avaliacao.siRelacionado;
+      this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.siRelacionadoRelacao;
+      this.siSpec.avaliacao.estadoSI= item.avaliacao.estadoSI;
+      this.siSpec.avaliacao.grauUtilizacaoSI= item.avaliacao.grauUtilizacaoSI;
+      this.siSpec.avaliacao.criticidadeSI= item.avaliacao.criticidadeSI;
+      this.siSpec.avaliacao.siObjetoPreservacao= item.avaliacao.siObjetoPreservacao;
+      this.siSpec.avaliacao.notas= item.avaliacao.notas;
+      this.siSpec.caracterizacao={};
+      this.siSpec.estrategia={};
+
+      if(item.importado){
+        this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema
+        this.siSpec.identificacao.adminDados= item.identificacao.adminDados,
+        this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico,
+        this.siSpec.identificacao.propDados= item.identificacao.propDados,
+        this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico
+      }
+      else{
+        this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
+        this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
+        this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
+        this.siSpec.identificacao.propDados= item.identificacao.propDados.map(e => e.sigla).toString(),
+        this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString()
+      }
     }
+
   }
 };
 </script>

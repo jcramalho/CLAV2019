@@ -133,76 +133,7 @@
                   </div>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Selecionados</div>
-            </v-col>
-            <v-col v-if="selecionadosTabelaFL.length > 0">
-              <v-data-table
-                :headers="headersSelecionados"
-                :items="selecionadosTabelaFL"
-                class="elevation-1"
-                :footer-props="footer_props"
-                :page.sync="paginaSelect"
-              >
-                <template v-slot:header="props">
-                  <tr>
-                    <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
-                  </tr>
-                </template>
-
-                <template v-slot:item="props">
-                  <tr>
-                    <td>{{ props.item.codigo }}</td>
-                    <td>{{ props.item.referencia }}</td>
-                    <td>{{ props.item.titulo }}</td>
-                    <td>
-                      <v-btn small color="red darken-2" dark rounded @click="unselectClasse(props.item)">
-                        <v-icon dark>remove_circle_outline</v-icon>
-                      </v-btn>
-                    </td>
-                  </tr>
-                </template>
-              </v-data-table>
-            </v-col>
-            <v-col v-else>
-              <v-alert :value="true" type="warning">Não tem nenhuma classe selecionada...</v-alert>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col xs="2" sm="2" class="mt-3">
-              <div class="info-label">
-                Tabela de Seleção
-              </div>
-            </v-col>
-            <v-col xs="3" sm="3"/>
-            <v-col xs="5" sm="5">
-              <v-text-field
-                v-if="!tree_ou_tabela"
-                label="Procurar"
-                v-model="search"
-                append-icon="search"
-                single-line
-                hide-details
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-data-table
-                :headers="headers"
-                :items="classeSelecionada"
-                item-key="idClasse"
-                :search="search"
-                class="elevation-1"
-                :sort-by="['codigo']"
-                :footer-props="footer_props"
-                :page.sync="paginaTabela"
-                @click:row="clicked">
-              >
-              </v-data-table>
-            </v-col>
-          </v-row>
+          
           <v-row>
             <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Adicionar sistema de informação
@@ -217,6 +148,8 @@
             :semaforos="semaforos"
             :listaLegislacao="listaLegislacao"
             :importarPPD="importarPPD"
+            :classesSI="classesSI"
+            :classesDaFonteL="classesDaFonteL"
           />
           <SistemaOps
             :sistema="ppd.sistemasInfo"
@@ -258,6 +191,7 @@ const criteriosLabels = require("@/config/labels").criterios;
 import InfoBox from "@/components/generic/infoBox.vue";
 import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
 import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
+import ClassesVue from '../../../views/classes/Classes.vue';
 //import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
 
 
@@ -381,11 +315,11 @@ export default {
     tree_ou_tabela: false,
     search: "",
     classesTree: [],
-    classeSelecionada: [],
+    classesDaFonteL: [],
+    classesSI: [],
     paginaTabela: 1,
-    paginaSelect: 1,
     expanded: [],
-    selecionadosTabelaFL: [],
+
 
     footer_props: {
         "items-per-page-text": "Classes por página",
@@ -399,12 +333,7 @@ export default {
       {text: "PCA", sortable: false, value: "pca"},
       {text: "Destino Final", sortable: false, value: "df"},
     ],
-    headersSelecionados:[
-      {text: "Código", sortable: false, value: "codigo"},
-      {text: "Referência", sortable: false, value: "referencia"},
-      {text: "Título", sortable: false, value: "titulo"},
-      { text: "Remover", align: "left", sortable: false, value: "" },
-    ],
+
     headersLC: [
       {text: "Código", sortable: false, value: "codigo"},
       {text: "Título", sortable: false, value: "titulo"},
@@ -441,6 +370,8 @@ export default {
       critGestionarioAdicionado: false
     },
 
+
+
   }),
 
 
@@ -455,15 +386,22 @@ export default {
 
   methods: {
 
-
   //-------Fonte Legitimacao-------
     loadConsultaPGD: async function(id) {
       try {
         var response = await this.$request("get", "/pgd/"+id);
-        this.classeSelecionada = response.data;
-      }
-        catch (err) {
-          return err;
+        //this.classesSI = await prepararClasses(response.data);
+        this.classesDaFonteL = response.data;
+        for (var c of response.data) {
+          if(c.codigo){
+            this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , id:c.classe});
+          }
+          else{
+            this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , id:c.classe})
+          }
+        }
+      }catch (err) {
+        return err;
       }
     },
 
@@ -517,20 +455,7 @@ export default {
         }
       return myClasses
     },
-    prepararClasses: async function(classes) {
-      var myClasses = [];
-      for(var c of classes) {
-        c.filhos = []
 
-        if(c.nivel == 1) {
-          myClasses.push(c)
-        }
-        else {
-          myClasses = this.procuraClasse(c,myClasses,c.classePai)
-        }
-      }
-      return myClasses;
-    },
     //--------------------
     //----------------------------------------------
     prepararLeg: async function(leg) {
@@ -545,17 +470,6 @@ export default {
       }
     },
 
-    clicked(item) {
-      var index = this.classeSelecionada.findIndex(e => e.classe === item.classe);
-      this.selecionadosTabelaFL.push(item)
-      this.classeSelecionada.splice(index,1);
-    },
-
-    unselectClasse: function(item) {
-      this.classeSelecionada.push(item);
-      var index = this.selecionadosTabelaFL.findIndex(e => e.classe === item.classe);
-      this.selecionadosTabelaFL.splice(index, 1);
-    },
 
   //-------Fonte Legitimacao-------
 
