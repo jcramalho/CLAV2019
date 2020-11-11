@@ -2,7 +2,7 @@ FROM node:14
 COPY ./ /app
 WORKDIR /app
 RUN npm install
-RUN npm audit fix 
+RUN npm audit fix -f
 RUN npm run build
 
 FROM nginx:1.19
