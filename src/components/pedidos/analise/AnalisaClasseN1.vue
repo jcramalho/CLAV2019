@@ -105,7 +105,12 @@
 
     <v-row>
       <v-spacer />
-      <PO operacao="Analisar" @avancarPedido="encaminharPedido($event)" />
+      <PO
+        :operacao="validar ? 'Validar' : 'Analisar'"
+        @avancarPedido="encaminharPedido($event)"
+        @finalizarPedido="verificaEstadoCampos($event)"
+        @devolverPedido="despacharPedido($event)"
+      />
     </v-row>
 
     <!-- Dialog da nota -->
@@ -141,6 +146,14 @@
         @adicionar="adicionarNotaAplicacao($event, notaDialogApp.campo)"
       />
     </v-dialog>
+
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="fechaDialogConfirmacao()"
+        @confirma="finalizarPedido(dialogConfirmacao.dados)"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -151,6 +164,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import Loading from "@/components/generic/Loading";
 import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import AdicionarNotaAplicacao from "@/components/pedidos/generic/AdicionarNotaAplicacao";
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
 
 import ErroDialog from "@/components/generic/ErroDialog";
@@ -159,12 +173,12 @@ import {
   comparaSigla,
   mapKeys,
   identificaItemAdicionado,
-  adicionarNotaComRemovidos,
+  adicionarNotaComRemovidos
 } from "@/utils/utils";
 import { createCipher } from "crypto";
 
 export default {
-  props: ["p"],
+  props: { p: Object, validar: Boolean },
 
   components: {
     PO,
@@ -173,6 +187,7 @@ export default {
     EditarCamposDialog,
     ErroDialog,
     AdicionarNotaAplicacao,
+    ConfirmacaoOperacao
   },
 
   data() {
@@ -183,7 +198,14 @@ export default {
       nota: "",
       animacoes: {},
       esconderOperacoes: {},
-      allowedInfo: ["nivel", "codigo", "titulo", "notasAp", "notasEx"],
+      allowedInfo: [
+        "nivel",
+        "codigo",
+        "descricao",
+        "titulo",
+        "notasAp",
+        "notasEx"
+      ],
       novoHistorico: {},
       notasAppHeader: [
         { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
@@ -193,35 +215,40 @@ export default {
           class: "subtitle-1",
           sortable: false,
           width: "10%",
-          align: "center",
-        },
+          align: "center"
+        }
       ],
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       footerProps: {
         "items-per-page-text": "Notas por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
+        "items-per-page-all-text": "Todas"
       },
       tipologias: [],
       notaDialogApp: {
         visivel: false,
         campo: "",
-        nota: "",
+        nota: ""
       },
       notaDialog: {
         visivel: false,
         campo: "",
-        nota: "",
+        nota: ""
+      },
+      dialogConfirmacao: {
+        visivel: false,
+        mensagem: "",
+        dados: null
       },
       editaCampo: {
         visivel: false,
         nome: "",
         key: "",
-        valorAtual: "",
-      },
+        valorAtual: ""
+      }
     };
   },
 
@@ -263,7 +290,7 @@ export default {
 
     historico() {
       return this.p.historico;
-    },
+    }
   },
   methods: {
     transformaKeys(key) {
@@ -281,7 +308,7 @@ export default {
       this.notaDialog.visivel = false;
       this.novoHistorico[dados.campo] = {
         ...this.novoHistorico[dados.campo],
-        nota: dados.nota,
+        nota: dados.nota
       };
     },
 
@@ -290,14 +317,14 @@ export default {
         visivel: true,
         nome: this.transformaKeys(campo),
         key: campo,
-        valorAtual: this.dados[campo],
+        valorAtual: this.dados[campo]
       };
     },
 
     verifica(campo) {
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
-        cor: "verde",
+        cor: "verde"
       };
 
       this.animacoes[campo] = !this.animacoes[campo];
@@ -306,7 +333,7 @@ export default {
     anula(campo) {
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
-        cor: "vermelho",
+        cor: "vermelho"
       };
 
       this.animacoes[campo] = !this.animacoes[campo];
@@ -316,6 +343,14 @@ export default {
       this.editaCampo.visivel = false;
     },
 
+    fechaDialogConfirmacao() {
+      this.dialogConfirmacao = {
+        visivel: false,
+        mensagem: "",
+        dados: null
+      };
+    },
+
     editarCampo(event) {
       this.editaCampo.visivel = false;
 
@@ -323,7 +358,7 @@ export default {
       this.novoHistorico[event.campo.key] = {
         ...this.novoHistorico[event.campo.key],
         dados: event.dados,
-        cor: "amarelo",
+        cor: "amarelo"
       };
 
       this.esconderOperacoes[event.campo.key] = true;
@@ -344,7 +379,7 @@ export default {
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
         dados: this.dados[campo],
-        cor: "amarelo",
+        cor: "amarelo"
       };
 
       this.esconderOperacoes[campo] = true;
@@ -359,7 +394,7 @@ export default {
         this.novoHistorico[campo] = {
           ...this.novoHistorico[campo],
           cor: "amarelo",
-          dados: this.dados[campo],
+          dados: this.dados[campo]
         };
 
         this.animacoes[campo] = !this.animacoes[campo];
@@ -375,13 +410,50 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id,
+            id: item.id
           };
         });
       } catch (error) {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem =
           "Erro ao carregar os dados, por favor tente novamente";
+      }
+    },
+
+    async despacharPedido(dados) {
+      try {
+        const estado = "Devolvido";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho
+        };
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        pedido.estado = estado;
+
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
+        pedido.historico.push(this.novoHistorico);
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 
@@ -396,7 +468,6 @@ export default {
 
         pedido.estado = estado;
 
-
         this.novoHistorico = adicionarNotaComRemovidos(
           this.historico[this.historico.length - 1],
           this.novoHistorico
@@ -410,15 +481,15 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email,
+            email: dados.utilizadorSelecionado.email
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
@@ -429,7 +500,93 @@ export default {
           "Erro ao distribuir o pedido, por favor tente novamente";
       }
     },
-  },
+    async verificaEstadoCampos(dados) {
+      // procura campos a vermelho
+      const haVermelhos = Object.keys(this.novoHistorico).some(
+        key => this.novoHistorico[key].cor === "vermelho"
+      );
+      // Se existirem abre dialog de confirmação
+      if (haVermelhos)
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          dados: dados
+        };
+      // Caso contrário segue para a finalização do pedido
+      else await this.finalizarPedido(dados);
+    },
+    async finalizarPedido(dados) {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        let numeroErros = 0;
+
+        if (numeroErros === 0) {
+          for (const key in pedido.objeto.dados) {
+            if (
+              pedido.objeto.dados[key] === null ||
+              pedido.objeto.dados[key] === ""
+            ) {
+              delete pedido.objeto.dados[key];
+            }
+          }
+
+          await this.$request("post", "/classes", pedido.objeto.dados);
+
+          const estado = "Validado";
+
+          let dadosUtilizador = this.$verifyTokenUser();
+
+          const novaDistribuicao = {
+            estado: estado,
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho
+          };
+
+          pedido.estado = estado;
+
+          this.novoHistorico = adicionarNotaComRemovidos(
+            this.historico[this.historico.length - 1],
+            this.novoHistorico
+          );
+
+          pedido.historico.push(this.novoHistorico);
+
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao
+          });
+
+          this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
+        } else {
+          this.erroPedido = true;
+        }
+      } catch (e) {
+        this.erroPedido = true;
+
+        let parsedError = Object.assign({}, e);
+        parsedError = parsedError.response;
+
+        if (parsedError !== undefined) {
+          if (parsedError.status === 422) {
+            parsedError.data.forEach(erro => {
+              this.erros.push({
+                parametro: mapKeys(erro.param),
+                mensagem: erro.msg
+              });
+            });
+          }
+        } else {
+          this.erros.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Ocorreu um erro ao aceder à ontologia."
+          });
+        }
+      }
+    }
+  }
 };
 </script>
 
