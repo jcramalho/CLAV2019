@@ -60,11 +60,7 @@
     "@vue/cli-plugin-eslint": "^4.3.1",
     "@vue/cli-plugin-pwa": "^3.12.1",
     "@vue/cli-plugin-typescript": "^3.12.1",
-<<<<<<< HEAD
-    "@vue/cli-plugin-unit-jest": "^3.12.1",
-=======
     "@vue/cli-plugin-unit-jest": "^4.5.8",
->>>>>>> 8b244979... Update de vários packages.
     "@vue/cli-service": "^4.3.1",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",

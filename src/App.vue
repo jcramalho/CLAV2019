@@ -122,7 +122,9 @@ export default {
             this.notificacoes = [];
             var email = this.$verifyTokenUser().email;
             if (email) {
-                this.socket = io.connect('http://localhost:7779'); //lhost.replace('/v2', '')
+                this.socket = io.connect('http://localhost:7779', {
+                    reconnectionAttempts: 1
+                }); //lhost.replace('/v2', '')
                 this.socket.emit('email', {
                     email: email,
                 });
