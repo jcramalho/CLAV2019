@@ -185,8 +185,8 @@
                               N.º de agregações
                             </div>
                           </td>
-                          <td v-if="item.agregacoes.length ==0" style="width:80%;">{{ item.nrAgregacoes }}</td>
-                          <td style="width:80%;">{{ item.agregacoes.length }}</td>
+                          <td v-if="item.agregacoes.length==0" style="width:80%;">{{ item.nrAgregacoes }}</td>
+                          <td v-else style="width:80%;">{{ item.agregacoes.length }}</td>
                         </tr>
                         <tr v-if="item.uiPapel">
                           <td style="width:20%;">

@@ -27,7 +27,7 @@
             <v-card-title>
               {{ tipoPedido }}
               <v-spacer />
-
+              
               <v-chip v-if="pedido.estado === 'Validado'" outlined color="green">
                 {{ pedido.estado }}
                 <v-icon right>assignment_turned_in</v-icon>
@@ -78,6 +78,7 @@
               </span>
               <ShowTSPluri v-if="pedido.objeto.tipo=='TS Pluriorganizacional'" :p="pedido" />
               <ShowTSOrg v-else-if="pedido.objeto.tipo=='TS Organizacional'" :p="pedido" />
+              <ShowAE v-else-if="pedido.objeto.tipo === 'Auto de Eliminação'" :p="pedido" />
               <div v-else v-for="(info, campo) in dados" :key="campo">
                 <v-row
                   v-if="
@@ -201,6 +202,7 @@ import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import Loading from "@/components/generic/Loading";
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
+import ShowAE from "@/components/pedidos/consulta/showSubmissaoAE.vue"
 import { mapKeys } from "@/utils/utils";
 import PedidosDevolvidosVue from "../pedidos/PedidosDevolvidos.vue";
 
@@ -211,7 +213,8 @@ export default {
     ErroAPIDialog,
     Loading,
     ShowTSPluri,
-    ShowTSOrg
+    ShowTSOrg,
+    ShowAE
   },
 
   data() {

@@ -387,6 +387,7 @@ import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasC
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 import Loading from "@/components/generic/Loading";
+import { criarHistorico } from "@/utils/utils";
 
 export default {
   props: ["entidades"],
@@ -468,6 +469,11 @@ export default {
       this.$router.push("/");
     },
     submit: async function() {
+
+      const historico = []
+
+      historico.push(criarHistorico(this.auto))
+
       this.erro = ""
       for(var zc of this.auto.zonaControlo) {
         if(zc.nrAgregacoes ==0 && zc.agregacoes.length==0) {
@@ -497,7 +503,7 @@ export default {
           user: { email: user.email },
           entidade: user.entidade,
           token: this.$store.state.token,
-          historico: []
+          historico: historico
         };
         
         pedidoParams.objetoOriginal = this.auto;
