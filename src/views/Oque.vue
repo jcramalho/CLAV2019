@@ -1,22 +1,24 @@
 <template>
 <v-content class="px-12">
-    <p class="content-title-1">O que é a CLAV</p>
-    <p class="content-text px-8 py-2">
-        Plataforma da Direção-Geral do Livro, dos Arquivos e das Bibliotecas
-        para disponibilizar informação, orientações e ferramentas
-        que facilitem e normalizem as práticas de classificação e avaliação
-        da informação pública.
-    </p>
-    <p class="content-text px-8 py-2">
-        Esta plataforma destina-se a entidades da
-        Administração Pública, a empresas públicas e a outras entidades de
-        Portugal Continental e permite a interação entre estas e a DGLAB.
-    </p>
-    <p class="content-text px-8 py-2">
-        É igualmente destinada ao cidadão, particularmente através da
-        disponibilização do catálogo de processos de negócio da Administração
-        Pública, que integra a Lista Consolidada.
-    </p>
+    <div>
+        <p class="content-title-1">O que é a CLAV</p>
+        <p class="content-text px-8 py-2">
+            Plataforma da Direção-Geral do Livro, dos Arquivos e das Bibliotecas
+            para disponibilizar informação, orientações e ferramentas
+            que facilitem e normalizem as práticas de classificação e avaliação
+            da informação pública.
+        </p>
+        <p class="content-text px-8 py-2">
+            Esta plataforma destina-se a entidades da
+            Administração Pública, a empresas públicas e a outras entidades de
+            Portugal Continental e permite a interação entre estas e a DGLAB.
+        </p>
+        <p class="content-text px-8 py-2">
+            É igualmente destinada ao cidadão, particularmente através da
+            disponibilização do catálogo de processos de negócio da Administração
+            Pública, que integra a Lista Consolidada.
+        </p>
+    </div>
 </v-content>
 </template>
 

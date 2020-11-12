@@ -40,7 +40,7 @@
                                 </v-btn>
                             </v-col>
                         </v-row>
-                        <v-expansion-panels flat multiple v-model="panelsArr" class="mt-4" :value="pesquisaPedidos.painel">
+                        <v-expansion-panels flat multiple v-model="panelsArr" class="mt-4">
                             <PedidosNovos :pedidos="pedidosSubmetidos" :pesquisaPedidos="pesquisaPedidos" @distribuir="distribuiPedido($event)" />
 
                             <PedidosAnalise :pedidos="pedidosDistribuidos" :pesquisaPedidos="pesquisaPedidos" @analisar="analisaPedido($event)" />
@@ -126,7 +126,10 @@ export default {
 
         if (storage !== null && storage !== undefined) {
             if (storage.limpar) localStorage.removeItem('pesquisa-pedidos');
-            else this.pesquisaPedidos = storage;
+            else {
+                this.pesquisaPedidos = storage;
+                this.panelsArr = [this.pesquisaPedidos.painel]
+            }
 
             localStorage.removeItem('pesquisa-pedidos');
         }
@@ -139,6 +142,7 @@ export default {
         // Abrir todos os v-expansion-panel
         expandAll() {
             this.panelsArr = [...Array(this.panelsArrItems).keys()].map((k, i) => i);
+            console.log(this.panelsArr)
         },
         // Fechar todos os v-expansion-panel
         closeAll() {
