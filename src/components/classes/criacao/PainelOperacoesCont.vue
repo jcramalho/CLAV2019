@@ -59,7 +59,7 @@
           <v-card-actions>
             <v-btn
               color="red darken-4"
-              round
+              rounded
               dark
               @click="errosValidacao = false"
             >

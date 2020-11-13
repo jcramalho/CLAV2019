@@ -30,7 +30,7 @@
                 {{ props.item.objeto.acao }} - {{ props.item.objeto.tipo }}
               </td>
               <td class="subheading">
-                <v-btn color="blue" dark round @click="showPedido(props.item)">
+                <v-btn color="blue" dark rounded @click="showPedido(props.item)">
                   {{ props.item.objeto.codigo }}
                 </v-btn>
               </td>
@@ -39,7 +39,7 @@
                   v-if="props.item.estado == 'Submetido'"
                   color="blue"
                   dark
-                  round
+                  rounded
                   @click="distribuirPedido(props.item)"
                 >
                   Distribuir
@@ -102,7 +102,7 @@
           <v-card-actions>
             <v-btn
               color="indigo darken-4"
-              round
+              rounded
               dark
               @click="guardarDistribuicao"
             >
@@ -111,7 +111,7 @@
 
             <v-btn
               color="red darken-4"
-              round
+              rounded
               dark
               @click="cancelarDistribuicao"
             >

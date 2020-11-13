@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap>
       <v-flex>
-        <v-btn small color="red darken-2" dark round @click="removerPCA">
+        <v-btn small color="red darken-2" dark rounded @click="removerPCA">
           Remover PCA
           <v-icon dark>remove_circle</v-icon>
         </v-btn>
