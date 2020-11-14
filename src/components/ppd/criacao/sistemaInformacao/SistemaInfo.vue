@@ -7,22 +7,24 @@
       transition="dialog-bottom-transition"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-col cols="12" xs="12" sm="4">
-          <v-btn
-            v-if="importarPPD === false"
-            color="indigo darken-2"
-            dark
-            class="ma-2"
-            v-bind="attrs"
-            v-on="on"
-          >
-            Novo SI
-            <v-icon dark right>add_circle_outline</v-icon>
-          </v-btn>
-          <v-btn v-if="importarPPD === true" color="indigo lighten-2" dark class="ma-2" @click="importarSI = true">
-            Importar SI
-            <v-icon dark right>file_upload</v-icon>
-          </v-btn>
+        <v-col cols="12" xs="12" sm="3">
+          <div>
+            <v-btn
+              v-if="importarPPD === false"
+              v-bind="attrs"
+              v-on="on"
+              dark
+              class="ma-2"
+              color="indigo darken-2"
+            >
+              Adicionar novo SI
+              <v-icon dark right>add_circle_outline</v-icon>
+            </v-btn>
+            <v-btn v-if="importarPPD === true" color="indigo lighten-2" dark class="ma-2" @click="importarSI = true">
+              Importar SI
+              <v-icon dark right>file_upload</v-icon>
+            </v-btn>
+          </div>
         </v-col>
       </template>
 

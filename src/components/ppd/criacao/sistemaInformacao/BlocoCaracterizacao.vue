@@ -3,12 +3,15 @@
     <!-- CONTEXTO DE CARACTERIZAÇÃO DO PPD -->
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
-        3.  Caracterização do sistema de informação (SI)
+        3.  Caracterização tecnológica do sistema de informação
         <InfoBox header="Caracterização SI" :text="myhelp.Ppd.Caracterizacao.geral"  helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row>
+         <v-col cols="12" xs="12" sm="12">
+            <div class="separador">Dependência tecnológica</div>
+        </v-col>
         <v-col cols="12" xs="12" sm="3">
             <div class="info-label">Nível de dependência do Software</div>
         </v-col>

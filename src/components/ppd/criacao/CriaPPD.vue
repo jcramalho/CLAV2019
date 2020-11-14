@@ -133,14 +133,7 @@
                   </div>
             </v-col>
           </v-row>
-          
-          <v-row>
-            <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Adicionar sistema de informação
-              <InfoBox header="Adicionar SI" :text="myhelp.Ppd.novoSI"/>
-              </div>
-            </v-col>
-          </v-row>
+
           <SistemaInfo
             :ppd="ppd"
             :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo, ppd.listaSistemasInfoAuxiliar)"
