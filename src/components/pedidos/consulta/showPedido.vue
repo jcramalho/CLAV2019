@@ -143,7 +143,8 @@
         v-if="
           p.estado === 'Apreciado' ||
           p.estado === 'Reapreciado' ||
-          (p.objeto.tipo === 'RADA' && p.estado === 'Em Despacho')
+          p.estado === 'Em Despacho' ||
+          p.estado === 'Devolvido para validação'
         "
         color="indigo accent-4"
         dark
@@ -273,7 +274,7 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         const estado =
-          this.p.estado == "Em Despacho"
+          this.p.estado == "Em Desspacho"
             ? "Devolvido para validação"
             : "Redistribuído";
 
