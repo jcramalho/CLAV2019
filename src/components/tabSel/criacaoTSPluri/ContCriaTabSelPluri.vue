@@ -281,6 +281,7 @@ export default {
     // Faz a pré-seleção do fecho transitivo dos processos já selecionados
     acrescentaFecho: function(processo) {
       var fecho = this.fechoTransitivo[processo.codigo];
+      !fecho.includes(processo.codigo) ? fecho.push(processo.codigo) : "";
       for (let i = 0; i < fecho.length; i++) {
         var index = this.listaProcessos.procs.findIndex(
           p => p.codigo == fecho[i]

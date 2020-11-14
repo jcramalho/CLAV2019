@@ -284,6 +284,7 @@ export default {
 
     acrescentaFecho: function(processo) {
       var fecho = this.fechoTransitivo[processo.codigo];
+      !fecho.includes(processo.codigo) ? fecho.push(processo.codigo) : "";
       for (let i = 0; i < fecho.length; i++) {
         var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
         if (index != -1) {
@@ -302,6 +303,7 @@ export default {
     // Reverte a seleção
     retiraFecho: async function(processo) {
       var fecho = this.fechoTransitivo[processo.codigo];
+      !fecho.includes(processo.codigo) ? fecho.push(processo.codigo) : "";
       for (let i = 0; i < fecho.length; i++) {
         var index = this.listaProcs.procs.findIndex(p => p.codigo == fecho[i]);
         if (index != -1) {
