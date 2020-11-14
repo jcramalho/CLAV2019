@@ -34,8 +34,6 @@
           :items="dadosTabela"
           :search.sync="procurar"
           class="elevation-1"
-          sortDesc
-          sort-by="data"
           :custom-sort="ordenaTabela"
           :footer-props="footer_props"
           :page.sync="paginaTabela"

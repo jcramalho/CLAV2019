@@ -5,7 +5,7 @@
       @drawerEstatisticas="drawerEstatisticas()"
     />
 
-    <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="0">
+    <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="-1">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
