@@ -243,6 +243,17 @@ export default {
       });
     },
 
+    ordenaTabela2(items, index, isDesc){
+      items.sort((a, b) => {
+        if (isDesc != "false") {
+          return a[index] < b[index] ? -1 : 1
+        } else {
+          return b[index] < a[index] ? -1 : 1
+        }
+      })
+      return items
+    },
+
     ordenaTabela(items, index, isDesc) {
       items.sort((a, b) => {
         if (index[0] === "codigo") {
