@@ -94,11 +94,13 @@
             <ValidaTSPluri
               v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'"
               :p="pedido"
+              fase="validacao"
             />
 
             <ValidaTSOrg
               v-if="pedido.objeto.tipo == 'TS Organizacional'"
               :p="pedido"
+              fase="validacao"
             />
           </v-card-text>
 
@@ -183,8 +185,8 @@ import ValidaEntidade from "@/components/pedidos/validacao/ValidaEntidade";
 import ValidaLegislacao from "@/components/pedidos/validacao/ValidaLegislacao";
 import ValidaTipologiaEntidade from "@/components/pedidos/validacao/ValidaTipologiaEntidade";
 import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
-import ValidaTSPluri from "@/components/pedidos/validacao/ValidaTSPluri";
-import ValidaTSOrg from "@/components/pedidos/validacao/ValidaTSOrg";
+import ValidaTSPluri from "@/components/pedidos/analise/AnalisaTSPluri";
+import ValidaTSOrg from "@/components/pedidos/analise/AnalisaTSOrg";
 import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
 import ValidaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
 
@@ -244,7 +246,11 @@ export default {
   async created() {
     try {
       const { data } = await this.$request("get", "/pedidos/" + this.idp);
-      if (data.estado !== "Apreciado" && data.estado !== "Reapreciado" && data.estado !== "Devolvido para validação")
+      if (
+        data.estado !== "Apreciado" &&
+        data.estado !== "Reapreciado" &&
+        data.estado !== "Devolvido para validação"
+      )
         throw new URIError("Este pedido não pertence a este estado.");
 
       this.pedido = data;
