@@ -34,8 +34,6 @@
           :items="dadosTabela"
           :search.sync="procurar"
           class="elevation-1"
-          sortDesc
-          sort-by="data"
           :custom-sort="ordenaTabela"
           :footer-props="footer_props"
           :page.sync="paginaTabela"
@@ -243,6 +241,17 @@ export default {
 
         return dados;
       });
+    },
+
+    ordenaTabela2(items, index, isDesc){
+      items.sort((a, b) => {
+        if (isDesc != "false") {
+          return a[index] < b[index] ? -1 : 1
+        } else {
+          return b[index] < a[index] ? -1 : 1
+        }
+      })
+      return items
     },
 
     ordenaTabela(items, index, isDesc) {

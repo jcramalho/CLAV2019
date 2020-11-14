@@ -11,7 +11,14 @@
       <v-col>
         <div class="info-conteudo">
           <slot name="campo">
-            <span v-if="tipo == 'array'">
+            <span v-if="tipo == 'procsAselecionar'">
+              <ul>
+                <li v-for="(v, i) in historicoCampo.dados" :key="i">
+                  {{ v.codigo }} - {{ v.titulo }}
+                </li>
+              </ul>
+            </span>
+            <span v-else-if="tipo == 'array'">
               <ul>
                 <li v-for="(v, i) in historicoCampo.dados" :key="i">
                   {{ v[arrayValue] }}

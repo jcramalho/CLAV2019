@@ -7,22 +7,24 @@
       transition="dialog-bottom-transition"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-col cols="12" xs="12" sm="4">
-          <v-btn
-            v-if="importarPPD === false"
-            color="indigo darken-2"
-            dark
-            class="ma-2"
-            v-bind="attrs"
-            v-on="on"
-          >
-            Novo SI
-            <v-icon dark right>add_circle_outline</v-icon>
-          </v-btn>
-          <v-btn v-if="importarPPD === true" color="indigo lighten-2" dark class="ma-2" @click="importarSI = true">
-            Importar SI
-            <v-icon dark right>file_upload</v-icon>
-          </v-btn>
+        <v-col cols="12" xs="12" sm="3">
+          <div>
+            <v-btn
+              v-if="importarPPD === false"
+              v-bind="attrs"
+              v-on="on"
+              dark
+              class="ma-2"
+              color="indigo darken-2"
+            >
+              Adicionar novo SI
+              <v-icon dark right>add_circle_outline</v-icon>
+            </v-btn>
+            <v-btn v-if="importarPPD === true" color="indigo lighten-2" dark class="ma-2" @click="importarSI = true">
+              Importar SI
+              <v-icon dark right>file_upload</v-icon>
+            </v-btn>
+          </div>
         </v-col>
       </template>
 
@@ -50,13 +52,6 @@
               @click="dialog = false"
             >
               Cancelar
-            </v-btn>
-            <v-btn
-              dark
-              text
-              @click="newSistema()"
-            >
-              Guardar
             </v-btn>
           </v-toolbar-items>
         </v-app-bar>
@@ -104,6 +99,8 @@
                 :ppd="ppd"
                 :semaforos="semaforos"
                 :listaLegislacao="listaLegislacao"
+                :classesSI="classesSI"
+                :classesDaFonteL="classesDaFonteL"
                 @newSistemasRelacionados="newSistemasRelacionados($event, ppd.si.avaliacao.sistemasRelacionados)"
                 @unselectSistemasRelacionados="unselectSistemasRelacionados($event)"
               />
@@ -116,6 +113,17 @@
                 :ppd="ppd"
               />
             </v-expansion-panels>
+          </v-row>
+            <v-row align="center" justify="space-around">
+            <v-btn
+            color="indigo darken-2"
+            dark
+            class="ma-2"
+            rounded
+            @click="newSistema()"
+            >
+              Guardar
+            </v-btn>
           </v-row>
           <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
             <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
@@ -145,7 +153,7 @@ import BlocoEstrategia from "@/components/ppd/criacao/sistemaInformacao/BlocoEst
 
 
 export default {
-  props: ["ppd", "semaforos", "listaLegislacao", "sistema", "entidades", "importarPPD"],
+  props: ["ppd", "semaforos", "listaLegislacao", "sistema", "entidades", "importarPPD", "classesSI", "classesDaFonteL"],
 
   components: {
     InfoBox,
@@ -285,19 +293,24 @@ export default {
         var sistema = {
           numeroSI: this.ppd.si.numeroSI,
           nomeSI: this.ppd.si.nomeSI,
-          adminSistema: this.ppd.si.identificacao.adminSistema,
-          adminDados: this.ppd.si.identificacao.adminDados,
-          propSistemaPublico: this.ppd.si.identificacao.propSistemaPublico,
-          propSistemaPrivado: this.ppd.si.identificacao.propSistemaPrivado,
-          propDados: this.ppd.si.identificacao.propDados,
-          localDadosPublico: this.ppd.si.identificacao.localDadosPublico,
-          localDadosPrivado: this.ppd.si.identificacao.localDadosPrivado,
-          userList: this.ppd.si.identificacao.userList,
-          defResponsavel: this.ppd.si.identificacao.defResponsavel,
-          expressaoResponsavel:this.ppd.si.identificacao.expressaoResponsavel,
-          insourcing: this.ppd.si.identificacao.insourcing,
-          outsourcing: this.ppd.si.identificacao.outsourcing,
-          notas: this.ppd.si.identificacao.notas,
+          identificacao:{
+            adminSistema: this.ppd.si.identificacao.adminSistema,
+            adminDados: this.ppd.si.identificacao.adminDados,
+            propSistemaPublico: this.ppd.si.identificacao.propSistemaPublico,
+            propSistemaPrivado: this.ppd.si.identificacao.propSistemaPrivado,
+            propDados: this.ppd.si.identificacao.propDados,
+            localDadosPublico: this.ppd.si.identificacao.localDadosPublico,
+            localDadosPrivado: this.ppd.si.identificacao.localDadosPrivado,
+            userList: this.ppd.si.identificacao.userList,
+            defResponsavel: this.ppd.si.identificacao.defResponsavel,
+            expressaoResponsavel:this.ppd.si.identificacao.expressaoResponsavel,
+            insourcing: this.ppd.si.identificacao.insourcing,
+            outsourcing: this.ppd.si.identificacao.outsourcing,
+            notas: this.ppd.si.identificacao.notas,
+          },
+          avaliacao:{},
+          caracterizacao:{},
+          estrategia:{}
         };
         this.ppd.si.numeroSI= "";
         this.ppd.si.nomeSI= "";

@@ -256,6 +256,19 @@
                 </li>
               </ul>
             </span>
+            <span v-else-if="tipo == 'procsAselecionar'">
+              <ul>
+                <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
+                  {{ v.codigo }} - {{ v.titulo }}
+                  <v-badge
+                    v-if="!dadosOriginais[campoValue].some(e => e == v)"
+                    right
+                    dot
+                    inline
+                  ></v-badge>
+                </li>
+              </ul>
+            </span>
             <span
               v-else-if="
                 tipo == 'participantes' && !!novoHistorico[campoValue].dados[0]

@@ -72,13 +72,14 @@
               :p="pedido"
             />
 
-            <AnalisaClasseN1
+            <ValidaClasseN1
               v-else-if="
                 pedido.objeto.tipo === 'Classe_N3' ||
                   pedido.objeto.tipo === 'Classe_N1' ||
                   pedido.objeto.tipo === 'Classe_N2'
               "
               :p="pedido"
+              validar
             />
 
             <ValidaAE
@@ -187,7 +188,7 @@ import ValidaAE from "@/components/pedidos/validacao/ValidaAE";
 import ValidaTSPluri from "@/components/pedidos/analise/AnalisaTSPluri";
 import ValidaTSOrg from "@/components/pedidos/analise/AnalisaTSOrg";
 import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
-import AnalisaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
+import ValidaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
@@ -210,7 +211,7 @@ export default {
     ValidaEditaEntidade,
     ValidaEditaLegislacao,
     ValidaEditaTipologiaEntidade,
-    AnalisaClasseN1,
+    ValidaClasseN1,
     ValidaAE,
     ValidaTSPluri,
     ValidaTSOrg,

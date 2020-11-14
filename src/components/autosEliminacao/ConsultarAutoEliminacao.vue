@@ -8,7 +8,7 @@
         <table class="consulta ma-3">
           <tr>
             <td style="width:20%;">
-              <div class="info-label">Número</div>
+              <div class="info-label">Nº do despacho</div>
             </td>
             <td style="width:80%;">
               {{ ((auto.id || "").split("ae_")[1] || "").replace(/\_/g,"/") }}
@@ -16,7 +16,7 @@
           </tr>
           <tr>
             <td style="width:20%;">
-              <div class="info-label">Data de Autenticação</div>
+              <div class="info-label">Data do despacho</div>
             </td>
             <td style="width:80%;">
               {{ auto.data }}
@@ -27,7 +27,7 @@
               <div class="info-label">Entidade Responsável</div>
             </td>
             <td style="width:80%;">
-              <a :href="'/entidades/' + auto.entidade">{{ (auto.entidade || "").split("_")[1] +" - "+auto.entidadeNome}}</a>{{" ("+auto.responsavel+")"}}
+              <a :href="'/entidades/' + auto.entidade">{{ (auto.entidade || "").split("_")[1] +" - "+auto.entidadeNome}}</a>
             </td>
           </tr>
           <tr v-if="auto.legislacao">

@@ -163,7 +163,7 @@
                 v-if="stepNo > 2"
                 color="indigo darken-4"
                 class="white--text"
-                @click="submeterTS"
+                @click="verificaTS"
                 >Submeter</v-btn
               >
 
@@ -195,6 +195,14 @@
             </v-card-actions>
           </v-stepper-content>
         </v-stepper>
+        <!-- Dialog de confirmação de operação -->
+        <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+          <ConfirmacaoOperacao
+            :mensagem="dialogConfirmacao.mensagem"
+            @fechar="dialogConfirmacao.visivel = false"
+            @confirma="submeterTS()"
+          />
+        </v-dialog>
       </v-card>
     </v-col>
   </v-row>
@@ -207,6 +215,7 @@ import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vu
 import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue";
 import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValidacaoErros.vue";
 import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
 export default {
   components: {
@@ -215,7 +224,8 @@ export default {
     DialogCancelar,
     DialogValidacaoOK,
     DialogValidacaoErros,
-    DialogSair
+    DialogSair,
+    ConfirmacaoOperacao
   },
   data() {
     return {
@@ -224,6 +234,11 @@ export default {
         designacao: "",
         entidades: [],
         listaProcessos: {}
+      },
+      dialogConfirmacao: {
+        visivel: false,
+        mensagem: "",
+        dados: null
       },
       // Numero do passo da criação de TS
       stepNo: 1,
@@ -282,6 +297,7 @@ export default {
           this.listaProcessos.numProcessosSelecionados = 0;
           this.listaProcessos.numProcessosPreSelecionados = 0;
           this.listaProcessos.processosPreSelecionados = 0;
+          this.listaProcessos.procsAselecionar = [];
           this.listaProcessos.procs = [];
           var response = await this.$request(
             "get",
@@ -429,6 +445,32 @@ export default {
         console.log("Erro ao guardar trabalho: " + err);
       }
     },
+    //Verifica a TS antes de submeter
+    verificaTS: async function() {
+      var procs = this.listaProcessos.procs.filter(p => p.edited);
+      if (
+        procs
+          .map(p => p.codigo)
+          .sort()
+          .join(",") !==
+          this.listaProcessos.procsAselecionar
+            .map(p => p.codigo)
+            .sort()
+            .join(",") &&
+        this.listaProcessos.numProcessosPreSelecionados -
+          this.listaProcessos.processosPreSelecionados !=
+          0
+      ) {
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem " +
+            (this.listaProcessos.numProcessosPreSelecionados -
+              this.listaProcessos.processosPreSelecionados) +
+            " processos por selecionar, deseja mesmo continuar com a submissão do pedido?"
+        };
+      } else await this.submeterTS();
+    },
 
     // Lança o pedido de submissão de uma TS
     submeterTS: async function() {
@@ -445,44 +487,34 @@ export default {
       }
 
       try {
-        //Valida se os processos a selecionar estão todos selecionados
-        if (
-          this.listaProcessos.numProcessosPreSelecionados -
-            this.listaProcessos.processosPreSelecionados !=
-          0
-        ) {
-          this.mensagensErro.push({
-            sobre: "Escolha de processos",
+        var userBD = this.$verifyTokenUser();
+        // Guardam-se apenas os processos que foram alterados
+        this.tabelaSelecao.listaProcessos = this.listaProcessos;
+        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+          p => p.edited
+        );
+        this.tabelaSelecao.listaProcessos.procs.map(p =>
+          this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
+            this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
+              c => c.codigo === p.codigo
+            ),
+            1
+          )
+        );
 
-            mensagem: `Ainda tem ${this.listaProcessos
-              .numProcessosPreSelecionados -
-              this.listaProcessos
-                .processosPreSelecionados} processos por selecionar`
-          });
-          this.numeroErros++;
-          this.validacaoTerminada = true;
-        } else {
-          var userBD = this.$verifyTokenUser();
-          // Guardam-se apenas os processos que foram alterados
-          this.tabelaSelecao.listaProcessos = this.listaProcessos;
-          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-            p => p.edited
-          );
+        var pedidoParams = {
+          tipoPedido: "Criação",
+          tipoObjeto: "TS Pluriorganizacional",
+          novoObjeto: this.tabelaSelecao,
+          criadoPor: userBD.email,
+          user: { email: userBD.email },
+          entidade: userBD.entidade,
+          token: this.$store.state.token,
+          historico: await this.criaHistoricoTS(userBD)
+        };
 
-          var pedidoParams = {
-            tipoPedido: "Criação",
-            tipoObjeto: "TS Pluriorganizacional",
-            novoObjeto: this.tabelaSelecao,
-            criadoPor: userBD.email,
-            user: { email: userBD.email },
-            entidade: userBD.entidade,
-            token: this.$store.state.token,
-            historico: await this.criaHistoricoTS(userBD)
-          };
-
-          var response = await this.$request("post", "/pedidos", pedidoParams);
-          this.$router.push("/pedidos/submissao/" + response.data);
-        }
+        var response = await this.$request("post", "/pedidos", pedidoParams);
+        this.$router.push("/pedidos/submissao/" + response.data);
       } catch (error) {
         console.log("Erro no POST da TS: " + error);
       }
@@ -548,6 +580,22 @@ export default {
           }
         });
       }
+      var procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
+
+      procs.map(p =>
+        this.listaProcessos.procsAselecionar.splice(
+          this.listaProcessos.procsAselecionar.findIndex(
+            c => c.codigo === p.codigo
+          ),
+          1
+        )
+      );
+      historico[0].ts["procsAselecionar"] = {
+        cor: "vermelho",
+        dados: this.listaProcessos.procsAselecionar,
+        nota: null
+      };
+
       return historico;
     },
 
@@ -573,10 +621,21 @@ export default {
     // Validação da TS
     validarTS: async function() {
       //Valida se os processos a selecionar estão todos selecionados
+
+      var procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
+
       if (
+        procs
+          .map(p => p.codigo)
+          .sort()
+          .join(",") !==
+          this.listaProcessos.procsAselecionar
+            .map(p => p.codigo)
+            .sort()
+            .join(",") &&
         this.listaProcessos.numProcessosPreSelecionados -
           this.listaProcessos.processosPreSelecionados !=
-        0
+          0
       ) {
         this.mensagensErro.push({
           sobre: "Escolha de processos",
