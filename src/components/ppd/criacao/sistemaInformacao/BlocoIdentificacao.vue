@@ -3,7 +3,7 @@
     <!-- CONTEXTO DE IDENTIFICAÇÃO DO PPD -->
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
-        1.	Identificação do sistema de informação (SI)
+        1.	Identificação de responsabilidades no sistema de informação
         <InfoBox header="Identificação SI" :text="myhelp.Ppd.Identificacao.geral" helpColor="white"/>
       </div>
     </v-expansion-panel-header>

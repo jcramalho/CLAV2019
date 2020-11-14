@@ -3,7 +3,7 @@
     <!-- CONTEXTO DE AVALIAÇÃO DO PPD -->
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
-        2.	Avaliação do sistema de informação (SI)
+        2.	Avaliação e criticidade do sistema de informação
         <InfoBox header="Avaliação SI" :text="myhelp.Ppd.Avaliacao.geral" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
@@ -23,9 +23,52 @@
               clearable
             ></v-text-field>
           </v-col>
+          <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Decomposição do SI</div>
+          </v-col>
+          <v-col v-if="tabelaDecomposicao.length > 0">
+            <v-data-table
+            :headers="headersDecomp"
+            :items="tabelaDecomposicao"
+            class="elevation-1"
+            :footer-props="footer_Classes"
+            :page.sync="paginaSelectDecomp"
+            >
+              <template v-slot:header="props">
+                  <tr>
+                  <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
+                  </tr>
+              </template>
+
+              <template v-slot:item="props">
+                <tr>
+                <td>{{ props.item.numeroSI }}</td>
+                <td>{{ props.item.numeroSub }}</td>
+                <td>{{ props.item.nomeSub }}</td>
+                <td>
+                  <v-btn small color="red darken-2" dark rounded @click="unselectDecomp(props.item)">
+                  <v-icon dark>remove_circle_outline</v-icon>
+                  </v-btn>
+                </td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-col>
+          <v-col v-else>
+            <v-alert :value="true" type="warning">Não tem nenhuma classe selecionada...</v-alert>
+          </v-col>
         </v-row>
-
-
+        <v-row class="mx-4">
+          <v-btn @click="addDecomposicao=true" dark color="indigo darken-4">Adicionar</v-btn>
+        </v-row>
+        <v-dialog v-model="addDecomposicao">
+          <AddDecomposicao
+            v-bind:tabelaDecomposicao="tabelaDecomposicao"
+            hide-overlay
+            v-bind:numeroSI=ppd.si.numeroSI
+            @guardarDecomp="guardarDecomp($event)"
+          />
+        </v-dialog>
 
 
         <v-row>
@@ -35,7 +78,7 @@
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Selecionados</div>
+              <div class="info-label">Classes</div>
           </v-col>
           <v-col v-if="selecionadosTabelaFL.length > 0">
             <v-data-table
@@ -278,6 +321,7 @@ const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
 import InfoBox from "@/components/generic/infoBox.vue";
+import AddDecomposicao from"@/components/ppd/criacao/sistemaInformacao/AddDecomposicao.vue";
 import AddClasse from"@/components/ppd/criacao/sistemaInformacao/AddClasse.vue";
 
 export default {
@@ -285,6 +329,7 @@ export default {
 
   components: {
     InfoBox,
+    AddDecomposicao,
     AddClasse
   },
 
@@ -293,6 +338,8 @@ export default {
       myhelp: help,
       siTipoRelacao: [],
       loadCheck: "",
+      addDecomposicao: false,
+      tabelaDecomposicao: [],
       addClasse: false,
       selecionadosTabelaFL: [],
 
@@ -309,6 +356,12 @@ export default {
         {text: "Info", sortable: false, value: "info"},
         {text: "Remover", align: "left", sortable: false, value: "" },
       ],
+      headersDecomp:[
+        {text: "Numero SI", sortable: false, value: "numeroSI"},
+        {text: "Numero subSI", sortable: false, value: "numeroSub"},
+        {text: "Nome subSI", sortable: false, value: "nomeSub"},
+        {text: "Remover", align: "left", sortable: false, value: "" },
+      ],
       footer_props: {
         "items-per-page-text": "Sistemas por página",
         "items-per-page-options": [5, 10, 20, -1],
@@ -321,6 +374,7 @@ export default {
       },
 
       paginaSelect: 1,
+      paginaSelectDecomp: 1,
 
       searchProcessos: "",
 
@@ -362,6 +416,16 @@ export default {
       this.classesSI.push(item);
       var index = this.selecionadosTabelaFL.findIndex(e => e.id === item.id);
       this.selecionadosTabelaFL.splice(index, 1);
+    },
+
+    guardarDecomp(item) {
+      this.tabelaDecomposicao.push(item);
+      this.addDecomposicao= false;
+    },
+
+    unselectDecomp: function(item) {
+      var index = this.tabelaDecomposicao.findIndex(e => e.numeroSub === item.numeroSub);
+      this.tabelaDecomposicao.splice(index, 1);
     },
 
     selectSistema: function(numeroSI, relacao) {
