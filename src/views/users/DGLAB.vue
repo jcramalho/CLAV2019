@@ -1,18 +1,34 @@
 <template>
-<v-content>
+<v-content :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp,
+    }">
     <p class="content-title-1">Painel de controlo DGLAB</p>
-    <GestaoPedidos :pedidos="pedidos" />
+    <v-row>
+        <v-col cols=3 class="noticias ma-0 pa-0 mt-3" align="center">
+            <div align="left" class="separador ma-0">
+                Noticias
+            </div>
+            <Noticias/>
+        </v-col>
+        <v-col cols=9>
+            <GestaoPedidos :pedidos="pedidos" />
+            <ListaPendentes/>
+        </v-col>
+    </v-row>
 </v-content>
 </template>
 
 <script>
-import Loading from "@/components/generic/Loading";
 import GestaoPedidos from "@/components/users/GestaoPedidos";
+import ListaPendentes from "@/components/pendentes/ListaPendentes";
+import Noticias from "@/components/noticias/Noticias";
 
 export default {
     components: {
-        Loading,
         GestaoPedidos,
+        Noticias,
+        ListaPendentes
     },
     data() {
         return {
@@ -74,3 +90,22 @@ export default {
     }
 }
 </script>
+
+<style>
+.noticias {
+  border-radius: 10px;
+}
+
+.separador {
+    color: white;
+    padding: 6%;
+    margin: 5px;
+    font-weight: 400;
+    width: 100%;
+    min-height: 50px;
+    background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
+    font-size: 14pt;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+}
+</style>

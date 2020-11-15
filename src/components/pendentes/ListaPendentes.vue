@@ -1,52 +1,60 @@
 <template>
-  <v-card class="ma-4">
-    <v-card-title class="title indigo darken-4 white--text" dark>
-      Lista de Trabalhos Pendentes
+  <v-card class="mt-5">
+    <v-card-title style="outline: none;" class="pa-0 ma-0">
+            <v-row class="separador ma-0 ml-0">
+              <v-col cols=6 align="left">
+                <v-icon color="white"> {{pendentesicon}} </v-icon> Lista de Trabalhos Pendentes
+              </v-col>
+            </v-row>
     </v-card-title>
-    <v-card-text>
-      <v-data-table
-        :headers="headers"
-        :items="pendentes"
-        class="ma-2 elevation-1"
-        :footer-props="procsFooterProps"
-        :sort-by="['dataAtualizacao']"
-        :sort-desc="[true]"
-      >
-        <template v-slot:no-data>
-          <br/>
-          <v-alert :value="true" color="error" icon="warning">
-            Não foi possível apresentar uma lista dos trabalhos guardados...
-          </v-alert>
-        </template>
+      <v-card class="ma-0 pa-5">
+        <div class="info-content">
+          <v-card-text>
+            <v-data-table
+              :headers="headers"
+              :items="pendentes"
+              class="content-table"
+              :footer-props="procsFooterProps"
+              :sort-by="['dataAtualizacao']"
+              :sort-desc="[true]"
+            >
+              <template v-slot:no-data>
+                <br />
+                <v-alert :value="true" color="error" icon="warning">
+                  Não foi possível apresentar uma lista dos trabalhos guardados...
+                </v-alert>
+              </template>
 
-        <template v-slot:item="props">
-          <tr>
-            <td class="subheading">
-              {{ props.item.dataCriacao.split("T")[0] }}
-            </td>
-            <td class="subheading">
-              {{ props.item.dataAtualizacao.split("T")[0] }}
-            </td>
-            <td class="subheading">{{ props.item.numInterv }}</td>
-            <td class="subheading">{{ props.item.criadoPor }}</td>
-            <td class="subheading">{{ props.item.acao }}</td>
-            <td class="subheading">{{ props.item.tipo }}</td>
-            <td class="subheading">
-              <PainelOperacoesPendentes 
-                @continuar="continuarTrabalho(props.item)"
-                @show="showPendente(props.item)"
-                @apagar="apagarTrabalho(props.item)"
-              />
-            </td>
-          </tr>
-        </template>
+              <template v-slot:item="props">
+                <tr>
+                  <td class="subheading">
+                    {{ props.item.dataCriacao.split("T")[0] }}
+                  </td>
+                  <td class="subheading">
+                    {{ props.item.dataAtualizacao.split("T")[0] }}
+                  </td>
+                  <td class="subheading">{{ props.item.numInterv }}</td>
+                  <td class="subheading">{{ props.item.criadoPor }}</td>
+                  <td class="subheading">{{ props.item.acao }}</td>
+                  <td class="subheading">{{ props.item.tipo }}</td>
+                  <td class="subheading">
+                    <PainelOperacoesPendentes
+                      @continuar="continuarTrabalho(props.item)"
+                      @show="showPendente(props.item)"
+                      @apagar="apagarTrabalho(props.item)"
+                    />
+                  </td>
+                </tr>
+              </template>
 
-        <template v-slot:footer.page-text="props">
-          {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
-        </template>
-      </v-data-table>
-    </v-card-text>
+              <template v-slot:footer.page-text="props">
+                {{ props.pageStart }} - {{ props.pageStop }} de
+                {{ props.itemsLength }}
+              </template>
+              </v-data-table>
+            </v-card-text>
+        </div>
+      </v-card>
 
     <v-dialog v-model="pendenteRemovido" width="50%">
         <v-card>
@@ -66,50 +74,46 @@
 
 <script>
 import PainelOperacoesPendentes from "@/components/pendentes/PainelOperacoesPendentes";
+import { mdiPauseOctagonOutline } from '@mdi/js';
 export default {
   components: {
     PainelOperacoesPendentes
   },
 
   data: () => ({
+    pendentesicon: mdiPauseOctagonOutline,
     headers: [
       {
         text: "Criado em",
         sortable: true,
         value: "dataCriacao",
-        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Atualizado em",
         sortable: true,
         value: "dataAtualizacao",
-        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Nº interv.",
         sortable: false,
         value: "numInterv",
-        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Criado por",
         value: "criadoPor",
         sortable: false,
-        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Tipo de operação",
         value: "acao",
         sortable: false,
-        class: "title indigo lighten-5 indigo--text"
       },
       {
         text: "Tipo de objeto",
         value: "tipo",
         sortable: false,
-        class: "title indigo lighten-5 indigo--text"
       },
-      { text: "Ações", class: "title indigo lighten-5 indigo--text" }
+      { text: "Ações" }
     ],
     procsFooterProps: {
       "items-per-page-text": "Pendentes por página",
@@ -158,27 +162,27 @@ export default {
   }
 };
 </script>
-<style>
-.myPanelHeader {
-  color: #304ffe;
-}
-
-.info-label {
-  color: #1a237e;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #dee2f8;
-  font-weight: bold;
+<style scoped>
+.content-table {
+    background-color: #f1f6f8 !important;
+    border-radius: 10px;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+    background-color: #f1f6f8 !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
 }
 
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+.separador {
+    color: white;
+    padding: 5px;
+    margin: 5px;
+    font-weight: 400;
+    width: 100%;
+    min-height: 50px;
+    background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
+    font-size: 14pt;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
 }
 </style>

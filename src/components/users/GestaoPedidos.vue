@@ -1,13 +1,6 @@
 <template>
-<v-content :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
-    }">
     <v-card>
-        <v-card-title style="outline: none; z-index: 1;" :class="{
-                      'text-center': $vuetify.breakpoint.smAndDown,
-                      'text-left': $vuetify.breakpoint.mdAndUp,
-                    }" class="pa-0 ma-0">
+        <v-card-title style="outline: none;" class="pa-0 ma-0">
             <v-row class="separador ma-0 ml-0">
                 <v-col cols=6 align="left">
                     <unicon name="pedido-em-validacao-icon" width="20" height="20" viewBox="0 0 20.71 20.709" fill="#ffffff" />
@@ -72,7 +65,6 @@
             </div>
         </v-card>
     </v-card>
-</v-content>
 </template>
 
 <script>
