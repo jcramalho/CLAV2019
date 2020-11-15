@@ -75,7 +75,7 @@
                                         <v-row @click="go(menuLink.url)" @mouseover="hover = true; activeItem = i" justify="center">
                                             {{ menuLink.opcao }}
                                         </v-row>
-                                        <v-row v-if="hover && i === activeItem && menuLink.actions" class="ma-0 pa-0" justify="center">
+                                        <v-row v-if="hover && i === activeItem && menuLink.actions && $store.state.token" class="ma-0 pa-0" justify="center">
                                             <v-col v-for="action in menuLink.actions" :key="action.name" cols=4>
                                                 <v-btn @click.prevent="go(action.url)" icon class="white--text">
                                                     <unicon :name="action.icon" width="20" height="20" viewBox="0 0 20.71 20.697" fill="#ffffff" />
