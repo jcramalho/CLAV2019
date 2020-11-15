@@ -276,7 +276,19 @@ export default {
           planoRecuperacao: "",
           notas: "",
         },
-        estrategia:{},
+        estrategia:{
+          utilizacaoOperacional:{
+            idMetodoPreservacao: "",
+            fundMetodoPreservacao: "",
+            lacunas: ""
+          },
+          utilizacaoMemoria:{
+            idMetodoPreservacao: "",
+            fundMetodoPreservacao: "",
+            lacunas: ""
+          }
+
+        },
       },
 
       codigo: "", //é necessário?

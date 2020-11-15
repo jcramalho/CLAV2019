@@ -555,6 +555,17 @@ export default {
 
   methods: {
 
+  },
+  watch:{
+    "metodoCheck": function() {
+
+      if(this.modeloCresCheck !='Outra situação'){
+        this.ppd.si.caracterizacao.modeloCres = this.modeloCresCheck;
+      }
+      else{
+        this.ppd.si.caracterizacao.modeloCres = "";
+      }
+    },
   }
 };
 </script>
