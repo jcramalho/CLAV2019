@@ -374,7 +374,7 @@ const routes = [
     path: "/radaInfo",
     name: "radaInfo",
     component: () => import("./views/RadaInfo.vue"),
-    meta: { levels: [4, 5, 6, 7], tabAtiva: "Operações" }
+    meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
   },
   {
     path: "/rada",

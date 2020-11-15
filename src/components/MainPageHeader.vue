@@ -2,7 +2,7 @@
 <div>
     <!--Navbar para xl/lg/md/sm screens-->
     <v-app-bar app dense hide-on-scroll id="default-toolbar" class="white--text toolbar hidden-xs-only">
-        <v-toolbar-title @click="goRoute('/')" style="cursor:pointer;" :class="{
+        <v-toolbar-title @click="go('/')" style="cursor:pointer;" :class="{
           'toolbar-title-sm': $vuetify.breakpoint.smOnly,
         }">
             <v-tooltip bottom color="info">
@@ -55,7 +55,7 @@
         <template v-slot:extension>
             <v-tabs grow dark show-arrows hide-slider id="tab-bar" :icons-and-text="$vuetify.breakpoint.mdAndDown">
                 <v-container class="pa-0" v-for="tab in tabsAcessiveis" :key="tab.titulo">
-                    <v-tab v-if="!tab.menu" :class="{ active: tab.titulo == tabAtiva }" @click="goRoute(tab.url)" style="height: 49px;">
+                    <v-tab v-if="!tab.menu" :class="{ active: tab.titulo == tabAtiva }" @click="go(tab.url)" style="height: 49px;">
                         <p class="hidden-lg-and-up">{{ tab.titulo }}</p>
                         <unicon v-if="tab.icon" :name="tab.icon.nome" width="22" height="22" :viewBox="tab.icon.viewbox" />
                         <p class="ml-3 hidden-md-and-down">{{ tab.titulo }}</p>
@@ -69,10 +69,21 @@
                             </v-tab>
                         </template>
                         <v-list rounded dark id="dark-background-list">
-                            <v-list-item v-for="menuLink in tab.menu" :key="menuLink.opcao" @click="goRoute(menuLink.url)">
-                                <v-list-item-title class="text-wrap">
-                                    {{ menuLink.opcao }}
-                                </v-list-item-title>
+                            <v-list-item v-for="(menuLink, i) in tab.menu" :key="menuLink.opcao" @mouseleave="hover = false">
+                                <v-row>
+                                    <v-col>
+                                        <v-row @click="go(menuLink.url)" @mouseover="hover = true; activeItem = i" justify="center">
+                                            {{ menuLink.opcao }}
+                                        </v-row>
+                                        <v-row v-if="hover && i === activeItem && menuLink.actions" class="ma-0 pa-0" justify="center">
+                                            <v-col v-for="action in menuLink.actions" :key="action.name" cols=4>
+                                                <v-btn @click.prevent="go(action.url)" icon class="white--text">
+                                                    <unicon :name="action.icon" width="20" height="20" viewBox="0 0 20.71 20.697" fill="#ffffff" />
+                                                </v-btn>
+                                            </v-col>
+                                        </v-row>
+                                    </v-col>
+                                </v-row>
                             </v-list-item>
                         </v-list>
                     </v-menu>
@@ -90,7 +101,7 @@
     </v-app-bar>
     <!--Navbar para xs (mobile) screens-->
     <v-app-bar flat id="mobile-toolbar" class="hidden-sm-and-up toolbar white--text">
-        <v-toolbar-title @click="goRoute('/')" style="cursor:pointer;">
+        <v-toolbar-title @click="goRoute('/')" style="cursor: pointer;">
             <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
             <p class="subtitle-letter-md font-weight-light d-inline text-wrap" v-if="this.$store.state.name == ''">
                 Classificação e Avaliação da Informação Pública
@@ -138,15 +149,15 @@
                 <v-list rounded color="rgba(0,0,0,0)" dark two-line>
                     <v-container class="pa-0" v-for="tab in tabsAcessiveis" :key="tab.titulo">
                         <v-list-item v-if="!tab.menu" @click="
-                  goRoute(tab.url);
-                  dialog = false;
-                ">
+                            goRoute(tab.url);
+                            dialog = false;">
                             <v-list-item-title class="px-2 font-weight-bold">
                                 <unicon v-if="tab.icon" :name="tab.icon.nome" width="24" height="24" :viewBox="tab.icon.viewbox" fill="#f3f7fc" />
                                 <p class="d-inline mobile-menu-link">{{ tab.titulo }}</p>
                             </v-list-item-title>
                         </v-list-item>
-                        <v-list-group v-if="tab.menu" no-action>
+
+                        <v-list-item v-if="tab.menu" no-action>
                             <template v-slot:activator>
                                 <v-list-item-content>
                                     <v-list-item-title class="px-2 font-weight-bold">
@@ -156,14 +167,13 @@
                                 </v-list-item-content>
                             </template>
                             <v-list-item v-for="menuLink in tab.menu" :key="menuLink.opcao" @click="
-                    goRoute(menuLink.url);
-                    dialog = false;
-                  ">
+                                goRoute(menuLink.url);
+                                dialog = false;">
                                 <v-list-item-content>
-                                    <v-list-item-title class="text-wrap">- {{ menuLink.opcao }}</v-list-item-title>
+                                    <v-list-item-title class="text-wrap"> {{ menuLink.opcao }} </v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
-                        </v-list-group>
+                        </v-list-item>
                     </v-container>
                 </v-list>
             </v-card>
@@ -181,6 +191,8 @@ export default {
     props: ['n'],
     data() {
         return {
+            hover: false,
+            activeItem: -1,
             snackbar: false,
             dialog: false,
             color: '',
@@ -217,46 +229,151 @@ export default {
                             opcao: 'Lista Consolidada',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/lcInfo',
+                            actions: [{
+                                    url: '/classes',
+                                    icon: 'consultar-icon'
+                                },
+                                {
+                                    url: '/classes/criar',
+                                    icon: 'criar-icon'
+                                },
+                                {
+                                    url: '/classes/editar',
+                                    icon: 'alterar-icon'
+                                }
+                            ]
                         },
                         {
                             opcao: 'Tabelas de Seleção',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/tsInfo',
+                            actions: [{
+                                    url: '/ts',
+                                    icon: 'consultar-icon'
+                                },
+                                {
+                                    url: '/ts/criar',
+                                    icon: 'criar-icon'
+                                },
+                                {
+                                    url: '/ts/importar/csv',
+                                    icon: 'importar-icon'
+                                }
+                            ]
                         },
                         {
                             opcao: 'Relatórios de Avaliação de Documentação Acumulada',
-                            level: [4, 5, 6, 7],
+                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/radaInfo',
+                            actions: [{
+                                    url: '/rada',
+                                    icon: 'consultar-icon'
+                                },
+                                {
+                                    url: '/rada/criar',
+                                    icon: 'criar-icon'
+                                },
+                            ]
                         },
                         {
                             opcao: 'Autos de Eliminação',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/autosEliminacaoInfo',
+                            actions: [{
+                                    url: '/autosEliminacao',
+                                    icon: 'consultar-icon'
+                                },
+                                {
+                                    url: '/autosEliminacao/criar',
+                                    icon: 'criar-icon'
+                                },
+                                {
+                                    url: '/autosEliminacao/importar',
+                                    icon: 'importar-icon'
+                                }
+                            ]
                         },
                         {
                             opcao: 'Planos de preservação digital',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/planosDePreservacaoDigital',
+                            actions: [{
+                                    url: '/ppd',
+                                    icon: 'consultar-icon'
+                                },
+                                {
+                                    url: '/ppd/criar',
+                                    icon: 'criar-icon'
+                                },
+                                {
+                                    url: '/ppd/importar',
+                                    icon: 'importar-icon'
+                                }
+                            ]
                         },
                         {
                             opcao: 'Entidades',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/entidades',
+                            actions: [{
+                                    url: '/entidades/consultar',
+                                    icon: 'consultar-icon'
+                                },
+                                {
+                                    url: '/entidades/criar',
+                                    icon: 'criar-icon'
+                                },
+                                {
+                                    url: '/entidades/editar/',
+                                    icon: 'alterar-icon'
+                                }
+                            ]
                         },
                         {
                             opcao: 'Tipologias de Entidades',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/tipologias',
+                            actions: [{
+                                    url: '/tipologias/consultar',
+                                    icon: 'consultar-icon'
+                                },
+                                {
+                                    url: '/tipologias/criar',
+                                    icon: 'criar-icon'
+                                },
+                                {
+                                    url: '/tipologias/editar/',
+                                    icon: 'alterar-icon'
+                                }
+                            ]
                         },
                         {
                             opcao: 'Legislação',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/legislacao',
+                            actions: [{
+                                    url: '/legislacao/consultar',
+                                    icon: 'consultar-icon'
+                                },
+                                {
+                                    url: '/legislacao/criar',
+                                    icon: 'criar-icon'
+                                },
+                                {
+                                    url: '/legislacao/editar/',
+                                    icon: 'alterar-icon'
+                                }
+                            ]
+
                         },
                         {
                             opcao: 'Termos de Índice',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/termosIndiceInfo',
+                            actions: [{
+                                url: '/termosIndice',
+                                icon: 'consultar-icon'
+                            }]
                         },
                         {
                             opcao: 'Exportação de dados',
@@ -267,53 +384,10 @@ export default {
                             opcao: 'API de dados',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/docs',
-                        },
-                    ],
-                }, {
-                    titulo: 'Gestão da Plataforma',
-                    icon: {
-                        nome: 'gestao-icon',
-                        viewbox: '0 0 20.83 20.831',
-                    },
-                    menu: [{
-                            opcao: 'Pedidos',
-                            level: [1, 3, 3.5, 4, 5, 6, 7],
-                            url: '/pedidos',
-                        },
-                        {
-                            opcao: 'Pendentes',
-                            level: [1, 3, 3.5, 4, 5, 6, 7],
-                            url: '/pendentes',
-                        },
-                        {
-                            opcao: 'Invariantes',
-                            level: [6, 7],
-                            url: '/invariantes',
-                        },
-                        {
-                            opcao: 'Utilizadores',
-                            level: [5, 6, 7],
-                            url: '/usersInfo',
-                        },
-                        {
-                            opcao: 'Vocabulários Controlados',
-                            level: [1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: '/vocabularios',
-                        },
-                        {
-                            opcao: 'Chaves API',
-                            level: [7],
-                            url: '/gestao/api/listagem',
-                        },
-                        {
-                            opcao: 'Administração',
-                            level: [7],
-                            url: '/gestaoInfo',
-                        },
-                        {
-                            opcao: 'Importação/Exportação de Dados',
-                            level: [4, 5, 6, 7],
-                            url: '/importExportInfo',
+                            actions: [{
+                                url: 'http://clav.di.uminho.pt/v2/docs/',
+                                icon: 'api-icon'
+                            }]
                         },
                     ],
                 },
@@ -387,6 +461,54 @@ export default {
                     level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                     url: '/noticias',
                 },
+                {
+                    titulo: 'Gestão da Plataforma',
+                    icon: {
+                        nome: 'gestao-icon',
+                        viewbox: '0 0 20.83 20.831',
+                    },
+                    menu: [{
+                            opcao: 'Pedidos',
+                            level: [1, 3, 3.5, 4, 5, 6, 7],
+                            url: '/pedidos',
+                        },
+                        {
+                            opcao: 'Pendentes',
+                            level: [1, 3, 3.5, 4, 5, 6, 7],
+                            url: '/pendentes',
+                        },
+                        {
+                            opcao: 'Invariantes',
+                            level: [6, 7],
+                            url: '/invariantes',
+                        },
+                        {
+                            opcao: 'Utilizadores',
+                            level: [5, 6, 7],
+                            url: '/usersInfo',
+                        },
+                        {
+                            opcao: 'Vocabulários Controlados',
+                            level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+                            url: '/vocabularios',
+                        },
+                        {
+                            opcao: 'Chaves API',
+                            level: [7],
+                            url: '/gestao/api/listagem',
+                        },
+                        {
+                            opcao: 'Administração',
+                            level: [7],
+                            url: '/gestaoInfo',
+                        },
+                        {
+                            opcao: 'Importação/Exportação de Dados',
+                            level: [4, 5, 6, 7],
+                            url: '/importExportInfo',
+                        },
+                    ],
+                },
             ],
         };
     },
@@ -411,8 +533,12 @@ export default {
         this.tabAtiva = this.$route.meta.tabAtiva;
     },
     methods: {
-        goRoute: function (url) {
-            this.$router.push(url);
+        go: function (url) {
+            if (url.startsWith("http")) {
+                window.location.href = url;
+            } else {
+                this.$router.push(url);
+            }
         },
         filtraTabs: function (navbar) {
             var filtered = [];
