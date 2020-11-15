@@ -295,7 +295,7 @@ export default {
   },
 
   async created() {
-    this.etapasHistorico = this.distribuicao;
+    this.etapasHistorico = this.distribuicao.filter(e => e != 'Validado');
 
     let responseFC = await this.$request(
       "get",

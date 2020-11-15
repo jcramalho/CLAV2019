@@ -7,22 +7,22 @@
     <v-card class="mt-4">
       <v-card-title class="indigo darken-4 white--text title"
         >{{ !!p.objeto.acao ? p.objeto.acao : "Criação" }} do RADA
-        <!-- <v-spacer />
+        <v-spacer />
 
-      <v-tooltip
-        v-if="
-          temPermissaoConsultarHistorico() &&
-          !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
-        "
-        bottom
-      >
-        <template v-slot:activator="{ on }">
-          <v-icon @click="verHistorico()" color="white" v-on="on">
-            history
-          </v-icon>
-        </template>
-        <span>Ver histórico de alterações...</span>
-      </v-tooltip> -->
+        <v-tooltip
+          v-if="
+            temPermissaoConsultarHistorico() &&
+            !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
+          "
+          bottom
+        >
+          <template v-slot:activator="{ on }">
+            <v-icon @click="verHistorico()" color="white" v-on="on">
+              history
+            </v-icon>
+          </template>
+          <span>Ver histórico de alterações...</span>
+        </v-tooltip>
       </v-card-title>
       <v-card-text>
         <br />
