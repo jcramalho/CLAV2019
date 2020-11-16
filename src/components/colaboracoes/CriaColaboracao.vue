@@ -4,7 +4,9 @@
       <v-card>
         <!-- Header -->
         <v-app-bar color="indigo darken-3" dark>
-          <v-toolbar-title class="card-heading">Nova Colaboração</v-toolbar-title>
+          <v-toolbar-title class="card-heading"
+            >Nova Colaboração</v-toolbar-title
+          >
         </v-app-bar>
 
         <!-- Content -->
@@ -82,8 +84,8 @@
               <div class="info-label">Início</div>
             </v-col>
             <v-col>
-              <SelecionarData 
-                :dataMinima="data_minima" 
+              <SelecionarData
+                :dataMinima="data_minima"
                 :d="credito.data_inicio"
                 @dataSelecionada="credito.data_inicio = $event"
                 :label="'AAAA-MM-DD'"
@@ -96,15 +98,14 @@
               <div class="info-label">Fim</div>
             </v-col>
             <v-col>
-              <SelecionarData 
-                :dataMinima="data_minima" 
+              <SelecionarData
+                :dataMinima="data_minima"
                 :d="credito.data_fim"
                 @dataSelecionada="credito.data_fim = $event"
                 :label="'AAAA-MM-DD'"
               />
             </v-col>
           </v-row>
-
         </v-card-text>
         <!-- Painel Operações -->
         <PainelOpsCreditos :t="credito" :acao="'Criação'" />

@@ -179,7 +179,7 @@ module.exports.help = {
       Prazo:
         "Prazo de conservação administrativa (PCA), período de tempo, registado em anos, durante o qual a informação " +
         "/ documentação tem de ser conservada. Aplica-se às classes de 3º ou 4º nível.",
-      Notas: 
+      Notas:
         "Informação específica para PN cujo PCA reflete o do PN que o origina. Aplica-se às classes de 3º e 4º nível.",
       FormaContagem:
         "<p>Instrução relativa à ação / momento que origina a contagem do prazo. Aplica-se às classes de 3º " +
@@ -241,16 +241,19 @@ module.exports.help = {
     Campos: {
       Sigla: "Sigla da entidade.",
       Estado:
-            "Indicação do estado da entidade: em atividade (ativa) ou extinta (inativa).",
-      SIOE: "Registo do código SIOE da entidade. O SIOE, ou o <i>Sistema de Informação e Organização " +
-            "do Estado</i>, é um sistema de informação sobre a caracterização das entidades públicas do" +
-            " universo das contas nacionais, bem como a atividade social dos empregadores públicos. " +
-            "O SIOE atribui um código, composto por uma sequência de dígitos numéricos, a todas as entidades públicas.",
+        "Indicação do estado da entidade: em atividade (ativa) ou extinta (inativa).",
+      SIOE:
+        "Registo do código SIOE da entidade. O SIOE, ou o <i>Sistema de Informação e Organização " +
+        "do Estado</i>, é um sistema de informação sobre a caracterização das entidades públicas do" +
+        " universo das contas nacionais, bem como a atividade social dos empregadores públicos. " +
+        "O SIOE atribui um código, composto por uma sequência de dígitos numéricos, a todas as entidades públicas.",
       Internacional: "Indicação do caráter internacional da entidade.",
-      DataCriacao: "Registo da data de criação da entidade. No caso das entidades públicas esta data consta num " +
-            "diploma legal.",
-      DataExtincao: "Registo da data de extinção da entidade. No caso das entidades públicas esta data consta num " +
-      "diploma legal.",
+      DataCriacao:
+        "Registo da data de criação da entidade. No caso das entidades públicas esta data consta num " +
+        "diploma legal.",
+      DataExtincao:
+        "Registo da data de extinção da entidade. No caso das entidades públicas esta data consta num " +
+        "diploma legal.",
       Tipologias: "Indicação das tipologias de entidade a que pertence."
     },
     Intervencoes: {

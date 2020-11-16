@@ -123,7 +123,7 @@ export default {
     dialog: false,
     snackbar: false,
     texto: ""
-  }),  
+  }),
   methods: {
     updateText(e) {
       //this.$refs.descricao.value
@@ -373,11 +373,11 @@ export default {
       var items = tmpStr.substring(0, start).match(/^(\s*)\d+\.\s+.*/gm);
       //var items = tmpStr.match(/^(\s*)\d+\.\s+.*/gm);
       var max = 0;
-      if(items){
+      if (items) {
         items.forEach(element => {
           var i = parseInt(element.match(/\d+(?=\.)/g)[0], 10);
-          max = i > max ? i : max ;
-        })
+          max = i > max ? i : max;
+        });
       }
       max++;
       // insert:
@@ -450,13 +450,14 @@ export default {
 }
 
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 </style>

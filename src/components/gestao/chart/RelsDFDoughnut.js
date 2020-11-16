@@ -5,20 +5,10 @@ export default {
   data() {
     return {
       info: {
-        labels: [
-          "Concervação",
-          "Conservação Parcial",
-          "Eliminação",
-          "NE"
-        ],
+        labels: ["Concervação", "Conservação Parcial", "Eliminação", "NE"],
         datasets: [
           {
-            backgroundColor: [
-              "#E57373",
-              "#7986CB",
-              "#26A69A",
-              "#FFC400"
-            ],
+            backgroundColor: ["#E57373", "#7986CB", "#26A69A", "#FFC400"],
             data: [0, 0, 0, 0]
           }
         ]
@@ -26,7 +16,7 @@ export default {
       options: {
         title: {
           display: true,
-          text: 'Destinos Finais'
+          text: "Destinos Finais"
         },
         responsive: true,
         maintainAspectRatio: false
@@ -37,25 +27,25 @@ export default {
     this.$request("get", "/indicadores/dfstats")
       .then(res => {
         for (var i = 0; i < this.info.datasets[0].data.length; i++) {
-          switch (i){
+          switch (i) {
             case 0:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'C'
+                return elem.indicador === "C";
               }).valor;
               break;
             case 1:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'CP'
+                return elem.indicador === "CP";
               }).valor;
               break;
             case 2:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'E'
+                return elem.indicador === "E";
               }).valor;
               break;
             case 3:
               this.info.datasets[0].data[i] = res.data.find(elem => {
-                return elem.indicador === 'NE'
+                return elem.indicador === "NE";
               }).valor;
               break;
             default:

@@ -1,51 +1,97 @@
 <template>
-  <v-row class="ma-2 indigo lighten-5">
-    <v-col cols="2">
-      <div class="info-label">Legislação nova</div>
-      <v-btn small dark rounded color="indigo darken-2" @click="newLegislacao">
-        Adicionar
-        <v-icon small dark right>add_circle_outline</v-icon>
-      </v-btn>
-    </v-col>
-    <v-col>
-      <v-form v-model="valid">
-        <v-container>
-          <v-row>
-            <v-col xs12 md3 v-if="listaTipos.length > 0">
+  <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+    <v-row>
+      <v-col cols="12" lg="2" style="text-align: center;" class="mb-n6">
+        <div class="info-label">
+          Legislação nova
+        </div>
+        <v-tooltip top color="info" open-delay="600">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              color="success"
+              icon
+              @click="newLegislacao"
+              class="mb-4"
+            >
+              <unicon
+                name="adicionar-icon"
+                width="15"
+                height="15"
+                viewBox="0 0 20.71 20.71"
+                fill="#4caf50"
+              />
+            </v-btn>
+          </template>
+          <span>Adicionar nova legislação</span>
+        </v-tooltip>
+      </v-col>
+      <v-col cols="12" lg="10" class="px-4">
+        <v-form v-model="valid">
+          <v-row class="info-content mx-0 mb-1 pa-4" style="min-height: 60px;">
+            <v-col cols="12" sm="6" v-if="listaTipos.length > 0" class="mt-n6">
               <v-select
                 item-text="label"
                 item-value="value"
                 v-model="tipo"
                 :items="listaTipos"
                 label="Tipo"
+                color="blue darken-3"
               />
             </v-col>
 
-            <v-col xs12 md3 v-else>
-              <v-text-field v-model="tipo" label="Tipo"></v-text-field>
+            <v-col cols="12" sm="6" class="mt-n6" v-else>
+              <v-text-field
+                v-model="tipo"
+                label="Tipo"
+                color="blue darken-3"
+              ></v-text-field>
             </v-col>
 
-            <v-col xs12 md3>
-              <v-text-field v-model="numero" label="Número"></v-text-field>
+            <v-col cols="12" sm="6" class="mt-n6">
+              <v-text-field
+                v-model="numero"
+                label="Número"
+                color="blue darken-3"
+              ></v-text-field>
             </v-col>
 
-            <v-col xs12 md3>
-              <v-text-field v-model="sumario" label="Sumário"></v-text-field>
+            <v-col cols="12" class="mt-n6">
+              <v-textarea
+                v-model="sumario"
+                label="Sumário"
+                auto-grow
+                hide-details
+                rows="1"
+                color="blue darken-3"
+              ></v-textarea>
             </v-col>
 
-            <v-col xs12 md3>
-              <SelecionarData :d="data" :label="'Data: AAAA-MM-DD'" @dataSelecionada="data = $event" />
+            <v-col cols="12" sm="6" class="mt-n6">
+              <SelecionarData
+                :d="data"
+                :label="'Data: AAAA-MM-DD'"
+                @dataSelecionada="data = $event"
+              />
             </v-col>
           </v-row>
-        </v-container>
-      </v-form>
-    </v-col>
+        </v-form>
+      </v-col>
 
-    <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
-      <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
-      <v-btn dark text @click="fecharErros">Fechar</v-btn>
-    </v-snackbar>
-  </v-row>
+      <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="60000">
+        <div v-for="(m, i) in mensagensErro" :key="i">{{ m }}</div>
+        <v-btn icon color="white" @click="fecharErros">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
+      </v-snackbar>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -184,23 +230,22 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .info-label {
-  color: #00695c;
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #dee2f8;
   font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

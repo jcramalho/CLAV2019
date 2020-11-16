@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
     <Loading v-if="!tipologiaReady" :message="'a tipologia'" />
     <Consulta
       v-else
@@ -11,7 +16,7 @@
       :listaProcP="processosParticipa"
       :parts="partsReady"
     />
-  </div>
+  </v-content>
 </template>
 
 <script>

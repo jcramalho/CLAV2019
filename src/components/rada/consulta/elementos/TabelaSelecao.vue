@@ -3,7 +3,12 @@
     <RADAEntry label="Título" :value="rada.tituloTS" />
     <v-row>
       <v-col xs="11" sm="11">
-        <v-text-field v-model="search" label="Pesquise a classe" clearable append-icon="search"></v-text-field>
+        <v-text-field
+          v-model="search"
+          label="Pesquise a classe"
+          clearable
+          append-icon="search"
+        ></v-text-field>
       </v-col>
       <v-col xs="1" sm="1">
         <v-tooltip top>
@@ -31,7 +36,11 @@
             :filter="filter"
           >
             <template v-slot:prepend="{ item }">
-              <img v-if="item.tipo == 'serie'" style="width:23px; height:30px" :src="svg_sr" />
+              <img
+                v-if="item.tipo == 'serie'"
+                style="width:23px; height:30px"
+                :src="svg_sr"
+              />
               <img
                 v-else-if="item.tipo == 'subserie'"
                 style="width:23px; height:30px"
@@ -43,7 +52,9 @@
               <img v-else style="width:23px; height:30px" :src="svg_N1" />
             </template>
             <template v-slot:label="{ item }">
-              <b text @click="consultarClasse(item)">{{ item.codigo + " - " + item.titulo }}</b>
+              <b text @click="consultarClasse(item)">{{
+                item.codigo + " - " + item.titulo
+              }}</b>
             </template>
           </v-treeview>
           <br />

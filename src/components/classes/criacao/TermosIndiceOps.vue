@@ -1,40 +1,102 @@
 <template>
-  <v-row ma-2>
-    <!-- TERMOS DE ÍNDICE -->
-    <v-col cols="2">
-      <div class="info-label">
-        Termos de Índice
-        <InfoBox header="Termos de Índice" :text="myhelp.Classe.Campos.TermosIndice" helpColor="indigo darken-4"/>
-      </div>
-      <v-btn color="indigo darken-2" dark rounded @click="insereNovoTI(c.termosInd)">
-        Novo termo
-        <v-icon dark right>add_circle_outline</v-icon>
-      </v-btn>
-    </v-col>
-    <v-col>
-      <v-row v-for="(ti, index) in c.termosInd" :key="index">
-        <v-col cols="10">
-          <v-textarea v-model="ti.termo" auto-grow solo label="Termo de Índice" rows="1"></v-textarea>
-        </v-col>
-        <v-col>
-          <v-btn color="red darken-2" dark rounded @click="c.termosInd.splice(index, 1)">
-            Remover
-            <v-icon dark right>remove_circle_outline</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-col>
+  <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+    <v-row>
+      <!-- TERMOS DE ÍNDICE -->
+      <v-col cols="12" lg="2" style="text-align: center;" class="mb-n6">
+        <div class="info-label">
+          Termos de Índice
+          <InfoBox
+            header="Termos de Índice"
+            :text="myhelp.Classe.Campos.TermosIndice"
+            helpColor="info"
+          />
+        </div>
+        <v-tooltip top color="info" open-delay="600">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              color="success"
+              icon
+              @click="insereNovoTI(c.termosInd)"
+              class="mb-4"
+            >
+              <unicon
+                name="adicionar-icon"
+                width="15"
+                height="15"
+                viewBox="0 0 20.71 20.71"
+                fill="#4caf50"
+              />
+            </v-btn>
+          </template>
+          <span>Adicionar novo termo de índice</span>
+        </v-tooltip>
+      </v-col>
+      <v-col cols="12" lg="10">
+        <v-row
+          v-for="(ti, index) in c.termosInd"
+          :key="index"
+          class="info-content mx-0 mb-6 px-4 pb-3"
+          style="mix-height: 50px;"
+        >
+          <v-col cols="10" class="mt-n4">
+            <v-textarea
+              class="mt-0"
+              v-model="ti.termo"
+              label="Termo de Índice"
+              auto-grow
+              text
+              single-line
+              hide-details
+              color="blue darken-3"
+              rows="1"
+            ></v-textarea>
+          </v-col>
+          <v-col class="mt-n3">
+            <v-btn
+              icon
+              color="red darken-2"
+              @click="c.termosInd.splice(index, 1)"
+            >
+              <unicon
+                name="remove-icon"
+                width="15"
+                height="15"
+                viewBox="0 0 20.71 20.697"
+                fill="#ff5252"
+              />
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-col>
 
-    <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
-      {{ mensagemTIVazio }}
-      <v-btn dark text @click="tiVazioFlag=false">Fechar</v-btn>
-    </v-snackbar>
+      <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
+        {{ mensagemTIVazio }}
+        <v-btn icon color="white" @click="tiVazioFlag = false">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
+      </v-snackbar>
 
-    <v-snackbar v-model="tiDuplicadoFlag" :color="'error'" :timeout="60000">
-      {{ mensagemTIDuplicado }}
-      <v-btn dark text @click="tiDuplicadoFlag=false">Fechar</v-btn>
-    </v-snackbar>
-  </v-row>
+      <v-snackbar v-model="tiDuplicadoFlag" :color="'error'" :timeout="60000">
+        {{ mensagemTIDuplicado }}
+        <v-btn icon color="white" @click="tiDuplicadoFlag = false">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
+      </v-snackbar>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -89,25 +151,22 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .info-label {
-  color: #2e7d32; /* green darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
   padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

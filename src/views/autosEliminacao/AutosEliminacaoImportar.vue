@@ -1,7 +1,5 @@
 <template>
-  <ImportarAuto 
-    v-bind:entidades="entidades"
-  />
+  <ImportarAuto v-bind:entidades="entidades" />
 </template>
 
 <script>
@@ -19,7 +17,7 @@ export default {
       try {
         var myEntidades = [];
         for (var e of ent) {
-            myEntidades.push(e.sigla + " - " + e.designacao);
+          myEntidades.push(e.sigla + " - " + e.designacao);
         }
         return myEntidades;
       } catch (error) {

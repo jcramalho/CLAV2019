@@ -181,7 +181,7 @@ export default {
     ErroDialog,
     SelecionaAutocomplete,
     EditarCamposDialog,
-    AdicionarNota,
+    AdicionarNota
   },
 
   data() {
@@ -191,7 +191,7 @@ export default {
       notaDialog: {
         visivel: false,
         campo: "",
-        nota: "",
+        nota: ""
       },
       novoHistorico: {},
       loading: true,
@@ -199,12 +199,12 @@ export default {
         visivel: false,
         nome: "",
         key: "",
-        valorAtual: "",
+        valorAtual: ""
       },
 
       erroDialog: {
         visivel: false,
-        mensagem: null,
+        mensagem: null
       },
       tipologiasHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
@@ -215,21 +215,21 @@ export default {
           class: "subtitle-1",
           sortable: false,
           width: "10%",
-          align: "center",
-        },
+          align: "center"
+        }
       ],
       footerProps: {
         "items-per-page-text": "Tipologias por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
+        "items-per-page-all-text": "Todas"
       },
 
       mensagemAutocomplete: {
         titulo: "tipologias",
-        autocomplete: "tipologias",
+        autocomplete: "tipologias"
       },
       dialogTipologias: false,
-      tipologias: [],
+      tipologias: []
     };
   },
 
@@ -240,7 +240,7 @@ export default {
 
     historico() {
       return this.p.historico;
-    },
+    }
   },
 
   async created() {
@@ -260,11 +260,11 @@ export default {
       JSON.stringify(this.historico[this.historico.length - 1])
     );
 
-    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+    Object.keys(copiaHistorico).forEach(h => (copiaHistorico[h].nota = null));
 
     this.novoHistorico = copiaHistorico;
 
-    Object.keys(this.dados).forEach((key) => {
+    Object.keys(this.dados).forEach(key => {
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
     });
@@ -284,9 +284,9 @@ export default {
     },
 
     abreTipologiasDialog() {
-      this.dados.tipologiasSel.forEach((tipSel) => {
+      this.dados.tipologiasSel.forEach(tipSel => {
         const index = this.tipologias.findIndex(
-          (tip) => tip.sigla === tipSel.sigla
+          tip => tip.sigla === tipSel.sigla
         );
 
         if (index !== -1) this.tipologias.splice(index, 1);
@@ -301,12 +301,10 @@ export default {
 
     removeTipologia(tipologia) {
       const index = this.dados.tipologiasSel.findIndex(
-        (tipSel) => tipSel.sigla === tipologia.sigla
+        tipSel => tipSel.sigla === tipologia.sigla
       );
 
-      const existe = this.tipologias.some(
-        (tip) => tip.sigla === tipologia.sigla
-      );
+      const existe = this.tipologias.some(tip => tip.sigla === tipologia.sigla);
 
       if (index !== -1) {
         if (!existe) {
@@ -317,7 +315,7 @@ export default {
         this.novoHistorico.tipologiasSel = {
           ...this.novoHistorico.tipologiasSel,
           cor: "amarelo",
-          dados: this.dados.tipologiasSel,
+          dados: this.dados.tipologiasSel
         };
 
         this.animacoes.tipologiasSel = !this.animacoes.tipologiasSel;
@@ -331,7 +329,7 @@ export default {
       this.novoHistorico.tipologiasSel = {
         ...this.novoHistorico.tipologiasSel,
         cor: "amarelo",
-        dados: this.dados.tipologiasSel,
+        dados: this.dados.tipologiasSel
       };
 
       this.animacoes.tipologiasSel = !this.animacoes.tipologiasSel;
@@ -342,11 +340,11 @@ export default {
       try {
         let { data } = await this.$request("get", "/tipologias/");
 
-        this.tipologias = data.map((item) => {
+        this.tipologias = data.map(item => {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id,
+            id: item.id
           };
         });
       } catch (error) {
@@ -366,7 +364,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -382,7 +380,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
@@ -417,15 +415,15 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email,
+            email: dados.utilizadorSelecionado.email
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.$router.go(-1);
@@ -439,7 +437,7 @@ export default {
     verifica(campo) {
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
-        cor: "verde",
+        cor: "verde"
       };
 
       this.animacoes[campo] = !this.animacoes[campo];
@@ -448,7 +446,7 @@ export default {
     anula(campo) {
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
-        cor: "vermelho",
+        cor: "vermelho"
       };
 
       this.animacoes[campo] = !this.animacoes[campo];
@@ -459,7 +457,7 @@ export default {
         visivel: true,
         nome: this.transformaKeys(campo),
         key: campo,
-        valorAtual: this.dados[campo],
+        valorAtual: this.dados[campo]
       };
     },
 
@@ -467,7 +465,7 @@ export default {
       this.notaDialog.visivel = false;
       this.novoHistorico[dados.campo] = {
         ...this.novoHistorico[dados.campo],
-        nota: dados.nota,
+        nota: dados.nota
       };
     },
 
@@ -489,13 +487,13 @@ export default {
       this.novoHistorico[event.campo.key] = {
         ...this.novoHistorico[event.campo.key],
         dados: event.dados,
-        cor: "amarelo",
+        cor: "amarelo"
       };
 
       this.esconderOperacoes[event.campo.key] = true;
       this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
-    },
-  },
+    }
+  }
 };
 </script>
 

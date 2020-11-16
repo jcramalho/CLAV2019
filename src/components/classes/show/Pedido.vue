@@ -325,7 +325,7 @@ export default {
 </script>
 .myPanelHeader { color: #304FFE; }
 
-<style>
+<style scoped>
 .info-label {
   color: #1a237e;
   padding: 5px;
@@ -336,9 +336,10 @@ export default {
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 
 .is-collapsed li:nth-child(n + 5) {

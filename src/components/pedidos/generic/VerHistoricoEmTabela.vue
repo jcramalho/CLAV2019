@@ -257,8 +257,8 @@ export default {
       etapasSelecionadas: [],
       defaultHeaders: [],
       footerProps: {
-        "items-per-page-options": [-1],
-      },
+        "items-per-page-options": [-1]
+      }
     };
   },
 
@@ -340,14 +340,14 @@ export default {
         value: "campo",
         class: "title",
         width: "20%",
-        sortable: false,
+        sortable: false
       });
 
       let indexA = this.distribuicao.findIndex(
-        (dist) => dist === this.etapasSelecionadas[0]
+        dist => dist === this.etapasSelecionadas[0]
       );
       let indexB = this.distribuicao.findIndex(
-        (dist) => dist === this.etapasSelecionadas[1]
+        dist => dist === this.etapasSelecionadas[1]
       );
 
       if (indexA > indexB) {
@@ -361,14 +361,14 @@ export default {
             value: "colunaA",
             class: "title",
             width: "40%",
-            sortable: false,
+            sortable: false
           },
           {
             text: this.etapasSelecionadas[0],
             value: "colunaB",
             class: "title",
             width: "40%",
-            sortable: false,
+            sortable: false
           }
         );
       } else {
@@ -378,29 +378,29 @@ export default {
             value: "colunaA",
             class: "title",
             width: "40%",
-            sortable: false,
+            sortable: false
           },
           {
             text: this.etapasSelecionadas[1],
             value: "colunaB",
             class: "title",
             width: "40%",
-            sortable: false,
+            sortable: false
           }
         );
       }
 
       let campos = [];
 
-      Object.keys(this.historico[indexA]).forEach((item) => {
+      Object.keys(this.historico[indexA]).forEach(item => {
         if (item !== "estado" && item !== "id") campos.push(item);
       });
 
-      campos.forEach((campo) => {
+      campos.forEach(campo => {
         this.dadosTabela.push({
           campo: mapKeys(campo),
           colunaA: this.historico[indexA][campo],
-          colunaB: this.historico[indexB][campo],
+          colunaB: this.historico[indexB][campo]
         });
       });
 
@@ -411,7 +411,7 @@ export default {
       this.voltar();
 
       this.$emit("fecharDialog");
-    },
-  },
+    }
+  }
 };
 </script>

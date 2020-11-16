@@ -1,5 +1,5 @@
 <template>
-      <div class="info-content">{{ JSON.stringify(p) }}</div>
+  <div class="info-content">{{ JSON.stringify(p) }}</div>
 </template>
 
 <script>
@@ -11,7 +11,8 @@ export default {
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

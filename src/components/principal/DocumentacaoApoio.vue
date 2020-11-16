@@ -1,283 +1,313 @@
 <template>
-  <Loading v-if="!conteudoReady" :message="'documentação de apoio'" />
-  <v-card v-else class="ma-4 pa-2">
-    <v-toolbar :color="panelHeaderColor" dark>
-      <v-toolbar-title>Documentação Técnica de Apoio</v-toolbar-title>
-    </v-toolbar>
-    <v-card-text>
-      <v-expansion-panels>
-        <v-expansion-panel
-          v-for="documentacao in this.docapoio"
-          :key="documentacao.classe"
-        >
-          <v-expansion-panel-header class="white-5">
-            {{ documentacao.classe }}
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-card-text
-              v-for="entrada in documentacao.entradas"
-              :key="entrada._id"
-            >
-              <p class="text-justify">
-                <span v-html="compiledMarkdownOmmitParagraph(entrada.descricao)"></span>
-                <v-tooltip bottom v-for="(operacao, index) in operacoes_entradas" :key="index">
-                  <template v-slot:activator="{ on }">
-                    <v-icon
-                      @click="
-                        switchOperacaoEntrada(
-                          operacao.descricao,
-                          documentacao._id,
-                          entrada._id
-                        )
-                      "
-                      :color="operacao.cor"
-                      v-on="on"
-                      >{{ operacao.icon }}</v-icon
-                    >
-                  </template>
-                  <span>{{ operacao.tooltip }}</span>
-                </v-tooltip>
-              </p>
-              <ul>
-                <div v-for="elemento in entrada.elementos" :key="elemento._id">
-                  <!-- No caso de ser uma rota da API -->
-                  <li v-if="elemento.texto.rota">
-                    <p>
-                      <span
-                        v-html="
-                          compiledMarkdownOmmitParagraph(elemento.texto.pre)
-                        "
-                      ></span>
-                      <span
-                        class="fakea"
-                        @click="downloadFileRota(elemento.texto.rota)"
-                        v-html="
-                          compiledMarkdownOmmitParagraph(elemento.texto.ligacao)
-                        "
-                      ></span>
-                      <span
-                        v-html="
-                          compiledMarkdownOmmitParagraph(elemento.texto.pos)
-                        "
-                      ></span>
-                      <v-tooltip bottom v-for="(operacao, index) in operacoes_elementos" :key="index">
-                        <template v-slot:activator="{ on }">
-                          <v-icon
-                            @click="
-                              switchOperacaoElemento(
-                                operacao.descricao,
-                                documentacao._id,
-                                entrada._id,
-                                elemento._id
-                              )
-                            "
-                            :color="operacao.cor"
-                            v-on="on"
-                            >{{ operacao.icon }}</v-icon
-                          >
-                        </template>
-                        <span>{{ operacao.tooltip }}</span>
-                      </v-tooltip>
-                    </p>
-                  </li>
-                  <!-- No caso de ser uma ligacao com ficheiro da API -->
-                  <li v-else-if="elemento.texto.ligacao">
-                    <p>
-                      <span
-                        v-html="
-                          compiledMarkdownOmmitParagraph(elemento.texto.pre)
-                        "
-                      ></span>
-                      <span
-                        class="fakea"
+  <div>
+    <Loading v-if="!conteudoReady" :message="'documentação de apoio'" />
+    <v-card v-else class="ma-4 pa-2">
+      <v-toolbar :color="panelHeaderColor" dark>
+        <v-toolbar-title>Documentação Técnica de Apoio</v-toolbar-title>
+      </v-toolbar>
+      <v-card-text>
+        <v-expansion-panels>
+          <v-expansion-panel
+            v-for="documentacao in this.docapoio"
+            :key="documentacao.classe"
+          >
+            <v-expansion-panel-header class="white-5">
+              {{ documentacao.classe }}
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-card-text
+                v-for="entrada in documentacao.entradas"
+                :key="entrada._id"
+              >
+                <p class="text-justify">
+                  <span
+                    v-html="compiledMarkdownOmmitParagraph(entrada.descricao)"
+                  ></span>
+                  <v-tooltip
+                    bottom
+                    v-for="(operacao, index) in operacoes_entradas"
+                    :key="index"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-icon
                         @click="
-                          downloadFile(
+                          switchOperacaoEntrada(
+                            operacao.descricao,
                             documentacao._id,
-                            entrada._id,
-                            elemento._id
+                            entrada._id
                           )
                         "
-                        v-html="
-                          compiledMarkdownOmmitParagraph(elemento.texto.ligacao)
-                        "
-                      ></span>
-                      <span
-                        v-html="
-                          compiledMarkdownOmmitParagraph(elemento.texto.pos)
-                        "
-                      ></span>
-                      <v-tooltip bottom v-for="(operacao, index) in operacoes_elementos" :key="index">
-                        <template v-slot:activator="{ on }">
-                          <v-icon
-                            @click="
-                              switchOperacaoElemento(
-                                operacao.descricao,
-                                documentacao._id,
-                                entrada._id,
-                                elemento._id
-                              )
-                            "
-                            :color="operacao.cor"
-                            v-on="on"
-                            >{{ operacao.icon }}</v-icon
-                          >
-                        </template>
-                        <span>{{ operacao.tooltip }}</span>
-                      </v-tooltip>
-                    </p>
-                  </li>
-                  <!-- No caso de ser apenas texto -->
-                  <li
-                    v-else
-                    class="text-justify"
-                  > 
-                    <span v-html="compiledMarkdownOmmitParagraph(elemento.texto)"></span>
-                    <v-tooltip bottom v-for="(operacao, index) in operacoes_elementos" :key="index">
-                      <template v-slot:activator="{ on }">
-                        <v-icon
+                        :color="operacao.cor"
+                        v-on="on"
+                        >{{ operacao.icon }}</v-icon
+                      >
+                    </template>
+                    <span>{{ operacao.tooltip }}</span>
+                  </v-tooltip>
+                </p>
+                <ul>
+                  <div
+                    v-for="elemento in entrada.elementos"
+                    :key="elemento._id"
+                  >
+                    <!-- No caso de ser uma rota da API -->
+                    <li v-if="elemento.texto.rota">
+                      <p>
+                        <span
+                          v-html="
+                            compiledMarkdownOmmitParagraph(elemento.texto.pre)
+                          "
+                        ></span>
+                        <span
+                          class="fakea"
+                          @click="downloadFileRota(elemento.texto.rota)"
+                          v-html="
+                            compiledMarkdownOmmitParagraph(
+                              elemento.texto.ligacao
+                            )
+                          "
+                        ></span>
+                        <span
+                          v-html="
+                            compiledMarkdownOmmitParagraph(elemento.texto.pos)
+                          "
+                        ></span>
+                        <v-tooltip
+                          bottom
+                          v-for="(operacao, index) in operacoes_elementos"
+                          :key="index"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-icon
+                              @click="
+                                switchOperacaoElemento(
+                                  operacao.descricao,
+                                  documentacao._id,
+                                  entrada._id,
+                                  elemento._id
+                                )
+                              "
+                              :color="operacao.cor"
+                              v-on="on"
+                              >{{ operacao.icon }}</v-icon
+                            >
+                          </template>
+                          <span>{{ operacao.tooltip }}</span>
+                        </v-tooltip>
+                      </p>
+                    </li>
+                    <!-- No caso de ser uma ligacao com ficheiro da API -->
+                    <li v-else-if="elemento.texto.ligacao">
+                      <p>
+                        <span
+                          v-html="
+                            compiledMarkdownOmmitParagraph(elemento.texto.pre)
+                          "
+                        ></span>
+                        <span
+                          class="fakea"
                           @click="
-                            switchOperacaoElemento(
-                              operacao.descricao,
+                            downloadFile(
                               documentacao._id,
                               entrada._id,
                               elemento._id
                             )
                           "
-                          :color="operacao.cor"
-                          v-on="on"
-                          >{{ operacao.icon }}</v-icon
+                          v-html="
+                            compiledMarkdownOmmitParagraph(
+                              elemento.texto.ligacao
+                            )
+                          "
+                        ></span>
+                        <span
+                          v-html="
+                            compiledMarkdownOmmitParagraph(elemento.texto.pos)
+                          "
+                        ></span>
+                        <v-tooltip
+                          bottom
+                          v-for="(operacao, index) in operacoes_elementos"
+                          :key="index"
                         >
-                      </template>
-                      <span>{{ operacao.tooltip }}</span>
-                    </v-tooltip>
-                  </li>
-                </div>
-              </ul>
+                          <template v-slot:activator="{ on }">
+                            <v-icon
+                              @click="
+                                switchOperacaoElemento(
+                                  operacao.descricao,
+                                  documentacao._id,
+                                  entrada._id,
+                                  elemento._id
+                                )
+                              "
+                              :color="operacao.cor"
+                              v-on="on"
+                              >{{ operacao.icon }}</v-icon
+                            >
+                          </template>
+                          <span>{{ operacao.tooltip }}</span>
+                        </v-tooltip>
+                      </p>
+                    </li>
+                    <!-- No caso de ser apenas texto -->
+                    <li v-else class="text-justify">
+                      <span
+                        v-html="compiledMarkdownOmmitParagraph(elemento.texto)"
+                      ></span>
+                      <v-tooltip
+                        bottom
+                        v-for="(operacao, index) in operacoes_elementos"
+                        :key="index"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-icon
+                            @click="
+                              switchOperacaoElemento(
+                                operacao.descricao,
+                                documentacao._id,
+                                entrada._id,
+                                elemento._id
+                              )
+                            "
+                            :color="operacao.cor"
+                            v-on="on"
+                            >{{ operacao.icon }}</v-icon
+                          >
+                        </template>
+                        <span>{{ operacao.tooltip }}</span>
+                      </v-tooltip>
+                    </li>
+                  </div>
+                </ul>
+              </v-card-text>
+              <div v-if="level >= min">
+                <v-btn
+                  color="indigo accent-4"
+                  dark
+                  class="ma-2"
+                  @click="
+                    go(`/documentacaoApoio/criar/entrada/${documentacao._id}`)
+                  "
+                  >Adicionar Entrada</v-btn
+                >
+                <v-btn
+                  color="indigo accent-4"
+                  dark
+                  class="ma-2"
+                  @click="
+                    go(`/documentacaoApoio/editar/classe/${documentacao._id}`)
+                  "
+                  >Editar Secção</v-btn
+                >
+                <v-btn
+                  color="red accent-4"
+                  dark
+                  class="ma-2"
+                  @click="eliminaClasse(documentacao._id)"
+                  >Eliminar Secção</v-btn
+                >
+              </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <DocApoioProdTecCientifica :level="level" />
+        </v-expansion-panels>
+
+        <v-dialog :value="eliminarIdClasse != ''" persistent max-width="290px">
+          <v-card>
+            <v-card-title class="headline">Confirmar ação</v-card-title>
+            <v-card-text>
+              Tem a certeza que pretende eliminar a secção?
             </v-card-text>
-            <div v-if="level >= min">
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="red" text @click="eliminarIdClasse = ''">
+                Cancelar
+              </v-btn>
+              <v-btn color="primary" text @click="remover('Classe')">
+                Confirmar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog :value="eliminarIdEntrada != ''" persistent max-width="290px">
+          <v-card>
+            <v-card-title class="headline">Confirmar ação</v-card-title>
+            <v-card-text>
+              Tem a certeza que pretende eliminar a entrada?
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
               <v-btn
-                color="indigo accent-4"
-                dark
-                class="ma-2"
+                color="red"
+                text
                 @click="
-                  go(`/documentacaoApoio/criar/entrada/${documentacao._id}`)
+                  eliminarIdEntrada = '';
+                  eliminarIdClasse = '';
                 "
-                >Adicionar Entrada</v-btn
               >
-              <v-btn
-                color="indigo accent-4"
-                dark
-                class="ma-2"
-                @click="
-                  go(`/documentacaoApoio/editar/classe/${documentacao._id}`)
-                "
-                >Editar Secção</v-btn
-              >
-              <v-btn
-                color="red accent-4"
-                dark
-                class="ma-2"
-                @click="eliminaClasse(documentacao._id)"
-                >Eliminar Secção</v-btn
-              >
-            </div>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <DocApoioProdTecCientifica :level="level" />
-      </v-expansion-panels>
+                Cancelar
+              </v-btn>
+              <v-btn color="primary" text @click="remover('Entrada')">
+                Confirmar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-      <v-dialog :value="eliminarIdClasse != ''" persistent max-width="290px">
-        <v-card>
-          <v-card-title class="headline">Confirmar ação</v-card-title>
-          <v-card-text>
-            Tem a certeza que pretende eliminar a secção?
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="red" text @click="eliminarIdClasse = ''">
-              Cancelar
-            </v-btn>
-            <v-btn color="primary" text @click="remover('Classe')">
-              Confirmar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog :value="eliminarIdEntrada != ''" persistent max-width="290px">
-        <v-card>
-          <v-card-title class="headline">Confirmar ação</v-card-title>
-          <v-card-text>
-            Tem a certeza que pretende eliminar a entrada?
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="red"
-              text
-              @click="
-                eliminarIdEntrada = '';
-                eliminarIdClasse = '';
-              "
-            >
-              Cancelar
-            </v-btn>
-            <v-btn color="primary" text @click="remover('Entrada')">
-              Confirmar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-dialog :value="eliminarIdElemento != ''" persistent max-width="290px">
-        <v-card>
-          <v-card-title class="headline">Confirmar ação</v-card-title>
-          <v-card-text>
-            Tem a certeza que pretende eliminar o elemento?
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="red"
-              text
-              @click="
-                eliminarIdElemento = '';
-                eliminarIdEntrada = '';
-                eliminarIdClasse = '';
-              "
-            >
-              Cancelar
-            </v-btn>
-            <v-btn color="primary" text @click="remover('Elemento')">
-              Confirmar
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-snackbar
-        v-model="snackbar"
-        :color="color"
-        :timeout="timeout"
-        :top="true"
-      >
-        {{ text }}
-        <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-      </v-snackbar>
-
-      <div>
-        <v-btn
-          v-for="item in this.fops"
-          color="indigo accent-4"
-          dark
-          class="ma-2"
-          @click="go(item.url)"
-          :key="item.url"
-          >{{ item.label }}</v-btn
+        <v-dialog
+          :value="eliminarIdElemento != ''"
+          persistent
+          max-width="290px"
         >
-      </div>
-    </v-card-text>
-  </v-card>
+          <v-card>
+            <v-card-title class="headline">Confirmar ação</v-card-title>
+            <v-card-text>
+              Tem a certeza que pretende eliminar o elemento?
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="red"
+                text
+                @click="
+                  eliminarIdElemento = '';
+                  eliminarIdEntrada = '';
+                  eliminarIdClasse = '';
+                "
+              >
+                Cancelar
+              </v-btn>
+              <v-btn color="primary" text @click="remover('Elemento')">
+                Confirmar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <v-snackbar
+          v-model="snackbar"
+          :color="color"
+          :timeout="timeout"
+          :top="true"
+        >
+          {{ text }}
+          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+        </v-snackbar>
+
+        <div>
+          <v-btn
+            v-for="item in this.fops"
+            color="indigo accent-4"
+            dark
+            class="ma-2"
+            @click="go(item.url)"
+            :key="item.url"
+            >{{ item.label }}</v-btn
+          >
+        </div>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -576,13 +606,38 @@ export default {
     preparaOperacoesEntradaElemento(level) {
       if (level >= NIVEL_MINIMO_DOC) {
         this.operacoes_entradas = [
-          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2", tooltip: "Editar Entrada" },
-          { icon: "delete", descricao: "Remoção", cor: "red", tooltip: "Remover Entrada" },
-          { icon: "add", descricao: "Adição", cor: "indigo darken-2", tooltip: "Adicionar Elemento" }
+          {
+            icon: "edit",
+            descricao: "Alteração",
+            cor: "indigo darken-2",
+            tooltip: "Editar Entrada"
+          },
+          {
+            icon: "delete",
+            descricao: "Remoção",
+            cor: "red",
+            tooltip: "Remover Entrada"
+          },
+          {
+            icon: "add",
+            descricao: "Adição",
+            cor: "indigo darken-2",
+            tooltip: "Adicionar Elemento"
+          }
         ];
         this.operacoes_elementos = [
-          { icon: "edit", descricao: "Alteração", cor: "indigo darken-2", tooltip: "Editar Elemento" },
-          { icon: "delete", descricao: "Remoção", cor: "red", tooltip: "Remover Elemento" }
+          {
+            icon: "edit",
+            descricao: "Alteração",
+            cor: "indigo darken-2",
+            tooltip: "Editar Elemento"
+          },
+          {
+            icon: "delete",
+            descricao: "Remoção",
+            cor: "red",
+            tooltip: "Remover Elemento"
+          }
         ];
       }
     },
@@ -631,7 +686,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .fakea:hover {
   text-decoration: underline;
   cursor: pointer;

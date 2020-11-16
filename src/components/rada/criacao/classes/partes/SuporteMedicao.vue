@@ -2,7 +2,7 @@
   <v-card outlined>
     <v-row v-for="(valores, i) in newSerie.suporte_e_medicao" :key="i">
       <v-col md="3" sm="3">
-        <div class="info-label">Suporte ({{ i+1 }})</div>
+        <div class="info-label">Suporte ({{ i + 1 }})</div>
       </v-col>
       <v-col sm="3" md="3">
         <v-select
@@ -15,7 +15,7 @@
         ></v-select>
       </v-col>
       <v-col md="3" sm="3">
-        <div class="info-label">Medição ({{ i+1 }})</div>
+        <div class="info-label">Medição ({{ i + 1 }})</div>
       </v-col>
       <v-col sm="2" md="2">
         <v-text-field
@@ -61,15 +61,15 @@ export default {
     ]
   }),
   methods: {
-    regra_medicao(v){
-      if(!!v){
-        if(new Number(v) >= 0){
+    regra_medicao(v) {
+      if (!!v) {
+        if (new Number(v) >= 0) {
           return true;
         } else {
-          return 'Valor tem que ser inteiro!'
+          return "Valor tem que ser inteiro!";
         }
       } else {
-        return 'Campo obrigatório!'
+        return "Campo obrigatório!";
       }
     },
     add() {

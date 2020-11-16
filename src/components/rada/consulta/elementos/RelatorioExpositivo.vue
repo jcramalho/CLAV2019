@@ -7,11 +7,11 @@
             <a
               v-if="entidade.ent_or_tip.split('#')[1].split('_')[0] == 'ent'"
               :href="'/entidades/ent_' + entidade.sigla"
-            >{{ entidade.sigla + " - " + entidade.designacao}}</a>
-            <a
-              v-else
-              :href="'/tipologias/tip_' + entidade.sigla"
-            >{{ entidade.sigla + " - " + entidade.designacao}}</a>
+              >{{ entidade.sigla + " - " + entidade.designacao }}</a
+            >
+            <a v-else :href="'/tipologias/tip_' + entidade.sigla">{{
+              entidade.sigla + " - " + entidade.designacao
+            }}</a>
           </li>
         </ul>
       </template>
@@ -43,7 +43,10 @@
       </v-card-text>
     </v-card>
     <br />
-    <RADAEntry label="História Administrativa/Biográfica" :value="rada.hist_admin" />
+    <RADAEntry
+      label="História Administrativa/Biográfica"
+      :value="rada.hist_admin"
+    />
     <RADAEntry label="História Custodial" :value="rada.hist_cust" />
     <RADAEntry label="Sistema de Organização" :value="rada.sist_org" />
     <RADAEntry label="Localização" :value="rada.localizacao" />

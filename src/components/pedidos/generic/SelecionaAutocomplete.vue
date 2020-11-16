@@ -8,7 +8,7 @@
       <v-card-text v-if="mensagem.titulo === 'processos'">
         <v-autocomplete
           v-model="selecao"
-          :items="dados.map((dado) => `${dado.codigo} - ${dado.titulo}`)"
+          :items="dados.map(dado => `${dado.codigo} - ${dado.titulo}`)"
           :search-input.sync="pesquisa"
           filled
           multiple
@@ -35,7 +35,7 @@
       <v-card-text v-else>
         <v-autocomplete
           v-model="selecao"
-          :items="dados.map((dado) => `${dado.sigla} - ${dado.designacao}`)"
+          :items="dados.map(dado => `${dado.sigla} - ${dado.designacao}`)"
           :search-input.sync="pesquisa"
           filled
           multiple
@@ -79,7 +79,7 @@ export default {
   data() {
     return {
       pesquisa: null,
-      selecao: null,
+      selecao: null
     };
   },
 
@@ -91,8 +91,8 @@ export default {
     adicionar() {
       const selecaoFormatada = [];
 
-      this.selecao.forEach((elemento) => {
-        this.dados.some((dado) => {
+      this.selecao.forEach(elemento => {
+        this.dados.some(dado => {
           if (
             this.mensagem.titulo === "processos" &&
             elemento.split(" ")[0].localeCompare(dado.codigo) === 0
@@ -106,7 +106,7 @@ export default {
 
       this.selecao = null;
       this.$emit("selecao", selecaoFormatada);
-    },
-  },
+    }
+  }
 };
 </script>

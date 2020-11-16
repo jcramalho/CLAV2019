@@ -896,7 +896,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .consulta tr {
   vertical-align: top;
   border-bottom: 1px solid #ddd;

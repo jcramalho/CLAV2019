@@ -195,7 +195,10 @@ export default {
     PainelOperacoesDocumentacaoCientifica
   },
   data: nt => ({
-    opcoes: [{ key: "Sim", value: true }, { key: "Não", value: false }],
+    opcoes: [
+      { key: "Sim", value: true },
+      { key: "Não", value: false }
+    ],
     documento: {
       classe: "",
       titulo: "",

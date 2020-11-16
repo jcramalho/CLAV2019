@@ -1,5 +1,12 @@
 <template>
-  <CriaEnt />
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp
+    }"
+  >
+    <CriaEnt />
+  </v-content>
 </template>
 
 <script>

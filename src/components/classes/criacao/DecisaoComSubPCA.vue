@@ -1,223 +1,381 @@
 <template>
   <!-- PCA -->
-  <v-card class="ma-2" >
-    <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>Prazo de Conservação Administrativa</v-card-title>
-    <v-card-text>
-      <v-row class="ma-2">
-        <v-col cols="2">
-          <div class="info-label">
-            Prazo
-            <InfoBox header="Prazo de Conservação Administrativa" :text="myhelp.Classe.Campos.Prazo" />
-          </div>
-        </v-col>
-        <v-col>
+  <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+    <v-row>
+      <v-col class="mx-3">
+        <v-toolbar
+          color="#083581"
+          class="caption mt-3"
+          dark
+          height="35"
+          style="border-radius: 6px;"
+        >
+          <v-toolbar-title
+            :class="{
+              'mx-auto': $vuetify.breakpoint.smAndDown,
+              'mx-0': $vuetify.breakpoint.mdAndUp
+            }"
+          >
+            Prazo de Conservação Administrativa
+          </v-toolbar-title>
+        </v-toolbar>
+      </v-col>
+    </v-row>
+    <v-row
+      :class="{
+        'mt-5': $vuetify.breakpoint.smAndDown,
+        'mt-0': $vuetify.breakpoint.mdAndUp
+      }"
+      class="ma-2"
+    >
+      <v-col cols="12" lg="2">
+        <div class="info-label">
+          Prazo
+          <InfoBox
+            header="Prazo de Conservação Administrativa"
+            :text="myhelp.Classe.Campos.Prazo"
+            helpColor="info"
+          />
+        </div>
+      </v-col>
+      <v-col cols="12" lg="10">
+        <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px;">
           <v-text-field
-          v-model="c.pca.valor"
-          label="Prazo em anos: 0 a 199"
-          v-mask="'###'"
-          solo
-          clearable
-        ></v-text-field>
-        </v-col>
-      </v-row>
+            class="mt-n4 px-3"
+            v-model="c.pca.valor"
+            label="Prazo em anos: 0 a 199"
+            v-mask="'###'"
+            text
+            hide-details
+            single-line
+            clearable
+            color="blue darken-3"
+          ></v-text-field>
+        </div>
+      </v-col>
+    </v-row>
 
-      <v-row class="ma-2">
-        <v-col cols="2">
-          <div class="info-label">
-            Notas
-            <InfoBox header="Notas" :text="myhelp.Classe.Campos.Notas" />
-          </div>
-        </v-col>
-        <v-col>
+    <v-row
+      :class="{
+        'mt-5': $vuetify.breakpoint.smAndDown,
+        'mt-0': $vuetify.breakpoint.mdAndUp
+      }"
+      class="ma-2"
+    >
+      <v-col cols="12" lg="2">
+        <div class="info-label">
+          Notas
+          <InfoBox
+            header="Notas"
+            :text="myhelp.Classe.Campos.Notas"
+            helpColor="info"
+          />
+        </div>
+      </v-col>
+      <v-col cols="12" lg="10">
+        <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px;">
           <v-textarea
-          solo
-          label="Notas ao PCA"
-          v-model="c.pca.notas"
-          rows="2"
-        ></v-textarea>
-        </v-col>
-      </v-row>
+            class="mt-n2 px-3"
+            label="Notas ao PCA"
+            v-model="c.pca.notas"
+            rows="1"
+            hide-details
+            auto-grow
+            color="blue darken-3"
+          ></v-textarea>
+        </div>
+      </v-col>
+    </v-row>
 
-      <v-row class="ma-2" v-if="semaforos.pcaFormasContagemReady">
-        <v-col cols="2">
-          <div class="info-label">
-            Forma de Contagem
-            <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
-          </div>
-        </v-col>
-        <v-col>
+    <v-row
+      :class="{
+        'mt-5': $vuetify.breakpoint.smAndDown,
+        'mt-0': $vuetify.breakpoint.mdAndUp
+      }"
+      class="ma-2"
+      v-if="semaforos.pcaFormasContagemReady"
+    >
+      <v-col cols="12" lg="2">
+        <div class="info-label">
+          Forma de Contagem
+          <InfoBox
+            header="Forma de Contagem do PCA"
+            :text="myhelp.Classe.Campos.FormaContagem"
+            helpColor="info"
+          />
+        </div>
+      </v-col>
+      <v-col cols="12" lg="10">
+        <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px;">
           <v-select
+            class="mt-n4 px-3"
             item-text="label"
             item-value="value"
             v-model="c.pca.formaContagem"
             :items="pcaFormasContagem"
             label="Selecione uma forma de contagem para o prazo"
-            solo
-            dense
+            clearable
+            hide-details
+            single-line
           />
-        </v-col>
-      </v-row>
+        </div>
+      </v-col>
+    </v-row>
 
-      <v-row class="ma-2" v-if="semaforos.pcaSubFormasContagemReady && c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'">
-        <v-col cols="2">
-          <div class="info-label">
-            Subforma de contagem
-            <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.SubformaContagem" />
-          </div>
-        </v-col>
-        <v-col cols="10">
+    <v-row
+      :class="{
+        'mt-5': $vuetify.breakpoint.smAndDown,
+        'mt-0': $vuetify.breakpoint.mdAndUp
+      }"
+      class="ma-2"
+      v-if="
+        semaforos.pcaSubFormasContagemReady &&
+          c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'
+      "
+    >
+      <v-col cols="12" lg="2">
+        <div class="info-label">
+          Subforma de contagem
+          <InfoBox
+            header="Forma de Contagem do PCA"
+            :text="myhelp.Classe.Campos.SubformaContagem"
+            helpColor="info"
+            dialogColor="#eceff1"
+          />
+        </div>
+      </v-col>
+      <v-col cols="12" lg="10">
+        <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px;">
           <v-select
+            class="mt-n4 px-3"
             item-text="label"
             item-value="value"
             v-model="c.pca.subFormaContagem"
             :items="pcaSubFormasContagem"
             label="Selecione uma subforma de contagem para o prazo"
-            solo
-            dense
+            clearable
+            hide-details
+            single-line
           >
-            <template v-slot:selection="{item}">
-              <p>{{ item.label }}</p>
+            <template v-slot:selection="{ item }">
+              <p class="selected py-3">{{ item.label }}</p>
             </template>
 
-            <template v-slot:item="{item}">
-              <p>{{ item.label }}</p>
+            <template v-slot:item="{ item }">
+              <p class="py-3">{{ item.label }}</p>
             </template>
           </v-select>
-        </v-col>
-      </v-row>
+        </div>
+      </v-col>
+    </v-row>
 
-      <hr style="border-top: 1px dashed #1A237E;" />
+    <hr style="border-top: 1px dashed #dee2f8;" class="mx-7" />
 
-      <!-- JUSTIFICAÇÂO DO PCA -->
+    <!-- JUSTIFICAÇÂO DO PCA -->
 
-      <v-row class="ma-2">
-        <v-col cols="3">
-          <div class="ma-2 info-label">
-            Justificação do PCA
-            <InfoBox header="Justificação do PCA" :text="myhelp.Classe.Campos.JustificacaoPCA" />
-          </div>
+    <v-row
+      :class="{
+        'mt-5': $vuetify.breakpoint.smAndDown,
+        'mt-0': $vuetify.breakpoint.mdAndUp
+      }"
+      class="ma-2"
+    >
+      <v-col cols="12" lg="2">
+        <div class="info-label">
+          Justificação do PCA
+          <InfoBox
+            header="Justificação do PCA"
+            :text="myhelp.Classe.Campos.JustificacaoPCA"
+            helpColor="info"
+          />
+        </div>
 
-          <div class="ma-2">
-            <v-btn
-              color="indigo darken-2"
-              dark
-              rounded
-              @click="adicionarCriterioGestionario( c.pca.justificacao, 'CriterioJustificacaoGestionario',
-                                                    'Critério Gestionário', textoCriterioGestionario,
-                                                    [], [])"
-              v-if="!c.semaforos.critGestionarioAdicionado"
+        <div class="ma-2">
+          <v-btn
+            class="secondary-button"
+            rounded
+            @click="
+              adicionarCriterioGestionario(
+                c.pca.justificacao,
+                'CriterioJustificacaoGestionario',
+                'Critério Gestionário',
+                textoCriterioGestionario,
+                [],
+                []
+              )
+            "
+            v-if="!c.semaforos.critGestionarioAdicionado"
             >Critério Gestionário
-              <v-icon dark right>add_circle_outline</v-icon>
-            </v-btn>
-          </div>
+            <unicon
+              class="ml-3 mb-1"
+              name="adicionar-icon"
+              width="15"
+              height="15"
+              viewBox="0 0 20.71 20.71"
+              fill="#4caf50"
+            />
+          </v-btn>
+        </div>
 
-          <div class="ma-2">
-            <v-btn
-              color="indigo darken-2"
-              dark
-              rounded
-              @click="adicionarCriterioLegalPCA( c.pca.justificacao, 'CriterioJustificacaoLegal',
-                                                  'Critério Legal', '', [], c.legislacao )"
-              v-if="!c.semaforos.critLegalAdicionadoPCA"
-            >
-              Critério Legal
-              <v-icon dark right>add_circle_outline</v-icon>
-            </v-btn>
-          </div>
-        </v-col>
+        <div class="ma-2">
+          <v-btn
+            class="secondary-button"
+            rounded
+            @click="
+              adicionarCriterioLegalPCA(
+                c.pca.justificacao,
+                'CriterioJustificacaoLegal',
+                'Critério Legal',
+                '',
+                [],
+                c.legislacao
+              )
+            "
+            v-if="!c.semaforos.critLegalAdicionadoPCA"
+          >
+            Critério Legal
+            <unicon
+              class="ml-3 mb-1"
+              name="adicionar-icon"
+              width="15"
+              height="15"
+              viewBox="0 0 20.71 20.71"
+              fill="#4caf50"
+            />
+          </v-btn>
+        </div>
+      </v-col>
 
-        <v-col>
-          <v-row class="ma-2" v-for="(crit, cindex) in c.pca.justificacao" :key="cindex">
-            <v-col cols="3">
-              <div class="info-label">
-                {{ crit.label }}
-                <v-icon
-                  color="red darken-2"
-                  dark
-                  small
-                  @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')"
-                  >remove_circle</v-icon>
-              </div>
-            </v-col>
-            <!-- Se existir um critério de Utilidade Administrativa ........................-->
-            <v-col v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
-              <div class="info-content">
-                <v-textarea
-                  auto-grow
-                  clearable
-                  single-line
-                  rows="1"
-                  :value="crit.notas"
-                  v-model="crit.notas"
-                ></v-textarea>
+      <v-col cols="12" lg="10">
+        <v-row
+          class="mt-1"
+          v-for="(crit, cindex) in c.pca.justificacao"
+          :key="cindex"
+        >
+          <v-col cols="3" class="mt-n4">
+            <div class="info-label">
+              {{ crit.label }}
+              <v-btn
+                icon
+                small
+                color="red"
+                @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')"
+              >
+                <unicon
+                  name="remove-icon"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 20.71 20.697"
+                  fill="#ff5252"
+                />
+              </v-btn>
+            </div>
+          </v-col>
+          <!-- Se existir um critério de Utilidade Administrativa ........................-->
+          <v-col
+            v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'"
+            class="mt-n4"
+          >
+            <div class="info-content pa-4">
+              <v-textarea
+                class="mt-n2 px-3"
+                auto-grow
+                clearable
+                single-line
+                rows="2"
+                :value="crit.notas"
+                v-model="crit.notas"
+              ></v-textarea>
+              <div class="px-3">
                 <a
                   :href="'/classes/consultar/' + p.id"
                   v-for="(p, i) in crit.procRel"
                   :key="p.id"
                 >
                   {{ p.codigo }}: {{ p.titulo }}
-                  <span v-if="i == crit.procRel.length - 1">.</span>
-                  <span v-else>, </span>
+                  <span v-if="i == crit.procRel.length - 1" class="ml-n1"
+                    >.</span
+                  >
+                  <span v-else class="ml-n1 mr-4">, <br class="mb-3"/></span>
                 </a>
               </div>
-            </v-col>
-            <!-- Se existir um critério Legal ..............................................-->
-            <v-col v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
-              <div class="info-content" v-if="crit.legislacao.length > 0">
-                <v-textarea
-                  auto-grow
-                  clearable
-                  single-line
-                  rows="1"
-                  :value="crit.notas"
-                  v-model="crit.notas"
-                ></v-textarea>
+            </div>
+          </v-col>
+          <!-- Se existir um critério Legal ..............................................-->
+          <v-col
+            v-else-if="crit.tipo == 'CriterioJustificacaoLegal'"
+            class="mt-n4"
+          >
+            <div class="info-content pa-4" v-if="crit.legislacao.length > 0">
+              <v-textarea
+                class="mt-n2 px-3"
+                auto-grow
+                clearable
+                single-line
+                rows="1"
+                :value="crit.notas"
+                v-model="crit.notas"
+              ></v-textarea>
+              <div class="px-3">
                 <span v-for="(l, i) in crit.legislacao" :key="l.id">
                   <a :href="'/legislacao/' + l.id">
                     {{ l.tipo }} {{ l.numero }}
                   </a>
-                  <v-icon
-                    color="red darken-2"
-                    dark
+                  <v-btn
+                    icon
                     small
+                    color="red"
                     @click="crit.legislacao.splice(i, 1)"
-                    >remove_circle</v-icon>
-                  <span v-if="i == crit.legislacao.length - 1">.</span>
-                  <span v-else>, </span>
+                  >
+                    <unicon
+                      class="mt-n1"
+                      name="remove-icon"
+                      width="13"
+                      height="13"
+                      viewBox="0 0 20.71 20.697"
+                      fill="#ff5252"
+                    />
+                  </v-btn>
+                  <span v-if="i == crit.legislacao.length - 1" class="ml-n1"
+                    >.</span
+                  >
+                  <span v-else class="ml-n1 mr-4">, <br class="mb-3"/></span>
                 </span>
               </div>
-              <div class="info-content" v-if="crit.legislacao.length == 0">
-                Sem legislação associada. Pode associar legislação na área de
-                contexto.
-              </div>
-            </v-col>
-            <!-- Se existir um critério Gestionário ..........................................-->
-            <v-col v-else>
-              <div class="info-content">
-                <v-textarea
-                  auto-grow
-                  clearable
-                  single-line
-                  rows="1"
-                  :value="crit.notas"
-                  v-model="crit.notas"
-                ></v-textarea>
-              </div>
-            </v-col>
-
-            <hr
-              v-if="cindex < c.pca.justificacao.length"
-              style="border-top: 2px dotted #1A237E; width: 100%;"
-            />
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+            </div>
+            <div
+              class="info-content pa-4 px-7"
+              v-if="crit.legislacao.length == 0"
+            >
+              Sem legislação associada. Pode associar legislação na área de
+              contexto.
+            </div>
+          </v-col>
+          <!-- Se existir um critério Gestionário ..........................................-->
+          <v-col v-else class="mt-n4">
+            <div class="info-content pa-4">
+              <v-textarea
+                class="mt-n2 px-3"
+                :value="crit.notas"
+                v-model="crit.notas"
+                clearable
+                single-line
+                hide-details
+                rows="1"
+                auto-grow
+                color="blue darken-3"
+              ></v-textarea>
+            </div>
+          </v-col>
+          <hr style="border-top: 1px #ffffff ; width: 100%;" />
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-const help = require("@/config/help").help
+const help = require("@/config/help").help;
 
 import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
@@ -336,32 +494,43 @@ export default {
     unselectDiploma: function(diploma, listaLeg) {
       var index = listaLeg.findIndex(e => e.id === diploma.id);
       listaLeg.splice(index, 1);
-      if(listaLeg.length == 0){
-        this.semaforos.critLegalAdicionadoPCA = false
+      if (listaLeg.length == 0) {
+        this.semaforos.critLegalAdicionadoPCA = false;
       }
     }
   }
 };
 </script>
-<style>
+<style scoped>
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+.selected {
+  color: #000000 !important;
+  font-weight: bold !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  line-height: 1.375rem;
+}
+.secondary-button {
+  color: #1a237e !important;
+  background: linear-gradient(to right, #c8cce0 0%, #e7eafb 100%);
+  font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  outline: none !important;
 }
 </style>

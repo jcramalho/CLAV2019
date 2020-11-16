@@ -2,17 +2,17 @@
   <v-dialog v-model="dialogState" persistent max-width="90%">
     <v-card>
       <v-card-title class="indigo darken-4 white--text">
-        <b>{{ 'Alterar a classe: ' + treeview_object.titulo }}</b>
+        <b>{{ "Alterar a classe: " + treeview_object.titulo }}</b>
       </v-card-title>
       <br />
       <v-card-text>
         <v-row>
           <v-dialog v-model="toDelete" width="50%">
             <v-card>
-              <v-card-title
-                class="headline grey lighten-2"
-                primary-title
-              >Pretende mesmo eliminar a classe {{ treeview_object.titulo }} ?</v-card-title>
+              <v-card-title class="headline grey lighten-2" primary-title
+                >Pretende mesmo eliminar a classe
+                {{ treeview_object.titulo }} ?</v-card-title
+              >
 
               <v-card-text align="center">
                 <br />
@@ -21,8 +21,15 @@
                   color="indigo darken-4"
                   dark
                   @click="toDelete = false"
-                >Voltar</v-btn>
-                <v-btn class="ma-3 pa-5" color="red darken-4" dark @click="eliminarClasse">Sim</v-btn>
+                  >Voltar</v-btn
+                >
+                <v-btn
+                  class="ma-3 pa-5"
+                  color="red darken-4"
+                  dark
+                  @click="eliminarClasse"
+                  >Sim</v-btn
+                >
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -34,7 +41,11 @@
               <div class="info-label">Código</div>
             </v-col>
             <v-col sm="3" md="3">
-              <v-text-field disabled v-model="classe.codigo" solo></v-text-field>
+              <v-text-field
+                disabled
+                v-model="classe.codigo"
+                solo
+              ></v-text-field>
             </v-col>
             <v-col xs="3" sm="3">
               <div class="info-label">Título</div>
@@ -83,10 +94,12 @@
                   <v-list-item>
                     <v-list-item-content>
                       <v-list-item-title>
-                        <strong>Classe Área Orgânico-Funcional</strong> em questão não existe!
+                        <strong>Classe Área Orgânico-Funcional</strong> em
+                        questão não existe!
                       </v-list-item-title>
                       <v-list-item-subtitle>
-                        Este campo pode não ser preenchido. Se assim for, a classe será do tipo
+                        Este campo pode não ser preenchido. Se assim for, a
+                        classe será do tipo
                         <i>N1</i>.
                       </v-list-item-subtitle>
                     </v-list-item-content>
@@ -100,9 +113,13 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false"
+          >Voltar</v-btn
+        >
         <v-btn color="indigo darken-4" dark @click="save">Atualizar</v-btn>
-        <v-btn dark color="red darken-4" @click="toDelete = true">Eliminar</v-btn>
+        <v-btn dark color="red darken-4" @click="toDelete = true"
+          >Eliminar</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

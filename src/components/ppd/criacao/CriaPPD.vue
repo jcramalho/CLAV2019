@@ -133,7 +133,6 @@
                   </div>
             </v-col>
           </v-row>
-
           <SistemaInfo
             :ppd="ppd"
             :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo, ppd.listaSistemasInfoAuxiliar)"
@@ -326,7 +325,6 @@ export default {
       {text: "PCA", sortable: false, value: "pca"},
       {text: "Destino Final", sortable: false, value: "df"},
     ],
-
     headersLC: [
       {text: "Código", sortable: false, value: "codigo"},
       {text: "Título", sortable: false, value: "titulo"},
@@ -448,7 +446,6 @@ export default {
         }
       return myClasses
     },
-
     //--------------------
     //----------------------------------------------
     prepararLeg: async function(leg) {

@@ -48,7 +48,8 @@
           <template v-slot:no-data>
             <v-list-item>
               <v-list-item-title>
-                <strong>Tipologia</strong> em questão não é produtora deste RADA!
+                <strong>Tipologia</strong> em questão não é produtora deste
+                RADA!
               </v-list-item-title>
             </v-list-item>
           </template>

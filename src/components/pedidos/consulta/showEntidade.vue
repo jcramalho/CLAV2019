@@ -92,20 +92,20 @@ export default {
     return {
       tipologiasHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
+        { text: "Designação", value: "designacao", class: "subtitle-1" }
       ],
       footerProps: {
         "items-per-page-text": "Tipologias por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
-      },
+        "items-per-page-all-text": "Todas"
+      }
     };
   },
 
   computed: {
     dados() {
       return this.p.objeto.dados;
-    },
+    }
   },
 
   methods: {
@@ -119,8 +119,8 @@ export default {
 
     transformaKeys(key) {
       return mapKeys(key);
-    },
-  },
+    }
+  }
 };
 </script>
 

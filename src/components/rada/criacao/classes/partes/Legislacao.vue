@@ -34,7 +34,8 @@
               :input-value="data.selected"
               close
               @click:close="removeLeg(data.item)"
-            >{{ data.item.legislacao }}</v-chip>
+              >{{ data.item.legislacao }}</v-chip
+            >
           </template>
         </v-autocomplete>
       </v-col>
@@ -90,4 +91,3 @@ export default {
   }
 };
 </script>
-

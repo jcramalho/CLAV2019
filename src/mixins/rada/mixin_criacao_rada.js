@@ -48,16 +48,18 @@ export default {
         for (let j = 0; j < series[i].suporte_e_medicao.length; j++) {
           switch (series[i].suporte_e_medicao[j].suporte) {
             case "Papel":
-              this.RADA.RE.dimSuporte.medicaoUI_papel +=
-                Number(series[i].suporte_e_medicao[j].medicao);
+              this.RADA.RE.dimSuporte.medicaoUI_papel += Number(
+                series[i].suporte_e_medicao[j].medicao
+              );
               break;
             case "Eletrónico Digitalizado": case "Eletrónico Nativo":
               this.RADA.RE.dimSuporte.medicaoUI_digital +=
                 Number(series[i].suporte_e_medicao[j].medicao);
               break;
             case "Outro":
-              this.RADA.RE.dimSuporte.medicaoUI_outros +=
-                Number(series[i].suporte_e_medicao[j].medicao);
+              this.RADA.RE.dimSuporte.medicaoUI_outros += Number(
+                series[i].suporte_e_medicao[j].medicao
+              );
 
               break;
           }

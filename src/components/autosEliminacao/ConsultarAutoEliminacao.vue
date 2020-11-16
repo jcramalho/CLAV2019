@@ -1,7 +1,7 @@
 <template>
-  <v-card class="ma-2 panel panel-default panel-custom">
+<v-card class="ma-2 panel panel-default panel-custom">
     <v-card-title class="pa-2 indigo darken-4 title white--text" dark>
-      Auto de Eliminação
+        Auto de Eliminação
     </v-card-title>
     <v-card-text class="panel-body">
       <div class="form-group">
@@ -239,104 +239,125 @@
         </v-btn>
       </div>
     </v-card-text>
-  </v-card>
+</v-card>
 </template>
 
 <script>
 export default {
-  props: ["auto"],
-  data: () => ({
-    search: "",
-    panel: [0],
-    cabecalho: [
-      { text: "Código", align: "left", sortable: false, value: "codigo" },
-      { text: "Título", align: "left", value: "titulo" },
-      { text: "Data de Contagem", align: "center", value: "dataContagem" },
-      { text: "Natureza de Intervenção", align: "center", value: "ni" }
-    ],
-    footer_props: {
-      "items-per-page-text": "Mostrar"
-    }
-  })
+    props: ["auto"],
+    data: () => ({
+        search: "",
+        panel: [0],
+        cabecalho: [{
+                text: "Código",
+                align: "left",
+                sortable: false,
+                value: "codigo"
+            },
+            {
+                text: "Título",
+                align: "left",
+                value: "titulo"
+            },
+            {
+                text: "Data de Contagem",
+                align: "center",
+                value: "dataContagem"
+            },
+            {
+                text: "Natureza de Intervenção",
+                align: "center",
+                value: "ni"
+            }
+        ],
+        footer_props: {
+            "items-per-page-text": "Mostrar"
+        }
+    })
 };
 </script>
 
-<style>
+<style scoped>
 .panel-custom .panel-heading {
-  background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
+    background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
 }
 
 .panel-custom .page-header {
-  border: none;
-  margin: 0;
-  color: #1a237e;
+    border: none;
+    margin: 0;
+    color: #1a237e;
 }
 
 .panel-custom .panel-default:hover {
-  border-color: #1a237e;
+    border-color: #1a237e;
 }
 
 .consulta tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
+    vertical-align: top;
+    border-bottom: 1px solid #ddd;
 }
 
 .consulta td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  align-content: center;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    align-content: center;
 }
 
 .consulta td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
+    vertical-align: middle;
+    padding-left: 15px;
 }
 
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
+    color: #1a237e !important;
+    padding: 8px;
+    width: 100%;
+    background-color: #dee2f8;
+    font-weight: bold;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 6px;
+    text-align: center;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+    padding: 5px;
+    width: 100%;
+    background-color: #f1f6f8 !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 10px;
 }
 
 .panel-info-custom .panel-body {
-  font-size: 1pc;
-  font-family: "Times New Roman", Times, serif;
+    font-size: 1pc;
+    font-family: "Times New Roman", Times, serif;
 }
 
 .panel-noticiabox .panel-body {
-  font-size: 1pc;
+    font-size: 1pc;
 }
 
 .panel-linkbox .panel-body {
-  padding-top: 5px !important;
-  padding-left: 30px !important;
-  padding-bottom: 10px;
+    padding-top: 5px !important;
+    padding-left: 30px !important;
+    padding-bottom: 10px;
 }
 
 li .panel-body {
-  padding: 0px;
+    padding: 0px;
 }
 
 li .panel-body li {
-  margin-left: 20px;
+    margin-left: 20px;
 }
 
 .is-collapsed li:nth-child(n + 5) {
-  display: none;
+    display: none;
 }
+
 .wrap-text {
-  -webkit-line-clamp: unset !important;
-  white-space: normal;
+    -webkit-line-clamp: unset !important;
+    white-space: normal;
 }
 </style>

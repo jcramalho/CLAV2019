@@ -100,7 +100,9 @@
           >
             <template v-slot:selection="data">
               <v-chip>
-                <v-avatar left color="amber accent-3">{{ data.item[0] }}</v-avatar>
+                <v-avatar left color="amber accent-3">{{
+                  data.item[0]
+                }}</v-avatar>
                 {{ data.item }}
               </v-chip>
             </template>

@@ -1,48 +1,74 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <div class="info-label">
-        Participantes no processo e respetivas intervenções
-        <InfoBox header="Participantes no processo e respetivas intervenções" :text="myhelp.Classe.Campos.Participantes" />
-      </div>
-    </v-col>
-    <v-col v-if="entidades.length > 0">
-      <v-data-table :headers="headers" :items="entidades" class="elevation-1" hide-default-footer>
-        <template v-slot:header="props">
-          <tr>
-            <th
-              v-for="h in props.headers"
-              :key="h.text"
-              class="green darken-2 subtitle-2"
-            >{{ h.text }}</th>
-          </tr>
-        </template>
+  <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+    <v-row
+      :class="{
+        'mt-7': $vuetify.breakpoint.smAndDown,
+        'mt-6': $vuetify.breakpoint.mdAndUp
+      }"
+    >
+      <v-col cols="12" lg="2">
+        <div class="info-label">
+          Participantes no processo e respetivas intervenções
+          <InfoBox
+            header="Participantes no processo e respetivas intervenções"
+            :text="myhelp.Classe.Campos.Participantes"
+            helpColor="info"
+          />
+        </div>
+      </v-col>
+      <v-col cols="12" lg="10" v-if="entidades.length > 0">
+        <div class="info-content">
+          <v-data-table
+            class="content-table pa-4"
+            :headers="headers"
+            :items="entidades"
+            hide-default-footer
+          >
+            <template v-slot:header="props">
+              <tr>
+                <th v-for="h in props.headers" :key="h.text">
+                  {{ h.text }}
+                </th>
+              </tr>
+            </template>
 
-        <template v-slot:item="props">
-          <tr>
-            <td>{{ props.item.intervencao }}</td>
-            <td>{{ props.item.sigla }}</td>
-            <td>{{ props.item.designacao }}</td>
-            <td>{{ props.item.tipo }}</td>
-            <td>
-              <v-btn
-                small
-                class="red darken-2"
-                dark
-                rounded
-                @click="unselectParticipante(props.item)"
-              >
-                <v-icon dark>remove_circle_outline</v-icon>
-              </v-btn>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
-    </v-col>
-    <v-col v-else>
-      <v-alert :value="true" type="warning">Não tem participantes selecionados...</v-alert>
-    </v-col>
-  </v-row>
+            <template v-slot:item="props">
+              <tr>
+                <td style="color: #1A237E;">{{ props.item.intervencao }}</td>
+                <td style="color: #1A237E;">{{ props.item.sigla }}</td>
+                <td style="color: #1A237E;">{{ props.item.designacao }}</td>
+                <td style="color: #1A237E;">{{ props.item.tipo }}</td>
+                <td>
+                  <v-btn
+                    icon
+                    color="red darken-2"
+                    @click="unselectParticipante(props.item)"
+                  >
+                    <unicon
+                      name="remove-icon"
+                      width="15"
+                      height="15"
+                      viewBox="0 0 20.71 20.697"
+                      fill="#ff5252"
+                    />
+                  </v-btn>
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+        </div>
+      </v-col>
+      <v-col v-else>
+        <v-alert
+          :value="true"
+          type="warning"
+          style="border-radius: 40px;"
+          class="mt-3"
+          >Não tem participantes selecionados...</v-alert
+        >
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -86,23 +112,27 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 .info-label {
-  color: #00695c;
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e0f2f1;
+  background-color: #dee2f8;
   font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
-  padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
 }
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+.content-table {
+  background-color: #f1f6f8 !important;
+  border-radius: 10px;
+}
+tr:hover {
+  background-color: #eaeef9 !important;
 }
 </style>

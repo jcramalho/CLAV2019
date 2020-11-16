@@ -685,7 +685,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .myPanelHeader {
   color: #304ffe;
 }
@@ -702,7 +702,6 @@ export default {
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
 }
 
 .is-collapsed li:nth-child(n + 5) {

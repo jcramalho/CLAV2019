@@ -1,11 +1,12 @@
+/* eslint-disable */
 var Excel = require("exceljs");
 
-var excel2Json = function(file, tipo) {
-  return new Promise(function(resolve, reject) {
+var excel2Json = function (file, tipo) {
+  return new Promise(function (resolve, reject) {
     var workbook = new Excel.Workbook();
     workbook.xlsx
       .load(file)
-      .then(function(wb) {
+      .then(function (wb) {
         // Tratamento de Autos de Eliminação
         // Os autos de eliminação vão ser carregados num array para validações
         var index = -1;
@@ -41,7 +42,7 @@ var excel2Json = function(file, tipo) {
             .getCell(2).text;
 
         var autos = wb.getWorksheet(2);
-        autos.eachRow(function(row, rowNumber) {
+        autos.eachRow(function (row, rowNumber) {
           if (rowNumber > 1) {
             //Formatação do array dos AE
             index++;
@@ -82,7 +83,7 @@ var excel2Json = function(file, tipo) {
             var agreg = wb.getWorksheet(3);
             var dataContagem;
             var res;
-            agreg.eachRow(function(ag, agNumber) {
+            agreg.eachRow(function (ag, agNumber) {
               if (tipo === "PGD_LC") {
                 if (agNumber > 1 && ag.getCell(1).text === codigo) {
                   //Invariante da data de Conservacao
@@ -105,8 +106,8 @@ var excel2Json = function(file, tipo) {
               } else {
                 if (
                   agNumber > 1 &&
-                  (ag.getCell(1).text === codigo &&
-                    ag.getCell(2).text === referencia)
+                  ag.getCell(1).text === codigo &&
+                  ag.getCell(2).text === referencia
                 ) {
                   //Invariante da data de Conservacao
                   dataContagem = ag.getCell(5).value;
@@ -147,7 +148,7 @@ var verificarSerie = function(str) {
   if(arr[7].replace(/['"]/g,'').trim() != "Medição das agregações / UI em digital (Gb)") return false;
   if(arr[8].replace(/['"]/g,'').trim() != "Medição das agregações / UI noutros suportes") return false;
   return true;
-}
+};
 
 var verificarAgregacoes = function(str) {
   var arr = str.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
@@ -159,10 +160,10 @@ var verificarAgregacoes = function(str) {
   if(arr[4].replace(/['"]/g,'').trim() != "Data de início de contagem do PCA") return false;
   if(arr[5].replace(/['"]/g,'').trim() != "Natureza da intervenção") return false;
   return true;
-}
+};
 
-var validarCSVs = function(fileSerie, fileAgreg, tipo) {
-  return new Promise(function(resolve, reject) {
+var validarCSVs = function (fileSerie, fileAgreg, tipo) {
+  return new Promise(function (resolve, reject) {
     var enc = new TextDecoder("utf-8");
     var series = enc.decode(fileSerie).replace(/['"]/g,'').split("\n")
     if(!fileAgreg) var agregacoes = [];
@@ -196,7 +197,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       medicoesDigital: [],
       medicoesOutros: [],
       numeroErros: 0
-    }
+    };
     var errosAgregacoes = {
       codigo: [],
       referencia: [],
@@ -205,7 +206,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       pca: [],
       ni: [],
       numeroErros: 0
-    }
+    };
     var codigosSerie = [];
     var referenciasSerie = [];
 
@@ -237,17 +238,37 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         if(serie[8] && !reUI.test(serie[8])) {errosSerie.medicoesOutros.push(index+2); errosSerie.numeroErros++;}
         if(uiPapel+uiDigital+uiOutros<=0) {errosSerie.medicoes.push(index+2); errosSerie.numeroErros++;}
         var numero = 0;
-        agregacoes.forEach((a,ind) => {
-          var agregacao = a.split(/[;,]/)
+        agregacoes.forEach((a, ind) => {
+          var agregacao = a.split(/[;,]/);
           var codigo = [];
-          if(agregacao[0]==serie[0] && agregacao[1]==serie[1]) {
+          if (agregacao[0] == serie[0] && agregacao[1] == serie[1]) {
             numero++;
-            if(agregacao[2]!="" && !codigo.find(elem => elem == agregacao[2])) codigo.push(agregacao[2]); 
-            else {errosAgregacoes.codigoAg.push(ind+2); errosAgregacoes.numeroErros++; }
-            if(agregacao[3]=="") {errosAgregacoes.titulo.push(index+2);errosAgregacoes.numeroErros++;}
+            if (
+              agregacao[2] != "" &&
+              !codigo.find(elem => elem == agregacao[2])
+            )
+              codigo.push(agregacao[2]);
+            else {
+              errosAgregacoes.codigoAg.push(ind + 2);
+              errosAgregacoes.numeroErros++;
+            }
+            if (agregacao[3] == "") {
+              errosAgregacoes.titulo.push(index + 2);
+              errosAgregacoes.numeroErros++;
+            }
             var pca = parseInt(agregacao[4]) || 0;
-            if(!agregacao[4].match(/[0-9]{4}/) || pca<1000 || pca<dataInicio) {errosAgregacoes.pca.push(ind+2);errosAgregacoes.numeroErros++;}
-            if(tipo=="PGD_LC" && agregacao[5]=="") {errosAgregacoes.ni.push(ind+2);errosAgregacoes.numeroErros++;}
+            if (
+              !agregacao[4].match(/[0-9]{4}/) ||
+              pca < 1000 ||
+              pca < dataInicio
+            ) {
+              errosAgregacoes.pca.push(ind + 2);
+              errosAgregacoes.numeroErros++;
+            }
+            if (tipo == "PGD_LC" && agregacao[5] == "") {
+              errosAgregacoes.ni.push(ind + 2);
+              errosAgregacoes.numeroErros++;
+            }
           }
         })
         //if(numero != serie[5]) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++}
@@ -260,9 +281,22 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         if(tipo == "TS_LC" && agregacao[0] == "") {errosAgregacoes.codigo.push(index+2);errosAgregacoes.numeroErros++;}
         else if(agregacao[0] == "" && agregacao[1] == "") {errosAgregacoes.referencia.push(index+2);errosAgregacoes.numeroErros++;}
       }
-    })
-    
-    if(errosSerie.numeroErros + errosAgregacoes.numeroErros >0) {
+    });
+
+    agregacoes.forEach((a, index) => {
+      var agregacao = a.split(/[;,]/);
+      if (agregacao.length >= 5) {
+        if (tipo == "TS_LC" && agregacao[0] == "") {
+          errosAgregacoes.codigo.push(index + 2);
+          errosAgregacoes.numeroErros++;
+        } else if (agregacao[0] == "" && agregacao[1] == "") {
+          errosAgregacoes.referencia.push(index + 2);
+          errosAgregacoes.numeroErros++;
+        }
+      }
+    });
+
+    if (errosSerie.numeroErros + errosAgregacoes.numeroErros > 0) {
       var errosVal = {
         erros: [],
         numErros: errosSerie.numeroErros + errosAgregacoes.numeroErros
@@ -364,7 +398,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
     }
     else resolve("Ficheiros em anexo validados com sucesso!")
   });
-}
+};
 
 var csv2JsonAg = function(zonaControlo, fileAgreg, tipo) {
   return new Promise(function(resolve, reject) {
@@ -419,8 +453,8 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
     if(!fileAgreg) var agregacoes = []
     else var agregacoes = enc.decode(fileAgreg).split("\n")
 
-    series.shift()
-    agregacoes.shift()
+    series.shift();
+    agregacoes.shift();
     var auto = {
       tipo: tipo,
       zonaControlo: []
@@ -441,27 +475,31 @@ var csv2Json = function(fileSerie, fileAgreg, tipo) {
           uiOutros: serie[8].replace(/['"]/g,''),
           dono: [],
           agregacoes: []
-        }
+        };
         agregacoes.forEach(a => {
           a = a.replace(/[\r\n]+/g,'');
           var agregacao = a.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
           var agCodigo = agregacao[0] || "";
           var agReferencia = agregacao[1] || "";
-          if(agCodigo.replace(/['"]/g,'')==zc.codigo && agReferencia.replace(/['"]/g,'')==zc.referencia) {
+          if (
+            agCodigo.replace(/['"]/g, "") == zc.codigo &&
+            agReferencia.replace(/['"]/g, "") == zc.referencia
+          ) {
             var ag = {
-              codigo: agregacao[2].replace(/[ -.,!/]/g, "_").replace(/['"]/g,''),
-              titulo: agregacao[3].replace(/^\"|\"$/g,"").replace(/['"]/g,''),
-              dataContagem: agregacao[4].replace(/['"]/g,''),
-              ni: agregacao[5].replace(/['"]/g,'')
-            }
-            zc.agregacoes.push(ag)
+              codigo: agregacao[2]
+                .replace(/[ -.,!/]/g, "_")
+                .replace(/['"]/g, ""),
+              titulo: agregacao[3].replace(/^\"|\"$/g, "").replace(/['"]/g, ""),
+              dataContagem: agregacao[4].replace(/['"]/g, ""),
+              ni: agregacao[5].replace(/['"]/g, "")
+            };
+            zc.agregacoes.push(ag);
           }
-        })
-        auto.zonaControlo.push(zc)
-      }
-      else return;
-    })
-    resolve({auto: auto})
+        });
+        auto.zonaControlo.push(zc);
+      } else return;
+    });
+    resolve({ auto: auto });
   });
 };
 

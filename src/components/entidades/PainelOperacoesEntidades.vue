@@ -1,97 +1,180 @@
-<template>
+z<template>
   <div>
-    <v-row class="ma-2 text-center">
+    <v-row class="align-center pa-3" style="text-align:center;">
       <ValidarEntidadeInfoBox :e="e" :original="original" :acao="acao" />
 
       <v-col>
         <v-btn
           v-if="this.acao == 'Criação'"
-          rounded
-          class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
-          >Criar Entidade</v-btn
+          color="success darken-1"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown,
+          }"
+          id="botao-shadow"
         >
+          <unicon
+            name="adicionar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.71"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Criar</p>
+        </v-btn>
+
         <v-btn
           v-else-if="this.acao == 'Alteração'"
-          rounded
-          class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
-          >Alterar Entidade</v-btn
+          color="success darken-1"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown,
+          }"
+          id="botao-shadow"
         >
+          <unicon
+            name="alterar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.727"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Alterar</p>
+        </v-btn>
+
         <v-btn
           v-else-if="this.acao == 'Extinção'"
-          rounded
-          class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
-          >Extinguir Entidade</v-btn
+          color="success darken-1"
+          rounded
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown,
+          }"
+          id="botao-shadow"
         >
+          <unicon
+            name="eliminar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.71"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Extinguir</p>
+        </v-btn>
       </v-col>
 
       <v-col>
         <v-btn
-          v-if="this.acao == 'Criação'"
-          dark
-          rounded
-          class="red darken-4"
           @click="eliminarEntidade"
-          >Cancelar Criação</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Alteração'"
-          dark
+          color="red darken-4"
           rounded
-          class="red darken-4"
-          @click="eliminarEntidade"
-          >Cancelar Alteração</v-btn
+          class="white--text"
+          :class="{
+            'px-8': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown,
+          }"
+          id="botao-shadow"
         >
-        <v-btn
-          v-else-if="this.acao == 'Extinção'"
-          dark
-          rounded
-          class="red darken-4"
-          @click="eliminarEntidade"
-          >Cancelar Extinção</v-btn
-        >
+          <unicon
+            name="remove-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+          <p v-if="this.acao == 'Criação'" class="ml-2">Eliminar</p>
+          <p
+            v-if="this.acao == 'Alteração' || this.acao == 'Extinção'"
+            class="ml-2"
+          >
+            Cancelar
+          </p>
+        </v-btn>
       </v-col>
-
-      <!-- Erros de Validação -->
-      <v-dialog v-model="errosValidacao" width="30%">
-        <v-card>
-          <v-card-title>Erros detetados na validação</v-card-title>
-          <v-card-text>
-            <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
-            </p>
-          </v-card-text>
+    </v-row>
+    <!-- Erros de Validação -->
+    <v-row justify-center>
+      <v-dialog v-model="errosValidacao" persistent width="60%">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2"
+            >Erros detetados na validação</v-card-title
+          >
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                Há erros de validação. Selecione "Validar" para ver exatamente
+                quais e proceder à sua correção.
+              </p>
+            </v-card-text>
+          </div>
           <v-card-actions>
-            <v-spacer />
-            <v-btn color="red darken-4" dark @click="errosValidacao = false"
-              >Fechar</v-btn
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="errosValidacao = false"
             >
+              Fechar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-row>
 
-      <!-- Cancelamento da criação de uma entidade: confirmação -->
-      <v-dialog v-model="pedidoEliminado" width="50%">
-        <v-card>
-          <v-card-title>Cancelamento do pedido.</v-card-title>
-          <v-card-text>
-            <p>Selecionou o cancelamento do pedido.</p>
-            <p>Toda a informação introduzida será eliminada.</p>
-            <p>
-              Confirme a decisão para ser reencaminhado para a página principal.
-            </p>
-          </v-card-text>
+    <!-- Cancelamento da criação de uma entidade: confirmação -->
+    <v-row justify-center>
+      <v-dialog v-model="pedidoEliminado" persistent width="60%">
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2">
+            Cancelamento e eliminação do pedido de
+            {{ formatarLabel(this.acao) }} de entidade
+          </v-card-title>
+          <div class="info-content px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                Selecionou o cancelamento de {{ formatarLabel(this.acao) }} da
+                entidade.
+              </p>
+              <p>Toda a informação introduzida será eliminada.</p>
+              <p>
+                Confirme a decisão para ser reencaminhado para a página
+                principal.
+              </p>
+            </v-card-text>
+          </div>
           <v-card-actions>
-            <v-spacer />
-            <v-btn color="indigo darken-1" text @click="cancelarCriacaoEntidade"
-              >Confirmo</v-btn
+            <v-spacer></v-spacer>
+            <v-btn
+              color="success darken-1"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="cancelarCriacaoEntidade"
             >
-            <v-btn color="red darken-1" dark @click="pedidoEliminado = false"
-              >Enganei-me, desejo continuar o trabalho</v-btn
+              Confirmo
+            </v-btn>
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="pedidoEliminado = false"
             >
+              Enganei-me, desejo continuar o trabalho
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -105,7 +188,15 @@
         :top="true"
       >
         {{ loginErrorMessage }}
-        <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
+        <v-btn icon color="white" @click="loginErrorSnackbar = false">
+          <unicon
+            name="remove-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+        </v-btn>
       </v-snackbar>
     </v-row>
 
@@ -117,20 +208,20 @@
 </template>
 
 <script>
-import ValidarEntidadeInfoBox from "@/components/entidades/ValidarEntidadeInfoBox";
-import ErroDialog from "@/components/generic/ErroDialog";
+import ValidarEntidadeInfoBox from '@/components/entidades/ValidarEntidadeInfoBox';
+import ErroDialog from '@/components/generic/ErroDialog';
 
-import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
+import { criarHistorico, extrairAlteracoes } from '@/utils/utils';
 import {
   eNUV,
   eNV,
   eUndefined,
   eDataFormatoErrado,
   testarRegex,
-} from "@/utils/validadores";
+} from '@/utils/validadores';
 
 export default {
-  props: ["e", "acao", "original"],
+  props: ['e', 'acao', 'original'],
 
   components: {
     ValidarEntidadeInfoBox,
@@ -142,7 +233,7 @@ export default {
       erroDialog: false,
       erros: [],
       loginErrorSnackbar: false,
-      loginErrorMessage: "Precisa de fazer login para criar a Entidade!",
+      loginErrorMessage: 'Precisa de fazer login para criar a Entidade!',
       pedidoEliminado: false,
       errosValidacao: false,
     };
@@ -152,6 +243,9 @@ export default {
     fecharErro() {
       this.erroDialog = false;
       this.erros = [];
+    },
+    formatarLabel: function(action) {
+      return action.toLowerCase();
     },
 
     async validarEntidadeCriacao() {
@@ -163,8 +257,8 @@ export default {
       } else {
         try {
           let existeDesignacao = await this.$request(
-            "get",
-            "/entidades/designacao?valor=" +
+            'get',
+            '/entidades/designacao?valor=' +
               encodeURIComponent(this.e.designacao)
           );
           if (existeDesignacao.data) numeroErros++;
@@ -179,8 +273,8 @@ export default {
       } else {
         try {
           let existeSigla = await this.$request(
-            "get",
-            "/entidades/sigla?valor=" + encodeURIComponent(this.e.sigla)
+            'get',
+            '/entidades/sigla?valor=' + encodeURIComponent(this.e.sigla)
           );
           if (existeSigla.data) numeroErros++;
         } catch (err) {
@@ -224,8 +318,8 @@ export default {
       } else if (!eUndefined(dados.designacao)) {
         try {
           let existeDesignacao = await this.$request(
-            "get",
-            "/entidades/designacao?valor=" +
+            'get',
+            '/entidades/designacao?valor=' +
               encodeURIComponent(dados.designacao)
           );
           if (existeDesignacao.data) {
@@ -279,7 +373,7 @@ export default {
     // Lança o pedido de criação da entidade no worflow
     async criarAlterarEntidade() {
       try {
-        if (this.$store.state.name === "") {
+        if (this.$store.state.name === '') {
           this.loginErrorSnackbar = true;
         } else {
           let erros = 0;
@@ -288,14 +382,14 @@ export default {
           const historico = [];
 
           switch (this.acao) {
-            case "Criação":
+            case 'Criação':
               erros = await this.validarEntidadeCriacao();
 
               historico.push(criarHistorico(dataObj));
 
               break;
 
-            case "Alteração":
+            case 'Alteração':
               dataObj = extrairAlteracoes(this.e, this.original);
 
               erros = await this.validarEntidadeAlteracao(dataObj);
@@ -303,16 +397,16 @@ export default {
               historico.push(criarHistorico(this.e, this.original));
               break;
 
-            case "Extinção":
+            case 'Extinção':
               erros = this.validarEntidadeExtincao(dataObj);
 
               for (const key in dataObj) {
-                if (key !== "dataExtincao") delete dataObj[key];
+                if (key !== 'dataExtincao') delete dataObj[key];
               }
 
               historico.push({
                 dataExtincao: {
-                  cor: "amarelo",
+                  cor: 'amarelo',
                   dados: dataObj.dataExtincao,
                   nota: null,
                 },
@@ -328,16 +422,18 @@ export default {
 
             if (objKeys.length === 0)
               throw new Error(
-                "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
+                'Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido.'
               );
 
             let userBD = this.$verifyTokenUser();
 
             let pedidoParams = {
               tipoPedido: this.acao,
-              tipoObjeto: "Entidade",
+              tipoObjeto: 'Entidade',
               novoObjeto: dataObj,
-              user: { email: userBD.email },
+              user: {
+                email: userBD.email,
+              },
               entidade: userBD.entidade,
               token: this.$store.state.token,
               historico: historico,
@@ -348,8 +444,8 @@ export default {
             else pedidoParams.objetoOriginal = dataObj;
 
             const codigoPedido = await this.$request(
-              "post",
-              "/pedidos",
+              'post',
+              '/pedidos',
               pedidoParams
             );
 
@@ -359,7 +455,7 @@ export default {
           }
         }
       } catch (err) {
-        if (typeof err.message === "string") {
+        if (typeof err.message === 'string') {
           this.erros.push(err.message);
           this.erroDialog = true;
         }
@@ -367,7 +463,7 @@ export default {
     },
 
     criacaoPendenteTerminada: function() {
-      this.$router.push("/");
+      this.$router.push('/');
     },
 
     // Cancela a criação da Entidade
@@ -376,27 +472,23 @@ export default {
     },
 
     cancelarCriacaoEntidade: function() {
-      this.$router.push("/");
+      this.$router.push('/entidades');
     },
   },
 };
 </script>
 
 <style scoped>
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
+.info-card {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  color: #606060;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

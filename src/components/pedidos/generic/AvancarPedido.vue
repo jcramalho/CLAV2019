@@ -1,170 +1,153 @@
 <template>
-  <v-card>
+<v-card>
     <v-card-title class="indigo darken-4 title white--text" dark>
-      {{ texto.textoTitulo }} do pedido {{ pedido }}
+        {{ texto.textoTitulo }} do pedido {{ pedido }}
     </v-card-title>
 
     <v-card-text class="mt-2">
-      <div v-if="!utilizadorSelecionado">
-        <v-alert type="info">
-          Clique sobre a linha da tabela para selecionar o utilizador a quem
-          deve ser atribuída a {{ texto.textoAlert }} do pedido {{ pedido }}.
-        </v-alert>
-
-        <v-text-field
-          filled
-          v-model="procuraUtilizador"
-          append-icon="search"
-          label="Procurar utilizador"
-          single-line
-          hide-details
-        />
-
-        <v-data-table
-          :headers="usersHeaders"
-          :items="utilizadores"
-          :items-per-page="5"
-          :search="procuraUtilizador"
-          class="elevation-1"
-          :footer-props="footerProps"
-        >
-          <template v-slot:no-data>
-            <v-alert type="error" width="50%" class="m-auto mb-2 mt-2" outlined>
-              Não existem utilizadores para selecionar...
+        <div v-if="!utilizadorSelecionado">
+            <v-alert type="info">
+                Clique sobre a linha da tabela para selecionar o utilizador a quem
+                deve ser atribuída a {{ texto.textoAlert }} do pedido {{ pedido }}.
             </v-alert>
-          </template>
 
-          <template v-slot:no-results>
-            <v-alert type="info" width="50%" class="m-auto mb-2 mt-2" outlined>
-              Sem resultados para "<strong>{{ procuraUtilizador }}</strong
-              >".
-            </v-alert>
-          </template>
+            <v-text-field filled v-model="procuraUtilizador" append-icon="search" label="Procurar utilizador" single-line hide-details />
 
-          <template v-slot:item="props">
-            <tr @click="utilizadorSelecionado = props.item">
-              <td class="subheading">{{ props.item.name }}</td>
-              <td class="subheading">
-                {{ props.item.entidade.split("_")[1] }}
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
+            <v-data-table :headers="usersHeaders" :items="utilizadores" :items-per-page="5" :search="procuraUtilizador" class="elevation-1" :footer-props="footerProps">
+                <template v-slot:no-data>
+                    <v-alert type="error" width="50%" class="m-auto mb-2 mt-2" outlined>
+                        Não existem utilizadores para selecionar...
+                    </v-alert>
+                </template>
 
-      <div v-else>
-        <v-alert type="success">
-          Tarefa atribuída a
-          <b>
-            {{
+                <template v-slot:no-results>
+                    <v-alert type="info" width="50%" class="m-auto mb-2 mt-2" outlined>
+                        Sem resultados para "<strong>{{ procuraUtilizador }}</strong>".
+                    </v-alert>
+                </template>
+
+                <template v-slot:item="props">
+                    <tr @click="utilizadorSelecionado = props.item">
+                        <td class="subheading">{{ props.item.name }}</td>
+                        <td class="subheading">
+                            {{ props.item.entidade.split("_")[1] }}
+                        </td>
+                    </tr>
+                </template>
+            </v-data-table>
+        </div>
+
+        <div v-else>
+            <v-alert type="success">
+                Tarefa atribuída a
+                <b>
+                    {{
               `${this.utilizadorSelecionado.name} (${
                 this.utilizadorSelecionado.entidade.split("_")[1]
               })`
             }}
-          </b>
-        </v-alert>
+                </b>
+            </v-alert>
 
-        <v-row>
-          <v-col cols="2">
-            <div class="info-label">Mensagem</div>
-          </v-col>
+            <v-row>
+                <v-col cols="2">
+                    <div class="info-label">Mensagem</div>
+                </v-col>
 
-          <v-col>
-            <v-textarea
-              solo
-              hide-details
-              color="indigo"
-              :label="`Mensagem de ${texto.textoTitulo.toLowerCase()}`"
-              v-model="mensagemDespacho"
-            />
-          </v-col>
-        </v-row>
-      </div>
+                <v-col>
+                    <v-textarea solo hide-details color="indigo" :label="`Mensagem de ${texto.textoTitulo.toLowerCase()}`" v-model="mensagemDespacho" />
+                </v-col>
+            </v-row>
+        </div>
     </v-card-text>
 
     <v-card-actions>
-      <v-spacer />
-      <v-btn color="red darken-4" text rounded dark @click="cancelar()">
-        Cancelar
-      </v-btn>
+        <v-spacer />
+        <v-btn color="red darken-4" text rounded dark @click="cancelar()">
+            Cancelar
+        </v-btn>
 
-      <v-btn
-        :disabled="utilizadorSelecionado === null"
-        color="indigo accent-4 white--text"
-        rounded
-        @click="avancar()"
-      >
-        {{ texto.textoBotao }}
-      </v-btn>
+        <v-btn :disabled="utilizadorSelecionado === null" color="indigo accent-4 white--text" rounded @click="avancar()">
+            {{ texto.textoBotao }}
+        </v-btn>
     </v-card-actions>
-  </v-card>
+</v-card>
 </template>
 
 <script>
 export default {
-  props: ["texto", "utilizadores", "pedido"],
-  data() {
-    return {
-      procuraUtilizador: null,
-      utilizadorSelecionado: null,
-      mensagemDespacho: null,
-      usersHeaders: [
-        { text: "Nome", value: "name", class: "title" },
-        { text: "Entidade", value: "entidade", class: "title" },
-      ],
-      footerProps: {
-        "items-per-page-text": "Utilizadores por página",
-        "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos",
-      },
-    };
-  },
-
-  methods: {
-    cancelar() {
-      this.utilizadorSelecionado = null;
-      this.mensagemDespacho = null;
-      this.procuraUtilizador = null;
-      this.$emit("fecharDialog");
+    props: ["texto", "utilizadores", "pedido"],
+    data() {
+        return {
+            procuraUtilizador: null,
+            utilizadorSelecionado: null,
+            mensagemDespacho: null,
+            usersHeaders: [{
+                    text: "Nome",
+                    value: "name",
+                    class: "title"
+                },
+                {
+                    text: "Entidade",
+                    value: "entidade",
+                    class: "title"
+                },
+            ],
+            footerProps: {
+                "items-per-page-text": "Utilizadores por página",
+                "items-per-page-options": [5, 10, -1],
+                "items-per-page-all-text": "Todos",
+            },
+        };
     },
 
-    avancar() {
-      const despacho = {
-        utilizadorSelecionado: this.utilizadorSelecionado,
-      };
+    methods: {
+        cancelar() {
+            this.utilizadorSelecionado = null;
+            this.mensagemDespacho = null;
+            this.procuraUtilizador = null;
+            this.$emit("fecharDialog");
+        },
 
-      if (this.mensagemDespacho !== null)
-        despacho.mensagemDespacho = this.mensagemDespacho;
+        avancar() {
+            const despacho = {
+                utilizadorSelecionado: this.utilizadorSelecionado
+            };
 
-      this.$emit("avancarPedido", despacho);
+            if (this.mensagemDespacho !== null)
+                despacho.mensagemDespacho = this.mensagemDespacho;
 
-      this.utilizadorSelecionado = null;
-      this.mensagemDespacho = null;
-      this.procuraUtilizador = null;
-    },
-  },
+            this.$emit("avancarPedido", despacho);
+
+            this.utilizadorSelecionado = null;
+            this.mensagemDespacho = null;
+            this.procuraUtilizador = null;
+        }
+    }
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+    color: #1a237e !important;
+    padding: 8px;
+    width: 100%;
+    background-color: #dee2f8;
+    font-weight: bold;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 6px;
+    text-align: center;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
+    padding: 8px;
+    background-color: #f1f6f8 !important;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    border-radius: 10px;
 }
 
 .is-collapsed li:nth-child(n + 5) {
-  display: none;
+    display: none;
 }
 </style>

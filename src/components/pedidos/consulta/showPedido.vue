@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-8">
+<v-card class="ma-8">
     <v-card-title class="pa-2 indigo darken-4 title white--text">
       Consulta do pedido: {{ p.codigo }}
       <v-spacer />
@@ -122,10 +122,9 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-btn color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
-      <v-spacer />
-      <v-btn
-        v-if="
+        <v-btn color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
+        <v-spacer />
+        <v-btn v-if="
           (p.estado === 'Distribuído' ||
             p.estado === 'Apreciado' ||
             p.estado === 'Redistribuído' ||
@@ -156,29 +155,23 @@
 
     <!-- Substituir responsável dialog -->
     <v-dialog v-model="substituirResponsavelDialog" width="80%" persistent>
-      <SubstituirResponsavel :pedido="p" @fecharDialog="fecharDialog()" />
+        <SubstituirResponsavel :pedido="p" @fecharDialog="fecharDialog()" />
     </v-dialog>
 
     <!-- Dialog Ver Historico de Alterações-->
     <v-dialog v-model="verHistoricoDialog" width="70%">
-      <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
+        <VerHistorico :pedido="p" @fecharDialog="fecharHistorico()" />
     </v-dialog>
 
     <!-- Dialog para reapreciar pedidos -->
     <v-dialog v-model="reapreciarDialog" width="80%" persistent>
-      <AvancarPedido
-        :utilizadores="utilizadores"
-        :texto="{
+        <AvancarPedido :utilizadores="utilizadores" :texto="{
           textoTitulo: 'Distribuição',
           textoAlert: 'reapreciação',
           textoBotao: 'Reapreciar',
-        }"
-        :pedido="p.codigo"
-        @fecharDialog="fecharReapreciarDialog()"
-        @avancarPedido="reapreciarPedido($event)"
-      />
+        }" :pedido="p.codigo" @fecharDialog="fecharReapreciarDialog()" @avancarPedido="reapreciarPedido($event)" />
     </v-dialog>
-  </v-card>
+</v-card>
 </template>
 
 <script>
@@ -203,7 +196,9 @@ import {
   NIVEIS_ANALISAR_PEDIDO,
   NIVEIS_SUBSTITUIR_RESPONSAVEL,
 } from "@/utils/consts";
-import { filtraNivel } from "@/utils/permissoes";
+import {
+    filtraNivel
+} from "@/utils/permissoes";
 
 export default {
   props: ["p", "etapaPedido"],
@@ -308,8 +303,8 @@ export default {
       }
     },
 
-    temPermissaoSubstituirResponsavel() {
-      return NIVEIS_SUBSTITUIR_RESPONSAVEL.includes(this.$userLevel());
+    async created() {
+        await this.listaUtilizadores();
     },
 
     converteData(data) {
@@ -359,18 +354,20 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
+    color: #1a237e;
+    /* indigo darken-4 */
+    font-weight: 400;
+    width: 100%;
+    background-color: #e8eaf6;
+    /* indigo lighten-5 */
+    font-weight: bold;
+    border-radius: 3px;
 }
 
 .info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
+    padding: 5px;
+    width: 100%;
+    border: 1px solid #1a237e;
+    border-radius: 3px;
 }
 </style>

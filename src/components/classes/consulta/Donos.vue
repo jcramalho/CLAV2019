@@ -77,29 +77,23 @@ export default {
 };
 </script>
 
-<style>
-a:link {
-  color: #1a237e;
-  background-color: transparent;
-}
-
-a:hover {
-  color: white;
-  background-color: #1a237e;
-}
-
+<style scoped>
 .info-label {
   color: #1a237e;
-  padding: 5px;
-  font-weight: 400;
+  padding: 8px;
   width: 100%;
   background-color: #dee2f8;
   font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

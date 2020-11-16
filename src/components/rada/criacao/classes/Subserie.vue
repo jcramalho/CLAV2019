@@ -1,7 +1,9 @@
 <template>
   <v-dialog v-model="dialogState" persistent max-width="90%">
     <v-card>
-      <v-card-title class="indigo darken-4 white--text">Adicionar Classe Subsérie</v-card-title>
+      <v-card-title class="indigo darken-4 white--text"
+        >Adicionar Classe Subsérie</v-card-title
+      >
       <br />
       <v-card-text>
         <v-form ref="form" :lazy-validation="false">
@@ -35,15 +37,24 @@
 
           <v-expansion-panels accordion v-model="panels" :multiple="isMultiple">
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona Descritiva</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <ZonaDescritiva :newSerie="newSubserie" :UIs="UIs" :RE="RE" :classes="classes" />
+                <ZonaDescritiva
+                  :newSerie="newSubserie"
+                  :UIs="UIs"
+                  :RE="RE"
+                  :classes="classes"
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona de Contexto de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -55,7 +66,9 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel class="ma-1" popout focusable>
-              <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text">
+              <v-expansion-panel-header
+                class="pa-2 indigo darken-4 title white--text"
+              >
                 <b>Zona de Decisões de Avaliação</b>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
@@ -71,15 +84,26 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-alert width="100%" :value="existe_erros" outlined type="error" prominent border="left">
+        <v-alert
+          width="100%"
+          :value="existe_erros"
+          outlined
+          type="error"
+          prominent
+          border="left"
+        >
           É necessário preencher os campos seguintes:
           <ul>
             <li v-for="(erro, i) in erros" :key="i">{{ erro }}</li>
           </ul>
         </v-alert>
         <v-spacer></v-spacer>
-        <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="indigo darken-4" dark @click="save(newSubserie)">Adicionar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="dialogState = false"
+          >Voltar</v-btn
+        >
+        <v-btn color="indigo darken-4" dark @click="save(newSubserie)"
+          >Adicionar</v-btn
+        >
         <v-btn color="red darken-4" dark @click="apagar">Limpar</v-btn>
       </v-card-actions>
     </v-card>
