@@ -852,7 +852,6 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if(to.matched.some(record => record.meta.ent))
     if(store.state.token){
-      console.log(store.state.entidade)
       if(store.state.entidade === 'ent_DGLAB') router.push('/users/dglab')
       else router.push('/users/outraent')
     } else next()

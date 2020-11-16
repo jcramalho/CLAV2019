@@ -56,12 +56,12 @@
                     <p class="ml-2">Consultar</p>
                 </v-btn>
             </v-col>
-            <v-col cols="12" md="4">
-                <v-btn v-if="
+            <v-col cols="12" md="4" v-if="
               this.$userLevel() > 0 &&
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
-            " @click="$router.push('/ts/criar')" rounded class="white--text" :class="{
+            ">
+                <v-btn @click="$router.push('/ts/criar')" rounded class="white--text" :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }" id="default-button">
@@ -69,12 +69,12 @@
                     <p class="ml-2">Criar</p>
                 </v-btn>
             </v-col>
-            <v-col cols="12" md="4">
-                <v-btn v-if="
+            <v-col cols="12" md="4" v-if="
               this.$userLevel() > 0 &&
                 this.$store.state.token != '' &&
                 this.$store.state.name != ''
-            " @click="$router.push('/ts/importar/csv')" rounded class="white--text" :class="{
+            ">
+                <v-btn  @click="$router.push('/ts/importar/csv')" rounded class="white--text" :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }" id="default-button">
