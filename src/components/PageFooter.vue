@@ -7,7 +7,7 @@
                 Direção Geral do Livro, dos Arquivos e das Bibliotecas
             </p>
             <v-spacer></v-spacer>
-            <p class="body-2">Versão: 2020-03-19</p>
+            <p class="body-2">Versão: {{ interfaceVersion }}</p>
 
             <v-spacer></v-spacer>
 
@@ -35,7 +35,7 @@
                 Direção Geral do Livro, dos Arquivos e das Bibliotecas
             </p>
             <v-spacer></v-spacer>
-            <p class="body-2 mt-3">Versão: 2020-03-19</p>
+            <p class="body-2 mt-3">Versão: {{ interfaceVersion }}</p>
 
             <v-spacer></v-spacer>
 
