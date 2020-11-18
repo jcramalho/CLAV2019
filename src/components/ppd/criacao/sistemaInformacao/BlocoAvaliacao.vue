@@ -26,10 +26,10 @@
           <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Decomposição do SI</div>
           </v-col>
-          <v-col v-if="tabelaDecomposicao.length > 0">
+          <v-col v-if="ppd.si.avaliacao.tabelaDecomposicao.length > 0">
             <v-data-table
             :headers="headersDecomp"
-            :items="tabelaDecomposicao"
+            :items="ppd.si.avaliacao.tabelaDecomposicao"
             class="elevation-1"
             :footer-props="footer_Classes"
             :page.sync="paginaSelectDecomp"
@@ -63,7 +63,6 @@
         </v-row>
         <v-dialog v-model="addDecomposicao">
           <AddDecomposicao
-            v-bind:tabelaDecomposicao="tabelaDecomposicao"
             hide-overlay
             v-bind:numeroSI=ppd.si.numeroSI
             @guardarDecomp="guardarDecomp($event)"
@@ -80,10 +79,10 @@
           <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Classes</div>
           </v-col>
-          <v-col v-if="selecionadosTabelaFL.length > 0">
+          <v-col v-if="ppd.si.avaliacao.selecionadosTabelaFL.length > 0">
             <v-data-table
             :headers="headersSelecionados"
-            :items="selecionadosTabelaFL"
+            :items="ppd.si.avaliacao.selecionadosTabelaFL"
             class="elevation-1"
             :footer-props="footer_Classes"
             :page.sync="paginaSelect"
@@ -255,11 +254,7 @@
                 <InfoBox header="Criticidade do SI" :text="myhelp.Ppd.Avaliacao.criticidadeSI" />
               </div>
           </v-col>
-          <v-col
-            class="d-flex"
-            cols="12"
-            sm="9"
-          >
+          <v-col class="d-flex" cols="12" sm="9">
             <v-select
               :items="checkedCriticidade"
               label="Indique a criticidade do SI (1-4)"
@@ -339,9 +334,7 @@ export default {
       siTipoRelacao: [],
       loadCheck: "",
       addDecomposicao: false,
-      tabelaDecomposicao: [],
       addClasse: false,
-      selecionadosTabelaFL: [],
 
       siRelacionadosHeaders: [
         { text: "Relação", align: "left", value: "relacao" },
@@ -397,7 +390,7 @@ export default {
       checkedCriticidade: ["Muito crítico", "Crítico", "Pouco crítico", "Não crítico"],
       simNao: ["Sim", "Não"],
 
-
+      tabelaDecomposicao:[]
 
     };
   },
@@ -408,24 +401,24 @@ export default {
 
     //-----------
     guardarClasse(item) {
-      this.selecionadosTabelaFL.push(item);
+      this.ppd.si.avaliacao.selecionadosTabelaFL.push(item);
       this.addClasse= false;
     },
 
     unselectClasse: function(item) {
       this.classesSI.push(item);
-      var index = this.selecionadosTabelaFL.findIndex(e => e.id === item.id);
-      this.selecionadosTabelaFL.splice(index, 1);
+      var index = this.ppd.si.avaliacao.selecionadosTabelaFL.findIndex(e => e.id === item.id);
+      this.ppd.si.avaliacao.selecionadosTabelaFL.splice(index, 1);
     },
 
     guardarDecomp(item) {
-      this.tabelaDecomposicao.push(item);
+      this.ppd.si.avaliacao.tabelaDecomposicao.push(item);
       this.addDecomposicao= false;
     },
 
     unselectDecomp: function(item) {
-      var index = this.tabelaDecomposicao.findIndex(e => e.numeroSub === item.numeroSub);
-      this.tabelaDecomposicao.splice(index, 1);
+      var index = this.ppd.si.avaliacao.tabelaDecomposicao.findIndex(e => e.numeroSub === item.numeroSub);
+      this.ppd.si.avaliacao.tabelaDecomposicao.splice(index, 1);
     },
 
     selectSistema: function(numeroSI, relacao) {

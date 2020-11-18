@@ -49,7 +49,7 @@
           <v-col cols="12" xs="12" sm="9">
             <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao"
+              v-model="ppd.si.estrategia.utilizacaoOperacional.lacunas"
               label="Indique as lacunas e necessidade de desenvolvimento para a implementação das soluções."
               solo
               clearable
@@ -83,7 +83,7 @@
           <v-col cols="12" xs="12" sm="9">
             <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao"
+              v-model="ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao"
               label="Indique os motivos que conduziram à seleção do método de preservação. "
               solo
               clearable
@@ -95,7 +95,7 @@
           <v-col cols="12" xs="12" sm="9">
             <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao"
+              v-model="ppd.si.estrategia.utilizacaoMemoria.lacunas"
               label="Indique as lacunas e necessidade de desenvolvimento para a implementação das soluções."
               solo
               clearable

@@ -232,10 +232,12 @@ export default {
         },
         avaliacao: {
           descricao: "",
+          tabelaDecomposicao: [],
+          selecionadosTabelaFL: [],
+          sistemasRelacionados: [],
           checkedAti: "",
           checkedGrau: "",
           checkedCriticidade: "",
-          sistemasRelacionados: [],
           objetoPreservacao: "",
           legislacoes: [],
         },
@@ -287,7 +289,6 @@ export default {
             fundMetodoPreservacao: "",
             lacunas: ""
           }
-
         },
       },
 
@@ -637,6 +638,19 @@ export default {
   font-size: 14pt;
   font-weight: bold;
   margin: 5px;
+  border-radius: 3px;
+}
+
+.separadorMini {
+  color: #283593;
+  text-align: center;
+  padding: 5px;
+  font-weight: 400;
+  width: 75%;
+  background-color: #e8eaf6;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: auto;
   border-radius: 3px;
 }
 
