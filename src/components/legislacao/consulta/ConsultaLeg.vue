@@ -33,7 +33,7 @@
 
                         <v-col cols="12" lg="10" v-if="item.text">
                             <div v-if="item.campo === 'Link'" class="info-content pa-4">
-                                <a :href="item.text" target="_blank">{{ item.text }}</a>
+                                <a :href="pathAPI + '/ficheirosEstaticos?caminho=documentos%2FRADA%2FDespacho' + item.text.split('Despacho')[1] + '&' + authToken" target="_blank">{{ item.text }}</a>
                             </div>
                             <div v-else-if="item.campo === 'Entidades'" style="min-height:60px;" class="info-content py-4 px-2">
                                 <ul style="margin-bottom: 0 !important;">
@@ -123,7 +123,11 @@ export default {
             Executor: "Executar",
             Iniciador: "Iniciar"
         },
-        myhelp: help
+        myhelp: help,
+
+        pathAPI: "",
+        authToken: "",
+        ready: false
     }),
     methods: {
         goBack() {
@@ -134,7 +138,14 @@ export default {
         objetoFiltrado() {
             return Object.values(this.objeto).filter(obj => obj.text);
         }
-    }
+    },
+
+    created: async function (){
+    this.authToken = await this.$getAuthToken();
+    this.authToken = this.authToken.replace(" ", "=");
+    this.pathAPI = lhost;
+    this.ready = true;
+  }
 };
 </script>
 
