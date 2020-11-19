@@ -29,7 +29,7 @@
 
           <v-col v-if="item.text">
             <div v-if="item.campo === 'Link'" class="info-content">
-              <a :href="pathAPI + '/ficheirosEstaticos?caminho=documentos%2FRADA%2F' + item.text.split('RADA/')[1] + '&' + authToken" target="_blank">{{ item.text }}</a>
+              <a :href="pathAPI + '/ficheirosEstaticos?caminho=documentos%2FRADA%2FDespacho' + item.text.split('Despacho')[1] + '&' + authToken" target="_blank">{{ item.text }}</a>
             </div>
             <div v-else-if="item.campo === 'Entidades'" class="info-content">
               <ul>
