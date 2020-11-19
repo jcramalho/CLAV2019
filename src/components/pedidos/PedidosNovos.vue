@@ -60,7 +60,7 @@
               :items="dadosTabela"
               :search.sync="procurar"
               sortDesc
-              sort-by="data"
+              sort-by="codigo"
               :custom-sort="ordenaTabela"
               :footer-props="footer_props"
               :page.sync="paginaTabela"
