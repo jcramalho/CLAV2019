@@ -8,11 +8,11 @@
         </v-btn>
     </v-snackbar>
 
-    <v-content :class="{ 'pt-0': $vuetify.breakpoint.xsOnly }">
+    <v-main :class="{ 'pt-0': $vuetify.breakpoint.xsOnly }">
         <router-view />
         <Notificacoes v-if="this.$store.state.name != ''" :drawer="drawN" :notificacoes="notificacoes" @removerNotificacao="removerNotificacao($event)" />
         <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" :socket="socket" />
-    </v-content>
+    </v-main>
 
     <PageFooter />
 </v-app>

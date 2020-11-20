@@ -1,5 +1,5 @@
 <template>
-  <v-content
+  <v-main
     :class="{
       'px-6': $vuetify.breakpoint.smAndDown,
       'px-12': $vuetify.breakpoint.mdAndUp
@@ -213,7 +213,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-content>
+  </v-main>
 </template>
 
 <script>
