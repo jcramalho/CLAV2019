@@ -511,7 +511,7 @@ export default {
             },
             {
               label: "Importar",
-              url: "/ppd/importar/csv",
+              url: "/ppd/importar",
               level: [1, 3, 3.5, 4, 5, 6, 7],
             },
           ],
