@@ -56,10 +56,10 @@ var importarSI = (file, ppd) => {
                         desfinoFinalSI: si[i][25],
                         siRelacionado: si[i][26],
                         siRelacionadoRelacao: si[i][27],
-                        estadoSI: si[i][28],
-                        grauUtilizacaoSI: si[i][29],
-                        criticidadeSI: si[i][30],
-                        siObjetoPreservacao: si[i][31],
+                        checkedAti: si[i][28],
+                        checkedGrau: si[i][29],
+                        checkedCriticidade: si[i][30],
+                        objetoPreservacao: si[i][31],
                         notas: si[i][32]
                     },
                     caracterizacao: {
@@ -100,12 +100,16 @@ var importarSI = (file, ppd) => {
                         notas: si[i][67],
                     },
                     estrategia: {
-                        uOperacionalIdentificacao: si[i][68],
-                        uOperacionalFundamentacao: si[i][69],
-                        uOperacionalLacunas: si[i][70],
-                        uMemoriaIdentificacao : si[i][71],
-                        uMemoriaFundamentacao : si[i][72],
-                        uMemoriaLacunas : si[i][73],
+                        utilizacaoOperacional:{
+                            idMetodoPreservacao: si[i][68],
+                            fundMetodoPreservacao: si[i][69],
+                            lacunas: si[i][70],
+                        },
+                        utilizacaoMemoria:{
+                            idMetodoPreservacao: si[i][71],
+                            fundMetodoPreservacao: si[i][72],
+                            lacunas: si[i][73],
+                        }
                     }
                 }
                 allSI.push(sIdentificacao);

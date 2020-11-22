@@ -136,7 +136,7 @@
 
           <SistemaInfo
             :ppd="ppd"
-            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo, ppd.listaSistemasInfoAuxiliar)"
+            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo)"
             :entidades="entidades"
             :semaforos="semaforos"
             :listaLegislacao="listaLegislacao"
@@ -239,7 +239,6 @@ export default {
           checkedGrau: "",
           checkedCriticidade: "",
           objetoPreservacao: "",
-          legislacoes: [],
         },
         caracterizacao:{
           dependenciaSoft: "",
@@ -549,7 +548,7 @@ export default {
       }
     },
 
-    newSistema: function(sis, lista, listaAux) {
+    newSistema: async function(sis, lista) {
         var index = lista.findIndex(e => e.numeroSI === sis.numeroSI);
         if(index != -1){
           //lista[index] = sis;
@@ -560,7 +559,7 @@ export default {
         }
         else{
           lista.push(sis);
-          listaAux.push(sis);
+          this.ppd.listaSistemasInfoAuxiliar = [...lista];
         }
     },
 
