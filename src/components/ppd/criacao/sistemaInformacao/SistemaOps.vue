@@ -360,7 +360,7 @@
                           <v-col cols="12" xs="12" sm="4" >
                             <v-text-field
                               label="Não possui"
-                              :value="siSpec.avaliacao.estadoSI"
+                              :value="siSpec.avaliacao.checkedAti"
                               readonly
                               solo
                               dense
@@ -372,7 +372,7 @@
                           <v-col cols="12" xs="12" sm="4" >
                             <v-text-field
                               label="Não possui"
-                              :value="siSpec.avaliacao.grauUtilizacaoSI"
+                              :value="siSpec.avaliacao.checkedGrau"
                               readonly
                               solo
                               dense
@@ -384,7 +384,7 @@
                           <v-col cols="12" xs="12" sm="4" >
                             <v-text-field
                               label="Não possui"
-                              :value="siSpec.avaliacao.criticidadeSI"
+                              :value="siSpec.avaliacao.checkedCriticidade"
                               readonly
                               solo
                               dense
@@ -396,19 +396,7 @@
                           <v-col cols="12" xs="12" sm="4" >
                             <v-text-field
                               label="Não possui"
-                              :value="siSpec.avaliacao.siObjetoPreservacao"
-                              readonly
-                              solo
-                              dense
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" xs="12" sm="2" >
-                            <div class="info-label">Notas</div>
-                          </v-col>
-                          <v-col cols="12" xs="12" sm="4" >
-                            <v-text-field
-                              label="Não possui"
-                              :value="siSpec.avaliacao.notas"
+                              :value="siSpec.avaliacao.objetoPreservacao"
                               readonly
                               solo
                               dense
@@ -903,7 +891,7 @@
                           <v-col cols="12" xs="12" sm="2" >
                             <div class="info-label">Identificação dos métodos de preservação</div>
                           </v-col>
-                          <v-col cols="12" xs="12" sm="4" v-if=siSpec.estrategia.utilizacaoOperacional>
+                          <v-col cols="12" xs="12" sm="4" v-if=siSpec.estrategia.utilizacaoMemoria>
                             <v-text-field
                               label="Não possui"
                               :value="siSpec.estrategia.utilizacaoMemoria.idMetodoPreservacao"
@@ -940,14 +928,17 @@
                       </div>
                       <v-divider></v-divider>
                       <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                          color="primary"
-                          text
+                        <v-row align="center" justify="space-around">
+                          <v-btn
+                          color="indigo darken-2"
+                          dark
+                          class="ma-2"
+                          rounded
                           @click="alterar = false"
-                        >
-                          Fechar
-                        </v-btn>
+                          >
+                            Fechar
+                          </v-btn>
+                        </v-row>
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
@@ -1030,7 +1021,10 @@ export default {
         this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
         this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
         this.siSpec.identificacao.propDados= item.identificacao.propDados.map(e => e.sigla).toString(),
-        this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString()
+        this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString(),
+        this.siSpec.avaliacao.decomposicao= item.avaliacao.tabelaDecomposicao.map(e=> e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.siRelacionado= item.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
         item.visto=false;
       }
 
