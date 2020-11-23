@@ -399,10 +399,10 @@ export default {
         this.classesDaFonteL = response.data;
         for (var c of response.data) {
           if(c.codigo){
-            this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , id:c.classe});
+            this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
           }
           else{
-            this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , id:c.classe})
+            this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
           }
         }
       }catch (err) {
@@ -559,7 +559,9 @@ export default {
         }
         else{
           lista.push(sis);
+          //Dar reset as listas usadas....
           this.ppd.listaSistemasInfoAuxiliar = [...lista];
+          this.loadConsultaPGD(this.fonteLegitimacaoSelected.id);
         }
     },
 

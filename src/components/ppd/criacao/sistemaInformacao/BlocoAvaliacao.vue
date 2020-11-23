@@ -95,7 +95,9 @@
 
               <template v-slot:item="props">
                 <tr>
-                <td>{{ props.item.info }}</td>
+                <td>{{ props.item.codigo}}</td>
+                <td>{{ props.item.referencia}}</td>
+                <td>{{ props.item.titulo}}</td>
                 <td>
                   <v-btn small color="red darken-2" dark rounded @click="unselectClasse(props.item)">
                   <v-icon dark>remove_circle_outline</v-icon>
@@ -322,7 +324,9 @@ export default {
         { text: "Remover", align: "left", sortable: false, value: "" },
       ],
       headersSelecionados:[
-        {text: "Info", sortable: false, value: "info"},
+        {text: "Código", sortable: false, value: "codigo"},
+        {text: "Referência", sortable: false, value: "referencia"},
+        {text: "Título", sortable: false, value: "titulo"},
         {text: "Remover", align: "left", sortable: false, value: "" },
       ],
       headersDecomp:[
@@ -382,8 +386,13 @@ export default {
     },
 
     unselectClasse: function(item) {
-      this.classesSI.push(item);
-      var index = this.ppd.si.avaliacao.selecionadosTabelaFL.findIndex(e => e.id === item.id);
+      if(item.codigo){
+        this.classesSI.push({info:"Cod: " + item.codigo + " - " + item.titulo , classe:item.classe});
+      }
+      else{
+        this.classesSI.push({info:"Ref: " + item.referencia + " - " + item.titulo , classe:item.classe})
+      }
+      var index = this.ppd.si.avaliacao.selecionadosTabelaFL.findIndex(e => e.classe === item.classe);
       this.ppd.si.avaliacao.selecionadosTabelaFL.splice(index, 1);
     },
 

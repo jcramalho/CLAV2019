@@ -1016,7 +1016,6 @@ export default {
 
     item2Show: function(item){
       this.siSpec = item;
-      var auxRelacao = item.avaliacao.sistemasRelacionados;
       if(item.visto){
         this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
         this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
@@ -1025,7 +1024,7 @@ export default {
         this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString(),
         this.siSpec.avaliacao.decomposicao= item.avaliacao.tabelaDecomposicao.map(e=> e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
         this.siSpec.avaliacao.siRelacionado= item.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.siRelacionadoRelacao= auxRelacao.map(e=> e.relacao).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
         item.visto=false;
       }
 

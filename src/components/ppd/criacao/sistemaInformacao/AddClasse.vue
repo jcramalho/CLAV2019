@@ -3,6 +3,7 @@
     <v-card-title class="expansion-panel-heading">Classe</v-card-title>
     <v-card-text class="mt-4">
       <v-row>
+        <span>{{this.classesDaFonteL}}</span>
         <v-col :md="2">
             <div class="info-label">Classe</div>
         </v-col>
@@ -41,7 +42,7 @@
           <div class="info-label">PCA da classe/série</div>
         </v-col>
         <v-col>
-          <v-text-field solo dense >
+          <v-text-field solo dense :value="classeShow.pca">
 
           </v-text-field>
         </v-col>
@@ -95,24 +96,24 @@ export default {
   methods: {
     //funçao para ir bscar a info que falta para mostrar no dialog...
     consultaClasse:function(id){
-      var index = this.classesDaFonteL.findIndex(c => c.idPGD === id)
+      var index = this.classesDaFonteL.findIndex(c => c.classe === id)
       this.classeShow = this.classesDaFonteL[index];
     },
     guardarClasse() {
       //URGENTE --------------------------------ver qual é o id !!!!
-      var index = this.classesSI.findIndex(e => e.id === this.classeSelecionada.id);
-      //var selectedClasse = JSON.parse(JSON.stringify(this.classesDaFonteL[index]));
-      //trocar o classesSI pelo classesDaFonteL para levar a info toda... para ja leva a info basic (fase teste!!)
-      var selectedClasse = JSON.parse(JSON.stringify(this.classesSI[index]));
-      this.classesSI.splice(index,1);
+      var indexAux = this.classesSI.findIndex(e => e.classe === this.classeSelecionada.classe);
+      var index = this.classesDaFonteL.findIndex(e => e.classe === this.classeSelecionada.classe);
+      var selectedClasse = JSON.parse(JSON.stringify(this.classesDaFonteL[index]));
+      this.classesSI.splice(indexAux,1);
       this.classeSelecionada="";
+      this.classeShow="";
       this.$emit("guardarClasse", selectedClasse);
     },
   },
 
   watch:{
     "classeSelecionada": function() {
-        this.consultaClasse(this.classeSelecionada.id);
+        this.consultaClasse(this.classeSelecionada.classe);
     },
   },
 
