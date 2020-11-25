@@ -1,7 +1,16 @@
 <template>
-  <v-navigation-drawer :value="drawer" right absolute>
-    <v-toolbar :color="panelHeaderColor" dark>
-      <v-toolbar-title> Definições </v-toolbar-title>
+  <v-navigation-drawer
+    :value="drawer"
+    width="320px"
+    right
+    absolute
+    style="position:fixed; top:38px;"
+  >
+    <v-toolbar 
+      :color="panelHeaderColor" 
+      dark
+      class="d-flex justify-center pt-4 mt-12">
+      <v-toolbar-title class="font-weight-medium" id="drawer-title"> Definições </v-toolbar-title>
     </v-toolbar>
     <v-card-text>
       <v-list dense>
@@ -52,3 +61,28 @@ export default {
   },
 };
 </script>
+
+
+<style scoped>
+#drawer-title {
+    font-size: 1.07rem !important;
+}
+.theme--light.v-navigation-drawer {
+    background: linear-gradient(to bottom, #19237e 0%, #0056b6 100%);
+    border-radius: 0 0 0 20px;
+}
+theme--dark.v-footer,
+.theme--dark.v-sheet,
+.theme--dark.v-card {
+    background-color: transparent !important;
+}
+.v-toolbar {
+    box-shadow: none !important;
+}
+#alterarPasswordText {
+    color: #ffd54f !important;
+}
+#terminarSessaoText {
+    color: #ef5350 !important;
+}
+</style>
