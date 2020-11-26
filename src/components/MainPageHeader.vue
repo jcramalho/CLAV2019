@@ -200,9 +200,9 @@ export default {
             text: '',
             counter: 10,
             level: 0,
-            tabAtiva: 'O que é',
+            tabAtiva: 'CLAV',
             navbar: [{
-                    titulo: 'O que é',
+                    titulo: 'CLAV',
                     icon: {
                         nome: 'home-icon',
                         viewbox: '0 0 25.71 25.81',
@@ -211,7 +211,7 @@ export default {
                     url: '/',
                 },
                 {
-                    titulo: 'Registo na Clav',
+                    titulo: 'Registo na CLAV',
                     icon: {
                         nome: 'registo-icon',
                         viewbox: '0 0 25.71 25.809',
@@ -230,7 +230,7 @@ export default {
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/lcInfo',
                             actions: [{
-                                    url: '/classes',
+                                    url: '/classes/consultar',
                                     icon: 'consultar-icon'
                                 },
                                 {
@@ -248,7 +248,7 @@ export default {
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/tsInfo',
                             actions: [{
-                                    url: '/ts',
+                                    url: '/ts/consultar',
                                     icon: 'consultar-icon'
                                 },
                                 {
@@ -266,7 +266,7 @@ export default {
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/radaInfo',
                             actions: [{
-                                    url: '/rada',
+                                    url: '/rada/consultar',
                                     icon: 'consultar-icon'
                                 },
                                 {
@@ -280,7 +280,7 @@ export default {
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/autosEliminacaoInfo',
                             actions: [{
-                                    url: '/autosEliminacao',
+                                    url: '/autosEliminacao/consultar',
                                     icon: 'consultar-icon'
                                 },
                                 {
@@ -298,7 +298,7 @@ export default {
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/planosDePreservacaoDigital',
                             actions: [{
-                                    url: '/ppd',
+                                    url: '/ppd/consultar',
                                     icon: 'consultar-icon'
                                 },
                                 {
@@ -392,6 +392,34 @@ export default {
                     ],
                 },
                 {
+                    titulo: 'Estatísticas',
+                    icon: {
+                        nome: 'estatisticas-icon',
+                        viewbox: '0 0 20.71 20.75',
+                    },
+                    menu: [{
+                            opcao: 'Métricas Gerais',
+                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                            url: '/gestao/gerais',
+                        },
+                        {
+                            opcao: 'Métricas de API',
+                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                            url: '/gestao/metrica',
+                        },
+                        {
+                            opcao: 'Métricas de Classes',
+                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                            url: '/gestao/classes',
+                        },
+                        {
+                            opcao: 'Tabela de Indicadores',
+                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                            url: '/gestao/tabela',
+                        },
+                    ],
+                },
+                {
                     titulo: 'Documentação',
                     icon: {
                         nome: 'documentacao-icon',
@@ -425,40 +453,12 @@ export default {
                     ],
                 },
                 {
-                    titulo: 'Estatísticas',
-                    icon: {
-                        nome: 'estatisticas-icon',
-                        viewbox: '0 0 20.71 20.75',
-                    },
-                    menu: [{
-                            opcao: 'Métricas Gerais',
-                            level: [3.5, 4, 5, 6, 7],
-                            url: '/gestao/gerais',
-                        },
-                        {
-                            opcao: 'Métricas de API',
-                            level: [3.5, 4, 5, 6, 7],
-                            url: '/gestao/metrica',
-                        },
-                        {
-                            opcao: 'Métricas de Classes',
-                            level: [3.5, 4, 5, 6, 7],
-                            url: '/gestao/classes',
-                        },
-                        {
-                            opcao: 'Tabela de Indicadores',
-                            level: [3.5, 4, 5, 6, 7],
-                            url: '/gestao/tabela',
-                        },
-                    ],
-                },
-                {
                     titulo: 'Notícias',
                     icon: {
                         nome: 'noticias-icon',
                         viewbox: '0 0 25.71 25.71',
                     },
-                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                    level: [4, 5, 6, 7],
                     url: '/noticias',
                 },
                 {

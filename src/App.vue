@@ -14,7 +14,7 @@
     <v-main>
       <router-view />
 
-      <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" />
+      <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" :socket="socket"/>
       <Notificacoes 
         v-if="this.$store.state.name != ''" 
         :drawer="drawN" :notificacoes="notificacoes" 
