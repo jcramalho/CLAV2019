@@ -1,8 +1,9 @@
 <template>
   <div>
+    <Loading v-if="!fontesRadaReady" :message="'fontes de legitimação'" />
     <Listagem
       :lista="radas"
-      v-if="radas.length > 0"
+      v-else
       tipo="RADA/CLAV"
       :cabecalho="[
         'Data de Aprovação',
@@ -15,25 +16,29 @@
       @download="fazerDownloadRADA"
       @ver="redirecionar"
     />
-    <!--Loading v-if="!fontesRADAReady" :message="'fontes de legitimação'" /-->
-    <ListagemLeg v-if="fontesRADA.length > 0" :lista="fontesRADA" tipo="RADA" />
+    
+    <Loading v-if="!fontesRadaOldReady" :message="'fontes de legitimação'" />
+    <ListagemLeg v-else :lista="fontesRADA" tipo="RADA" />
   </div>
 </template>
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
 import ListagemLeg from "@/components/tabSel/consulta/ListagemLeg.vue"; // @ is an alias to /src
+import Loading from "@/components/generic/Loading";
 import { gerarPDF } from "@/utils/pdfRADA";
 
 export default {
   data: () => ({
     radas: [],
+    fontesRadaReady: false,
     fontesRADA: [],
-    fontesRADAReady: false,
+    fontesRadaOldReady: false
   }),
   components: {
     Listagem,
     ListagemLeg,
+    Loading
   },
   methods: {
     redirecionar(codigo) {
@@ -50,7 +55,7 @@ export default {
   },
   async created() {
     await this.$request("get", "/rada/old")
-      .then((response2) => {
+      .then(response2 => {
         this.fontesRADA = response2.data.map((f) => {
           return {
             idRADA: f.idRADA,
@@ -61,16 +66,17 @@ export default {
             link: f.link,
           };
         });
-        this.fontesRADAReady = true;
+        this.fontesRadaOldReady = true
       })
       .catch((e) => {
-        return e;
+          return e;
       });
   },
   async mounted() {
     try {
       var response = await this.$request("get", "/rada");
       this.radas = response.data;
+      this.fontesRadaReady = true
     } catch (e) {
       return e;
     }
