@@ -1,5 +1,5 @@
 <template>
-<v-content class="px-12">
+<v-main class="px-12">
     <p class="content-title-1">
         Relatórios de Avaliação de Documentação Acumulada
     </p>
@@ -126,7 +126,7 @@
             </v-col>
         </v-row>
     </v-container>
-</v-content>
+</v-main>
 </template>
 
 <script>
