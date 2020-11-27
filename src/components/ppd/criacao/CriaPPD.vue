@@ -1,6 +1,12 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
+  <v-row>
+    <v-col xs="12" sm="3">
+      <ArvoreLateralPPD
+        :arvore="ppd.arvore"
+        :ppd="ppd"
+      />
+    </v-col>
+    <v-col xs="12" sm="9">
       <!-- HEADER -->
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
@@ -184,7 +190,7 @@ const criteriosLabels = require("@/config/labels").criterios;
 import InfoBox from "@/components/generic/infoBox.vue";
 import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
 import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
-import ClassesVue from '../../../views/classes/Classes.vue';
+import ArvoreLateralPPD from './ArvoreLateralPPD.vue';
 //import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
 
 
@@ -196,6 +202,7 @@ export default {
     InfoBox,
     SistemaInfo,
     SistemaOps,
+    ArvoreLateralPPD
     //SistemaSelect
   },
 
@@ -304,6 +311,7 @@ export default {
       user: {
         token: ""
       },
+      arvore: [],
     },
 
     //para apagar!!!!!!!
@@ -562,6 +570,10 @@ export default {
           //Dar reset as listas usadas....
           this.ppd.listaSistemasInfoAuxiliar = [...lista];
           this.loadConsultaPGD(this.fonteLegitimacaoSelected.id);
+          this.ppd.sistemasInfo.forEach(element => {
+            alert(element.numeroSI)
+            this.ppd.arvore.push({"id": element.numeroSI, "name": element.nomeSI })
+          });
         }
     },
 

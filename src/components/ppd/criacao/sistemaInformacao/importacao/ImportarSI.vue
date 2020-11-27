@@ -98,6 +98,21 @@ export default {
           this.ppd.sistemasInfo.push(allSI[i]);
         }
       }
+      this.ppd.sistemasInfo.forEach(element => {
+        var regex = /\d/g;
+        var child = [];
+        if(element.avaliacao.decomposicao.length > 0){
+          var ar =  element.avaliacao.decomposicao.split(new RegExp('[# \\s]'))
+          if(ar.length > 0){
+            ar.forEach(dec => {
+              if(regex.test(dec)){
+                child.push({"id": dec, "name": dec})
+              }
+            })
+          }
+        }
+        this.ppd.arvore.push({"id": element.numeroSI, "name": element.numeroSI, children: child })
+      });
     },
   },
 
