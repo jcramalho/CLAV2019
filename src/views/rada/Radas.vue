@@ -69,7 +69,7 @@ export default {
         this.fontesRadaOldReady = true
       })
       .catch((e) => {
-          console.log('Erro no GET dos RadaOld: ' + e)
+          return e;
       });
   },
   async mounted() {
