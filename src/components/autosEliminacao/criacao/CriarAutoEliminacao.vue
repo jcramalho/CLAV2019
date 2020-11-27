@@ -454,6 +454,9 @@ export default {
       var response4 = await this.$request("get","/rada");
       this.tsRada = response4.data
 
+      var response5 = await this.$request("get","/rada/old");
+      this.tsRada.concat(response5.data);
+
     } catch (e) {
       this.auto.fundo = [];
       this.portariaLC = [];
