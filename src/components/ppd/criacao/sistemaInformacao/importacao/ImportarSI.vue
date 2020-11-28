@@ -102,15 +102,17 @@ export default {
         var regex = /\d/g;
         var child = [];
         if(element.avaliacao.decomposicao.length > 0){
-          var ar =  element.avaliacao.decomposicao.split(new RegExp('[# \\s]'))
-          if(ar.length > 0){
-            ar.forEach(dec => {
+          var childAux =  element.avaliacao.decomposicao.split(new RegExp('[# \\s]'))
+          if(childAux.length > 0){
+            childAux.forEach(dec => {
               if(regex.test(dec)){
                 child.push({"id": dec, "name": dec})
               }
+              //Else se quiser meter o titulo
             })
           }
         }
+        child.sort((a,b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0));
         this.ppd.arvore.push({"id": element.numeroSI, "name": element.numeroSI, children: child })
       });
     },

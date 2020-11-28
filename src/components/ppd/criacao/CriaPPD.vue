@@ -3,7 +3,6 @@
     <v-col xs="12" sm="3">
       <ArvoreLateralPPD
         :arvore="ppd.arvore"
-        :ppd="ppd"
       />
     </v-col>
     <v-col xs="12" sm="9">
@@ -570,10 +569,26 @@ export default {
           //Dar reset as listas usadas....
           this.ppd.listaSistemasInfoAuxiliar = [...lista];
           this.loadConsultaPGD(this.fonteLegitimacaoSelected.id);
-          this.ppd.sistemasInfo.forEach(element => {
-            alert(element.numeroSI)
-            this.ppd.arvore.push({"id": element.numeroSI, "name": element.nomeSI })
-          });
+          var child = [];
+          var index =  this.ppd.arvore.findIndex(l => l.id === sis.numeroSI);
+          //ESTE CASO NUNCA ACONTECE PORQUE NAO SE PODE INSERIR OUTRO SI COM O MESMO ID....
+          if(index != -1){
+            if(this.ppd.arvore[index].avaliacao.tabelaDecomposicao.length>0){
+              let aux = this.ppd.arvore[index].avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
+              child = aux.split("#").map(e=> e=({"id": e, "name":e}));
+              alert(child[0]);
+            }
+          }
+          else{
+              child = [];
+              if(sis.avaliacao.tabelaDecomposicao.length>0){
+                let aux = sis.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
+                child = aux.split("#").map(e=> e=({"id": e, "name":e}));
+                child.sort();
+                child.sort((a,b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0));
+              }
+              this.ppd.arvore.push({"id": sis.numeroSI, "name": sis.numeroSI, "titulo": sis.nomeSI, children: child })
+          }
         }
     },
 
