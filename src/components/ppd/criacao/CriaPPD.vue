@@ -3,6 +3,7 @@
     <v-col xs="12" sm="3">
       <ArvoreLateralPPD
         :arvore="ppd.arvore"
+        :sistemasInfo="ppd.sistemasInfo"
       />
     </v-col>
     <v-col xs="12" sm="9">
@@ -297,12 +298,6 @@ export default {
         },
       },
 
-      codigo: "", //é necessário?
-      descricao: "", //é necessário?
-      notasAp: [], //é necessário?
-      exemplosNotasAp: [], //é necessário?
-      notasEx: [], //é necessário?
-      termosInd: [], //é necessário?
 
       listaSistemasInfoAuxiliar: [],
       sistemasInfo: [],
@@ -585,9 +580,10 @@ export default {
                 let aux = sis.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
                 child = aux.split("#").map(e=> e=({"id": e, "name":e}));
                 child.sort();
-                child.sort((a,b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0));
+                child.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
               }
               this.ppd.arvore.push({"id": sis.numeroSI, "name": sis.numeroSI, "titulo": sis.nomeSI, children: child })
+              this.ppd.arvore.sort((a,b) => (parseInt(a.id) >parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
           }
         }
     },
@@ -605,6 +601,7 @@ export default {
       var index = this.ppd.sistemasInfo.findIndex(e => e.numeroSI === sistema.numeroSI);
       this.ppd.sistemasInfo.splice(index, 1);
       this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
+      this.ppd.arvore.splice(index,1);
     },
 
 

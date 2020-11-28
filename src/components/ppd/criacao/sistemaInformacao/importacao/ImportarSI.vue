@@ -112,8 +112,10 @@ export default {
             })
           }
         }
-        child.sort((a,b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0));
+        child.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
         this.ppd.arvore.push({"id": element.numeroSI, "name": element.numeroSI, children: child })
+        this.ppd.arvore.sort((a,b) => (parseInt(a.id) >parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
+
       });
     },
   },
