@@ -1,5 +1,5 @@
 <template>
-<v-content class="px-12">
+<v-main class="px-12">
     <p class="content-title-1">Planos de preservação digital</p>
     <p class="content-text px-8 py-2">
         <i>«Um Plano de Preservação Digital é um documento estratégico
@@ -72,7 +72,7 @@
             </v-col>
         </v-row>
     </v-container>
-</v-content>
+</v-main>
 </template>
 
 <script>

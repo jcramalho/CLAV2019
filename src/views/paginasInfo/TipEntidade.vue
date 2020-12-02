@@ -1,5 +1,5 @@
 <template>
-<v-content class="px-12">
+<v-main class="px-12">
     <p class="content-title-1">Tipologias de Entidade</p>
     <p class="content-text px-8 py-2">
         Catálogo de tipologias de entidade, ou seja, agrupamentos
@@ -96,7 +96,7 @@
             </v-dialog>
         </v-row>
     </v-container>
-</v-content>
+</v-main>
 </template>
 
 <script>

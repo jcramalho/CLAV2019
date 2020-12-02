@@ -1,5 +1,5 @@
 <template>
-<v-content class="px-12">
+<v-main class="px-12">
     <p class="content-title-1">Entidades</p>
     <p class="content-text px-8 py-2">
         Catálogo de entidades públicas que intervêm nos processos
@@ -95,7 +95,7 @@
             </v-dialog>
         </v-row>
     </v-container>
-</v-content>
+</v-main>
 </template>
 
 <script>

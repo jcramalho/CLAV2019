@@ -1,5 +1,5 @@
 <template>
-<v-content class="px-12">
+<v-main class="px-12">
     <p class="content-title-1">Autos de Eliminação</p>
     <p class="content-text px-8 py-2">
         Quando a documentação atinge o término do seu prazo de conservação
@@ -63,7 +63,7 @@
             </v-col>
         </v-row>
     </v-container>
-</v-content>
+</v-main>
 </template>
 
 <script>

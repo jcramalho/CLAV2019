@@ -279,7 +279,7 @@ export default new Router({
       path: "/vocabularios",
       name: "vocabulariosControlados",
       component: () => import("./views/vocabularios/Vocabularios.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão da Plataforma"}
     },
     {
       path: "/vocabularios/:idVC",
@@ -451,7 +451,7 @@ export default new Router({
       path: "/pedidos",
       name: "pedidos",
       component: () => import("./views/pedidos/Pedidos.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos"  }
     },
     {
       path: "/pedidos/submissao/:idPedido",
@@ -493,14 +493,14 @@ export default new Router({
       path: "/pedidos/novos/:idPedido",
       name: "pedidoNovo",
       component: () => import("./views/pedidos/PedidosNovos.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos" }
     },
     // Routes dos pendentes (trabalho guardado)
     {
       path: "/pendentes",
       name: "pendentes",
       component: () => import("./views/pendentes/Pendentes.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos" }
     },
     {
       path: "/pendentes/:idPendente",
@@ -558,6 +558,15 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     {
+      path: "/usersInfo",
+      name: "usersInfo",
+      component: () => import("./views/paginasInfo/UsersInfo.vue"),
+      meta: {
+        levels: [5, 6, 7],
+        tabAtiva: "Gestão da Plataforma"
+      }
+    },
+    {
       path: "/users/listagem",
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue"),
@@ -579,7 +588,7 @@ export default new Router({
       path: "/users/pedidos",
       name: "pedidosUtilizador",
       component: () => import("./views/users/GestaoPedidos.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos" }
     },
     {
       path: "/users/pedidos/:numeroPedido",
@@ -605,25 +614,25 @@ export default new Router({
       path: "/gestao/metrica",
       name: "metrica",
       component: () => import("./views/gestao/Metrica.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     {
       path: "/gestao/classes",
       name: "indicadores",
       component: () => import("./views/gestao/Classe.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     {
       path: "/gestao/gerais",
       name: "gerais",
       component: () => import("./views/gestao/Geral.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     {
       path: "/gestao/tabela",
       name: "tabela",
       component: () => import("./views/gestao/Tabela.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     //Chaves API
     {
@@ -636,7 +645,7 @@ export default new Router({
       path: "/gestao/api/listagem",
       name: "listagemApi",
       component: () => import("./views/gestao/api/ListagemChavesApi.vue"),
-      meta: { levels: [7] }
+      meta: { levels: [7], tabAtiva: "Gestão da Plataforma" }
     },
     {
       path: "/gestao/api/registo",
@@ -680,7 +689,7 @@ export default new Router({
       path: "/invariantes",
       name: "invariantes",
       component: () => import("./views/invariantes/Invariantes.vue"),
-      meta: { levels: [6, 7] }
+      meta: { levels: [6, 7], tabAtiva: "Gestão da Plataforma" }
     },
     {
       path: "/invariantes/testarTodos",
@@ -699,7 +708,7 @@ export default new Router({
       path: "/permissoesAcesso",
       name: "permissõesDeAcesso",
       component: () => import("./views/PermissoesAcesso.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão da Plataforma" }
     },
     //PPD
     {

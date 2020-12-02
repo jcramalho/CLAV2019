@@ -218,7 +218,7 @@ export default {
 .v-chip .v-chip__close.v-icon {
     color: var(--error) !important;
 }
-.v-content {
+.v-main {
     padding: 5.125rem 0 1.75rem !important;
     color: #606060 !important;
 }

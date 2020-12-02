@@ -1,5 +1,5 @@
 <template>
-<v-content class="px-12">
+<v-main class="px-12">
     <p class="content-title-1">Legislação</p>
     <p class="content-text px-8 py-2">
         Catálogo de legislação que regula os processos de negócio (classes de 3º
@@ -97,7 +97,7 @@
             </v-dialog>
         </v-row>
     </v-container>
-</v-content>
+</v-main>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-<v-content class="px-12">
+<v-main class="px-12">
     <p class="content-title-1">Como registar-se na CLAV</p>
     <p class="content-text px-8 py-2">
         O acesso aos serviços da CLAV depende do registo prévio dos utilizadores
@@ -70,7 +70,7 @@
             <li>clav@dglab.gov.pt</li>
         </ul>
     </v-container>
-</v-content>
+</v-main>
 </template>
 
 <script>

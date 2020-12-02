@@ -395,22 +395,23 @@ export default {
                 {
                     titulo: 'Gestão de Pedidos',
                     icon: {
-                        nome: 'gestao-icon',
+                        nome: 'pedido-novo-icon',
                         viewbox: '0 0 20.83 20.831',
                     },
-                    menu: [{
-                            opcao: 'Pedidos',
-                            level: [1, 3, 3.5, 4, 5, 6, 7],
-                            url: '/pedidos',
-                        },
+                    menu: [
                         {
                             opcao: 'Pendentes',
                             level: [1, 3, 3.5, 4, 5, 6, 7],
                             url: '/pendentes',
+                        },
+                        {
+                            opcao: 'Pedidos novos',
+                            level: [1, 3, 3.5, 4, 5, 6, 7],
+                            url: '/pedidos',
                         }]
                 },
                 {
-                    titulo: 'Estatísticas',
+                    titulo: 'Estatística',
                     icon: {
                         nome: 'estatisticas-icon',
                         viewbox: '0 0 20.71 20.75',
@@ -476,25 +477,21 @@ export default {
                         nome: 'gestao-icon',
                         viewbox: '0 0 20.83 20.831',
                     },
-                    menu: [{
-                            opcao: 'Pedidos',
-                            level: [1, 3, 3.5, 4, 5, 6, 7],
-                            url: '/pedidos',
-                        },
-                        {
-                            opcao: 'Pendentes',
-                            level: [1, 3, 3.5, 4, 5, 6, 7],
-                            url: '/pendentes',
-                        },
-                        {
-                            opcao: 'Invariantes',
-                            level: [6, 7],
-                            url: '/invariantes',
-                        },
+                    menu: [
                         {
                             opcao: 'Utilizadores',
                             level: [5, 6, 7],
                             url: '/usersInfo',
+                        },
+                        {
+                            opcao: 'Utilizadores com chaves API',
+                            level: [7],
+                            url: '/gestao/api/listagem',
+                        },
+                        {
+                            opcao: 'Perfis de utilizadores',
+                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                            url: "/permissoesAcesso",
                         },
                         {
                             opcao: 'Vocabulários Controlados',
@@ -502,9 +499,9 @@ export default {
                             url: '/vocabularios',
                         },
                         {
-                            opcao: 'Chaves API',
-                            level: [7],
-                            url: '/gestao/api/listagem',
+                            opcao: 'Invariantes',
+                            level: [6, 7],
+                            url: '/invariantes',
                         },
                         {
                             opcao: 'Administração',
