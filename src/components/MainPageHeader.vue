@@ -393,6 +393,23 @@ export default {
                     ],
                 },
                 {
+                    titulo: 'Gestão de Pedidos',
+                    icon: {
+                        nome: 'gestao-icon',
+                        viewbox: '0 0 20.83 20.831',
+                    },
+                    menu: [{
+                            opcao: 'Pedidos',
+                            level: [1, 3, 3.5, 4, 5, 6, 7],
+                            url: '/pedidos',
+                        },
+                        {
+                            opcao: 'Pendentes',
+                            level: [1, 3, 3.5, 4, 5, 6, 7],
+                            url: '/pendentes',
+                        }]
+                },
+                {
                     titulo: 'Estatísticas',
                     icon: {
                         nome: 'estatisticas-icon',
@@ -452,15 +469,6 @@ export default {
                             url: '/documentacaoApoioInfo',
                         },
                     ],
-                },
-                {
-                    titulo: 'Notícias',
-                    icon: {
-                        nome: 'noticias-icon',
-                        viewbox: '0 0 25.71 25.71',
-                    },
-                    level: [4, 5, 6, 7],
-                    url: '/noticias',
                 },
                 {
                     titulo: 'Gestão da Plataforma',

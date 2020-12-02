@@ -3,7 +3,6 @@
     <v-row>
       <v-col>
         <Info v-if="this.$store.state.name === ''"/>
-        <Operacoes :level="level" />
         <Noticias :level="level" />
       </v-col>
       <v-col>
@@ -17,7 +16,6 @@
 
 <script>
 /* eslint-disable */
-import Operacoes from "@/components/principal/Operacoes.vue";
 import Gestao from "@/components/principal/Gestao.vue";
 import Noticias from "@/components/principal/Noticias.vue";
 import Info from "@/components/principal/Info.vue";
@@ -29,7 +27,6 @@ export default {
     Info,
     DocumentacaoApoio,
     Registo,
-    Operacoes,
     Noticias,
     Gestao
   },
