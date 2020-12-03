@@ -3,7 +3,6 @@
     <v-card-title class="expansion-panel-heading">Classe</v-card-title>
     <v-card-text class="mt-4">
       <v-row>
-        <span>{{this.classesDaFonteL}}</span>
         <v-col :md="2">
             <div class="info-label">Classe</div>
         </v-col>
@@ -38,28 +37,11 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
+        <v-col cols="12" xs="12" sm="3">
           <div class="info-label">PCA da classe/série</div>
         </v-col>
-        <v-col>
+        <v-col cols="12" xs="12" sm="9">
           <v-text-field solo dense :value="classeShow.pca">
-
-          </v-text-field>
-        </v-col>
-        <v-col>
-          <div class="info-label">PCA do sistema de informação</div>
-        </v-col>
-        <v-col>
-          <v-text-field solo dense >
-          </v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col :md="2">
-          <div class="info-label">Destino final do sistema de informação</div>
-        </v-col>
-        <v-col>
-          <v-text-field solo dense >
 
           </v-text-field>
         </v-col>

@@ -400,11 +400,13 @@ export default {
         //this.classesSI = await prepararClasses(response.data);
         this.classesDaFonteL = response.data;
         for (var c of response.data) {
-          if(c.codigo){
-            this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
-          }
-          else{
-            this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
+          if(c.pca){
+            if(c.codigo){
+              this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
+            }
+            else{
+              this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
+            }
           }
         }
       }catch (err) {

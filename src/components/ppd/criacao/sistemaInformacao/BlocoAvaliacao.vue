@@ -76,6 +76,22 @@
           </v-col>
         </v-row>
         <v-row>
+          <v-col>
+            <div class="info-label">PCA do sistema de informação</div>
+          </v-col>
+          <v-col>
+            <v-text-field solo dense >
+            </v-text-field>
+          </v-col>
+          <v-col :md="2">
+            <div class="info-label">Destino final do sistema de informação</div>
+          </v-col>
+          <v-col>
+            <v-text-field solo dense >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" xs="12" sm="3">
               <div class="info-label">Classes</div>
           </v-col>
