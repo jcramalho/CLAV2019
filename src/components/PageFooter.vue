@@ -19,7 +19,7 @@
                 <p class="icon-text">Contacte-nos</p>
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn text rounded @click="$router.push('/colaboracoesInfo')" id="contact-button">
+            <v-btn text rounded @click="$router.push('/colaboracoes')" id="contact-button">
                 <unicon name="equipa-icon" width="24" height="24" viewBox="0 0 20.71 20.73" fill="#e5e5e5" />
 
                 <p class="icon-text">Equipa técnica</p>

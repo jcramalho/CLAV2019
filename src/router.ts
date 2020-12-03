@@ -75,6 +75,18 @@ export default new Router({
     },
     // Routes da documentação de apoio
     {
+      path: "/docsmetdl",
+      name: "docsMetdl",
+      component: () => import("./views/documentacaoApoio/DocsMetodologicos.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação", index: 1} //corrigir
+    },
+    {
+      path: "/forminstr",
+      name: "formInstr",
+      component: () => import("./views/documentacaoApoio/DocsMetodologicos.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação", index: 0 } //corrigir
+    },
+    {
       path: "/documentacaoApoio/criar/classe",
       name: "criaClasseApoio",
       component: () => import("./views/documentacaoApoio/ApoioClasseCria.vue"),
@@ -661,6 +673,15 @@ export default new Router({
     },
     //Administração
     {
+      path: "/gestaoInfo",
+      name: "gestaoInfo",
+      component: () => import("./views/paginasInfo/AdministracaoInfo.vue"),
+      meta: {
+        levels: [7],
+        tabAtiva: "Gestão da Plataforma"
+      }
+    },
+    {
       path: "/gestao/administracao",
       name: "administracao",
       component: () => import("./views/gestao/Administracao.vue"),
@@ -698,6 +719,15 @@ export default new Router({
       meta: { levels: [6, 7] }
     },
     //exportação
+    {
+      path: "/importExportInfo",
+      name: "importExportInfo",
+      component: () => import("./views/paginasInfo/ImportacaoExportacaoInfo.vue"),
+      meta: {
+        levels: [4, 5, 6, 7],
+        tabAtiva: "Gestão da Plataforma"
+      }
+    },
     {
       path: "/exportar",
       name: "exportação",

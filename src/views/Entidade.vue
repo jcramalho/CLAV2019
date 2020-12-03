@@ -1,34 +1,26 @@
 <template>
-  <div>
+  <v-main>
     <v-row>
-      <v-col>
+      <v-col cols=12>
         <Info v-if="this.$store.state.name === ''"/>
         <Noticias :level="level" />
-      </v-col>
-      <v-col>
         <DocumentacaoApoio />
-        <Registo v-if="this.$store.state.name === ''"/>
-        <Gestao v-if="level > 0" :level="level" />
       </v-col>
     </v-row>
-  </div>
+  </v-main>
 </template>
 
 <script>
 /* eslint-disable */
-import Gestao from "@/components/principal/Gestao.vue";
 import Noticias from "@/components/principal/Noticias.vue";
 import Info from "@/components/principal/Info.vue";
 import DocumentacaoApoio from "@/components/principal/DocumentacaoApoio.vue";
-import Registo from "@/components/principal/Registo.vue";
 
 export default {
   components: {
     Info,
     DocumentacaoApoio,
-    Registo,
-    Noticias,
-    Gestao
+    Noticias
   },
   data() {
     return {

@@ -12,7 +12,9 @@
     </v-snackbar>
 
     <v-main>
-      <router-view />
+        <keep-alive>
+            <router-view />
+        </keep-alive>
 
       <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" :socket="socket"/>
       <Notificacoes 

@@ -8,10 +8,20 @@
             <v-img id="logo" contain height="60px" :src="require('./../assets/CLAV-LOGO-TEST-11.svg')" />
             <!--v-tooltip bottom color="info">
                 <template v-slot:activator="{ on }">
-                    <span v-on="on" :class="{
-                'title-letters-lg': $vuetify.breakpoint.lgAndUp,
-                'title-letters-md': $vuetify.breakpoint.mdAndDown,
-              }" class="d-inline font-weight-bold text-wrap">CLAV -</span>
+                    <v-img v-on="on" src="../../public/img/RP_DGLAB.png" max-width="125px" contain>
+                        <template v-slot:placeholder>
+                            <v-row
+                            class="fill-height ma-0"
+                            align="center"
+                            justify="center"
+                            >
+                            <v-progress-circular
+                                indeterminate
+                                color="grey lighten-5"
+                            ></v-progress-circular>
+                            </v-row>
+                        </template>
+                    </v-img>
                 </template>
                 <span>Voltar à página inicial</span>
             </v-tooltip>
@@ -203,7 +213,7 @@ export default {
             level: 0,
             tabAtiva: 'CLAV',
             navbar: [{
-                    titulo: 'CLAV',
+                    titulo: this.$store.state.name != '' ? this.$store.state.entidade.split('_')[1] : 'CLAV',
                     icon: {
                         nome: 'home-icon',
                         viewbox: '0 0 25.71 25.81',
@@ -226,6 +236,7 @@ export default {
                         nome: 'operacoes-icon',
                         viewbox: '0 0 25.71 26.68',
                     },
+                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                     menu: [{
                             opcao: 'Lista Consolidada',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
@@ -416,6 +427,7 @@ export default {
                         nome: 'estatisticas-icon',
                         viewbox: '0 0 20.71 20.75',
                     },
+                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                     menu: [{
                             opcao: 'Métricas Gerais',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
@@ -444,15 +456,16 @@ export default {
                         nome: 'documentacao-icon',
                         viewbox: '0 0 25.71 29.383',
                     },
-                    menu: [{
-                            opcao: 'Documentos Metodológicos',
-                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: '/docsmetdl',
-                        },
+                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                    menu: [
                         {
                             opcao: 'Formulários e instruções para a CLAV',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/forminstr',
+                        },{
+                            opcao: 'Documentos Metodológicos',
+                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                            url: '/docsmetdl',
                         },
                         {
                             opcao: 'Manuais',
@@ -490,7 +503,7 @@ export default {
                         },
                         {
                             opcao: 'Perfis de utilizadores',
-                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                            level: [1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: "/permissoesAcesso",
                         },
                         {
@@ -532,6 +545,10 @@ export default {
         },
         '$route.meta.tabAtiva': function (newValue) {
             this.tabAtiva = newValue;
+        },
+
+        '$store.state.name': function (newValue) {
+            this.navbar[0].titulo = newValue ? this.$store.state.entidade.split('_')[1] : 'CLAV';
         },
     },
     created: async function () {
