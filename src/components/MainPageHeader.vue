@@ -5,7 +5,8 @@
         <v-toolbar-title @click="go('/')" style="cursor:pointer;" :class="{
           'toolbar-title-sm': $vuetify.breakpoint.smOnly,
         }">
-            <v-tooltip bottom color="info">
+            <v-img id="logo" contain height="60px" :src="require('./../assets/CLAV-LOGO-TEST-11.svg')" />
+            <!--v-tooltip bottom color="info">
                 <template v-slot:activator="{ on }">
                     <span v-on="on" :class="{
                 'title-letters-lg': $vuetify.breakpoint.lgAndUp,
@@ -23,7 +24,7 @@
             'subtitle-letter-lg': $vuetify.breakpoint.lgAndUp,
             'subtitle-letter-md': $vuetify.breakpoint.mdAndDown,
             'subtitle-letter-sm': $vuetify.breakpoint.smOnly,
-          }" class="d-inline font-weight-light text-wrap">{{ this.$store.state.entidade.split('_')[1] }}</span>
+          }" class="d-inline font-weight-light text-wrap">{{ this.$store.state.entidade.split('_')[1] }}</span-->
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-snackbar v-model="snackbar" :timeout="timeout" :color="color" :top="true">

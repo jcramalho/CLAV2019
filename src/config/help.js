@@ -239,19 +239,22 @@ module.exports.help = {
   },
   Entidade: {
     Campos: {
-      Sigla: "Sigla da entidade.",
+      Nome: "Indicação do nome da entidade conforme consta no diploma criador/estatutos.",
+      Sigla: "<p>Indicação da sigla/acrónimo da entidade conforme consta no diploma criador/estatutos, ou como é conhecida.</p>" + 
+            "<p>Dado que a aplicação não permite a inserção de siglas repetidas, se sigla ou acrónimo formal já existir, recomenda-se a inserção, " + 
+            "em minúscula, da primeira letra que se seguir à última da sigla ou acrónimo.</p>",
       Estado:
             "Indicação do estado da entidade: em atividade (ativa) ou extinta (inativa).",
-      SIOE: "Registo do código SIOE da entidade. O SIOE, ou o <i>Sistema de Informação e Organização " +
-            "do Estado</i>, é um sistema de informação sobre a caracterização das entidades públicas do" +
-            " universo das contas nacionais, bem como a atividade social dos empregadores públicos. " +
-            "O SIOE atribui um código, composto por uma sequência de dígitos numéricos, a todas as entidades públicas.",
-      Internacional: "Indicação do caráter internacional da entidade.",
-      DataCriacao: "Registo da data de criação da entidade. No caso das entidades públicas esta data consta num " +
-            "diploma legal.",
-      DataExtincao: "Registo da data de extinção da entidade. No caso das entidades públicas esta data consta num " +
-      "diploma legal.",
-      Tipologias: "Indicação das tipologias de entidade a que pertence."
+      SIOE: "<p>Indicação do código da entidade atribuído no Sistema de Informação de Organização do Estado (SIOE).</p>" + 
+          "<p>Procurar o respetivo código SIOE em <a href='https://www.sioe.dgaep.gov.pt/Default.aspx'>https://www.sioe.dgaep.gov.pt/Default.aspx</a></p>" +
+          "<p>Se não existir código SIOE, deixar o campo em branco.</p>",
+      Internacional: "<p>Seleção da origem geográfica da entidade.</p>" +
+            "<p>Ao escolher “SIM” responde que a origem da entidade é internacional, ao escolher “NÃO” responde que a origem não é internacional.</p>",
+      DataCriacao: "<p>Indicação da data de criação da entidade que consta no diploma criador/estatutos. </p>" +
+            "<p>O formato da data é AAAA-MM-DD.</p>",
+      DataExtincao: "<p>Indicação da data de extinção da entidade que consta no diploma de extinção.</p>" +
+            "<p>O formato da data é AAAA-MM-DD.</p>",
+      Tipologias: "Seleção da(s) tipologia(s) de entidade(s) em que se enquadra a entidade que está a ser registada."
     },
     Intervencoes: {
       Dono: "Processos de negócio em que a entidade intervém como dono.",
@@ -287,9 +290,15 @@ module.exports.help = {
   },
   Tipologias: {
     Campos: {
-      Sigla: "Sigla da tipologia de entidade.",
-      Nome: "Designação da tipologia de entidade",
-      Entidades: "Nome das entidades que fazem parte da tipologia de entidade."
+      Sigla: "<p>Indicação de uma sigla para a tipologia de entidade. </p>" +
+          "<p>A sigla pode ser composta por todas as iniciais das palavras que constam no Nome da tipologia.</p>" +
+          "<p>Devem ser inscritas em maiúsculas.</p>",
+      Nome: "<p>Indicação do nome da tipologia da entidade. </p>" +
+          "<p>No contexto da CLAV, uma tipologia é um conceito representativo de um agrupamento de entidades do mesmo tipo, ou seja, " +
+          "entidades que têm uma ou mais características comuns.</p>" +
+          "<p>Por exemplo: a mesma missão, os tribunais; o mesmo âmbito de atuação, as entidades gestoras de apoios; " +
+          "o mesmo tipo de entidade, as Comissões de Coordenação e Desenvolvimento Regional; entre outros).</p>",
+      Entidades: "Seleção da(s) entidade(s) enquadradas na tipologia que está a ser registada."
     },
     Intervencoes: {
       Dono:
@@ -314,13 +323,27 @@ module.exports.help = {
   },
   Legislacao: {
     Campos: {
-      Numero: "Número de diploma.",
-      Tipo: "Tipo de diploma.",
-      Data: "Data de publicação do diploma.",
-      Sumário: "Sumário do diploma.",
-      Entidades: "Entidade(s) responsável pela publicação.",
+      Numero: "Indicação do número do diploma conforme publicação legal.",
+      Tipo: "Identificação do tipo de diploma.",
+      Data: "<p>Indicação da data da publicação do diploma.</p>" +
+            "<p>O formato da data é AAAA-MM-DD.</p>",
+      Sumário: "Registo do sumário do diploma conforme publicação legal.",
+      Link: "Indicação do link da publicação do diploma.",
+      FonteLegitimacao: "<p>Seleção de 1 dos 3 tipos de fonte de legitimação, " +
+        "ou seja, a portaria ou despacho, " +
+        "que estabelece as decisões de avaliação que fundamentam a ação de eliminação.</p>" +
+        "<dl><dt>PGD/LC:</dt> <dd>Sigla de Portaria de Gestão de Documentos / Lista Consolidada. " +
+        "Abrange as tabelas de seleção, derivadas da Lista Consolidada, inseridas em portarias de gestão de documentos, " +
+        "publicadas em Diário da República.</dd>" +
+        "<dt>PGD:</dt> <dd>Sigla de Portaria de Gestão de Documentos. Abrange as tabelas de seleção, não derivadas " +
+        "da Lista Consolidada, inseridas em portarias de gestão de documentos, publicadas em Diário da República.</dd>" +
+        "<dt>RADA:</dt><dd>Sigla de Relatório de Avaliação de Documentação Acumulada. Abrange as tabelas de seleção, " +
+        "inseridas em Relatórios de Avaliação, que não foram submetidos na Plataforma CLAV.</dd></dl>",
+      DataRevogacao: "<p>Indicação da data de revogação do diploma.</p>" +
+        "<p>O formato da data é AAAA-MM-DD.</p>",
+      Entidades: "Seleção da(s) entidade(s) responsável pela publicação do diploma. ",
       ProcessosRegulados:
-        "Processos de negócio que são regulados ou enquadrados pelo diploma."
+        "Seleção do(s) processo(s) de negócio de 3º nível enquadrados pelo diploma. "
     },
     Relacoes: {
       Altera: "Referência ao(s) diploma(s) que altera.",
