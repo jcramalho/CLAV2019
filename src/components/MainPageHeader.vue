@@ -8,17 +8,17 @@
             <v-img id="logo" contain height="60px" :src="require('./../assets/CLAV-LOGO-TEST-11.svg')" />
             <!--v-tooltip bottom color="info">
                 <template v-slot:activator="{ on }">
-                    <v-img v-on="on" src="../../public/img/RP_DGLAB.png" max-width="125px" contain>
+                    <v-img v-on="on" src="./../assets/CLAV-LOGO-TEST-12.png" max-width="125px" contain>
                         <template v-slot:placeholder>
                             <v-row
                             class="fill-height ma-0"
                             align="center"
                             justify="center"
                             >
-                            <v-progress-circular
-                                indeterminate
-                                color="grey lighten-5"
-                            ></v-progress-circular>
+                                <v-progress-circular
+                                    indeterminate
+                                    color="grey lighten-5"
+                                ></v-progress-circular>
                             </v-row>
                         </template>
                     </v-img>
@@ -202,6 +202,7 @@ export default {
     props: ['n'],
     data() {
         return {
+            logotipo: require("@/assets/n1.svg"),
             hover: false,
             activeItem: -1,
             snackbar: false,
