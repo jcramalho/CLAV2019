@@ -253,7 +253,13 @@ export default {
           this.listaProcessos.procs[
             index
           ] = this.tabelaSelecao.listaProcessos.procs[i];
-          this.acrescentaFecho(this.listaProcessos.procs[index]);
+
+          if (
+            this.tabelaSelecao.listaProcessos.procs[i].entidades.filter(
+              e => e.dono || e.participante != "NP"
+            ).length > 0
+          )
+            this.acrescentaFecho(this.listaProcessos.procs[index]);
         }
       }
       this.listaProcessos.numProcessosSelecionados = this.tabelaSelecao.listaProcessos.numProcessosSelecionados;
@@ -291,7 +297,8 @@ export default {
           index != -1 &&
           this.listaProcessos.procs[index].entidades.every(
             e => !e.dono && e.participante == "NP"
-          )
+          ) &&
+          !this.listaProcessos.procs[index].descriptionEdited
         ) {
           this.listaProcessos.procs[index].preSelected++;
           if (this.listaProcessos.procs[index].preSelected == 1) {
@@ -404,7 +411,7 @@ export default {
           JSON.stringify(this.listaProcessos)
         );
         this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.edited
+          p => p.edited || p.descriptionEdited
         );
 
         var pendenteParams = {
@@ -419,7 +426,7 @@ export default {
         // É preciso testar se há um Pendente criado para não criar um novo
         if (this.pendente._id) {
           pendenteParams._id = this.pendente._id;
-          pendenteParams.numInterv = this.pendente.numInterv++;
+          pendenteParams.numInterv = ++this.pendente.numInterv;
           var response = await this.$request(
             "put",
             "/pendentes",

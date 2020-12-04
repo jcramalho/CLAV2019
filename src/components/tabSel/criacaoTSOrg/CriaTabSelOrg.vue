@@ -66,14 +66,17 @@
 
                 <div v-if="tipoTS == 'entidade' && entidadesReady">
                   <v-col>
-                    <v-autocomplete
-                      :items="entidades"
-                      label="Selecione a entidade"
-                      item-text="label"
-                      return-object
-                      v-model="ent"
-                      prepend-icon="account_balance"
-                    ></v-autocomplete>
+                    <v-form ref="entidade" :lazy-validation="false">
+                      <v-autocomplete
+                        :items="entidades"
+                        label="Selecione a entidade"
+                        item-text="label"
+                        return-object
+                        v-model="ent"
+                        :rules="[v => !!v || 'Tem de escolher uma entidade!']"
+                        prepend-icon="account_balance"
+                      ></v-autocomplete>
+                    </v-form>
                   </v-col>
                   <v-btn
                     v-if="ent != ''"
@@ -180,10 +183,7 @@
                 ></v-text-field>
               </v-form>
             </v-flex>
-            <v-btn
-              class="white--text"
-              color="indigo darken-4"
-              @click="stepNo = 1"
+            <v-btn class="white--text" color="indigo darken-4" @click="voltar"
               >Voltar</v-btn
             >
             <v-btn
@@ -210,9 +210,15 @@
               <v-card>
                 <v-card-text>
                   <ListaProcessos
+                    v-if="!importadoFlag"
                     :listaProcs="listaProcessos"
                     :listaCodigosEsp="listaCodigosEsp"
                     :participante="participante"
+                    @importar="enviarFicheiro($event)"
+                  />
+                  <ListaProcessosImportados
+                    v-else
+                    :procs="listaProcessos.procs"
                   />
                 </v-card-text>
               </v-card>
@@ -312,6 +318,30 @@
             @confirma="submeterTS()"
           />
         </v-dialog>
+        <v-dialog v-model="erroDialog" width="700" persistent>
+          <v-card outlined>
+            <v-card-title class="red darken-4 title white--text" dark>
+              Não foi possível importar os processos
+            </v-card-title>
+
+            <v-card-text>
+              <span
+                class="subtitle-1"
+                style="white-space: pre-wrap"
+                v-html="erro"
+              >
+              </span>
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-btn color="red darken-4" text @click="erroDialog = false">
+                Fechar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-card>
     </v-col>
   </v-row>
@@ -319,6 +349,7 @@
 
 <script>
 import ListaProcessos from "@/components/tabSel/criacaoTSOrg/ListaProcessos.vue";
+import ListaProcessosImportados from "@/components/tabSel/criacaoTSOrg/ListaProcessosImportados.vue";
 import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPendenteGuardado.vue";
 import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vue";
 import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue";
@@ -329,6 +360,7 @@ import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperaca
 export default {
   components: {
     ListaProcessos,
+    ListaProcessosImportados,
     DialogPendenteGuardado,
     DialogCancelar,
     DialogValidacaoOK,
@@ -387,6 +419,10 @@ export default {
       notasApSet: [],
       exemplosNotasApSet: [],
       termosIndSet: [],
+      erro: "",
+      erroDialog: false,
+      success: "",
+      successDialog: false,
 
       // Se houver gravações intermédias, há um pendente
       pendente: {},
@@ -396,7 +432,9 @@ export default {
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
       // Dialog de confirmação de abandonar a operação
-      sairOperacao: false
+      sairOperacao: false,
+      //Verificação de ficheiro importado
+      importadoFlag: false
     };
   },
   methods: {
@@ -444,16 +482,18 @@ export default {
     },
 
     guardaEntidade: async function() {
-      this.tabelaSelecao.designacao =
-        "Tabela de Seleção de " + this.ent.designacao;
-      this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
-      this.tabelaSelecao.idEntidade = "ent_" + this.ent.sigla;
-      try {
-        await this.loadTipologias();
-      } catch (e) {
-        console.log("Erro ao carregar as tipologias: " + e);
+      if (this.$refs.entidade.validate()) {
+        this.tabelaSelecao.designacao =
+          "Tabela de Seleção de " + this.ent.designacao;
+        this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
+        this.tabelaSelecao.idEntidade = "ent_" + this.ent.sigla;
+        try {
+          await this.loadTipologias();
+        } catch (e) {
+          console.log("Erro ao carregar as tipologias: " + e);
+        }
+        this.stepNo = this.stepNo + 1;
       }
-      this.stepNo = this.stepNo + 1;
     },
 
     guardaTipologia: function() {
@@ -655,18 +695,22 @@ export default {
         this.tabelaSelecao.listaProcessos = JSON.parse(
           JSON.stringify(this.listaProcessos)
         );
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.dono || p.participante != "NP"
-        );
 
-        this.tabelaSelecao.listaProcessos.procs.map(p =>
-          this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
-            this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
-              c => c.codigo === p.codigo
-            ),
-            1
-          )
-        );
+        if (!this.importadoFlag) {
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            p => p.dono || p.participante != "NP"
+          );
+
+          this.tabelaSelecao.listaProcessos.procs.map(p =>
+            this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
+              this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
+                c => c.codigo === p.codigo
+              ),
+              1
+            )
+          );
+        }
+        this.tabelaSelecao.listaProcessos["importadoFlag"] = this.importadoFlag;
 
         var tsObj = {
           idEntidade: this.tabelaSelecao.idEntidade,
@@ -707,10 +751,15 @@ export default {
         this.tabelaSelecao.listaProcessos = JSON.parse(
           JSON.stringify(this.listaProcessos)
         );
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.dono || p.participante != "NP"
-        );
-        this.tabelaSelecao.participante = this.participante;
+
+        if (!this.importadoFlag) {
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            p => p.dono || p.participante != "NP" || p.descriptionEdited
+          );
+          this.tabelaSelecao.participante = this.participante;
+        }
+
+        this.tabelaSelecao.listaProcessos["importadoFlag"] = this.importadoFlag;
 
         var pendenteParams = {
           numInterv: 1,
@@ -725,7 +774,7 @@ export default {
         // É preciso testar se há um Pendente criado para não criar um novo
         if (this.pendente._id) {
           pendenteParams._id = this.pendente._id;
-          pendenteParams.numInterv = this.pendente.numInterv++;
+          pendenteParams.numInterv = ++this.pendente.numInterv;
           var response = await this.$request(
             "put",
             "/pendentes",
@@ -795,6 +844,15 @@ export default {
     // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
     sair: async function() {
       this.$router.push("/");
+    },
+    // Voltar para a seleção da Entidade/Tipologia
+    voltar: async function() {
+      this.tabelaSelecao.designacao = "";
+      this.tabelaSelecao.designacaoTipologia = "";
+      this.tabelaSelecao.idTipologia = "";
+      this.tabelaSelecao.designacaoEntidade = "";
+      this.tabelaSelecao.idEntidade = "";
+      this.stepNo = 1;
     },
 
     // Abortar a operação apagando o pendente se existir
@@ -894,8 +952,36 @@ export default {
       };
 
       return historico;
+    },
+    //Importação de processos
+    enviarFicheiro: async function(file) {
+      try {
+        var formData = new FormData();
+        formData.append("file", file);
+        formData.append("designacao", this.tabelaSelecao.designacao);
+        if (this.tipoTS != "tipologia")
+          formData.append("entidade_ts", this.tabelaSelecao.designacaoEntidade);
+        else
+          formData.append(
+            "entidade_ts",
+            this.tabelaSelecao.designacaoTipologia
+          );
+        formData.append("tipo_ts", "TS Organizacional");
+        formData.append("fonteL", "TS/LC");
+        var response = await this.$request(
+          "post",
+          "/tabelasSelecao/importar",
+          formData
+        );
+        this.listaProcessos.procs = response.data.ts.processos;
+        this.importadoFlag = true;
+      } catch (e) {
+        this.erro = e.response.data[0].msg || e.response.data;
+        this.erroDialog = true;
+      }
     }
   },
+
   created: async function() {
     try {
       await this.infoUserEnt();

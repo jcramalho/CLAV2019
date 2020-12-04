@@ -17,10 +17,10 @@
       </v-col>
     </v-row>
     <v-card class="mt-4">
-      <v-card-title
-        class="info-label title"
-        dark
-      >Tabela de Seleção para a entidade {{ p.objeto.dados.ts.entidade }}</v-card-title>
+      <v-card-title class="info-label title" dark
+        >Tabela de Seleção para a entidade
+        {{ p.objeto.dados.ts.entidade }}</v-card-title
+      >
       <v-card-text>
         <v-data-table
           :headers="tsHeaders"
@@ -29,14 +29,12 @@
           :footer-props="tsFooterProps"
         >
           <template v-slot:no-data>
-            <v-alert
-              :value="true"
-              color="error"
-              icon="warning"
-            >Não existem processos para mostrar...</v-alert>
+            <v-alert :value="true" color="error" icon="warning"
+              >Não existem processos para mostrar...</v-alert
+            >
           </template>
 
-          <template v-slot:footer.page-text="props">
+          <template v-slot:[`footer.page-text`]="props">
             {{ props.pageStart }} - {{ props.pageStop }} de
             {{ props.itemsLength }}
           </template>
@@ -46,10 +44,14 @@
               <td>{{ props.item.codigo }}</td>
               <td>{{ props.item.titulo }}</td>
               <td>
-                <span v-if="props.item.dono">X</span>
+                <v-icon v-if="props.item.dono">
+                  done
+                </v-icon>
               </td>
               <td>
-                <span v-if="props.item.participante">{{ props.item.participante }}</span>
+                <span v-if="props.item.participante != 'NP'">{{
+                  props.item.participante
+                }}</span>
               </td>
             </tr>
           </template>

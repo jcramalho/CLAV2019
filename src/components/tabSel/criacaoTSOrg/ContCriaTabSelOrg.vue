@@ -15,7 +15,7 @@
                 Identificação da entidade ou tipologia da tabela de seleção:</b
               ></font
             >
-            <span v-if="stepNo > 1 && tipoTS != 'tipologia'">
+            <span v-if="stepNo > 1 && tabelaSelecao.idEntidade != ''">
               <v-chip
                 class="ma-2"
                 color="indigo darken-4"
@@ -30,7 +30,7 @@
                 }}
               </v-chip>
             </span>
-            <span v-else-if="stepNo > 1 && tipoTS == 'tipologia'">
+            <span v-else-if="stepNo > 1 && tabelaSelecao.idTipologia != ''">
               <v-chip
                 class="ma-2"
                 color="indigo darken-4"
@@ -89,9 +89,15 @@
               <v-card>
                 <v-card-text>
                   <ListaProcessos
+                    v-if="!importadoFlag"
                     :listaProcs="listaProcessos"
                     :listaCodigosEsp="listaCodigosEsp"
                     :participante="participante"
+                    @importar="enviarFicheiro($event)"
+                  />
+                  <ListaProcessosImportados
+                    v-else
+                    :procs="listaProcessos.procs"
                   />
                 </v-card-text>
               </v-card>
@@ -193,6 +199,30 @@
             @confirma="submeterTS()"
           />
         </v-dialog>
+        <v-dialog v-model="erroDialog" width="700" persistent>
+          <v-card outlined>
+            <v-card-title class="red darken-4 title white--text" dark>
+              Não foi possível importar os processos
+            </v-card-title>
+
+            <v-card-text>
+              <span
+                class="subtitle-1"
+                style="white-space: pre-wrap"
+                v-html="erro"
+              >
+              </span>
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+              <v-btn color="red darken-4" text @click="erroDialog = false">
+                Fechar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-card>
     </v-col>
   </v-row>
@@ -200,6 +230,7 @@
 
 <script>
 import ListaProcessos from "@/components/tabSel/criacaoTSOrg/ListaProcessos.vue";
+import ListaProcessosImportados from "@/components/tabSel/criacaoTSOrg/ListaProcessosImportados.vue";
 import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPendenteGuardado.vue";
 import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vue";
 import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue";
@@ -212,6 +243,7 @@ export default {
 
   components: {
     ListaProcessos,
+    ListaProcessosImportados,
     DialogPendenteGuardado,
     DialogCancelar,
     DialogValidacaoOK,
@@ -276,6 +308,10 @@ export default {
       notasApSet: [],
       exemplosNotasApSet: [],
       termosIndSet: [],
+      erro: "",
+      erroDialog: false,
+      success: "",
+      successDialog: false,
 
       // Se houver gravações intermédias, há um pendente
       pendente: {},
@@ -285,7 +321,9 @@ export default {
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
       // Dialog de confirmação de abandonar a operação
-      sairOperacao: false
+      sairOperacao: false,
+      //Verificação de ficheiro importado
+      importadoFlag: false
     };
   },
   methods: {
@@ -528,7 +566,7 @@ export default {
           },
           entProd: {
             cor: "verde",
-            dados: userBD.entidade.split("_")[1] + "(" + userBD.email + ")",
+            dados: userBD.entidade.split("_")[1],
             nota: null
           },
           ts: {
@@ -648,18 +686,22 @@ export default {
         this.tabelaSelecao.listaProcessos = JSON.parse(
           JSON.stringify(this.listaProcessos)
         );
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.dono || p.participante != "NP"
-        );
 
-        this.tabelaSelecao.listaProcessos.procs.map(p =>
-          this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
-            this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
-              c => c.codigo === p.codigo
-            ),
-            1
-          )
-        );
+        if (!this.importadoFlag) {
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            p => p.dono || p.participante != "NP"
+          );
+
+          this.tabelaSelecao.listaProcessos.procs.map(p =>
+            this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
+              this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
+                c => c.codigo === p.codigo
+              ),
+              1
+            )
+          );
+        }
+        this.tabelaSelecao.listaProcessos["importadoFlag"] = this.importadoFlag;
 
         var tsObj = {
           idEntidade: this.tabelaSelecao.idEntidade,
@@ -700,9 +742,15 @@ export default {
         this.tabelaSelecao.listaProcessos = JSON.parse(
           JSON.stringify(this.listaProcessos)
         );
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.dono || p.participante != "NP"
-        );
+
+        if (!this.importadoFlag) {
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            p => p.dono || p.participante != "NP" || p.descriptionEdited
+          );
+          this.tabelaSelecao.participante = this.participante;
+        }
+
+        this.tabelaSelecao.listaProcessos["importadoFlag"] = this.importadoFlag;
 
         var pendenteParams = {
           numInterv: 1,
@@ -717,7 +765,7 @@ export default {
         // É preciso testar se há um Pendente criado para não criar um novo
         if (this.pendente._id) {
           pendenteParams._id = this.pendente._id;
-          pendenteParams.numInterv = this.pendente.numInterv++;
+          pendenteParams.numInterv = ++this.pendente.numInterv;
           var response = await this.$request(
             "put",
             "/pendentes",
@@ -826,7 +874,8 @@ export default {
         if (
           index != -1 &&
           !this.listaProcessos.procs[index].dono &&
-          this.listaProcessos.procs[index].participante == "NP"
+          this.listaProcessos.procs[index].participante == "NP" &&
+          !this.listaProcessos.procs[index].descriptionEdited
         ) {
           this.listaProcessos.procs[index].preSelected++;
 
@@ -851,7 +900,11 @@ export default {
           this.listaProcessos.procs[
             index
           ] = this.tabelaSelecao.listaProcessos.procs[i];
-          this.acrescentaFecho(this.listaProcessos.procs[index]);
+          if (
+            this.tabelaSelecao.listaProcessos.procs[i].dono ||
+            this.tabelaSelecao.listaProcessos.procs[i].participante != "NP"
+          )
+            this.acrescentaFecho(this.listaProcessos.procs[index]);
         }
       }
       this.listaProcessos.numProcessosSelecionados = this.tabelaSelecao.listaProcessos.numProcessosSelecionados;
@@ -859,6 +912,34 @@ export default {
       this.listaProcessos.processosPreSelecionados = this.tabelaSelecao.listaProcessos.processosPreSelecionados;
       this.listaProcessos.procsAselecionar = this.tabelaSelecao.listaProcessos.procsAselecionar;
       this.listaProcessosReady = true;
+    },
+
+    //Importação de processos
+    enviarFicheiro: async function(file) {
+      try {
+        var formData = new FormData();
+        formData.append("file", file);
+        formData.append("designacao", this.tabelaSelecao.designacao);
+        if (this.tipoTS != "tipologia")
+          formData.append("entidade_ts", this.tabelaSelecao.designacaoEntidade);
+        else
+          formData.append(
+            "entidade_ts",
+            this.tabelaSelecao.designacaoTipologia
+          );
+        formData.append("tipo_ts", "TS Organizacional");
+        formData.append("fonteL", "TS/LC");
+        var response = await this.$request(
+          "post",
+          "/tabelasSelecao/importar",
+          formData
+        );
+        this.listaProcessos.procs = response.data.ts.processos;
+        this.importadoFlag = true;
+      } catch (e) {
+        this.erro = e.response.data[0].msg || e.response.data;
+        this.erroDialog = true;
+      }
     }
   },
   created: async function() {
@@ -866,13 +947,18 @@ export default {
     this.participante = this.obj.objeto.participante;
     delete this.obj.objeto.participante;
     this.tabelaSelecao = this.obj.objeto;
-
-    try {
-      await this.loadProcessos();
-      await this.loadFechoTransitivo();
-      await this.mergeProcs();
-    } catch (e) {
-      console.log("Erro no carregamento dinicial: " + e);
+    if (this.tabelaSelecao.listaProcessos.importadoFlag) {
+      this.importadoFlag = true;
+      this.listaProcessos = this.tabelaSelecao.listaProcessos;
+      this.listaProcessosReady = true;
+    } else {
+      try {
+        await this.loadProcessos();
+        await this.loadFechoTransitivo();
+        await this.mergeProcs();
+      } catch (e) {
+        console.log("Erro no carregamento dinicial: " + e);
+      }
     }
   }
 };
