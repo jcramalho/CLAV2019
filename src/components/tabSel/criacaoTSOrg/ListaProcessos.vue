@@ -35,6 +35,17 @@
             ></v-radio>
           </v-radio-group>
         </v-col>
+
+        <v-btn class="mx-2" dark color="green" @click="importFlag = true">
+          <unicon
+            name="importar-icon"
+            width="20"
+            height="20"
+            fill="#ffffff"
+            :style="{ 'margin-top': '5' + 'px', 'margin-right': '5' + 'px' }"
+          />
+          <p>Importar Processos</p>
+        </v-btn>
       </v-row>
 
       <v-data-table
@@ -146,7 +157,80 @@
         v-if="editaBlocoDescritivoFlag"
         :p="procSel"
         @editado="blocoDescritivoEditado($event)"
+        @cancelado="blocoDescritivoCancelado($event)"
       />
+      <v-dialog v-model="importFlag" width="95%">
+        <v-card>
+          <v-card-title class="headline">
+            Importação de processos
+          </v-card-title>
+
+          <v-card-text>
+            <v-file-input
+              label="Ficheiro CSV/Excel"
+              placeholder="Selecione o ficheiro CSV/Excel com a Tabela de Seleção"
+              show-size
+              truncate-length="100"
+              accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              color="indigo darken-4"
+              @change="selecionaFicheiro($event)"
+            ></v-file-input>
+
+            <v-alert type="info">
+              Caso o ficheiro seja CSV deve respeitar o seguinte:
+
+              <ul>
+                <li>Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'</li>
+                <li>O quote e o escape são realizados através de "</li>
+                <li>O encoding do ficheiro tem de ser UTF-8</li>
+              </ul>
+
+              O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma sheet em
+              que tenha:
+
+              <ul>
+                <li>Uma coluna 'Código' com os códigos dos processos</li>
+                <li>Uma coluna 'Título' com os títulos dos processos</li>
+                <li>
+                  Uma coluna 'Dono' com:
+                  <ul>
+                    <li>x ou X nos processos selecionados</li>
+                    <li>Nada para os processos não selecionados</li>
+                  </ul>
+                </li>
+                <li>
+                  Uma coluna 'Participante' com o tipo de participação:
+                  <ul>
+                    <li>Apreciador</li>
+                    <li>Assessor</li>
+                    <li>Comunicador</li>
+                    <li>Decisor</li>
+                    <li>Executor</li>
+                    <li>Iniciador</li>
+                    <li>Nada para os processos não selecionados</li>
+                  </ul>
+                </li>
+              </ul>
+            </v-alert>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              class="white--text ma-2"
+              color="red darken-4"
+              @click="importFlag = false"
+              >Cancelar</v-btn
+            >
+            <v-btn
+              class="white--text ma-2"
+              color="indigo darken-4"
+              :disabled="file == null"
+              @click="enviarFicheiro()"
+              >Importar</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
     <div v-else>
       <p>A preparar a informação dos processos...</p>
@@ -155,7 +239,7 @@
 </template>
 
 <script>
-import EditDescritivo from "@/components/tabSel/criacaoTSPluri/EditDescritivo.vue";
+import EditDescritivo from "@/components/tabSel/parteDescritiva/EditDescritivo.vue";
 import { mdiPencil } from "@mdi/js";
 import { mdiFileDocumentEdit } from "@mdi/js";
 import { mdiCheckCircle } from "@mdi/js";
@@ -198,6 +282,8 @@ export default {
     // Filtro da tabela
     filtro: "",
     filtroLabel: "Todos",
+    importFlag: false,
+    file: null,
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
@@ -388,6 +474,18 @@ export default {
     },
     // Função de retorno do processo de edição do Bloco Descritivo
     blocoDescritivoEditado: function(p) {
+      let proc = this.listaProcs.procs[
+        this.listaProcs.procs.findIndex(proc => proc.codigo == p.codigo)
+      ];
+      proc.notasAp = p.notasAp;
+      proc.exemplosNotasAp = p.exemplosNotasAp;
+      proc.notasEx = p.notasEx;
+      proc.termosInd = p.termosInd;
+
+      this.editaBlocoDescritivoFlag = false;
+    },
+    // Função de cancelamento do processo de edição do Bloco Descritivo
+    blocoDescritivoCancelado: function(p) {
       this.editaBlocoDescritivoFlag = false;
     },
 
@@ -398,6 +496,14 @@ export default {
         this.filtro = label;
       }
       this.filtroLabel = label;
+    },
+    selecionaFicheiro: function(file) {
+      this.file = file;
+    },
+    //Importação de processos
+    enviarFicheiro: function() {
+      this.$emit("importar", this.file);
+      this.importFlag = false;
     }
   }
 };

@@ -50,7 +50,7 @@
         :dadosOriginais="p.objeto.dados"
         :novoHistorico="novoHistorico.ts"
         campoValue="tipologia"
-        campoText="Entidade"
+        campoText="Tipologia"
         :permitirEditar="false"
         tipo="string"
       />
@@ -86,7 +86,7 @@
           <v-data-table
             :headers="tsHeaders"
             :items="p.objeto.dados.ts.listaProcessos.procs"
-            item-key="chave"
+            item-key="codigo"
             :search="search"
             class="elevation-1"
             :footer-props="tsFooterProps"
@@ -102,7 +102,15 @@
                 done
               </v-icon>
             </template>
-            <template v-slot:expanded-item="{ headers, item }">
+            <template v-slot:[`item.participante`]="{ item }">
+              <span v-if="item.participante != 'NP'">
+                {{ item.participante }}
+              </span>
+            </template>
+            <template
+              v-if="!p.objeto.dados.ts.listaProcessos.importadoFlag"
+              v-slot:expanded-item="{ headers, item }"
+            >
               <td :colspan="headers.length">
                 <v-card class="ma-1 elevation-0">
                   <v-card-text>
@@ -670,6 +678,7 @@ export default {
         { text: "Título", value: "titulo", class: "subtitle-1" },
         { text: "Dono", value: "dono", class: "subtitle-1" },
         { text: "Participante", value: "participante", class: "subtitle-1" },
+
         {
           text: "",
           value: "data-table-expand",

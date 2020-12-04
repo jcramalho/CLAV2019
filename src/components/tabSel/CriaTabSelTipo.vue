@@ -1,25 +1,27 @@
 <template>
-  <v-card class="ma-2">
-    <v-app-bar color="indigo darken-4" dark>
-      <v-toolbar-title class="card-heading"
-        >Nova Tabela de Seleção</v-toolbar-title
-      >
-    </v-app-bar>
-    <v-card-text class="panel-body" style="background-color:#fafafa">
-      <v-container fluid grid-list-xl>
-        <v-layout wrap align-center>
-          <v-flex xs3>
-            <v-subheader>Selecionar tipo de Tabela de Seleção:</v-subheader>
-          </v-flex>
-          <v-flex xs12 sm4>
-            <v-select
-              :items="['Organizacional', 'Pluriorganizacional']"
-              label="Tipo"
-              v-model="tipo"
-              color="indigo darken-4"
-            ></v-select>
-          </v-flex>
-          <!--v-flex xs12 sm4>
+  <v-row>
+    <v-col>
+      <v-card class="ma-2">
+        <v-app-bar color="indigo darken-4" dark>
+          <v-toolbar-title class="card-heading"
+            >Nova Tabela de Seleção</v-toolbar-title
+          >
+        </v-app-bar>
+        <v-card-text class="panel-body" style="background-color:#fafafa">
+          <v-container fluid grid-list-xl>
+            <v-layout wrap align-center>
+              <v-flex xs3>
+                <v-subheader>Selecionar tipo de Tabela de Seleção:</v-subheader>
+              </v-flex>
+              <v-flex xs12 sm4>
+                <v-select
+                  :items="['Organizacional', 'Pluriorganizacional']"
+                  label="Tipo"
+                  v-model="tipo"
+                  color="indigo darken-4"
+                ></v-select>
+              </v-flex>
+              <!--v-flex xs12 sm4>
                 <v-btn
                   medium
                   @click="infoButton = true"
@@ -33,24 +35,26 @@
                   <v-icon left>info</v-icon>Info dos seguintes passos
                 </v-btn>
               </v-flex-->
-        </v-layout>
-      </v-container>
-      <div class="text-xs-center">
-        <v-btn
-          center
-          color="indigo darken-4"
-          class="white--text"
-          @click="continuar()"
-          :disabled="!tipo"
-        >
-          Continuar
-        </v-btn>
-        <v-btn dark text color="red darken-4" @click="cancelar()">
-          Cancelar</v-btn
-        >
-      </div>
-    </v-card-text>
-  </v-card>
+            </v-layout>
+          </v-container>
+          <div class="text-xs-center">
+            <v-btn
+              center
+              color="indigo darken-4"
+              class="white--text"
+              @click="continuar()"
+              :disabled="!tipo"
+            >
+              Continuar
+            </v-btn>
+            <v-btn dark text color="red darken-4" @click="cancelar()">
+              Cancelar</v-btn
+            >
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

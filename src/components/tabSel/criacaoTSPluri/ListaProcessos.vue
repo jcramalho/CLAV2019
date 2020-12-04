@@ -123,13 +123,14 @@
       v-if="editaBlocoDescritivoFlag"
       :p="procSel"
       @editado="blocoDescritivoEditado($event)"
+      @cancelado="blocoDescritivoCancelado($event)"
     />
   </div>
 </template>
 
 <script>
 import Selresponsabilidade from "@/components/tabSel/criacaoTSPluri/SelResponsabilidade.vue";
-import EditDescritivo from "@/components/tabSel/criacaoTSPluri/EditDescritivo.vue";
+import EditDescritivo from "@/components/tabSel/parteDescritiva/EditDescritivo.vue";
 import { mdiPencil } from "@mdi/js";
 import { mdiFileDocumentEdit } from "@mdi/js";
 import { mdiCheckCircle } from "@mdi/js";
@@ -329,6 +330,17 @@ export default {
     },
     // Função de retorno do processo de edição do Bloco Descritivo
     blocoDescritivoEditado: function(p) {
+      let proc = this.listaProcs.procs[
+        this.listaProcs.procs.findIndex(proc => proc.codigo == p.codigo)
+      ];
+      proc.notasAp = p.notasAp;
+      proc.exemplosNotasAp = p.exemplosNotasAp;
+      proc.notasEx = p.notasEx;
+      proc.termosInd = p.termosInd;
+      this.editaBlocoDescritivoFlag = false;
+    },
+    // Função de cancelamento do processo de edição do Bloco Descritivo
+    blocoDescritivoCancelado: function(p) {
       this.editaBlocoDescritivoFlag = false;
     }
   }
