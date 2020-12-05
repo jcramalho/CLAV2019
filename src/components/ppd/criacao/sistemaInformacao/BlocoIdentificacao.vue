@@ -339,7 +339,6 @@ export default {
     return {
       myhelp: help,
       simNao: ["Sim", "Não"],
-
       erroValidacao: false,
       mensagensErro: [],
       naVaziaFlag: false,
@@ -380,6 +379,29 @@ export default {
       }
     },
 
+  },
+
+  watch:{
+    "ppd.si.identificacao.outsourcingCheck": function() {
+
+      if(this.ppd.si.identificacao.outsourcingCheck !='Sim'){
+        this.ppd.si.identificacao.outsourcing = this.ppd.si.identificacao.outsourcingCheck;
+      }
+    },
+
+    "ppd.si.identificacao.insourcingCheck": function() {
+
+      if(this.ppd.si.identificacao.insourcingCheck !='Sim'){
+        this.ppd.si.identificacao.insourcing = this.ppd.si.identificacao.insourcingCheck;
+      }
+    },
+    "ppd.si.identificacao.defCheck": function() {
+
+      if(this.ppd.si.identificacao.defCheck !='Sim'){
+        this.ppd.si.identificacao.defResponsavel = this.ppd.si.identificacao.defCheck;
+      }
+
+    },
   }
 
 };

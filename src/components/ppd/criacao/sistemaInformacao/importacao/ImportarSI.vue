@@ -98,6 +98,25 @@ export default {
           this.ppd.sistemasInfo.push(allSI[i]);
         }
       }
+      this.ppd.sistemasInfo.forEach(element => {
+        var regex = /\d/g;
+        var child = [];
+        if(element.avaliacao.decomposicao.length > 0){
+          var childAux =  element.avaliacao.decomposicao.split(new RegExp('[# \\s]'))
+          if(childAux.length > 0){
+            childAux.forEach(dec => {
+              if(regex.test(dec)){
+                child.push({"id": dec, "name": dec})
+              }
+              //Else se quiser meter o titulo
+            })
+          }
+        }
+        child.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
+        this.ppd.arvore.push({"id": element.numeroSI, "name": element.numeroSI, children: child })
+        this.ppd.arvore.sort((a,b) => (parseInt(a.id) >parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
+
+      });
     },
   },
 
