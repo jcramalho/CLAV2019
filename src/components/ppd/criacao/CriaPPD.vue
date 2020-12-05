@@ -1,183 +1,119 @@
 <template>
   <v-row>
-    <v-col xs="12" sm="3">
+    <v-col cols="12" xs="12" sm="3">
       <ArvoreLateralPPD
         :arvore="ppd.arvore"
         :sistemasInfo="ppd.sistemasInfo"
       />
     </v-col>
-    <v-col xs="12" sm="9">
-      <!-- HEADER -->
+    <v-col cols="12" xs="12" sm="9">
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
           <v-toolbar-title class="card-heading">Criar Plano de Preservação Digital</v-toolbar-title>
         </v-app-bar>
-
         <v-card-text>
-          <v-row>
-            <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Título
-                <InfoBox header="Título do PPD" :text="myhelp.Ppd.titulo"/>
-              </div>
-            </v-col>
-            <v-col cols="12" xs="12" sm="9">
-              <v-text-field
-                :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                v-model="ppd.geral.nomePPD"
-                label="Título"
-                solo
-                clearable
-              ></v-text-field>
-            </v-col>
-            <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Entidades
-                <InfoBox header="Entidades do PPD" :text="myhelp.Ppd.entidade"/>
-              </div>
-            </v-col>
-            <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
-              <v-autocomplete
-                v-model="ppd.geral.entSel"
-                :items="entidades"
-                item-text="label"
-                placeholder="Selecione as entidades abrangidas pelo PPD"
-                multiple
-                chips
-                deletable-chips
-                return-object
-              >
-              </v-autocomplete>
-            </v-col>
-            <v-col v-else>
-              <v-alert dense type="info">
-                Ainda não foi possível carregar as entidades...
-              </v-alert>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Menção de responsabilidade
-                <InfoBox header="Identificação de responsabilidades pela elaboração do PPD " :text="myhelp.Ppd.responsabilidade"/>
-              </div>
-            </v-col>
-            <v-col cols="12" xs="12" sm="9">
-              <v-textarea
-                  v-model="ppd.geral.mencaoResp"
-                  label=""
-                  solo
-                  clearable
-              ></v-textarea>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Fonte de legitimação </div>
-            </v-col>
-            <v-col cols="12" xs="12" sm="9">
-              <v-radio-group v-model="loadCheck" row>
-                <v-radio
-                  v-for="(p, i) in fonteLegitimacao"
-                  :key="i"
-                  :label="p"
-                  :value="p"
-                  color="indigo darken-3"
-                ></v-radio>
-              </v-radio-group>
-              <div v-if="loadCheck === 'TS/LC'">
-                <v-autocomplete
-                  label="Selecione a fonte de legitimação"
-                  :items="tabelasSelecao"
-                  item-text="titulo"
-                  return-object
-                  v-model="a"
-                  solo
-                  dense
+          <v-stepper v-model="e1" vertical class="elevation-0" style="background-color:#fafafa">
+            <v-stepper-step color="amber accent-3" :key="1" :complete="e1 > 1" :step="1">
+              <font size="4">
+                <b>Informação Geral</b>
+              </font>
+            </v-stepper-step>
+            <v-stepper-content step="1">
+              <InformacaoGeral
+                @seguinte="changeE1"
+                @loadConsultaPGD="loadConsultaPGD($event)"
+                :ppd="ppd"
+                :entidades="entidades"
+                :semaforos="semaforos"
+                :myhelp="myhelp"
+                :tsRada="tsRada"
+                :portariaLC="portariaLC"
+                :portaria="portaria"
+                :portariaRada="portariaRada"
                 />
-              </div>
-              <div v-else-if="loadCheck === 'PGD/LC'">
-                <v-autocomplete
-                  label="Selecione a fonte de legitimação"
-                  :items="portariaLC"
-                  item-text="titulo"
-                  return-object
-                  v-model="a"
-                  solo
-                  dense
-                />
-              </div>
-              <div v-else-if="loadCheck === 'PGD'">
-                <v-autocomplete
-                  label="Selecione a fonte de legitimação"
-                  :items="portaria"
-                  item-text="titulo"
-                  return-object
-                  v-model="fonteLegitimacaoSelected"
-                  solo
-                  dense
-                />
-              </div>
-              <div v-else-if="loadCheck === 'RADA'">
-                <v-autocomplete
-                  label="Selecione a fonte de legitimação"
-                  :items="portariaRada"
-                  item-text="titulo"
-                  return-object
-                  v-model="a"
-                  solo
-                  dense
-                />
-              </div>
-              <div v-else>
-                    <v-autocomplete
-                      label="Selecione a fonte de legitimação"
-                      :items="tsRada"
-                      item-text="titulo"
-                      return-object
-                      v-model="a"
+            </v-stepper-content>
+            <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
+              <font size="4">
+                <b>Sistemas de Informação</b>
+              </font>
+            </v-stepper-step>
+            <v-stepper-content step="2">
+              <SistemaOps
+                :sistema="ppd.sistemasInfo"
+                @unselectSistema="unselectSistema($event)"
+              />
+              <v-form ref="form" :lazy-validation="false">
+                <v-row >
+                  <v-col cols="12" xs="12" sm="3">
+                    <div class="info-label">Número de referência SI
+                      <InfoBox header="Número de referência do Sistema de informação" :text="myhelp.Ppd.numeroSI"/>
+                    </div>
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="8">
+                    <v-text-field
+                      :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                      v-model="ppd.si.numeroSI"
+                      label="Identificador do sistema de informação"
                       solo
-                      dense
-                    ></v-autocomplete>
-                  </div>
-            </v-col>
-          </v-row>
+                      clearable
+                    ></v-text-field>
+                  </v-col>
 
-          <SistemaInfo
-            :ppd="ppd"
-            :sistema="ppd.sistemasInfo" @newSistema="newSistema($event, ppd.sistemasInfo)"
-            :entidades="entidades"
-            :semaforos="semaforos"
-            :listaLegislacao="listaLegislacao"
-            :importarPPD="importarPPD"
-            :classesSI="classesSI"
-            :classesDaFonteL="classesDaFonteL"
-          />
-          <SistemaOps
-            :sistema="ppd.sistemasInfo"
-            @unselectSistema="unselectSistema($event)"
-          />
-
+                  <v-col cols="12" xs="12" sm="3">
+                    <div class="info-label">Nome do SI
+                      <InfoBox header="Nome do Sistema de informação" :text="myhelp.Ppd.nomeSI"/>
+                    </div>
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="8">
+                    <v-text-field
+                      :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                      v-model="ppd.si.nomeSI"
+                      label="Designação oficial do sistema"
+                      solo
+                      clearable
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-expansion-panels v-model="panels">
+                  <!-- BLOCO IDENTIFICAÇÃO -->
+                  <BlocoIdentificacao
+                    :ppd="ppd"
+                    :semaforos="semaforos"
+                    :entidades="entidades"
+                  />
+                  <!-- BLOCO AVALIAÇÃO -->
+                  <BlocoAvaliacao
+                    :ppd="ppd"
+                    :semaforos="semaforos"
+                    :listaLegislacao="listaLegislacao"
+                    :classesSI="classesSI"
+                    :classesDaFonteL="classesDaFonteL"
+                    @newSistemasRelacionados="newSistemasRelacionados($event, ppd.si.avaliacao.sistemasRelacionados)"
+                    @unselectSistemasRelacionados="unselectSistemasRelacionados($event)"
+                  />
+                  <!-- BLOCO CARACTERIZAÇÃO -->
+                  <BlocoCaracterizacao
+                    :ppd="ppd"
+                  />
+                  <!-- BLOCO ESTRATÉGIA -->
+                  <BlocoEstrategia
+                    :ppd="ppd"
+                  />
+                </v-expansion-panels>
+              </v-form>
+              <v-btn
+              color="indigo darken-2"
+              dark
+              class="ma-2"
+              rounded
+              @click="guardarSistema()"
+              >
+                Guardar
+              </v-btn>
+            </v-stepper-content>
+          </v-stepper>
         </v-card-text>
-
-        <v-snackbar
-          v-model="loginErrorSnackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
-        >
-          {{ loginErrorMessage }}
-          <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
-        </v-snackbar>
       </v-card>
-      <v-row align="center" justify="space-around">
-        <v-btn
-        color="indigo darken-2"
-        dark
-        class="ma-2"
-        rounded
-        @click="$router.push('/')"
-        >
-          Guardar
-        </v-btn>
-      </v-row>
     </v-col>
   </v-row>
 </template>
@@ -188,9 +124,16 @@ const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
 import InfoBox from "@/components/generic/infoBox.vue";
+import InformacaoGeral from "@/components/ppd/criacao/InformacaoGeral.vue";
 import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
 import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
 import ArvoreLateralPPD from './ArvoreLateralPPD.vue';
+import mixinCriacaoPPD from "@/mixins/ppd/mixinCriacaoPPD.js";
+import ImportarSI from "@/components/ppd/criacao/sistemaInformacao/importacao/ImportarSI.vue";
+import BlocoIdentificacao from "@/components/ppd/criacao/sistemaInformacao/BlocoIdentificacao.vue";
+import BlocoAvaliacao from "@/components/ppd/criacao/sistemaInformacao/BlocoAvaliacao.vue";
+import BlocoCaracterizacao from "@/components/ppd/criacao/sistemaInformacao/BlocoCaracterizacao.vue";
+import BlocoEstrategia from "@/components/ppd/criacao/sistemaInformacao/BlocoEstrategia.vue";
 //import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
 
 
@@ -200,11 +143,20 @@ export default {
   ],
   components: {
     InfoBox,
+    InformacaoGeral,
     SistemaInfo,
     SistemaOps,
-    ArvoreLateralPPD
+    ArvoreLateralPPD,
+    mixinCriacaoPPD,
+    ImportarSI,
+    BlocoIdentificacao,
+    BlocoAvaliacao,
+    BlocoCaracterizacao,
+    BlocoEstrategia
     //SistemaSelect
   },
+  mixins: [mixinCriacaoPPD],
+
 
   data: () => ({
     // Objeto que guarda um ppd
@@ -306,14 +258,13 @@ export default {
         token: ""
       },
       arvore: [],
+      fonteID: ""
     },
-
+    panels: [],
     //para apagar!!!!!!!
     a: "",
     //---Fonte de legitimacao---
-    loadCheck: "",
-    fonteLegitimacaoSelected: "",
-    fonteLegitimacao: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
+
     portaria: [],
     portariaLC: [],
     portariaRada: [],
@@ -333,20 +284,6 @@ export default {
         "items-per-page-options": [5, 10, 20, -1],
         "items-per-page-all-text": "Todos"
     },
-    headers: [
-      {text: "Código", sortable: false, value: "codigo", sortable: true},
-      {text: "Referência", sortable: false, value: "referencia", sortable: true},
-      {text: "Título", sortable: false, value: "titulo"},
-      {text: "PCA", sortable: false, value: "pca"},
-      {text: "Destino Final", sortable: false, value: "df"},
-    ],
-
-    headersLC: [
-      {text: "Código", sortable: false, value: "codigo"},
-      {text: "Título", sortable: false, value: "titulo"},
-      {text: "PCA", sortable: false, value: "pca"},
-      {text: "Destino Final", sortable: false, value: "df"}
-    ],
 
     // Lista de todas as entidades existentes
     entidades: [],
@@ -383,20 +320,204 @@ export default {
 
 
  watch:{
-    "fonteLegitimacaoSelected": function() {
-
-      //if (this.fonteLegitimacaoSelected != "") {
-        this.loadConsultaPGD(this.fonteLegitimacaoSelected.id);
-      //}
+    e1(v) {
+      if (v > 1 && !this.guardar) {
+        this.guardar = true;
+      }
     },
   },
 
   methods: {
+    apagar: function() {
+      this.$refs.form.reset();
+    },
+    newSistemasRelacionados: function(sistema, lista) {
+        lista.push(sistema);
+    },
+    unselectSistemasRelacionados: function(sistema) {
+      // Recoloca o sistema nos selecionáveis
+      this.ppd.listaSistemasInfoAuxiliar.push(sistema);
+      var index = this.ppd.si.avaliacao.sistemasRelacionados.findIndex(e => e.numeroSI === sistema.numeroSI);
+      this.ppd.si.avaliacao.sistemasRelacionados.splice(index, 1);
+    },
+    guardarSistema: async function() {
+      if(/*this.validaAll("O campo número do SI",this.ppd.si.numeroSI) &&
+        this.validaAll("O campo  nome do SI",this.ppd.si.nomeSI) &&
+        this.validaAll("O campo administrador do sistema",this.ppd.si.identificacao.adminSistema) &&
+        this.validaAll("O campo administrador de dados",this.ppd.si.identificacao.adminDados) &&
+        this.validaAll("O campo proprietário do SI - entidade pública",this.ppd.si.identificacao.propSistemaPublico) &&
+        this.validaAll("O campo proprietário do SI - entidade privada",this.ppd.si.identificacao.propSistemaPrivado) &&
+        this.validaAll("O campo proprietário dos dados",this.ppd.si.identificacao.propDados) &&
+        this.validaAll("O campo localização dos dados - entidade pública",this.ppd.si.identificacao.localDadosPublico) &&
+        this.validaAll("O campo localização dos dados - entidade privada",this.ppd.si.identificacao.localDadosPrivado) &&
+        this.validaDef(this.ppd.si.identificacao.defResponsavel, this.ppd.si.identificacao.defCheck) &&
+        this.validaInsourcing(this.ppd.si.identificacao.insourcing, this.ppd.si.identificacao.insourcingCheck) &&
+        this.validaOutsourcing(this.ppd.si.identificacao.outsourcing, this.ppd.si.identificacao.outsourcingCheck) &&
+        this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
+        this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/1
+      ){
+        var sistema = {
+          visto: true,
+          numeroSI: this.ppd.si.numeroSI,
+          nomeSI: this.ppd.si.nomeSI,
+          identificacao:{
+            adminSistema: this.ppd.si.identificacao.adminSistema,
+            adminDados: this.ppd.si.identificacao.adminDados,
+            propSistemaPublico: this.ppd.si.identificacao.propSistemaPublico,
+            propSistemaPrivado: this.ppd.si.identificacao.propSistemaPrivado,
+            propDados: this.ppd.si.identificacao.propDados,
+            localDadosPublico: this.ppd.si.identificacao.localDadosPublico,
+            localDadosPrivado: this.ppd.si.identificacao.localDadosPrivado,
+            userList: this.ppd.si.identificacao.userList,
+            defResponsavel: this.ppd.si.identificacao.defResponsavel,
+            expressaoResponsavel:this.ppd.si.identificacao.expressaoResponsavel,
+            insourcing: this.ppd.si.identificacao.insourcing,
+            outsourcing: this.ppd.si.identificacao.outsourcing,
+            notas: this.ppd.si.identificacao.notas,
+          },
+          avaliacao:{
+            descricao: this.ppd.si.avaliacao.descricao,
+            tabelaDecomposicao:this.ppd.si.avaliacao.tabelaDecomposicao,
+            selecionadosTabelaFL:this.ppd.si.avaliacao.selecionadosTabelaFL,
+            sistemasRelacionados:this.ppd.si.avaliacao.sistemasRelacionados,
+            checkedAti:this.ppd.si.avaliacao.checkedAti,
+            checkedGrau:this.ppd.si.avaliacao.checkedGrau,
+            checkedCriticidade:this.ppd.si.avaliacao.checkedCriticidade,
+            objetoPreservacao:this.ppd.si.avaliacao.objetoPreservacao,
+            legislacoes:this.ppd.si.avaliacao.legislacoes,
+          },
+          caracterizacao:{
+            dependenciaSoft: this.ppd.si.caracterizacao.dependenciaSoft,
+            categoriaDados: this.ppd.si.caracterizacao.categoriaDados,
+            formato: this.ppd.si.caracterizacao.formato,
+            modeloCres: this.ppd.si.caracterizacao.modeloCres,
+            dimensao: this.ppd.si.caracterizacao.dimensao,
+            crescimento: this.ppd.si.caracterizacao.crescimento,
+            localSistema: this.ppd.si.caracterizacao.localSistema,
+            salaTec: this.ppd.si.caracterizacao.salaTec,
+            acessoSalaTec: this.ppd.si.caracterizacao.acessoSalaTec,
+            energiaRed: this.ppd.si.caracterizacao.energiaRed,
+            energiaSoc: this.ppd.si.caracterizacao.energiaSoc,
+            alarme: this.ppd.si.caracterizacao.alarme,
+            climatizacao: this.ppd.si.caracterizacao.climatizacao,
+            seguranca: this.ppd.si.caracterizacao.seguranca,
+            comunicacaoEx: this.ppd.si.caracterizacao.comunicacaoEx,
+            planoContingencia: this.ppd.si.caracterizacao.planoContingencia,
+            planoMudEvolucao: this.ppd.si.caracterizacao.planoMudEvolucao,
+            privAcesso: this.ppd.si.caracterizacao.privAcesso,
+            catSegDados: this.ppd.si.caracterizacao.catSegDados,
+            rotinaAuditoria: this.ppd.si.caracterizacao.rotinaAuditoria,
+            logsRotinas: this.ppd.si.caracterizacao.logsRotinas,
+            integridadeInfo: this.ppd.si.caracterizacao.integridadeInfo,
+            armazenamento: this.ppd.si.caracterizacao.armazenamento,
+            replicacaoDados: this.ppd.si.caracterizacao.replicacaoDados,
+            backupsRegular: this.ppd.si.caracterizacao.backupsRegular,
+            modeloBackup: this.ppd.si.caracterizacao.modeloBackup,
+            qualidadeBackup: this.ppd.si.caracterizacao.qualidadeBackup,
+            inventarioSoft: this.ppd.si.caracterizacao.inventarioSoft,
+            inventarioHard: this.ppd.si.caracterizacao.inventarioHard,
+            documentacaoSis: this.ppd.si.caracterizacao.documentacaoSis,
+            documentacaoProc: this.ppd.si.caracterizacao.documentacaoProc,
+            controlVersaoDProc: this.ppd.si.caracterizacao.controlVersaoDProc,
+            contratoAtivos: this.ppd.si.caracterizacao.contratoAtivos,
+            planoRecuperacao: this.ppd.si.caracterizacao.planoRecuperacao,
+            notas: this.ppd.si.caracterizacao.notas,
+          },
+          estrategia:{
+            utilizacaoOperacional:{
+              idMetodoPreservacao: this.ppd.si.estrategia.utilizacaoOperacional.idMetodoPreservacao,
+              fundMetodoPreservacao: this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao,
+              lacunas: this.ppd.si.estrategia.utilizacaoOperacional.lacunas,
+          },
+            utilizacaoMemoria:{
+              idMetodoPreservacao: this.ppd.si.estrategia.utilizacaoMemoria.idMetodoPreservacao,
+              fundMetodoPreservacao: this.ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao,
+              lacunas: this.ppd.si.estrategia.utilizacaoMemoria.lacunas,
+            }
+          }
+        };
+        this.ppd.si.numeroSI = "",
+        this.ppd.si.nomeSI = "",
+        this.ppd.si.identificacao.adminSistema = [],
+        this.ppd.si.identificacao.adminDados = [],
+        this.ppd.si.identificacao.propSistemaPublico = [],
+        this.ppd.si.identificacao.propSistemaPrivado = "",
+        this.ppd.si.identificacao.propDados = [],
+        this.ppd.si.identificacao.localDadosPublico = [],
+        this.ppd.si.identificacao.localDadosPrivado = "",
+        this.ppd.si.identificacao.userList = [],
+        this.ppd.si.identificacao.outsourcingCheck = "",
+        this.ppd.si.identificacao.defCheck = "",
+        this.ppd.si.identificacao.insourcingCheck = "",
+        this.ppd.si.identificacao.defResponsavel = "",
+        this.ppd.si.identificacao.expressaoResponsavel = "",
+        this.ppd.si.identificacao.insourcing = "",
+        this.ppd.si.identificacao.outsourcing = "",
+        this.ppd.si.identificacao.notas = "",
+        this.ppd.si.avaliacao.descricao = "",
+        this.ppd.si.avaliacao.tabelaDecomposicao = [],
+        this.ppd.si.avaliacao.selecionadosTabelaFL = [],
+        this.ppd.si.avaliacao.sistemasRelacionados = [],
+        this.ppd.si.avaliacao.checkedAti = "",
+        this.ppd.si.avaliacao.checkedGrau = "",
+        this.ppd.si.avaliacao.checkedCriticidade = "",
+        this.ppd.si.avaliacao.objetoPreservacao = "",
+        this.ppd.si.avaliacao.legislacoes = "",
+        this.ppd.si.caracterizacao.dependenciaSoft = "",
+        this.ppd.si.caracterizacao.categoriaDados = "",
+        this.ppd.si.caracterizacao.formato = "",
+        this.ppd.si.caracterizacao.modeloCres = "",
+        this.ppd.si.caracterizacao.dimensao = "",
+        this.ppd.si.caracterizacao.crescimento = "",
+        this.ppd.si.caracterizacao.localSistema = "",
+        this.ppd.si.caracterizacao.salaTec = "",
+        this.ppd.si.caracterizacao.acessoSalaTec = "",
+        this.ppd.si.caracterizacao.energiaRed = "",
+        this.ppd.si.caracterizacao.energiaSoc = "",
+        this.ppd.si.caracterizacao.alarme = "",
+        this.ppd.si.caracterizacao.climatizacao = "",
+        this.ppd.si.caracterizacao.seguranca = "",
+        this.ppd.si.caracterizacao.comunicacaoEx = "",
+        this.ppd.si.caracterizacao.planoContingencia = "",
+        this.ppd.si.caracterizacao.planoMudEvolucao = "",
+        this.ppd.si.caracterizacao.privAcesso = "",
+        this.ppd.si.caracterizacao.catSegDados = "",
+        this.ppd.si.caracterizacao.rotinaAuditoria = "",
+        this.ppd.si.caracterizacao.logsRotinas = "",
+        this.ppd.si.caracterizacao.integridadeInfo = "",
+        this.ppd.si.caracterizacao.armazenamento = "",
+        this.ppd.si.caracterizacao.replicacaoDados = "",
+        this.ppd.si.caracterizacao.backupsRegular = "",
+        this.ppd.si.caracterizacao.modeloBackup = "",
+        this.ppd.si.caracterizacao.qualidadeBackup = "",
+        this.ppd.si.caracterizacao.inventarioSoft = "",
+        this.ppd.si.caracterizacao.inventarioHard = "",
+        this.ppd.si.caracterizacao.documentacaoSis = "",
+        this.ppd.si.caracterizacao.documentacaoProc = "",
+        this.ppd.si.caracterizacao.controlVersaoDProc = "",
+        this.ppd.si.caracterizacao.contratoAtivos = "",
+        this.ppd.si.caracterizacao.planoRecuperacao = "",
+        this.ppd.si.caracterizacao.notas = "",
+        this.ppd.si.estrategia.utilizacaoOperacional.idMetodoPreservacao= "",
+        this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao= "",
+        this.ppd.si.estrategia.utilizacaoOperacional.lacunas= ""
+        this.ppd.si.estrategia.utilizacaoMemoria.idMetodoPreservacao= "",
+        this.ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao= "",
+        this.ppd.si.estrategia.utilizacaoMemoria.lacunas= ""
+        this.dialog= false;
+        //this.$refs.form.reset(); ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
+        this.newSistema(sistema,this.ppd.sistemasInfo);
+        this.panels = [];
+      } else {
+        this.dialog= true;
+        this.erroValidacao = true;
+      }
+    },
 
   //-------Fonte Legitimacao-------
-    loadConsultaPGD: async function(id) {
+    loadConsultaPGD: async function() {
       try {
-        var response = await this.$request("get", "/pgd/"+id);
+        var response = await this.$request("get", "/pgd/"+this.ppd.fonteID);
         //this.classesSI = await prepararClasses(response.data);
         this.classesDaFonteL = response.data;
         for (var c of response.data) {
@@ -502,33 +623,6 @@ export default {
       }
     },
 
-    // Quando se termina a seleção das entidades
-    entidadesSelecionadas: async function(){
-      try{
-        this.geral.entSel.sort((a, b) => a.identificacao > b.identificacao ? 1 : -1 );
-        this.ppd.entidades = this.geral.entSel;
-
-        for(let i=0; i < this.listaProcessos.procs.length; i++){
-            for(let j=0; j < this.ppd.entidades.length; j++){
-                this.listaProcessos.procs[i].entidades.push({
-                    sigla: this.ppd.entidades[j].sigla,
-                    identificacao: this.ppd.entidades[j].identificacao,
-                    id: this.ppd.entidades[j].id,
-                    label: this.ppd.entidades[j].label,
-                    dono: false,
-                    participante: "NP"
-                });
-            }
-        }
-        await this.loadProcessosEspecificos(this.ppd.entidades);
-        this.entSelReady = true;
-      }
-      catch(e){
-        console.log("Erro ao fundir as entidades nos processos: " + e);
-      }
-    },
-
-
     loadLegislacao: async function() {
       try {
         var response = await this.$request("get", "/legislacao?estado=Ativo");
@@ -565,7 +659,7 @@ export default {
           lista.push(sis);
           //Dar reset as listas usadas....
           this.ppd.listaSistemasInfoAuxiliar = [...lista];
-          this.loadConsultaPGD(this.fonteLegitimacaoSelected.id);
+          this.loadConsultaPGD(this.fonteID);
           var child = [];
           var index =  this.ppd.arvore.findIndex(l => l.id === sis.numeroSI);
           //ESTE CASO NUNCA ACONTECE PORQUE NAO SE PODE INSERIR OUTRO SI COM O MESMO ID....
@@ -609,19 +703,6 @@ export default {
 
   },
 
-  /* em principio nao vai ser necessario porque vou buscar a info toda logo no inicio
-  watch:{
-    "classe.nivel": function() {
-
-      if (this.classe.nivel > 1) {
-        this.loadEntidades();
-      }
-      if (this.classe.nivel >= 3 && !this.semaforos.legislacaoReady) {
-        this.loadLegislacao();
-      }
-    },
-  },
-  */
   created: async function() {
       try{
         await this.loadEntidades();

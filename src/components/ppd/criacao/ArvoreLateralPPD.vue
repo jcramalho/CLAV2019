@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class=".ml-3">
     <v-sheet class="indigo lighten-2">
       <v-text-field
         v-model="search"

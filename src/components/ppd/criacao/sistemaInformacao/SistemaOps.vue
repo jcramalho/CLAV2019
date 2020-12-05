@@ -6,13 +6,23 @@
         <InfoBox header="Sistemas de Informação"/></div>
     </v-col>
     <v-col v-if="sistema.length > 0">
+      <v-card-title>
+        <v-text-field
+          v-model="searchSI"
+          append-icon="search"
+          label="Procura filtra sistemas informação"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
       <v-data-table
         :headers="headers"
         :items="sistema"
+        :items-per-page="5"
         item-key="numeroSI"
+        :search="searchSI"
         :sort-by="['numeroSI']"
         class="elevation-1"
-        hide-default-footer
         :footer-props="footer_props"
       >
         <template v-slot:header="props">
@@ -122,6 +132,7 @@ export default {
     return {
       myhelp: help,
       alterar: false,
+      searchSI: "",
       headers: [
         { text: "Número", value: "numeroSI" },
         { text: "Nome", value: "nomeSI" },
