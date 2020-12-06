@@ -675,11 +675,11 @@ export default {
               if(sis.avaliacao.tabelaDecomposicao.length>0){
                 let aux = sis.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
                 child = aux.split("#").map(e=> e=({"id": e, "name":e}));
-                child.sort();
-                child.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
+                //child.sort();
+                child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));
               }
               this.ppd.arvore.push({"id": sis.numeroSI, "name": sis.numeroSI, "titulo": sis.nomeSI, children: child })
-              this.ppd.arvore.sort((a,b) => (parseInt(a.id) >parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
+              this.ppd.arvore.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
           }
         }
     },
