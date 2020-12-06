@@ -1,87 +1,70 @@
 <template>
-  <!-- BLOCO DESCRITIVO -->
-  <v-expansion-panel popout focusable>
-    <v-expansion-panel-header  class="expansion-panel-heading">
-      <div>
-        Identificação da Classe
-      </div>
-      <template v-slot:actions>
-        <v-icon color="white">expand_more</v-icon>
-      </template>
-    </v-expansion-panel-header>
-    <v-expansion-panel-content>
-    <!-- IDENTIFICAÇÃO -->
-      <v-row>
-        <v-col cols="2">
-          <div class="info-label">
-            Nível
-          </div>
-        </v-col>
-        <v-col>
-          <v-text-field readonly :value="c.nivel" solo></v-text-field>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="2">
-          <div class="info-label">
-            Título
-          </div>
-        </v-col>
-        <v-col>
-          <v-text-field v-model="c.titulo" solo></v-text-field>
-        </v-col>
-      </v-row>
-
-    </v-expansion-panel-content>
-  </v-expansion-panel>
+  <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+    <v-row>
+      <v-col cols="12" lg="2">
+        <div class="info-label">Nível</div>
+      </v-col>
+      <v-col cols="12" lg="10">
+        <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px;">
+          <v-text-field
+            :value="c.nivel"
+            class="mt-n4 px-3"
+            disabled
+            text
+            hide-details
+            single-line
+            color="blue darken-3"
+          ></v-text-field>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" lg="2">
+        <div class="info-label">Título</div>
+      </v-col>
+      <v-col cols="12" lg="10">
+        <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px;">
+          <v-text-field
+            v-model="c.titulo"
+            class="mt-n4 px-3"
+            text
+            hide-details
+            single-line
+            clearable
+            color="blue darken-3"
+          ></v-text-field>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-
 export default {
   props: ["c"],
 
   data() {
-    return {
-     
-    };
+    return {};
   }
 };
 </script>
 
-<style>
+<style scoped>
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
-.separador {
-  color: white; 
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #1A237E; 
-  font-size: 14pt;
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+.info-content {
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

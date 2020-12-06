@@ -352,11 +352,6 @@ export default {
                                     url: '/entidades/criar',
                                     level: [1, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
-                                },
-                                {
-                                    url: '/entidades/editar/',
-                                    level: [4, 5, 6, 7],
-                                    icon: 'alterar-icon'
                                 }
                             ]
                         },
@@ -373,11 +368,6 @@ export default {
                                     url: '/tipologias/criar',
                                     level: [1, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
-                                },
-                                {
-                                    url: '/tipologias/editar/',
-                                    level: [4, 5, 6, 7],
-                                    icon: 'alterar-icon'
                                 }
                             ]
                         },
@@ -394,11 +384,6 @@ export default {
                                     url: '/legislacao/criar',
                                     level: [1, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
-                                },
-                                {
-                                    url: '/legislacao/editar/',
-                                    level: [4, 5, 6, 7],
-                                    icon: 'alterar-icon'
                                 }
                             ]
 
@@ -557,9 +542,9 @@ export default {
             this.tabAtiva = newValue;
         },
 
-        '$store.state.name': function (newValue) {
-            this.navbar[0].titulo = newValue ? this.$store.state.entidade.split('_')[1] : 'CLAV';
-        },
+        // '$store.state.name': function (newValue) {
+        //     this.navbar[0].titulo = newValue ? this.$store.state.entidade.split('_')[1] : 'CLAV';
+        // },
     },
     created: async function () {
         this.level = this.$userLevel();
@@ -590,16 +575,14 @@ export default {
                 if (
                     levels.includes(this.level) &&
                     navbar[i].menu &&
-                    ((this.level > 0 &&
-                            this.$store.state.token != '' &&
-                            this.$store.state.name != '') ||
+                    ((this.level > 0 && this.$store.state.token != '' && this.$store.state.name != '') ||
                         this.level === 0)
                 ) {
-                    var menu = navbar[i].menu.filter((o) => o.level.includes(this.level));
+                    var menu = navbar[i].menu.filter((o) => o.level.includes(this.level)); 
+                    menu = JSON.parse(JSON.stringify(menu));
                     for(var j = 0; j < menu.length; j++)
                         if(navbar[i].menu[j].acoes)
-                            menu[j].acoes = menu[j].acoes.filter((o) => o.level ? o.level.includes(this.level) : false);
-
+                            menu[j].acoes = menu[j].acoes.filter((o) => o.level.includes(this.level));
                     filtered.push({
                         titulo: navbar[i].titulo,
                         icon: navbar[i].icon,

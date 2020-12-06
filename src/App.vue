@@ -16,9 +16,9 @@
             <router-view />
         </keep-alive>
 
-      <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" :socket="socket"/>
+      <Definicoes v-if="this.$store.state.token != ''"  :drawer="drawD" :socket="socket"/>
       <Notificacoes 
-        v-if="this.$store.state.name != ''" 
+        v-if="this.$store.state.token != ''" 
         :drawer="drawN" :notificacoes="notificacoes" 
         @removerNotificacao="removerNotificacao($event)" 
       />
