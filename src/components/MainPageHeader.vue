@@ -86,8 +86,8 @@
                                         <v-row @click="go(menuLink.url)" @mouseover="hover = true; activeItem = i" justify="center">
                                             {{ menuLink.opcao }}
                                         </v-row>
-                                        <v-row v-if="hover && i === activeItem && menuLink.actions && $store.state.token" class="ma-0 pa-0" justify="center">
-                                            <v-col v-for="action in menuLink.actions" :key="action.name" cols=4>
+                                        <v-row v-if="hover && i === activeItem && menuLink.acoes" class="ma-0 pa-0" justify="center">
+                                            <v-col v-for="action in menuLink.acoes" :key="action.name" cols=4>
                                                 <v-btn @click.prevent="go(action.url)" icon class="white--text">
                                                     <unicon :name="action.icon" width="20" height="20" viewBox="0 0 20.71 20.697" fill="#ffffff" />
                                                 </v-btn>
@@ -212,8 +212,9 @@ export default {
             counter: 10,
             level: 0,
             tabAtiva: 'CLAV',
+            docs: null, 
             navbar: [{
-                    titulo: this.$store.state.name != '' ? this.$store.state.entidade.split('_')[1] : 'CLAV',
+                    titulo: 'CLAV',
                     icon: {
                         nome: 'home-icon',
                         viewbox: '0 0 25.71 25.81',
@@ -241,16 +242,19 @@ export default {
                             opcao: 'Lista Consolidada',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/lcInfo',
-                            actions: [{
+                            acoes: [{
                                     url: '/classes/consultar',
+                                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'consultar-icon'
                                 },
                                 {
                                     url: '/classes/criar',
+                                    level: [1, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
                                 },
                                 {
                                     url: '/classes/editar',
+                                    level: [4, 5, 6, 7],
                                     icon: 'alterar-icon'
                                 }
                             ]
@@ -259,16 +263,19 @@ export default {
                             opcao: 'Tabelas de Seleção',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/tsInfo',
-                            actions: [{
+                            acoes: [{
                                     url: '/ts/consultar',
+                                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'consultar-icon'
                                 },
                                 {
                                     url: '/ts/criar',
+                                    level: [1, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
                                 },
                                 {
                                     url: '/ts/importar/csv',
+                                    level: [4, 5, 6, 7],
                                     icon: 'importar-icon'
                                 }
                             ]
@@ -277,12 +284,14 @@ export default {
                             opcao: 'Relatórios de Avaliação de Documentação Acumulada',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/radaInfo',
-                            actions: [{
+                            acoes: [{
                                     url: '/rada/consultar',
+                                    level: [4, 5, 6, 7],
                                     icon: 'consultar-icon'
                                 },
                                 {
                                     url: '/rada/criar',
+                                    level: [4, 5, 6, 7],
                                     icon: 'criar-icon'
                                 },
                             ]
@@ -291,16 +300,19 @@ export default {
                             opcao: 'Autos de Eliminação',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/autosEliminacaoInfo',
-                            actions: [{
+                            acoes: [{
                                     url: '/autosEliminacao/consultar',
+                                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'consultar-icon'
                                 },
                                 {
                                     url: '/autosEliminacao/criar',
+                                    level: [1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
                                 },
                                 {
                                     url: '/autosEliminacao/importar',
+                                    level: [1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'importar-icon'
                                 }
                             ]
@@ -309,15 +321,18 @@ export default {
                             opcao: 'Planos de preservação digital',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/planosDePreservacaoDigital',
-                            actions: [{
+                            acoes: [{
                                     url: '/ppd/consultar',
+                                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'consultar-icon'
                                 },
                                 {
                                     url: '/ppd/criar',
+                                    level: [1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
                                 },
                                 {
+                                    level: [1, 2, 3, 3.5, 4, 5, 6, 7],
                                     url: '/ppd/importar',
                                     icon: 'importar-icon'
                                 }
@@ -327,16 +342,19 @@ export default {
                             opcao: 'Entidades',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/entidades',
-                            actions: [{
+                            acoes: [{
                                     url: '/entidades/consultar',
+                                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'consultar-icon'
                                 },
                                 {
                                     url: '/entidades/criar',
+                                    level: [1, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
                                 },
                                 {
                                     url: '/entidades/editar/',
+                                    level: [4, 5, 6, 7],
                                     icon: 'alterar-icon'
                                 }
                             ]
@@ -345,16 +363,19 @@ export default {
                             opcao: 'Tipologias de Entidades',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/tipologias',
-                            actions: [{
+                            acoes: [{
                                     url: '/tipologias/consultar',
+                                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'consultar-icon'
                                 },
                                 {
                                     url: '/tipologias/criar',
+                                    level: [1, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
                                 },
                                 {
                                     url: '/tipologias/editar/',
+                                    level: [4, 5, 6, 7],
                                     icon: 'alterar-icon'
                                 }
                             ]
@@ -363,16 +384,19 @@ export default {
                             opcao: 'Legislação',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/legislacao',
-                            actions: [{
+                            acoes: [{
                                     url: '/legislacao/consultar',
+                                    level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'consultar-icon'
                                 },
                                 {
                                     url: '/legislacao/criar',
+                                    level: [1, 3, 3.5, 4, 5, 6, 7],
                                     icon: 'criar-icon'
                                 },
                                 {
                                     url: '/legislacao/editar/',
+                                    level: [4, 5, 6, 7],
                                     icon: 'alterar-icon'
                                 }
                             ]
@@ -382,8 +406,9 @@ export default {
                             opcao: 'Termos de Índice',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/termosIndiceInfo',
-                            actions: [{
+                            acoes: [{
                                 url: '/termosIndice',
+                                level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                                 icon: 'consultar-icon'
                             }]
                         },
@@ -396,8 +421,9 @@ export default {
                             opcao: 'API de dados',
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                             url: '/docs',
-                            actions: [{
+                            acoes: [{
                                 url: 'http://clav.di.uminho.pt/v2/docs/',
+                                level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                                 icon: 'api-icon'
                             }]
                         },
@@ -457,32 +483,15 @@ export default {
                         viewbox: '0 0 25.71 29.383',
                     },
                     level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                    menu: [
-                        {
-                            opcao: 'Formulários e instruções para a CLAV',
+                    menu: [{
+                            opcao: "Documentação Técnica de Apoio",
                             level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: '/forminstr',
-                        },{
-                            opcao: 'Documentos Metodológicos',
-                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: '/docsmetdl',
-                        },
-                        {
-                            opcao: 'Manuais',
-                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: '/manuais',
-                        },
-                        {
-                            opcao: 'Produção Técnica e Científica',
-                            level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                            url: '/prodtec',
-                        },
-                        {
+                            url: '/docsporclasse',
+                        }, {
                             opcao: 'Adicionar Documentação',
                             level: [4, 5, 6, 7],
-                            url: '/documentacaoApoioInfo',
-                        },
-                    ],
+                            url: '/documentacaoApoioInfo'
+                        }]
                 },
                 {
                     titulo: 'Gestão da Plataforma',
@@ -556,11 +565,11 @@ export default {
         this.tabAtiva = this.$route.meta.tabAtiva;
     },
     methods: {
-        go: function (url) {
+        go: function (url, param) {
             if (url.startsWith("http")) {
                 window.location.href = url;
             } else {
-                this.$router.push(url);
+                    this.$router.push(url);
             }
         },
         filtraTabs: function (navbar) {
@@ -585,10 +594,15 @@ export default {
                             this.$store.state.name != '') ||
                         this.level === 0)
                 ) {
+                    var menu = navbar[i].menu.filter((o) => o.level.includes(this.level));
+                    for(var j = 0; j < menu.length; j++)
+                        if(navbar[i].menu[j].acoes)
+                            menu[j].acoes = menu[j].acoes.filter((o) => o.level ? o.level.includes(this.level) : false);
+
                     filtered.push({
                         titulo: navbar[i].titulo,
                         icon: navbar[i].icon,
-                        menu: navbar[i].menu.filter((o) => o.level.includes(this.level)),
+                        menu: menu,
                     });
                 } else if (
                     levels.includes(this.level) &&

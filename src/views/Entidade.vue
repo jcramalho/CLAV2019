@@ -2,9 +2,8 @@
   <v-main>
     <v-row>
       <v-col cols=12>
-        <Info v-if="this.$store.state.name === ''"/>
+        <Info/>
         <Noticias :level="level" />
-        <DocumentacaoApoio />
       </v-col>
     </v-row>
   </v-main>
@@ -14,12 +13,10 @@
 /* eslint-disable */
 import Noticias from "@/components/principal/Noticias.vue";
 import Info from "@/components/principal/Info.vue";
-import DocumentacaoApoio from "@/components/principal/DocumentacaoApoio.vue";
 
 export default {
   components: {
     Info,
-    DocumentacaoApoio,
     Noticias
   },
   data() {

@@ -17,7 +17,7 @@ export default new Router({
       path: "/",
       name: "home",
       component: () => import("./views/Entidade.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "O que é", ent: true}
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "CLAV", ent: true}
     },
     {
       path: "/registo",
@@ -25,7 +25,7 @@ export default new Router({
       component: () => import("./views/Registar.vue"),
       meta: {
         levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-        tabAtiva: "Registo na Clav"
+        tabAtiva: "Registo na CLAV"
       }
     },
     // Routes das classes
@@ -75,16 +75,16 @@ export default new Router({
     },
     // Routes da documentação de apoio
     {
-      path: "/docsmetdl",
-      name: "docsMetdl",
-      component: () => import("./views/documentacaoApoio/DocsMetodologicos.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação", index: 1} //corrigir
+      path: "/documentacaoApoioInfo",
+      name: "docsInfo",
+      component: () => import("./views/paginasInfo/DocumentacaoApoio.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
-      path: "/forminstr",
-      name: "formInstr",
-      component: () => import("./views/documentacaoApoio/DocsMetodologicos.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação", index: 0 } //corrigir
+      path: "/docsporclasse",
+      name: "docsClasse",
+      component: () => import("./views/paginasInfo/DocumentosClasse.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação"} //corrigir
     },
     {
       path: "/documentacaoApoio/criar/classe",
