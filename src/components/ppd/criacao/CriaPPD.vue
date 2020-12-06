@@ -42,6 +42,11 @@
                 :sistema="ppd.sistemasInfo"
                 @unselectSistema="unselectSistema($event)"
               />
+              <v-row>
+                <v-col>
+                  <hr style="border: 3px solid indigo; border-radius: 2px;" />
+                </v-col>
+              </v-row>
               <v-form ref="form" :lazy-validation="false">
                 <v-row >
                   <v-col cols="12" xs="12" sm="3">
@@ -110,6 +115,11 @@
               >
                 Guardar
               </v-btn>
+              <v-row>
+                <v-col>
+                  <hr style="border: 3px solid indigo; border-radius: 2px;" />
+                </v-col>
+              </v-row>
             </v-stepper-content>
           </v-stepper>
         </v-card-text>
