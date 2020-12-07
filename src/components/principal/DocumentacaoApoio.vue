@@ -264,18 +264,6 @@
         {{ text }}
         <v-btn text @click="fecharSnackbar">Fechar</v-btn>
       </v-snackbar>
-
-      <div>
-        <v-btn
-          v-for="item in this.fops"
-          color="indigo accent-4"
-          dark
-          class="ma-2"
-          @click="go(item.url)"
-          :key="item.url"
-          >{{ item.label }}</v-btn
-        >
-      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -311,18 +299,6 @@ export default {
       eliminarIdClasse: "",
       eliminarIdEntrada: "",
       eliminarIdElemento: "",
-      operacoes: [
-        {
-          label: "Adicionar Secção",
-          url: "/documentacaoApoio/criar/classe",
-          level: [3.5, 4, 5, 6, 7]
-        },
-        {
-          label: "Adicionar Documento Técnico/Científico",
-          url: "/documentacaoApoio/criar/tecnico_cientifico",
-          level: [3.5, 4, 5, 6, 7]
-        }
-      ],
       min: NIVEL_MINIMO_DOC
     };
   },
@@ -383,7 +359,7 @@ export default {
             }
           }
         }
-
+        console.log('......', response)
         return response;
       } catch (e) {
         return {};
@@ -593,32 +569,11 @@ export default {
         this.$router.push(url);
       }
     },
-    filtraOps: function(operacoes) {
-      var filtered = [];
-      for (var i = 0; i < operacoes.length; i++) {
-        var levelsSet = new Set();
-        operacoes[i].level.forEach(l => levelsSet.add(l));
-        var levels = Array.from(levelsSet);
-        if (levels.includes(this.level)) {
-          filtered.push({
-            label: operacoes[i].label,
-            url: operacoes[i].url,
-            level: operacoes[i].level
-          });
-        }
-      }
-      return filtered;
-    },
     compiledMarkdown: function(d) {
       return marked(d || "");
     },
     compiledMarkdownOmmitParagraph: function(d) {
       return marked.inlineLexer(d || "", []);
-    }
-  },
-  computed: {
-    fops: function() {
-      return this.filtraOps(this.operacoes);
     }
   },
 

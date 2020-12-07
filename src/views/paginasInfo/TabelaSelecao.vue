@@ -1,5 +1,5 @@
 <template>
-<v-content class="px-12">
+<v-main class="px-12">
     <p class="content-title-1">Tabelas de Seleção</p>
     <p class="content-text px-8 py-2">
         Uma tabela de seleção é um instrumento utilizado pelas entidades para a
@@ -84,7 +84,7 @@
             </v-col>
         </v-row>
     </v-container>
-</v-content>
+</v-main>
 </template>
 
 <script>

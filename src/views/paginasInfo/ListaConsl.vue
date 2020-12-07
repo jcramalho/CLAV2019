@@ -1,5 +1,5 @@
 <template>
-<v-content class="px-12">
+<v-main class="px-12">
     <p class="content-title-1">Lista Consolidada</p>
     <p class="content-text px-8 py-2">
         A "Lista Consolidada para a classificação e avaliação da
@@ -71,7 +71,7 @@
             </v-col>
         </v-row>
     </v-container>
-</v-content>
+</v-main>
 </template>
 
 <script>

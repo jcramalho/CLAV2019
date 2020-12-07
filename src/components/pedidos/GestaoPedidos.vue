@@ -31,13 +31,13 @@
               @despachar="despacharPedido($event)"
             />
 
-            <PedidosDevolvidos
-              :pedidos="pedidosDevolvidos"
+            <PedidosProcessados
+              :pedidos="pedidosProcessados"
               :pesquisaPedidos="pesquisaPedidos"
             />
 
-            <PedidosProcessados
-              :pedidos="pedidosProcessados"
+            <PedidosDevolvidos
+              :pedidos="pedidosDevolvidos"
               :pesquisaPedidos="pesquisaPedidos"
             />
           </v-expansion-panels>

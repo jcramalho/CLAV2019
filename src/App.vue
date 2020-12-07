@@ -12,11 +12,13 @@
     </v-snackbar>
 
     <v-main>
-      <router-view />
+        <keep-alive>
+            <router-view />
+        </keep-alive>
 
-      <Definicoes v-if="this.$store.state.name != ''" :drawer="drawD" :socket="socket"/>
+      <Definicoes v-if="this.$store.state.token != ''"  :drawer="drawD" :socket="socket"/>
       <Notificacoes 
-        v-if="this.$store.state.name != ''" 
+        v-if="this.$store.state.token != ''" 
         :drawer="drawN" :notificacoes="notificacoes" 
         @removerNotificacao="removerNotificacao($event)" 
       />
@@ -218,7 +220,7 @@ export default {
 .v-chip .v-chip__close.v-icon {
     color: var(--error) !important;
 }
-.v-content {
+.v-main {
     padding: 5.125rem 0 1.75rem !important;
     color: #606060 !important;
 }
