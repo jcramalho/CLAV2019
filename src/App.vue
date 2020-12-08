@@ -12,15 +12,17 @@
     </v-snackbar>
 
     <v-main>
-        <keep-alive>
-            <router-view />
-        </keep-alive>
-
-      <Definicoes v-if="this.$store.state.token != ''"  :drawer="drawD" :socket="socket"/>
-      <Notificacoes 
-        v-if="this.$store.state.token != ''" 
-        :drawer="drawN" :notificacoes="notificacoes" 
-        @removerNotificacao="removerNotificacao($event)" 
+      <router-view />
+      <Definicoes
+        v-if="this.$store.state.token != ''"
+        :drawer="drawD"
+        :socket="socket"
+      />
+      <Notificacoes
+        v-if="this.$store.state.token != ''"
+        :drawer="drawN"
+        :notificacoes="notificacoes"
+        @removerNotificacao="removerNotificacao($event)"
       />
     </v-main>
 

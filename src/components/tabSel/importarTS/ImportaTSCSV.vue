@@ -9,7 +9,7 @@
           class="white--text mb-6"
           :class="{
             'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown,
+            'px-2': $vuetify.breakpoint.mdAndDown
           }"
           id="default-button"
         >
@@ -122,6 +122,48 @@
                   <span> Entidade ou tipologia da Tabela de Seleção</span>
                 </v-tooltip>
               </div>
+              <p
+                class="content-text px-8 py-2 mb-3"
+                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+              >
+                Selecione a fonte de legitimação da Tabela de Seleção a
+                importar:
+              </p>
+              <v-tooltip top color="info" open-delay="500">
+                <template v-slot:activator="{ on }">
+                  <div
+                    class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
+                    style="min-height: 50px; max-width:70%;"
+                    v-on="on"
+                  >
+                    <v-radio-group
+                      v-model="fonteLegitimacao"
+                      :rules="[
+                        v => !!v || 'Tem de escolher uma fonte de legitimação'
+                      ]"
+                      required
+                      row
+                    >
+                      <v-radio
+                        label="PGD/LC"
+                        color="indigo darken-4"
+                        value="PGD/LC"
+                      ></v-radio>
+                      <v-radio
+                        label="PGD"
+                        color="indigo darken-4"
+                        value="PGD"
+                      ></v-radio>
+                      <v-radio
+                        label="RADA"
+                        color="indigo darken-4"
+                        value="RADA"
+                      ></v-radio>
+                    </v-radio-group>
+                  </div>
+                </template>
+                <span> Fonte de legitimação</span>
+              </v-tooltip>
               <p
                 class="content-text px-8 py-2 mb-3"
                 style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
@@ -249,13 +291,14 @@
                   designacao == '' ||
                     file.length == 0 ||
                     tipo == null ||
+                    fonteLegitimacao == null ||
                     (tipo == 'Organizacional' && entidade_tipologia == null)
                 "
                 disabled
                 rounded
                 :class="{
                   'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown,
+                  'px-2': $vuetify.breakpoint.mdAndDown
                 }"
                 class="mb-6"
                 id="botao-shadow"
@@ -276,7 +319,7 @@
                 class="white--text mb-6"
                 :class="{
                   'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown,
+                  'px-2': $vuetify.breakpoint.mdAndDown
                 }"
                 id="default-button"
               >
@@ -337,7 +380,7 @@
                 dark
                 elevation="0"
                 class="px-4"
-                @click="$router.push(`/pedidos/submissao/${codigo}`)"
+                @click="seguirPedido"
               >
                 Seguir Pedido
               </v-btn>
@@ -353,33 +396,34 @@
 export default {
   data: () => ({
     file: [],
-    erro: '',
+    erro: "",
     erroDialog: false,
-    success: '',
+    success: "",
     successDialog: false,
     loading: false,
     entidades_tipologias: [],
     entidade_tipologia: null,
     tipo: null,
-    designacao: '',
-    codigo: '',
+    designacao: "",
+    codigo: "",
+    fonteLegitimacao: null
   }),
 
   mounted: async function() {
     try {
-      var response = await this.$request('get', '/entidades');
-      var entidades = response.data.map((ent) => {
+      var response = await this.$request("get", "/entidades");
+      var entidades = response.data.map(ent => {
         return {
-          text: ent.sigla + ' - ' + ent.designacao,
-          value: ent.sigla,
+          text: ent.sigla + " - " + ent.designacao,
+          value: ent.sigla
         };
       });
 
-      response = await this.$request('get', '/tipologias');
-      var tipologias = response.data.map((tip) => {
+      response = await this.$request("get", "/tipologias");
+      var tipologias = response.data.map(tip => {
         return {
-          text: tip.sigla + ' - ' + tip.designacao,
-          value: tip.sigla,
+          text: tip.sigla + " - " + tip.designacao,
+          value: tip.sigla
         };
       });
 
@@ -389,83 +433,84 @@ export default {
       });
     } catch (e) {
       this.erro =
-        'Não foi possível obter as entidades ou as tipologias... Realize reload da página.';
+        "Não foi possível obter as entidades ou as tipologias... Realize reload da página.";
     }
   },
 
   methods: {
     goBack() {
-      this.$router.push('/tsInfo');
+      this.$router.push("/tsInfo");
     },
     enviarFicheiro: async function() {
       try {
-        this.erro = '';
+        this.erro = "";
         this.erroDialog = false;
         this.successDialog = false;
-        this.success = '';
+        this.success = "";
         this.loading = true;
         var formData = new FormData();
-        formData.append('file', this.file[0]);
-        formData.append('designacao', this.designacao);
-        formData.append('entidade_ts', this.entidade_tipologia);
-        formData.append('tipo_ts', 'TS ' + this.tipo);
+        formData.append("file", this.file[0]);
+        formData.append("designacao", this.designacao);
+        formData.append("entidade_ts", this.entidade_tipologia);
+        formData.append("tipo_ts", "TS " + this.tipo);
+        formData.append("fonteL", this.fonteLegitimacao);
 
         var response = await this.$request(
-          'post',
-          '/tabelasSelecao/importar',
+          "post",
+          "/tabelasSelecao/importar",
           formData
         );
         this.loading = false;
 
-        var stats = '<ul>';
+        var stats = "<ul>";
         for (var k in response.data.stats) {
           switch (k) {
-            case 'processos':
+            case "processos":
               stats +=
-                '<li>Número de Processos: ' + response.data.stats[k] + '</li>';
+                "<li>Número de Processos: " + response.data.stats[k] + "</li>";
               break;
-            case 'donos':
+            case "donos":
               stats +=
-                '<li>Número de Processos Donos: ' +
+                "<li>Número de Processos Donos: " +
                 response.data.stats[k] +
-                '</li>';
+                "</li>";
               break;
-            case 'participantes':
+            case "participantes":
               stats +=
-                '<li>Número de Processos Participantes: ' +
+                "<li>Número de Processos Participantes: " +
                 response.data.stats[k] +
-                '</li>';
+                "</li>";
               break;
             default:
-              stats += '<li>Entidade: ' + k + '<ul>';
+              stats += "<li>Entidade: " + k + "<ul>";
               for (var kb in response.data.stats[k]) {
                 switch (kb) {
-                  case 'processos':
+                  case "processos":
                     stats +=
-                      '<li>Número de Processos: ' +
+                      "<li>Número de Processos: " +
                       response.data.stats[k][kb] +
-                      '</li>';
+                      "</li>";
                     break;
-                  case 'donos':
+                  case "donos":
                     stats +=
-                      '<li>Número de Processos Donos: ' +
+                      "<li>Número de Processos Donos: " +
                       response.data.stats[k][kb] +
-                      '</li>';
+                      "</li>";
                     break;
-                  case 'participantes':
+                  case "participantes":
                     stats +=
-                      '<li>Número de Processos Participantes: ' +
+                      "<li>Número de Processos Participantes: " +
                       response.data.stats[k][kb] +
-                      '</li>';
+                      "</li>";
                     break;
                   default:
                     break;
                 }
               }
-              stats += '</ul>';
+              stats += "</ul>";
           }
         }
-        stats += '</ul>';
+        stats += "</ul>";
 
         this.success = `Código do pedido: ${response.data.codigo}\nEstatísticas:\n${stats}`;
         this.codigo = response.data.codigo;
@@ -477,7 +522,23 @@ export default {
         this.erroDialog = true;
       }
     },
-  },
+    seguirPedido: function() {
+      switch (this.fonteLegitimacao) {
+        case "TS/LC":
+          this.$router.push(`/pedidos/submissao/${this.codigo}`);
+          break;
+        case "PGD/LC":
+          this.$router.push(`/pgd/${this.codigo}`);
+          break;
+        case "PGD":
+          this.$router.push(`/pgd/${this.codigo}`);
+          break;
+        case "RADA":
+          this.$router.push(`/pgd/${this.codigo}`);
+          break;
+      }
+    }
+  }
 };
 </script>
 <style scoped>
@@ -513,7 +574,7 @@ ul li {
 }
 
 ul li::before {
-  content: '\2022';
+  content: "\2022";
   position: absolute;
   left: -2rem;
   top: -2.7rem;
@@ -522,7 +583,7 @@ ul li::before {
   color: #4da0d0;
 }
 ul li > ul li::before {
-  content: '\2218';
+  content: "\2218";
   position: absolute;
   left: -1.4rem;
   top: -1.3rem;
