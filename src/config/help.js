@@ -254,7 +254,12 @@ module.exports.help = {
             "<p>O formato da data é AAAA-MM-DD.</p>",
       DataExtincao: "<p>Indicação da data de extinção da entidade que consta no diploma de extinção.</p>" +
             "<p>O formato da data é AAAA-MM-DD.</p>",
-      Tipologias: "Seleção da(s) tipologia(s) de entidade(s) em que se enquadra a entidade que está a ser registada."
+      Tipologias: "<p>Seleção da(s) tipologia(s) de entidade(s) em que se enquadra a entidade que está a ser registada.</p>" +
+            "<p>No contexto da CLAV, uma tipologia é um conceito representativo de um agrupamento de entidades do mesmo tipo, " +
+            "ou seja, entidades que têm uma ou mais características comuns.</p>" +
+            "<p>Por exemplo: a mesma missão, os tribunais; o mesmo âmbito de atuação, as entidades gestoras de apoios; " +
+            "o mesmo tipo de entidade, as Comissões de Coordenação e Desenvolvimento Regional; " +
+            "entre outros).</p>"
     },
     Intervencoes: {
       Dono: "Processos de negócio em que a entidade intervém como dono.",
@@ -329,16 +334,19 @@ module.exports.help = {
             "<p>O formato da data é AAAA-MM-DD.</p>",
       Sumário: "Registo do sumário do diploma conforme publicação legal.",
       Link: "Indicação do link da publicação do diploma.",
-      FonteLegitimacao: "<p>Seleção de 1 dos 3 tipos de fonte de legitimação, " +
-        "ou seja, a portaria ou despacho, " +
-        "que estabelece as decisões de avaliação que fundamentam a ação de eliminação.</p>" +
-        "<dl><dt>PGD/LC:</dt> <dd>Sigla de Portaria de Gestão de Documentos / Lista Consolidada. " +
+      FonteLegitimacao: "<p>Entende-se por fonte de legitimação a portaria ou despacho (no caso dos Relatórios " +
+        "de Avaliação de Documentação Acumulada), que estabelecem as decisões de avaliação que fundamentam a ação de eliminação.</p>" +
+        "<ul>" +
+        "<li>Se o diploma não é uma fonte de legitimação, selecione a opção NÃO ESPECIFICADA;</li>" +
+        "<li>Se estiver a adicionar uma portaria de gestão de documentos derivada da Lista Consolidada, selecione PGD/LC.  " +
         "Abrange as tabelas de seleção, derivadas da Lista Consolidada, inseridas em portarias de gestão de documentos, " +
-        "publicadas em Diário da República.</dd>" +
-        "<dt>PGD:</dt> <dd>Sigla de Portaria de Gestão de Documentos. Abrange as tabelas de seleção, não derivadas " +
-        "da Lista Consolidada, inseridas em portarias de gestão de documentos, publicadas em Diário da República.</dd>" +
-        "<dt>RADA:</dt><dd>Sigla de Relatório de Avaliação de Documentação Acumulada. Abrange as tabelas de seleção, " +
-        "inseridas em Relatórios de Avaliação, que não foram submetidos na Plataforma CLAV.</dd></dl>",
+        "publicadas em Diário da República.</li>" +
+        "<li>Se estiver a adicionar uma portaria de gestão de documentos não derivada da Lista Consolidada, selecione PGD.  " +
+        "Abrange as tabelas de seleção, não derivadas da Lista Consolidada, inseridas em portarias de gestão de documentos, " +
+        "publicadas em Diário da República.</li>" +
+        "<li>Se estiver a adicionar um despacho que autoriza um Relatório de Avaliação de Documentação Acumulada, selecione RADA. " +
+        "Abrange as tabelas de seleção, inseridas em Relatórios de Avaliação, que não foram submetidos na CLAV. </li>" +
+        "</ul>",
       DataRevogacao: "<p>Indicação da data de revogação do diploma.</p>" +
         "<p>O formato da data é AAAA-MM-DD.</p>",
       Entidades: "Seleção da(s) entidade(s) responsável pela publicação do diploma. ",
