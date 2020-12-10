@@ -379,23 +379,38 @@ export default {
       this.$router.push("/");
     },
     submit: async function() {
-      this.erro = ""
-      for(var zc of this.auto.zonaControlo) {
-        if(zc.nrAgregacoes ==0 && zc.agregacoes.length==0) {
+      this.erro = "";
+      for (var zc of this.auto.zonaControlo) {
+        if (zc.nrAgregacoes == 0 && zc.agregacoes.length == 0) {
           this.erroDialog = true;
-          this.erro = "O numero de agregações deve ser superior a 0 (zero) em " + zc.codigo +" "+zc.referencia+".\n"
+          this.erro =
+            "O numero de agregações deve ser superior a 0 (zero) em " +
+            zc.codigo +
+            " " +
+            zc.referencia +
+            ".\n";
         }
-        if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA_CLAV' && this.tipo!='RADA' && this.tipo!='PGD') {
+        if (
+          zc.destino == "C" &&
+          zc.dono.length === 0 &&
+          this.tipo != "RADA_CLAV" &&
+          this.tipo != "RADA" &&
+          this.tipo != "PGD") {
           this.erroDialog = true;
-          this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
+          this.erro =
+            "Dono do PN não preenchido em " +
+            zc.codigo +
+            " - " +
+            zc.titulo +
+            ".\n";
         }
       }
-      if(this.erro==="") {
-        if(this.tipo=="TS_LC" || this.tipo=="RADA_CLAV") {
-          this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial
-          delete this.auto["legislacao"]
+      if (this.erro === "") {
+        if (this.tipo == "TS_LC" || this.tipo == "RADA_CLAV") {
+          this.auto.referencial =
+            this.auto.legislacao + "#" + this.auto.referencial;
+          delete this.auto["legislacao"];
         }
-        
         var user = this.$verifyTokenUser();
 
         this.auto.responsavel = user.email;
