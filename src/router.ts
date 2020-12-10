@@ -84,7 +84,7 @@ export default new Router({
       path: "/docsporclasse",
       name: "docsClasse",
       component: () => import("./views/paginasInfo/DocumentosClasse.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação"} //corrigir
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação"}
     },
     {
       path: "/documentacaoApoio/criar/classe",
@@ -339,7 +339,7 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
-      path: "/autosEliminacao",
+      path: "/autosEliminacao/consultar",
       name: "AutosEliminacao",
       component: () => import("./views/autosEliminacao/AutosEliminacao.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
