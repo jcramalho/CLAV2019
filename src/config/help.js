@@ -242,7 +242,9 @@ module.exports.help = {
       Nome: "Indicação do nome da entidade conforme consta no diploma criador/estatutos.",
       Sigla: "<p>Indicação da sigla/acrónimo da entidade conforme consta no diploma criador/estatutos, ou como é conhecida.</p>" + 
             "<p>Dado que a aplicação não permite a inserção de siglas repetidas, se sigla ou acrónimo formal já existir, recomenda-se a inserção, " + 
-            "em minúscula, da primeira letra que se seguir à última da sigla ou acrónimo.</p>",
+            "em minúscula, da primeira letra que se seguir à última da sigla ou acrónimo.</p>" +
+            "<p>Para entidades com nome composto, deverá ser usado um hífen. Como por exemplo, " +
+            "Cinemateca Portuguesa – Museu do Cinema, que fica com a sigla CP-MC. O uso de vírgula não é permitido.</p>",
       Estado:
             "Indicação do estado da entidade: em atividade (ativa) ou extinta (inativa).",
       SIOE: "<p>Indicação do código da entidade atribuído no Sistema de Informação de Organização do Estado (SIOE).</p>" + 
