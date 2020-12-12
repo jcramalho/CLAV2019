@@ -105,7 +105,7 @@ export default {
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
             sumario: listaLegislacao[i].sumario,
-            estado: listaLegislacao[i].estado,
+            estado: listaLegislacao[i].estado == "Ativo" ? "Em vigor" : "Revogado",
             operacoes: this.operacoes,
             id: listaLegislacao[i].id,
           });
@@ -130,7 +130,7 @@ export default {
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
             sumario: listaLegislacao[i].sumario,
-            estado: listaLegislacao[i].estado,
+            estado: listaLegislacao[i].estado == "Ativo" ? "Em vigor" : "Revogado",
             id: listaLegislacao[i].id,
           });
         }
