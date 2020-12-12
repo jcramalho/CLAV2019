@@ -82,6 +82,11 @@
         <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
         <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
         <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
+        <ShowClasseL1
+          v-else-if="p.objeto.tipo == 'Classe_N1' || p.objeto.tipo == 'Classe_N2'"
+          :p="p"
+          @verHistorico="verHistorico()"
+        />
         <ShowEntidade
           v-else-if="p.objeto.tipo == 'Entidade'"
           :p="p"
@@ -170,6 +175,7 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
+import ShowClasseL1 from "@/components/pedidos/consulta/showClasseL1.vue";
 import ShowDefault from "@/components/pedidos/consulta/showDefault.vue";
 import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import ShowAE from "@/components/pedidos/consulta/showAE.vue";
@@ -198,6 +204,7 @@ export default {
     ShowTSPluri,
     ShowTSOrg,
     ShowClasse,
+    ShowClasseL1,
     ShowDefault,
     ShowAE,
     ShowEntidade,
