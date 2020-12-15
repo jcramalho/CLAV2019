@@ -141,15 +141,11 @@
           />
         </v-dialog>
 
-
         <v-row>
           <v-col>
             <hr style="border: 3px solid indigo; border-radius: 2px;" />
           </v-col>
         </v-row>
-
-
-
 
         <v-row>
           <v-col cols="12" xs="12" sm="3">

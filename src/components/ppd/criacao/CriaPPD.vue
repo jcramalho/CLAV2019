@@ -42,89 +42,119 @@
                 :sistema="ppd.sistemasInfo"
                 @unselectSistema="unselectSistema($event)"
               />
-              <v-row>
-                <v-col>
-                  <hr style="border: 3px solid indigo; border-radius: 2px;" />
-                </v-col>
-              </v-row>
-              <v-form ref="form" :lazy-validation="false">
-                <v-row >
-                  <v-col cols="12" xs="12" sm="3">
-                    <div class="info-label">Número de referência SI
-                      <InfoBox header="Número de referência do Sistema de informação" :text="myhelp.Ppd.numeroSI"/>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" xs="12" sm="8">
-                    <v-text-field
-                      :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                      v-model="ppd.si.numeroSI"
-                      label="Identificador do sistema de informação"
-                      solo
-                      clearable
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" xs="12" sm="3">
-                    <div class="info-label">Nome do SI
-                      <InfoBox header="Nome do Sistema de informação" :text="myhelp.Ppd.nomeSI"/>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" xs="12" sm="8">
-                    <v-text-field
-                      :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-                      v-model="ppd.si.nomeSI"
-                      label="Designação oficial do sistema"
-                      solo
-                      clearable
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-expansion-panels v-model="panels">
-                  <!-- BLOCO IDENTIFICAÇÃO -->
-                  <BlocoIdentificacao
-                    :ppd="ppd"
-                    :semaforos="semaforos"
-                    :entidades="entidades"
-                  />
-                  <!-- BLOCO AVALIAÇÃO -->
-                  <BlocoAvaliacao
-                    :ppd="ppd"
-                    :semaforos="semaforos"
-                    :listaLegislacao="listaLegislacao"
-                    :classesSI="classesSI"
-                    :classesDaFonteL="classesDaFonteL"
-                    @newSistemasRelacionados="newSistemasRelacionados($event, ppd.si.avaliacao.sistemasRelacionados)"
-                    @unselectSistemasRelacionados="unselectSistemasRelacionados($event)"
-                  />
-                  <!-- BLOCO CARACTERIZAÇÃO -->
-                  <BlocoCaracterizacao
-                    :ppd="ppd"
-                  />
-                  <!-- BLOCO ESTRATÉGIA -->
-                  <BlocoEstrategia
-                    :ppd="ppd"
-                  />
-                </v-expansion-panels>
-              </v-form>
-              <v-btn
-              color="indigo darken-2"
-              dark
-              class="ma-2"
-              rounded
-              @click="guardarSistema()"
-              >
-                Guardar
+              <v-btn v-if="addSI == false" color="indigo lighten-2" dark class="ma-1" @click="importarSI = true">
+                Importar
+                <v-icon dark right>file_upload</v-icon>
+              </v-btn>
+              <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-1" rounded @click="addSI = true">
+                Novo
               </v-btn>
               <v-row>
                 <v-col>
                   <hr style="border: 3px solid indigo; border-radius: 2px;" />
                 </v-col>
               </v-row>
+              <div v-if="addSI == true">
+                <v-form ref="form" :lazy-validation="false">
+                  <v-row >
+                    <v-col cols="12" xs="12" sm="3">
+                      <div class="info-label">Número de referência SI
+                        <InfoBox header="Número de referência do Sistema de informação" :text="myhelp.Ppd.numeroSI"/>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" xs="12" sm="8">
+                      <v-text-field
+                        :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                        v-model="ppd.si.numeroSI"
+                        label="Identificador do sistema de informação"
+                        solo
+                        clearable
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" xs="12" sm="3">
+                      <div class="info-label">Nome do SI
+                        <InfoBox header="Nome do Sistema de informação" :text="myhelp.Ppd.nomeSI"/>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" xs="12" sm="8">
+                      <v-text-field
+                        :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+                        v-model="ppd.si.nomeSI"
+                        label="Designação oficial do sistema"
+                        solo
+                        clearable
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-expansion-panels v-model="panels">
+                    <!-- BLOCO IDENTIFICAÇÃO -->
+                    <BlocoIdentificacao
+                      :ppd="ppd"
+                      :semaforos="semaforos"
+                      :entidades="entidades"
+                    />
+                    <!-- BLOCO AVALIAÇÃO -->
+                    <BlocoAvaliacao
+                      :ppd="ppd"
+                      :semaforos="semaforos"
+                      :listaLegislacao="listaLegislacao"
+                      :classesSI="classesSI"
+                      :classesDaFonteL="classesDaFonteL"
+                      @newSistemasRelacionados="newSistemasRelacionados($event, ppd.si.avaliacao.sistemasRelacionados)"
+                      @unselectSistemasRelacionados="unselectSistemasRelacionados($event)"
+                    />
+                    <!-- BLOCO CARACTERIZAÇÃO -->
+                    <BlocoCaracterizacao
+                      :ppd="ppd"
+                    />
+                    <!-- BLOCO ESTRATÉGIA -->
+                    <BlocoEstrategia
+                      :ppd="ppd"
+                    />
+                  </v-expansion-panels>
+                </v-form>
+                <br/>
+                <v-btn
+                color="indigo darken-2"
+                dark
+                class="ma-2"
+                rounded
+                @click="guardarSistema()"
+                >
+                  Adicionar
+                </v-btn>
+                <v-btn
+                color="red darken-2"
+                dark
+                class="ma-2"
+                rounded
+                @click="addSI = false"
+                >
+                  Cancelar
+                </v-btn>
+                <v-row>
+                  <v-col>
+                    <hr style="border: 3px solid indigo; border-radius: 2px;" />
+                  </v-col>
+                </v-row>
+              </div>
+              <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
+                Finalizar
+              </v-btn>
+              <v-btn color="red" dark class="ma-2" rounded @click="changeE1(1)">
+                Voltar
+              </v-btn>
             </v-stepper-content>
           </v-stepper>
         </v-card-text>
       </v-card>
     </v-col>
+    <ImportarSI
+      :ppd = "ppd"
+      :dialog="importarSI"
+      @fecharDialog="importarSI = false"
+    />
   </v-row>
 </template>
 
@@ -148,9 +178,7 @@ import BlocoEstrategia from "@/components/ppd/criacao/sistemaInformacao/BlocoEst
 
 
 export default {
-  props:[
-   "importarPPD"
-  ],
+  props:[],
   components: {
     InfoBox,
     InformacaoGeral,
@@ -169,6 +197,8 @@ export default {
 
 
   data: () => ({
+    importarSI: false,
+    addSI: false,
     // Objeto que guarda um ppd
     ppd: {
       lixo : "",
@@ -340,6 +370,8 @@ export default {
   methods: {
     apagar: function() {
       this.$refs.form.reset();
+      this.panels = [];
+      loadConsultaPGD();
     },
     newSistemasRelacionados: function(sistema, lista) {
         lista.push(sistema);
@@ -364,7 +396,8 @@ export default {
         this.validaInsourcing(this.ppd.si.identificacao.insourcing, this.ppd.si.identificacao.insourcingCheck) &&
         this.validaOutsourcing(this.ppd.si.identificacao.outsourcing, this.ppd.si.identificacao.outsourcingCheck) &&
         this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
-        this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/1
+        this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/
+        this.$refs.form.validate()
       ){
         var sistema = {
           visto: true,
@@ -446,7 +479,7 @@ export default {
             }
           }
         };
-        this.ppd.si.numeroSI = "",
+        /*this.ppd.si.numeroSI = "",
         this.ppd.si.nomeSI = "",
         this.ppd.si.identificacao.adminSistema = [],
         this.ppd.si.identificacao.adminDados = [],
@@ -513,11 +546,12 @@ export default {
         this.ppd.si.estrategia.utilizacaoOperacional.lacunas= ""
         this.ppd.si.estrategia.utilizacaoMemoria.idMetodoPreservacao= "",
         this.ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao= "",
-        this.ppd.si.estrategia.utilizacaoMemoria.lacunas= ""
+        this.ppd.si.estrategia.utilizacaoMemoria.lacunas= ""*/
         this.dialog= false;
-        //this.$refs.form.reset(); ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.newSistema(sistema,this.ppd.sistemasInfo);
+        this.$refs.form.reset();//   ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.panels = [];
+        await loadConsultaPGD();
       } else {
         this.dialog= true;
         this.erroValidacao = true;
@@ -585,15 +619,6 @@ export default {
       } catch (e) {
         return {};
       }
-    },
-    procuraClasse: function (classe, myClasses, classePai) {
-      var index = myClasses.map(cl => cl.classe).indexOf(classePai)
-      if(index>=0) myClasses[index].filhos.push(classe)
-      else
-        for(var c of myClasses) {
-          c.filhos = this.procuraClasse(classe,c.filhos,classePai)
-        }
-      return myClasses
     },
 
     //--------------------

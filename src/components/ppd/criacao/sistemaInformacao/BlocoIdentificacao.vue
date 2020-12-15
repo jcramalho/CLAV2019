@@ -17,6 +17,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="ppd.si.identificacao.adminSistema"
             :items="entidades"
             item-text="label"
@@ -41,6 +42,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="ppd.si.identificacao.adminDados"
             :items="entidades"
             item-text="label"
@@ -65,6 +67,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="ppd.si.identificacao.propSistemaPublico"
             :items="entidades"
             item-text="label"
@@ -90,7 +93,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
-            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="ppd.si.identificacao.propSistemaPrivado"
             label="Indique o nome do organismo responsável pela gestão dos dados"
             solo
@@ -105,6 +108,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="ppd.si.identificacao.propDados"
             :items="entidades"
             item-text="label"
@@ -130,6 +134,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="ppd.si.identificacao.localDadosPublico"
             :items="entidades"
             item-text="label"
@@ -154,7 +159,7 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
-            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+            :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="ppd.si.identificacao.localDadosPrivado"
             label="Indique o nome da entidade privada onde os dados residem"
             solo
@@ -171,6 +176,7 @@
         <v-col cols="12" xs="12" sm="9">
           <v-radio-group v-model="ppd.si.identificacao.defCheck" row>
             <v-radio
+              :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-for="(p, i) in simNao"
               :key="i"
               :label="p"
@@ -180,7 +186,7 @@
           </v-radio-group>
           <div v-if="ppd.si.identificacao.defCheck === 'Sim'">
               <v-text-field
-              :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+              :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-model="ppd.si.identificacao.defResponsavel"
               label="Indique a expressão dessa formalização de mandatos"
               solo
@@ -197,6 +203,7 @@
         <v-col cols="12" xs="12" sm="9">
           <v-radio-group v-model="ppd.si.identificacao.insourcingCheck" row>
             <v-radio
+              :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-for="(p, i) in simNao"
               :key="i"
               :label="p"
@@ -206,7 +213,7 @@
           </v-radio-group>
           <div v-if="ppd.si.identificacao.insourcingCheck === 'Sim'">
               <v-text-field
-              :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+              :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-model="ppd.si.identificacao.insourcing"
               label="Indique a natureza dos serviços prestados"
               solo
@@ -222,6 +229,7 @@
         <v-col cols="12" xs="12" sm="9">
           <v-radio-group v-model="ppd.si.identificacao.outsourcingCheck" row>
             <v-radio
+              :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-for="(p, i) in simNao"
               :key="i"
               :label="p"
@@ -231,7 +239,7 @@
           </v-radio-group>
           <div v-if="ppd.si.identificacao.outsourcingCheck === 'Sim'">
               <v-text-field
-              :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+              :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
               v-model="ppd.si.identificacao.outsourcing"
               label="Indique a natureza dos serviços prestados"
               solo
