@@ -45,7 +45,11 @@
                 <template v-slot:[`item.link`]="{ item }">
                     <v-tooltip top color="info" open-delay="500" v-if="item.link">
                         <template v-slot:activator="{ on }">
-                            <v-btn v-on="on" small text rounded :href="item.link">
+                            <v-btn v-if="item.link.startsWith('CLAV')" v-on="on" small text rounded 
+                                :href="pathAPI + '/ficheirosEstaticos?caminho=documentos%2FRADA%2FDespacho' + item.link.split('Despacho')[1] + '&' + authToken">
+                                <unicon name="pdf-icon" width="25" height="25" viewBox="0 0 20.71 23.668" fill="#C62828" />
+                            </v-btn>
+                            <v-btn v-else v-on="on" small text rounded :href="item.link">
                                 <unicon name="pdf-icon" width="25" height="25" viewBox="0 0 20.71 23.668" fill="#C62828" />
                             </v-btn>
                         </template>
