@@ -15,10 +15,12 @@
       :campos="['titulo', 'dataAprovacao', 'entResp', 'estado']"
       @download="fazerDownloadRADA"
       @ver="redirecionar"
-    />
-    
-    <Loading v-if="!fontesRadaOldReady" :message="'fontes de legitimação'" />
-    <ListagemLeg v-else :lista="fontesRADA" tipo="RADA" />
+    >
+      <template v-slot:radatemp>
+        <Loading v-if="!fontesRadaOldReady" :message="'fontes de legitimação'" />
+        <ListagemLeg v-else :lista="fontesRADA" tipo="RADA" />
+      </template>
+    </Listagem>
   </div>
 </template>
 
@@ -33,12 +35,12 @@ export default {
     radas: [],
     fontesRadaReady: false,
     fontesRADA: [],
-    fontesRadaOldReady: false
+    fontesRadaOldReady: false,
   }),
   components: {
     Listagem,
     ListagemLeg,
-    Loading
+    Loading,
   },
   methods: {
     redirecionar(codigo) {
@@ -55,7 +57,7 @@ export default {
   },
   async created() {
     await this.$request("get", "/rada/old")
-      .then(response2 => {
+      .then((response2) => {
         this.fontesRADA = response2.data.map((f) => {
           return {
             idRADA: f.idRADA,
@@ -66,19 +68,19 @@ export default {
             link: f.link,
           };
         });
-        this.fontesRadaOldReady = true
+        this.fontesRadaOldReady = true;
       })
       .catch((e) => {
-          console.log('Erro no GET dos RadaOld: ' + e)
+        console.log("Erro no GET dos RadaOld: " + e);
       });
   },
   async mounted() {
     try {
       var response = await this.$request("get", "/rada");
       this.radas = response.data;
-      this.fontesRadaReady = true
+      this.fontesRadaReady = true;
     } catch (e) {
-      console.log('Erro no GET dos Rada: ' + e)
+      console.log("Erro no GET dos Rada: " + e);
     }
   },
 };

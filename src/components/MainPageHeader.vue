@@ -144,6 +144,7 @@
               <template v-slot:activator="{ on }">
                 <v-tab
                   v-on="on"
+                  @click="tab.url ? go(tab.url) : true"
                   :class="{ active: tab.titulo == tabAtiva }"
                   style="height: 48px"
                 >
@@ -477,7 +478,7 @@ export default {
               acoes: [
                 {
                   url: "/rada/consultar",
-                  level: [4, 5, 6, 7],
+                  level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
                   icon: "consultar-icon",
                 },
                 {
@@ -619,6 +620,8 @@ export default {
             nome: "pedido-novo-icon",
             viewbox: "0 0 20.83 20.831",
           },
+          level: [1, 3, 3.5, 4, 5, 6, 7],
+          url: "/pedidos",
           menu: [
             {
               opcao: "Pendentes",
@@ -647,7 +650,7 @@ export default {
             },
             {
               opcao: "Métricas de API",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [3, 3.5, 4, 5, 6, 7],
               url: "/gestao/metrica",
             },
             {
@@ -657,7 +660,7 @@ export default {
             },
             {
               opcao: "Tabela de Indicadores",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [3, 3.5, 4, 5, 6, 7],
               url: "/gestao/tabela",
             },
           ],
@@ -756,6 +759,7 @@ export default {
   },
   methods: {
     go: function (url, param) {
+      console.log(url);
       if (url.startsWith("http")) {
         window.location.href = url;
       } else {
@@ -790,6 +794,7 @@ export default {
           filtered.push({
             titulo: navbar[i].titulo,
             icon: navbar[i].icon,
+            url: navbar[i].url ? navbar[i].url : undefined,
             menu: menu,
           });
         } else if (

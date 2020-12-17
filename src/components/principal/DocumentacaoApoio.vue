@@ -154,26 +154,64 @@
           </v-card-text>
           <div v-if="level >= min">
             <v-btn
-              color="indigo accent-4"
-              dark
-              class="ma-2"
+              rounded
+              class="white--text ma-1"
+              :class="{
+                'px-8': $vuetify.breakpoint.lgAndUp,
+                'px-2': $vuetify.breakpoint.mdAndDown,
+              }"
+              color="success darken-1"
+              id="botao-shadow"
               @click="go(`/documentacaoApoio/criar/entrada/${documentacao._id}`)"
-              >Adicionar Entrada</v-btn
             >
+              <unicon
+                name="criar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.714 20.71"
+                fill="#ffffff"
+              />
+              <span class="ml-2">Adicionar Entrada</span>
+            </v-btn>
             <v-btn
-              color="indigo accent-4"
-              dark
-              class="ma-2"
+              rounded
+              class="white--text ma-1"
+              :class="{
+                'px-8': $vuetify.breakpoint.lgAndUp,
+                'px-2': $vuetify.breakpoint.mdAndDown,
+              }"
+              color="neutral darken-2"
+              id="botao-shadow"
               @click="go(`/documentacaoApoio/editar/classe/${documentacao._id}`)"
-              >Editar Secção</v-btn
-            >
+              ><unicon
+                name="alterar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.714 20.71"
+                fill="#ffffff"
+              />
+              <span class="ml-2">Editar Secção</span>
+            </v-btn>
             <v-btn
-              color="red accent-4"
-              dark
-              class="ma-2"
+              rounded
+              class="white--text ma-1"
+              :class="{
+                'px-8': $vuetify.breakpoint.lgAndUp,
+                'px-2': $vuetify.breakpoint.mdAndDown,
+              }"
+              color="error"
+              id="botao-shadow"
               @click="eliminaClasse(documentacao._id)"
-              >Eliminar Secção</v-btn
             >
+              <unicon
+                name="remove-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.714 20.71"
+                fill="#ffffff"
+              />
+              <span class="ml-2">Eliminar Secção</span>
+            </v-btn>
           </div>
         </v-expansion-panel-content>
       </v-expansion-panel>

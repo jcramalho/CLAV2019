@@ -22,7 +22,7 @@ export default new Router({
     {
       path: "/registo",
       name: "registarClav",
-      component: () => import("./views/Registar.vue"),
+      component: () => import("./views/paginasInfo/Registar.vue"),
       meta: {
         levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
         tabAtiva: "Registo na CLAV"
@@ -626,7 +626,7 @@ export default new Router({
       path: "/gestao/metrica",
       name: "metrica",
       component: () => import("./views/gestao/Metrica.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
+      meta: { levels: [3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     {
       path: "/gestao/classes",
@@ -644,7 +644,7 @@ export default new Router({
       path: "/gestao/tabela",
       name: "tabela",
       component: () => import("./views/gestao/Tabela.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
+      meta: { levels: [3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     //Chaves API
     {
