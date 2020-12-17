@@ -35,33 +35,6 @@
               class="content-text px-8 py-2 mb-3"
               style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
             >
-              Insira a designação para a Tabela de Seleção:
-            </p>
-            <v-tooltip top color="info" open-delay="500">
-              <template v-slot:activator="{ on }">
-                <div
-                  class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                  style="min-height: 50px; max-width:70%;"
-                  v-on="on"
-                >
-                  <v-text-field
-                    class="mt-n3 px-3"
-                    color="blue darken-3"
-                    clearable
-                    single-line
-                    hide-details
-                    v-model="designacao"
-                    label="Designação da Tabela de Seleção"
-                  ></v-text-field>
-                </div>
-              </template>
-
-              <span> Designação da Tabela de Seleção</span>
-            </v-tooltip>
-            <p
-              class="content-text px-8 py-2 mb-3"
-              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
-            >
               Selecione o tipo de Tabela de Seleção:
             </p>
             <v-tooltip top color="info" open-delay="500">
@@ -87,6 +60,33 @@
               </template>
 
               <span> Tipo da Tabela de Seleção</span>
+            </v-tooltip>
+            <p
+              class="content-text px-8 py-2 mb-3"
+              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+            >
+              Insira a designação para a Tabela de Seleção:
+            </p>
+            <v-tooltip top color="info" open-delay="500">
+              <template v-slot:activator="{ on }">
+                <div
+                  class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
+                  style="min-height: 50px; max-width:70%;"
+                  v-on="on"
+                >
+                  <v-text-field
+                    class="mt-n3 px-3"
+                    color="blue darken-3"
+                    clearable
+                    single-line
+                    hide-details
+                    v-model="designacao"
+                    label="Designação da Tabela de Seleção"
+                  ></v-text-field>
+                </div>
+              </template>
+
+              <span> Designação da Tabela de Seleção</span>
             </v-tooltip>
 
             <div v-if="tipo != null">
