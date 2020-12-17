@@ -1,7 +1,7 @@
 <template>
   <tr @click="onRowClick(item)">
-    <td class="subheading">{{ item.id }}</td>
-    <td class="subheading">{{ item.designacao }}</td>
+    <td class="subheading" style="text-align: center">{{ item.id }}</td>
+    <td>{{ item.designacao }}</td>
     <td v-if="item.operacoes" @click.stop align="right">
       <v-icon
         v-for="(operacao, index) in item.operacoes"

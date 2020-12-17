@@ -11,15 +11,15 @@
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
-    <v-main>
-      <router-view />
-      <Definicoes v-if="this.$store.state.token != ''" :drawer="drawD" :socket="socket" />
-      <Notificacoes
-        v-if="this.$store.state.token != ''"
-        :drawer="drawN"
-        :notificacoes="notificacoes"
-        @removerNotificacao="removerNotificacao($event)"
-      />
+    <Definicoes v-if="this.$store.state.token != ''" :drawer="drawD" :socket="socket" />
+    <Notificacoes
+      v-if="this.$store.state.token != ''"
+      :drawer="drawN"
+      :notificacoes="notificacoes"
+      @removerNotificacao="removerNotificacao($event)"
+    />
+    <v-main class="px-4">
+      <router-view class="pt-8" />
     </v-main>
 
     <PageFooter />

@@ -43,20 +43,8 @@ export default {
 
     preparaCabecalhos(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
-        this.cabecalhos = [
-          "Sigla",
-          "Designação",
-          "Estado",
-          "Internacional",
-          "Operações",
-        ];
-        this.campos = [
-          "id",
-          "designacao",
-          "estado",
-          "internacional",
-          "operacoes",
-        ];
+        this.cabecalhos = ["Sigla", "Designação", "Estado", "Internacional", "Operações"];
+        this.campos = ["id", "designacao", "estado", "internacional", "operacoes"];
       } else {
         this.cabecalhos = ["Sigla", "Designação", "Estado", "Internacional"];
         this.campos = ["id", "designacao", "estado", "internacional"];
@@ -91,7 +79,7 @@ export default {
     },
   },
 
-  created: async function() {
+  created: async function () {
     try {
       let response = await this.$request("get", "/entidades");
 
