@@ -1,5 +1,5 @@
 <template>
-  <v-card class=".ml-3">
+  <v-card>
     <v-sheet class="indigo lighten-2">
       <v-text-field
         v-model="search"
@@ -24,7 +24,7 @@
           :open.sync="open"
         >
           <template slot="label" slot-scope="{ item }">
-            <v-btn text depressed @click="showSI(item)">{{ item.id }}</v-btn>
+            <v-btn text depressed @click="showSI(item)">{{ item.id }} - {{item.name }}</v-btn>
             <br />
           </template>
         </v-treeview>
@@ -104,7 +104,14 @@ export default {
   methods: {
     showSI: function(item){
       this.verSI = true;
-      var index = this.sistemasInfo.findIndex(e => e.numeroSI === item.id);
+      var id = item.id
+        if(item.id.includes(".")){
+        id = item.id.split(".")[0]
+      }
+      else{
+        id = item.id
+      }
+      var index = this.sistemasInfo.findIndex(e => e.numeroSI === id);
       if(index !=-1){
         this.item2Show(this.sistemasInfo[index]);
       }

@@ -371,7 +371,7 @@ export default {
     apagar: function() {
       this.$refs.form.reset();
       this.panels = [];
-      loadConsultaPGD();
+      this.loadConsultaPGD();
     },
     newSistemasRelacionados: function(sistema, lista) {
         lista.push(sistema);
@@ -397,7 +397,8 @@ export default {
         this.validaOutsourcing(this.ppd.si.identificacao.outsourcing, this.ppd.si.identificacao.outsourcingCheck) &&
         this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
         this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/
-        this.$refs.form.validate()
+        //this.$refs.form.validate() para verificar se os campos obrigatorios tao preenchidos
+        true
       ){
         var sistema = {
           visto: true,
@@ -549,9 +550,10 @@ export default {
         this.ppd.si.estrategia.utilizacaoMemoria.lacunas= ""*/
         this.dialog= false;
         this.newSistema(sistema,this.ppd.sistemasInfo);
+        this.ppd.si.avaliacao.tabelaDecomposicao = []
         this.$refs.form.reset();//   ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.panels = [];
-        await loadConsultaPGD();
+        await this.loadConsultaPGD();
       } else {
         this.dialog= true;
         this.erroValidacao = true;
@@ -708,12 +710,12 @@ export default {
           else{
               child = [];
               if(sis.avaliacao.tabelaDecomposicao.length>0){
-                let aux = sis.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
-                child = aux.split("#").map(e=> e=({"id": e, "name":e}));
+                let aux = sis.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub + "-" + e.nomeSub).toString().replaceAll(",","#")
+                child = aux.split("#").map(e=> e=({"id": e.split("-")[0], "name":e.split("-").slice(1).toString()}));
                 //child.sort();
                 child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));
               }
-              this.ppd.arvore.push({"id": sis.numeroSI, "name": sis.numeroSI, "titulo": sis.nomeSI, children: child })
+              this.ppd.arvore.push({"id": sis.numeroSI, "name": sis.nomeSI, "titulo": sis.nomeSI, children: child })
               this.ppd.arvore.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
           }
         }
