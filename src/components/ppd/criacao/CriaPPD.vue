@@ -2,6 +2,7 @@
   <v-row>
     <v-col cols="12" xs="12" sm="3">
       <ArvoreLateralPPD
+        @ver="showSI"
         :arvore="ppd.arvore"
         :sistemasInfo="ppd.sistemasInfo"
       />
@@ -39,6 +40,7 @@
             </v-stepper-step>
             <v-stepper-content step="2">
               <SistemaOps
+                @ver="showSI"
                 :sistema="ppd.sistemasInfo"
                 @unselectSistema="unselectSistema($event)"
               />
@@ -139,6 +141,10 @@
                   </v-col>
                 </v-row>
               </div>
+              <v-btn color="indigo darken-2" dark class="ma-2" @click="guardarPPD">
+                Guardar Trabalho
+                <v-icon right>save</v-icon>
+              </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
                 Finalizar
               </v-btn>
@@ -147,6 +153,24 @@
               </v-btn>
             </v-stepper-content>
           </v-stepper>
+          <v-row justify-center>
+            <v-dialog v-model="ppdGuardado" persistent width="50%">
+              <v-card>
+                <v-card-title class="headline grey lighten-2" primary-title>Trabalho pendente guardado</v-card-title>
+                <v-card-text>
+                  <br />
+                  <p>
+                    Os seus dados foram guardados para que possa retomar o trabalho
+                    mais tarde. Aceda aos pendentes para continuar.
+                  </p>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
         </v-card-text>
       </v-card>
     </v-col>
@@ -155,6 +179,46 @@
       :dialog="importarSI"
       @fecharDialog="importarSI = false"
     />
+    <template>
+      <div>
+        <v-dialog
+          :retain-focus="false"
+          v-model="verSI"
+        >
+          <v-card>
+            <v-card-title class="expansion-panel-heading">Sitema de informação</v-card-title>
+            <div class="v-card__text mt-4">
+              <verBlocoIdentificacao
+                :siSpec="siSpec"
+              />
+              <verBlocoAvaliacao
+                :siSpec="siSpec"
+              />
+              <verBlocoCaracterizacao
+                :siSpec="siSpec"
+              />
+              <verBlocoEstrategia
+                :siSpec="siSpec"
+              />
+            </div>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-row align="center" justify="space-around">
+                <v-btn
+                color="indigo darken-2"
+                dark
+                class="ma-2"
+                rounded
+                @click="verSI = false"
+                >
+                  Fechar
+                </v-btn>
+              </v-row>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
+    </template>
   </v-row>
 </template>
 
@@ -174,6 +238,10 @@ import BlocoIdentificacao from "@/components/ppd/criacao/sistemaInformacao/Bloco
 import BlocoAvaliacao from "@/components/ppd/criacao/sistemaInformacao/BlocoAvaliacao.vue";
 import BlocoCaracterizacao from "@/components/ppd/criacao/sistemaInformacao/BlocoCaracterizacao.vue";
 import BlocoEstrategia from "@/components/ppd/criacao/sistemaInformacao/BlocoEstrategia.vue";
+import verBlocoIdentificacao from "@/components/ppd/criacao/verSI/verBlocoIdentificacao.vue"
+import verBlocoAvaliacao from "@/components/ppd/criacao/verSI/verBlocoAvaliacao.vue"
+import verBlocoCaracterizacao from "@/components/ppd/criacao/verSI/verBlocoCaracterizacao.vue"
+import verBlocoEstrategia from "@/components/ppd/criacao/verSI/verBlocoEstrategia.vue"
 //import SistemaSelect from "@/components/ppd/criacao/sistemaInformacao/SistemaSelect.vue";
 
 
@@ -190,25 +258,41 @@ export default {
     BlocoIdentificacao,
     BlocoAvaliacao,
     BlocoCaracterizacao,
-    BlocoEstrategia
+    BlocoEstrategia,
+    verBlocoIdentificacao,
+    verBlocoAvaliacao,
+    verBlocoCaracterizacao,
+    verBlocoEstrategia
     //SistemaSelect
   },
   mixins: [mixinCriacaoPPD],
 
 
   data: () => ({
+    siSpec: {
+        numeroSI: [],
+        nomeSI: [],
+        identificacao:{},
+        avaliacao:{},
+        caracterizacao:{},
+        estrategia:{}
+    },
+    verSI: false,
     importarSI: false,
     addSI: false,
+    idPendente: null,
+    ppdGuardado: false,
     // Objeto que guarda um ppd
     ppd: {
-      lixo : "",
+      listaSistemasInfoAuxiliar: [],
+      sistemasInfo: [],
+      arvore: [],
       geral:{
         numeroPPD: "", //é necessário?
         nomePPD: "",
         mencaoResp: "",
         entSel: [],
       },
-      Sistemas: [],
       si:{
         numeroSI: "",
         nomeSI:"",
@@ -290,14 +374,9 @@ export default {
         },
       },
 
-
-      listaSistemasInfoAuxiliar: [],
-      sistemasInfo: [],
-
       user: {
         token: ""
       },
-      arvore: [],
       fonteID: ""
     },
     panels: [],
@@ -368,6 +447,37 @@ export default {
   },
 
   methods: {
+    guardarPPD: function(){
+      if (this.idPendente != null) {
+        let updatePendente = {
+          _id: this.idPendente,
+          objeto: {
+            ppd: this.ppd
+          },
+        };
+        let response = this.$request("put", "/pendentes", updatePendente);
+        response.then((resp) => {
+            this.ppdGuardado = true;
+        });
+      } else {
+        let pendenteParams = {
+          numInterv: 1,
+          acao: "Criação",
+          tipo: "PPD",
+          objeto: {
+            ppd: this.ppd,
+          },
+          criadoPor: this.userEmail,
+          user: { email: this.userEmail },
+          token: this.$store.state.token,
+        };
+        let response = this.$request("post", "/pendentes", pendenteParams);
+        response.then((resp) => {
+            this.ppdGuardado = true;
+        });
+      }
+    },
+
     apagar: function() {
       this.$refs.form.reset();
       this.panels = [];
@@ -553,6 +663,7 @@ export default {
         this.ppd.si.avaliacao.tabelaDecomposicao = []
         this.$refs.form.reset();//   ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.panels = [];
+        this.addSI = false;
         await this.loadConsultaPGD();
       } else {
         this.dialog= true;

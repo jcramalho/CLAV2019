@@ -42,52 +42,9 @@
             <td>{{ props.item.numeroSI }}</td>
             <td>{{ props.item.nomeSI }}</td>
             <td>
-              <template>
-                <div>
-                  <v-dialog
-                    :retain-focus="false"
-                    v-model="alterar"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn small color="blue darken-2" dark rounded v-bind="attrs" v-on="on" @click="showSI(props.item)">
-                        <v-icon dark>edit</v-icon>
-                      </v-btn>
-                    </template>
-
-                    <v-card>
-                      <v-card-title class="expansion-panel-heading">Sitema de informação</v-card-title>
-                      <div class="v-card__text mt-4">
-                        <verBlocoIdentificacao
-                          :siSpec="siSpec"
-                        />
-                        <verBlocoAvaliacao
-                          :siSpec="siSpec"
-                        />
-                        <verBlocoCaracterizacao
-                          :siSpec="siSpec"
-                        />
-                        <verBlocoEstrategia
-                          :siSpec="siSpec"
-                        />
-                      </div>
-                      <v-divider></v-divider>
-                      <v-card-actions>
-                        <v-row align="center" justify="space-around">
-                          <v-btn
-                          color="indigo darken-2"
-                          dark
-                          class="ma-2"
-                          rounded
-                          @click="alterar = false"
-                          >
-                            Fechar
-                          </v-btn>
-                        </v-row>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </div>
-              </template>
+              <v-btn small color="blue darken-2" dark rounded @click="show(props.item)">
+                <v-icon dark>edit</v-icon>
+              </v-btn>
             </td>
             <td>
               <v-btn small color="red darken-2" dark rounded @click="unselectSistema(props.item)">
@@ -112,26 +69,18 @@
 const help = require("@/config/help").help;
 
 import InfoBox from "@/components/generic/infoBox.vue";
-import verBlocoIdentificacao from "@/components/ppd/criacao/verSI/verBlocoIdentificacao.vue"
-import verBlocoAvaliacao from "@/components/ppd/criacao/verSI/verBlocoAvaliacao.vue"
-import verBlocoCaracterizacao from "@/components/ppd/criacao/verSI/verBlocoCaracterizacao.vue"
-import verBlocoEstrategia from "@/components/ppd/criacao/verSI/verBlocoEstrategia.vue"
+
 
 export default {
   props: ["sistema"],
 
   components: {
-    InfoBox,
-    verBlocoIdentificacao,
-    verBlocoAvaliacao,
-    verBlocoCaracterizacao,
-    verBlocoEstrategia
+    InfoBox
   },
 
   data: function() {
     return {
       myhelp: help,
-      alterar: false,
       searchSI: "",
       headers: [
         { text: "Número", value: "numeroSI" },
@@ -145,14 +94,6 @@ export default {
         "items-per-page-options": [5, 10, 20, -1],
         "items-per-page-all-text": "Todos"
       },
-      siSpec: {
-        numeroSI: [],
-        nomeSI: [],
-        identificacao:{},
-        avaliacao:{},
-        caracterizacao:{},
-        estrategia:{}
-      }
     };
   },
 
@@ -161,27 +102,9 @@ export default {
       this.$emit("unselectSistema", sistema);
     },
 
-    showSI: function(item){
-      this.alterar = true;
-      //this.siSpec = item;
-      this.item2Show(item);
+    show: function(item){
+      this.$emit("ver", item)
     },
-
-    item2Show: function(item){
-      this.siSpec = item;
-      if(item.visto){
-        this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
-        this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
-        this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
-        this.siSpec.identificacao.propDados= item.identificacao.propDados.map(e => e.sigla).toString(),
-        this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString(),
-        this.siSpec.avaliacao.decomposicao= item.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.siRelacionado= item.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
-        item.visto=false;
-      }
-
-    }
 
   }
 };
