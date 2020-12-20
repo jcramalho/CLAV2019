@@ -385,6 +385,8 @@ module.exports.help = {
             "\nApenas prosseguem para a fase 3 e fase 4, com preenchimento dos respetivos campos, os SI com prazo de conservação administrativa superior a 7anos ou com destino final de conservação, que não se encontrem em estado abatido.",
     numeroSI: "Referenciar cada sistema de informação (SI) por um identificador. Pode ser um nº sequencial, um URN, ou outro tipo de identificador.",
     nomeSI: "Registar, por extenso, a designação oficial do sistema ou, quando não exista, nome pelo qual é conhecido.",
+    fonteLegitimacao:
+        "Diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção",
     Identificacao:{
       geral:"Devem ser identificados todos os Sistemas de Informação existentes enquanto contentores de informação produzida pela entidade.",
       adminSis: "Designação do organismo que tem a administração operacional do sistema de informação (ex.: assegura o armazenamento dos dados, monitorização do sistema). ",

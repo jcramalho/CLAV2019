@@ -3,7 +3,7 @@
     <v-col cols="12" xs="12" sm="3">
       <div class="info-label">
         Sistemas de informação
-        <InfoBox header="Sistemas de Informação"/></div>
+        <InfoBox header="Sistemas de Informação" :text="myhelp.Ppd.novoSI"/></div>
     </v-col>
     <v-col v-if="sistema.length > 0">
       <v-card-title>
