@@ -237,6 +237,38 @@ module.exports.help = {
         "da existência de diploma(s) legal(ais).</dd></dl></p>"
     }
   },
+  TS:{
+    Consulta: {
+      TS_LC: "<p>São as TS inseridas na CLAV, derivadas da Lista Consolidada (LC), que são produzidas e aprovadas na CLAV, sem publicação em " +
+      "Diário da República. </p>" +
+      "<p>No contexto da CLAV são identificadas com seguinte abreviatura: <b>TS/LC</b>.</p>" +
+      "<p>As Tabelas de Seleção (TS) são instrumentos de gestão da informação utilizados pelas entidades, que permitem organizar, estruturar e agregar a informação " +
+      "desde o momento da sua produção/receção, e que constituem as fontes de legitimação para a avaliação, seleção e eliminação da informação pública.</p>",
+      PGD_LC: "<p>São as TS inseridas em portaria de gestão de documentos, que derivam da LC e estão publicadas em Diário da República.</p>" +
+      "<p>No contexto da CLAV são identificadas com seguinte abreviatura: <b>PGD/LC</b>.</p>" +
+      "<p>As Tabelas de Seleção (TS) são instrumentos de gestão da informação utilizados pelas entidades, que permitem organizar, estruturar e agregar " +
+      "a informação desde o momento da sua produção/receção, e que constituem as fontes de legitimação para a avaliação, seleção e eliminação da " +
+      "informação pública.</p>",
+      PGD: "<p>São as TS não derivadas da Lista Consolidada (LC) que estão inseridas em portarias de gestão de documentos, publicadas em Diário da República.</p>" +
+      "<p>No contexto da CLAV são identificadas com seguinte abreviatura: <b>PGD</b>.</p>" +
+      "<p>A plataforma CLAV inclui o serviço de submissão de autos de eliminação. Para que este serviço possa ser utilizado, beneficiando de mecanismos " +
+      "de criação assistida, de pré-validação e de controlo e validação automática aquando do envio, foi necessário proceder a uma uniformização das " +
+      "tabelas de seleção (TS) publicadas ao longo de 30 anos, nomeadamente:</p>" +
+      "<ul><li>correção interpretativa de um Destino Final (DF), quando formalmente figura um valor que não traduz a situação de aplicação " +
+      "(por ex.: quando o DF é Conservação e a nota ao DF refere “Apenas devem ser conservadas as atas”). Neste caso, o DF original foi substituído pelo " +
+      "valor real, i.e., a conservação parcial, dado que uma parte da documentação é conservada e outra é eliminada. Caso esta correção interpretativa " +
+      "não tivesse sido efetuada, não poderiam ser submetidos autos de eliminação pela plataforma, dado que apenas se podem efetuar autos de eliminação " +
+      "para a documentação que tem como DF a eliminação ou a conservação parcial;</li>" +
+      "<li>concatenação num campo único do Prazo de Conservação Administrativa quando este se decompõe em dois campos (ativo e semi-ativo), " +
+      "tendo-se procedido à soma dos valores constantes. Esta junção permite a conferência automática do cumprimento do PCA.</li>" +
+      "<li>passagem de uma nota no campo Prazo de Conservação Administrativa (PCA) para o campo “Nota ao PCA”, de forma a que no campo PCA apenas " +
+      "figurem valores numéricos. Por exemplo se no campo PCA estiver expresso “Enquanto útil”, esta informação passou para o campo “Nota ao PCA”. " +
+      "Esta passagem permitiu a transformação do campo PCA num campo numérico, condição base para a validação dos dados ali introduzidos.</li></ul>" +
+      "<p>O acesso às tabelas de seleção na sua forma original publicadas no Diário da República pode ser efetuado no ícone PDF.</p>" +
+      "As TS são instrumentos de gestão da informação utilizados pelas entidades, que permitem organizar, estruturar e agregar a informação desde o " +
+      "momento da sua produção/receção, e que constituem as fontes de legitimação para a avaliação, seleção e eliminação da informação pública."
+    }
+  },
   Entidade: {
     Campos: {
       Nome: "Indicação do nome da entidade conforme consta no diploma criador/estatutos.",
@@ -418,6 +450,8 @@ module.exports.help = {
             "\nApenas prosseguem para a fase 3 e fase 4, com preenchimento dos respetivos campos, os SI com prazo de conservação administrativa superior a 7anos ou com destino final de conservação, que não se encontrem em estado abatido.",
     numeroSI: "Referenciar cada sistema de informação (SI) por um identificador. Pode ser um nº sequencial, um URN, ou outro tipo de identificador.",
     nomeSI: "Registar, por extenso, a designação oficial do sistema ou, quando não exista, nome pelo qual é conhecido.",
+    fonteLegitimacao:
+        "Diploma ou ato administrativo que autoriza e legitima uma Tabela de Seleção",
     Identificacao:{
       geral:"Devem ser identificados todos os Sistemas de Informação existentes enquanto contentores de informação produzida pela entidade.",
       adminSis: "Designação do organismo que tem a administração operacional do sistema de informação (ex.: assegura o armazenamento dos dados, monitorização do sistema). ",

@@ -24,7 +24,9 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Decomposição do SI</div>
+              <div class="info-label">Decomposição do SI
+                <InfoBox header="Decomposição do SI" :text="myhelp.Ppd.Avaliacao.decomposicao"/>
+              </div>
           </v-col>
           <v-col v-if="ppd.si.avaliacao.tabelaDecomposicao.length > 0">
             <v-data-table
@@ -77,14 +79,18 @@
         </v-row>
         <v-row>
           <v-col>
-            <div class="info-label">PCA do sistema de informação</div>
+            <div class="info-label">PCA do sistema de informação
+              <InfoBox header="PCA do sistema de informação" :text="myhelp.Ppd.Avaliacao.pcaDoSI"/>
+            </div>
           </v-col>
           <v-col>
             <v-text-field solo dense >
             </v-text-field>
           </v-col>
           <v-col :md="2">
-            <div class="info-label">Destino final do sistema de informação</div>
+            <div class="info-label">Destino final do sistema de informação
+              <InfoBox header="Destino final do sistema de informação" :text="myhelp.Ppd.Avaliacao.destinoSI"/>
+            </div>
           </v-col>
           <v-col>
             <v-text-field solo dense >
@@ -93,7 +99,8 @@
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Classes</div>
+              <div class="info-label">Classes
+              </div>
           </v-col>
           <v-col v-if="ppd.si.avaliacao.selecionadosTabelaFL.length > 0">
             <v-data-table
@@ -134,6 +141,7 @@
         </v-row>
         <v-dialog v-model="addClasse">
           <AddClasse
+            :myhelp="myhelp"
             v-bind:classesSI="classesSI"
             v-bind:classesDaFonteL="classesDaFonteL"
             hide-overlay
@@ -178,7 +186,9 @@
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Selecione o(s) sistema(s) informação relacionado(s)</div>
+            <div class="info-label">Selecione o(s) sistema(s) informação relacionado(s)
+              <InfoBox header="Sistema de Informação Relacionado" :text="myhelp.Ppd.Avaliacao.siRelacionado"/>
+            </div>
           </v-col>
           <v-col>
             <v-card>
