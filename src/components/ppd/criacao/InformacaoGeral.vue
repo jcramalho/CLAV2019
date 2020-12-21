@@ -57,7 +57,9 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Fonte de legitimação </div>
+          <div class="info-label">Fonte de legitimação
+            <InfoBox header="Fonte de legitimação" :text="myhelp.Ppd.fonteLegitimacao"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-radio-group v-model="loadCheck" row>
