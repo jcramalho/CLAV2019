@@ -19,60 +19,24 @@
               <span v-if="info === '' || info === null">
                 [Campo não preenchido na submissão do pedido]
               </span>
+              <span v-else-if="campo === 'tipoProc'">{{
+                info === "PC" ? "Processo Comum" : "Processo Específico"
+              }}</span>
+              <span v-else-if="campo === 'procTrans'">{{
+                info === "S" ? "Sim" : "Não"
+              }}</span>
               <span v-else>{{ info }}</span>
             </div>
 
             <div v-else>
-              <v-data-table
-                v-if="campo === 'notasAp' || campo === 'notasEx'"
-                :headers="notasAppHeader"
-                :items="info"
-                class="elevation-1"
+              <VerNotas
+                :header="headerNotas[campo]"
                 :footer-props="footerProps"
-              >
-                <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
-                  >
-                    Nenhuma Nota adicionada...
-                  </v-alert>
-                </template>
-
-                <template v-slot:top>
-                  <v-toolbar flat>
-                    <v-btn
-                      rounded
-                      class="indigo accent-4 white--text"
-                      @click="abrirNotaAplicacao(campo)"
-                    >
-                      Adicionar Notas
-                    </v-btn>
-                  </v-toolbar>
-                </template>
-
-                <template v-slot:item.sigla="{ item }">
-                  <v-badge
-                    v-if="novoItemAdicionado(item, campo)"
-                    right
-                    dot
-                    inline
-                    >{{ item.sigla }}</v-badge
-                  >
-
-                  <span v-else>
-                    {{ item.sigla }}
-                  </span>
-                </template>
-
-                <template v-slot:item.operacao="{ item }">
-                  <v-icon color="red" @click="removeNota(item, campo)">
-                    delete
-                  </v-icon>
-                </template>
-              </v-data-table>
+                :items="info"
+                :addFunc="abrirNotaAplicacao"
+                :removeFunc="removeNota"
+                :campo="campo"
+              />
             </div>
           </v-col>
 
@@ -141,10 +105,56 @@
     <!-- Dialog de Notas-->
     <v-dialog v-model="notaDialogApp.visivel" width="50%" persistent>
       <AdicionarNotaAplicacao
+        v-if="
+          notaDialogApp.campo !== 'donos' &&
+            notaDialogApp.campo !== 'processosRelacionados' &&
+            notaDialogApp.campo !== 'legislacao'
+        "
         :notaAtual="notaDialogApp.nota"
         @fechar="notaDialogApp.visivel = false"
         @adicionar="adicionarNotaAplicacao($event, notaDialogApp.campo)"
       />
+      <v-card
+        v-if="
+          notaDialogApp.campo === 'donos' ||
+            notaDialogApp.campo === 'processosRelacionados' ||
+            notaDialogApp.campo === 'legislacao'
+        "
+      >
+        <v-card-text>
+          <DonosSelect
+            v-if="notaDialogApp.campo === 'donos'"
+            :entidadesReady="true"
+            :entidades="entidadesD"
+            @selectEntidade="selectEntidade($event, notaDialogApp.campo)"
+          />
+          <ProcessosRelacionadosSelect
+            v-if="notaDialogApp.campo === 'processosRelacionados'"
+            :procReady="true"
+            :processos="listaProcessos"
+            @selectProcesso="selectProcesso($event, notaDialogApp.campo)"
+          />
+          <LegislacaoSelect
+            v-if="notaDialogApp.campo === 'legislacao'"
+            :legs="listaLegislacao"
+            :legislacaoReady="true"
+            @selectDiploma="selectDiploma($event)"
+          />
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="red darken-4"
+            text
+            rounded
+            dark
+            @click="notaDialogApp.visivel = false"
+          >
+            Cancelar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-dialog>
 
     <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
@@ -166,6 +176,10 @@ import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import AdicionarNotaAplicacao from "@/components/pedidos/generic/AdicionarNotaAplicacao";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
+import VerNotas from "@/components/pedidos/generic/VerNotas";
+import DonosSelect from "@/components/classes/criacao/DonosSelect.vue";
+import ProcessosRelacionadosSelect from "@/components/classes/criacao/ProcessosRelacionadosSelect.vue";
+import LegislacaoSelect from "@/components/classes/criacao/LegislacaoSelect.vue";
 
 import ErroDialog from "@/components/generic/ErroDialog";
 
@@ -187,7 +201,11 @@ export default {
     EditarCamposDialog,
     ErroDialog,
     AdicionarNotaAplicacao,
-    ConfirmacaoOperacao
+    ConfirmacaoOperacao,
+    VerNotas,
+    DonosSelect,
+    ProcessosRelacionadosSelect,
+    LegislacaoSelect
   },
 
   data() {
@@ -204,20 +222,115 @@ export default {
         "descricao",
         "titulo",
         "notasAp",
-        "notasEx"
+        "exemplosNotasAp",
+        "notasEx",
+        "termosInd",
+        "tipoProc",
+        "procTrans",
+        "donos",
+        "processosRelacionados",
+        "legislacao"
       ],
       novoHistorico: {},
-      notasAppHeader: [
-        { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center"
-        }
-      ],
+      formatNotas: {
+        notasAp: { id: "id", nota: "nota", idType: "na" },
+        exemplosNotasAp: { id: "idExemplo", nota: "exemplo", idType: "exna" },
+        notasEx: { id: "id", nota: "nota", idType: "ne" },
+        termosInd: { id: "id", nota: "termo", idType: "ti" }
+      },
+      headerNotas: {
+        notasAp: [
+          { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
+          {
+            text: "Operação",
+            value: "operacao",
+            class: "subtitle-1",
+            sortable: false,
+            width: "10%",
+            align: "center"
+          }
+        ],
+        notasEx: [
+          { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
+          {
+            text: "Operação",
+            value: "operacao",
+            class: "subtitle-1",
+            sortable: false,
+            width: "10%",
+            align: "center"
+          }
+        ],
+        exemplosNotasAp: [
+          {
+            text: "Exemplo Notas de Aplicação",
+            value: "exemplo",
+            class: "subtitle-1"
+          },
+          {
+            text: "Operação",
+            value: "operacao",
+            class: "subtitle-1",
+            sortable: false,
+            width: "10%",
+            align: "center"
+          }
+        ],
+        termosInd: [
+          {
+            text: "Termos Indice",
+            value: "termo",
+            class: "subtitle-1"
+          },
+          {
+            text: "Operação",
+            value: "operacao",
+            class: "subtitle-1",
+            sortable: false,
+            width: "10%",
+            align: "center"
+          }
+        ],
+        donos: [
+          { text: "Sigla", value: "sigla", class: "subtitle-1" },
+          { text: "Designação", value: "designacao", class: "subtitle-1" },
+          {
+            text: "Operação",
+            value: "operacao",
+            class: "subtitle-1",
+            sortable: false,
+            width: "10%",
+            align: "center"
+          }
+        ],
+        processosRelacionados: [
+          { text: "Relação", value: "relacao", class: "subtitle-1" },
+          { text: "Processo", value: "codigo", class: "subtitle-1" },
+          { text: "Titulo", value: "titulo", class: "subtitle-1" },
+          {
+            text: "Operação",
+            value: "operacao",
+            class: "subtitle-1",
+            sortable: false,
+            width: "10%",
+            align: "center"
+          }
+        ],
+        legislacao: [
+          { text: "Tipo", value: "tipo", class: "subtitle-1" },
+          { text: "Número", value: "numero", class: "subtitle-1" },
+          { text: "Sumário", value: "sumario", class: "subtitle-1" },
+          { text: "Data", value: "data", class: "subtitle-1" },
+          {
+            text: "Operação",
+            value: "operacao",
+            class: "subtitle-1",
+            sortable: false,
+            width: "10%",
+            align: "center"
+          }
+        ]
+      },
       erroDialog: {
         visivel: false,
         mensagem: null
@@ -248,13 +361,19 @@ export default {
         nome: "",
         key: "",
         valorAtual: ""
-      }
+      },
+      entidadesD: {},
+      listaProcessos: {},
+      listaLegislacao: {}
     };
   },
 
   async created() {
     try {
       await this.loadTipologias();
+      await this.loadEntidades();
+      await this.loadProcessos();
+      await this.loadLegislacao();
 
       this.loading = false;
     } catch (e) {
@@ -373,7 +492,11 @@ export default {
     adicionarNotaAplicacao(event, campo) {
       this.notaDialogApp.visivel = false;
 
-      const novaNota = { id: `na_${nanoid()}`, nota: event.nota };
+      let novaNota = {};
+      novaNota[this.formatNotas[campo].id] = `${
+        this.formatNotas[campo].idType
+      }_${nanoid()}`;
+      novaNota[this.formatNotas[campo].nota] = event.nota;
 
       this.dados[campo].push(novaNota);
       this.novoHistorico[campo] = {
@@ -387,10 +510,23 @@ export default {
     },
 
     removeNota(item, campo) {
-      const index = this.dados[campo].findIndex(i => item == i);
+      let index;
+      if (campo === "donos") {
+        index = this.dados[campo].findIndex(i => item.id === i.id);
+        if (item.estado && item.estado != "Nova") {
+          this.entidadesD.push(item);
+        } else if (!item.estado) {
+          this.entidadesD.push(item);
+        }
+      } else if (campo === "processosRelacionados") {
+        index = this.dados[campo].findIndex(i => item.codigo === i.codigo);
+        this.listaProcessos.push(item);
+      } else {
+        index = this.dados[campo].findIndex(i => item === i);
+      }
 
       if (index !== -1) {
-        this.dados[campo].splice(index, 1);
+        const bs = this.dados[campo].splice(index, 1);
         this.novoHistorico[campo] = {
           ...this.novoHistorico[campo],
           cor: "amarelo",
@@ -400,6 +536,51 @@ export default {
         this.animacoes[campo] = !this.animacoes[campo];
         this.esconderOperacoes[campo] = true;
       }
+    },
+
+    selectEntidade: function(entidade, campo) {
+      var index = this.entidadesD.findIndex(e => e.id === entidade.id);
+      this.entidadesD.splice(index, 1);
+
+      this.dados[campo].push(entidade);
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        dados: this.dados[campo],
+        cor: "amarelo"
+      };
+
+      this.esconderOperacoes[campo] = true;
+      this.animacoes[campo] = !this.animacoes[campo];
+    },
+
+    selectDiploma: function(leg, campo) {
+      var index = this.listaLegislacao.findIndex(e => e.id === leg.id);
+      this.listaLegislacao.splice(index, 1);
+
+      this.dados[campo].push(leg);
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        dados: this.dados[campo],
+        cor: "amarelo"
+      };
+
+      this.esconderOperacoes[campo] = true;
+      this.animacoes[campo] = !this.animacoes[campo];
+    },
+
+    selectProcesso: function(processo, campo) {
+      var index = this.listaProcessos.findIndex(e => e.id === processo.id);
+      this.listaProcessos.splice(index, 1);
+
+      this.dados[campo].push(processo);
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        dados: this.dados[campo],
+        cor: "amarelo"
+      };
+
+      this.esconderOperacoes[campo] = true;
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
     async loadTipologias() {
@@ -417,6 +598,102 @@ export default {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem =
           "Erro ao carregar os dados, por favor tente novamente";
+      }
+    },
+
+    async loadEntidades() {
+      try {
+        var response = await this.$request("get", "/entidades");
+        let filtered = response.data.filter(item => {
+          if (this.dados.donos.findIndex(el => el.id == item.id) > -1) {
+            return false;
+          }
+          return true;
+        });
+        this.entidadesD = filtered.map(function(item) {
+          return {
+            selected: false,
+            id: item.id,
+            sigla: item.sigla,
+            designacao: item.designacao,
+            tipo: "Entidade",
+            intervencao: "Indefinido",
+            estado: item.estado
+          };
+        });
+        response = await this.$request("get", "/tipologias");
+        this.entidadesD = await this.entidadesD.concat(
+          response.data.map(function(item) {
+            return {
+              selected: false,
+              id: item.id,
+              sigla: item.sigla,
+              designacao: item.designacao,
+              tipo: "Tipologia",
+              intervencao: "Indefinido"
+            };
+          })
+        );
+        await this.entidadesD.sort(function(a, b) {
+          return a.sigla.localeCompare(b.sigla);
+        });
+
+        this.entidadesP = JSON.parse(JSON.stringify(this.entidadesD));
+      } catch (erro) {
+        return erro;
+      }
+    },
+
+    async loadProcessos() {
+      try {
+        var response = await this.$request("get", "/classes?nivel=3");
+        let filtered = response.data.filter(item => {
+          if (
+            this.dados.processosRelacionados.findIndex(
+              el => el.codigo == item.codigo
+            ) > -1
+          ) {
+            return false;
+          }
+          return true;
+        });
+        this.listaProcessos = filtered
+          .map(function(item) {
+            return {
+              selected: false,
+              id: item.id.split("#")[1],
+              codigo: item.codigo,
+              titulo: item.titulo,
+              idRel: "Indefinido"
+            };
+          })
+          .sort(function(a, b) {
+            return a.codigo.localeCompare(b.codigo);
+          });
+      } catch (error) {
+        return error;
+      }
+    },
+
+    async loadLegislacao() {
+      try {
+        var response = await this.$request("get", "/legislacao?estado=Ativo");
+        this.listaLegislacao = response.data
+          .map(function(item) {
+            return {
+              tipo: item.tipo,
+              numero: item.numero,
+              sumario: item.sumario,
+              data: item.data,
+              selected: false,
+              id: item.id
+            };
+          })
+          .sort(function(a, b) {
+            return -1 * a.data.localeCompare(b.data);
+          });
+      } catch (error) {
+        return error;
       }
     },
 
