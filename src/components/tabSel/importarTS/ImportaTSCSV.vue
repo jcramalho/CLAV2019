@@ -50,7 +50,17 @@
                     :items="['Organizacional', 'Pluriorganizacional']"
                     label="Tipo de Tabela de Seleção"
                     v-model="tipo"
-                    @change="entidade_tipologia = null"
+                    @change="
+                      {
+                        entidade_tipologia = [];
+                        if (tipo == 'Pluriorganizacional') {
+                          designacao =
+                            'Tabela de seleção Pluriorganizacional...';
+                        } else {
+                          designacao = null;
+                        }
+                      }
+                    "
                     clearable
                     hide-details
                     single-line
@@ -60,33 +70,6 @@
               </template>
 
               <span> Tipo da Tabela de Seleção</span>
-            </v-tooltip>
-            <p
-              class="content-text px-8 py-2 mb-3"
-              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
-            >
-              Insira a designação para a Tabela de Seleção:
-            </p>
-            <v-tooltip top color="info" open-delay="500">
-              <template v-slot:activator="{ on }">
-                <div
-                  class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                  style="min-height: 50px; max-width:70%;"
-                  v-on="on"
-                >
-                  <v-text-field
-                    class="mt-n3 px-3"
-                    color="blue darken-3"
-                    clearable
-                    single-line
-                    hide-details
-                    v-model="designacao"
-                    label="Designação da Tabela de Seleção"
-                  ></v-text-field>
-                </div>
-              </template>
-
-              <span> Designação da Tabela de Seleção</span>
             </v-tooltip>
 
             <div v-if="tipo != null">
@@ -114,6 +97,9 @@
                         hide-details
                         clearable
                         single-line
+                        @change="
+                          designacao = `Tabela de Seleção de ${entidade_tipologia}`
+                        "
                       >
                       </v-autocomplete>
                     </div>
@@ -122,6 +108,70 @@
                   <span> Entidade ou tipologia da Tabela de Seleção</span>
                 </v-tooltip>
               </div>
+              <div class="pa-0 ma-0" v-else>
+                <p
+                  class="content-text px-8 py-2 mb-3"
+                  style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+                >
+                  Identifique as entidades e tipologias da Tabela de Seleção:
+                </p>
+                <v-tooltip top color="info" open-delay="500">
+                  <template v-slot:activator="{ on }">
+                    <div
+                      class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
+                      style="min-height: 50px; max-width:70%;"
+                      v-on="on"
+                    >
+                      <v-autocomplete
+                        class="mt-n5 px-3"
+                        color="blue darken-3"
+                        :items="entidades_tipologias"
+                        label="Entidades/Tipologias"
+                        v-model="entidade_tipologia"
+                        hide-details
+                        clearable
+                        single-line
+                        multiple
+                        :rules="[
+                          v =>
+                            (!!v && v.length > 1) ||
+                            'Tem de escolher pelo menos duas entidades!'
+                        ]"
+                      >
+                      </v-autocomplete>
+                    </div>
+                  </template>
+
+                  <span> Entidades e tipologias da Tabela de Seleção</span>
+                </v-tooltip>
+              </div>
+              <p
+                class="content-text px-8 py-2 mb-3"
+                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+              >
+                Insira a designação para a Tabela de Seleção:
+              </p>
+              <v-tooltip top color="info" open-delay="500">
+                <template v-slot:activator="{ on }">
+                  <div
+                    class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
+                    style="min-height: 50px; max-width:70%;"
+                    v-on="on"
+                  >
+                    <v-text-field
+                      class="mt-n3 px-3"
+                      color="blue darken-3"
+                      clearable
+                      single-line
+                      hide-details
+                      v-model="designacao"
+                      label="Designação da Tabela de Seleção"
+                    ></v-text-field>
+                  </div>
+                </template>
+
+                <span> Designação da Tabela de Seleção</span>
+              </v-tooltip>
               <p
                 class="content-text px-8 py-2 mb-3"
                 style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
@@ -288,11 +338,11 @@
             <div class="text-center mt-6">
               <v-btn
                 v-if="
-                  designacao == '' ||
+                  (tipo == 'Organizacional' && designacao == '') ||
                     file.length == 0 ||
                     tipo == null ||
                     fonteLegitimacao == null ||
-                    (tipo == 'Organizacional' && entidade_tipologia == null)
+                    !entidade_tipologia.length
                 "
                 disabled
                 rounded
@@ -304,6 +354,31 @@
                 id="botao-shadow"
               >
                 <unicon
+                  name="importar-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 18.121"
+                  fill="#b8b8b8"
+                />
+                <p class="ml-2">Importar</p>
+              </v-btn>
+              <v-btn
+                v-else-if="
+                  (tipo == 'Pluriorganizacional' && designacao == '') ||
+                    file.length == 0 ||
+                    tipo == null ||
+                    fonteLegitimacao == null ||
+                    entidade_tipologia.length < 2
+                "
+                disabled
+                rounded
+                :class="{
+                  'px-8': $vuetify.breakpoint.lgAndUp,
+                  'px-2': $vuetify.breakpoint.mdAndDown
+                }"
+                class="mb-6"
+                id="botao-shadow"
+                ><unicon
                   name="importar-icon"
                   width="20"
                   height="20"
@@ -387,6 +462,75 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <v-dialog
+          v-model="dialogConfirmacao.visivel"
+          persistent
+          max-width="60%"
+        >
+          <v-card dark class="info-card">
+            <v-card-title class="headline mb-2">
+              Não foi possível criar o pedido de criação de tabela de
+              seleção</v-card-title
+            >
+            <div class="info-content-card px-3 mx-6 mb-2">
+              <v-card-text class="pa-2 px-4 font-weight-medium">
+                <p class="error--text">{{ dialogConfirmacao.mensagem }}</p>
+                <p v-if="acrescenta" class="error--text title">
+                  Pretende selecioná-las?
+                </p>
+                <p v-else class="error--text title">
+                  Pretende desselecioná-las?
+                </p>
+                <ol v-if="entidadesFalta.length > 0">
+                  <li v-for="(item, i) in entidadesFalta" v-bind:key="i">
+                    {{ item.sigla }} - {{ item.designacao }}
+                  </li>
+                </ol>
+              </v-card-text>
+            </div>
+            <v-card-actions>
+              <v-btn
+                v-if="acrescenta"
+                color="green darken-2"
+                rounded
+                dark
+                elevation="0"
+                class="px-4"
+                @click="selecionar"
+              >
+                Confirmar
+              </v-btn>
+              <v-btn
+                v-else
+                color="green darken-2"
+                rounded
+                dark
+                elevation="0"
+                class="px-4"
+                @click="desselecionar"
+              >
+                Confirmar
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="red darken-4"
+                rounded
+                dark
+                elevation="0"
+                class="px-4"
+                @click="
+                  {
+                    dialogConfirmacao.visivel = false;
+                    entidadesFalta = [];
+                    acrescenta = null;
+                  }
+                "
+              >
+                Fechar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-col>
     </v-row>
   </v-container>
@@ -402,11 +546,18 @@ export default {
     successDialog: false,
     loading: false,
     entidades_tipologias: [],
-    entidade_tipologia: null,
+    entidade_tipologia: [],
     tipo: null,
     designacao: "",
     codigo: "",
-    fonteLegitimacao: null
+    fonteLegitimacao: null,
+    dialogConfirmacao: {
+      visivel: false,
+      mensagem: "",
+      dados: null
+    },
+    entidadesFalta: [],
+    acrescenta: null
   }),
 
   mounted: async function() {
@@ -451,7 +602,10 @@ export default {
         var formData = new FormData();
         formData.append("file", this.file[0]);
         formData.append("designacao", this.designacao);
-        formData.append("entidade_ts", this.entidade_tipologia);
+        formData.append(
+          "entidades_ts",
+          JSON.stringify(this.entidade_tipologia)
+        );
         formData.append("tipo_ts", "TS " + this.tipo);
         formData.append("fonteL", this.fonteLegitimacao);
 
@@ -460,7 +614,6 @@ export default {
           "/tabelasSelecao/importar",
           formData
         );
-        this.loading = false;
 
         var stats = "<ul>";
         for (var k in response.data.stats) {
@@ -517,9 +670,28 @@ export default {
 
         this.successDialog = true;
       } catch (e) {
-        this.loading = false;
-        this.erro = e.response.data[0].msg || e.response.data;
-        this.erroDialog = true;
+        if (e.response.data.entidades) {
+          this.loading = false;
+          this.entidadesFalta = e.response.data.entidades;
+          this.acrescenta = e.response.data.acrescenta;
+          if (e.response.data.acrescenta) {
+            this.dialogConfirmacao = {
+              visivel: true,
+              mensagem:
+                "Erro ao inserir a Tabela de Seleção: As seguintes entidades estão presentes no ficheiro mas não foram selecionadas.\n"
+            };
+          } else {
+            this.dialogConfirmacao = {
+              visivel: true,
+              mensagem:
+                "Erro ao inserir a Tabela de Seleção: As seguintes entidades foram selecionadas mas não se encontram presentes no ficheiro.\n"
+            };
+          }
+        } else {
+          this.loading = false;
+          this.erro = e.response.data[0].msg || e.response.data;
+          this.erroDialog = true;
+        }
       }
     },
     seguirPedido: function() {
@@ -537,6 +709,28 @@ export default {
           this.$router.push(`/pgd/${this.codigo}`);
           break;
       }
+    },
+    selecionar: function() {
+      this.dialogConfirmacao.visivel = false;
+      this.entidade_tipologia = this.entidade_tipologia.concat(
+        this.entidadesFalta.map(e => e.sigla)
+      );
+      this.entidadesFalta = [];
+      this.acrescenta = null;
+    },
+    desselecionar: function() {
+      this.dialogConfirmacao.visivel = false;
+      this.entidadesFalta.map(e =>
+        this.entidade_tipologia.splice(
+          this.entidade_tipologia[
+            this.entidade_tipologia.findIndex(ent => e.sigla == ent)
+          ],
+          1
+        )
+      );
+
+      this.entidadesFalta = [];
+      this.acrescenta = null;
     }
   }
 };
