@@ -234,6 +234,7 @@
                       show-size
                       accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                       multiple
+                      truncate-length="100"
                       class="mt-n5 px-3"
                       color="blue darken-3"
                       hide-details
@@ -444,7 +445,7 @@
             </v-card-title>
             <div class="info-content-card px-3 mx-6 mb-2">
               <v-card-text class="pa-2 px-4 font-weight-medium">
-                <p>{{ success }}</p>
+                <p v-html="success"></p>
               </v-card-text>
             </div>
             <v-card-actions>
@@ -665,7 +666,7 @@ export default {
         }
         stats += "</ul>";
 
-        this.success = `Código do pedido: ${response.data.codigo}\nEstatísticas:\n${stats}`;
+        this.success = `Código do pedido: ${response.data.codigo}\n<p>Estatísticas:<\p>\n${stats}`;
         this.codigo = response.data.codigo;
 
         this.successDialog = true;
