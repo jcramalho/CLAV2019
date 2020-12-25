@@ -179,7 +179,7 @@
                       </v-row>
                       <v-row
                         v-if="hover && i === activeItem && menuLink.acoes"
-                        class="ma-0 pa-0"
+                        class="ma-0 pa-0 actions"
                         justify="center"
                       >
                         <v-col
@@ -187,7 +187,32 @@
                           :key="action.name"
                           cols="4"
                         >
-                          <v-btn @click.prevent="go(action.url)" icon class="white--text">
+                          <v-btn
+                            v-if="!action.url.includes('alterar')"
+                            @click.prevent="go(action.url)"
+                            icon
+                            class="white--text"
+                          >
+                            <unicon
+                              :name="action.icon"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 20.71 20.697"
+                              fill="#ffffff"
+                            />
+                          </v-btn>
+                          <v-btn
+                            v-else
+                            @click.prevent="
+                              action.url.includes('tipologias')
+                                ? (tipologiasDialog = true)
+                                : action.url.includes('entidades')
+                                ? (entidadesDialog = true)
+                                : (legislacaoDialog = true)
+                            "
+                            icon
+                            class="white--text"
+                          >
                             <unicon
                               :name="action.icon"
                               width="20"
@@ -206,6 +231,25 @@
           </v-container>
         </v-tabs>
       </template>
+      <CaixaDeDialogo
+        :ativo="ativar"
+        :items="tipologias.tipologias"
+        tipo="Tipologia"
+        @fechar="tipologiasDialog = !tipologiasDialog"
+      />
+      <CaixaDeDialogo
+        :ativo="legislacaoDialog"
+        :items="legislacao.legislacaoItems"
+        tipo="Legislação"
+        @fechar="legislacaoDialog = !legislacaoDialog"
+        @editar="editarLeg($event)"
+      />
+      <CaixaDeDialogo
+        :ativo="entidadesDialog"
+        :items="entidades.entidades"
+        tipo="Entidade"
+        @fechar="entidadesDialog = !entidadesDialog"
+      />
       <!--
       <v-btn
         color="red"
@@ -383,9 +427,13 @@
 
 <script>
 import { mapGetters } from "vuex";
+import CaixaDeDialogo from "@/components/generic/CaixaDeDialogo";
 
 export default {
   props: ["n"],
+  components: {
+    CaixaDeDialogo,
+  },
   data() {
     return {
       logotipo: require("@/assets/n1.svg"),
@@ -400,6 +448,25 @@ export default {
       level: 0,
       tabAtiva: "CLAV",
       docs: null,
+
+      // para os dialogs
+      legislacao: {
+        legislacao: [],
+        legislacaoItems: [],
+        ready: false,
+      },
+      entidades: {
+        entidades: [],
+        ready: false,
+      },
+      tipologias: {
+        tipologias: [],
+        ready: false,
+      },
+      tipologiasDialog: false,
+      legislacaoDialog: false,
+      entidadesDialog: false,
+
       navbar: [
         {
           titulo: "CLAV",
@@ -547,6 +614,11 @@ export default {
                   level: [1, 3, 3.5, 4, 5, 6, 7],
                   icon: "criar-icon",
                 },
+                {
+                  url: "/entidades/alterar",
+                  level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+                  icon: "alterar-icon",
+                },
               ],
             },
             {
@@ -564,6 +636,11 @@ export default {
                   level: [1, 3, 3.5, 4, 5, 6, 7],
                   icon: "criar-icon",
                 },
+                {
+                  url: "/tipologias/alterar",
+                  level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+                  icon: "alterar-icon",
+                },
               ],
             },
             {
@@ -580,6 +657,11 @@ export default {
                   url: "/legislacao/criar",
                   level: [1, 3, 3.5, 4, 5, 6, 7],
                   icon: "criar-icon",
+                },
+                {
+                  url: "/legislacao/alterar",
+                  level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+                  icon: "alterar-icon",
                 },
               ],
             },
@@ -738,6 +820,9 @@ export default {
     tabsAcessiveis: function () {
       return this.filtraTabs(this.navbar);
     },
+    ativar() {
+      return this.tipologiasDialog;
+    },
   },
   watch: {
     //apenas atualiza o nível quando o valor do token muda
@@ -756,10 +841,53 @@ export default {
     this.level = this.$userLevel();
     this.tabAtiva = this.$route.meta.tabAtiva;
     this.$vuetify.theme.dark = false; //adicionar variavel para alterar o valor
+
+    // para os dialogs
+    let responseEntidades = await this.$request("get", "/entidades?processos=sem");
+    this.preparaEntidades(responseEntidades.data);
+
+    let responseTipologias = await this.$request("get", "/tipologias");
+    this.preparaTipEntidades(responseTipologias.data);
+
+    let responseLegislacoes = await this.$request("get", "/legislacao");
+    this.preparaLegislacoes(responseLegislacoes.data);
   },
   methods: {
+    // para os dialogs
+    preparaEntidades(dados) {
+      let dadosTratados = dados.filter((dado) => dado.estado === "Ativa");
+      dadosTratados = dadosTratados.map((dado) => `${dado.sigla} - ${dado.designacao}`);
+      this.entidades.entidades = dadosTratados;
+      this.entidades.ready = true;
+    },
+    preparaTipEntidades(dados) {
+      let dadosTratados = dados.filter((dado) => dado.estado === "Ativa");
+      dadosTratados = dadosTratados.map((dado) => `${dado.sigla} - ${dado.designacao}`);
+      this.tipologias.tipologias = dadosTratados;
+      this.tipologias.ready = true;
+    },
+    preparaLegislacoes(legislacoes) {
+      this.legislacao.legislacao = JSON.parse(JSON.stringify(legislacoes));
+      let dadosTratados = legislacoes.filter((leg) => leg.estado === "Ativo");
+
+      dadosTratados = dadosTratados.map(
+        (legislacao) =>
+          `${legislacao.numero} - ${legislacao.sumario} - ${legislacao.tipo}`
+      );
+
+      this.legislacao.legislacaoItems = dadosTratados;
+      this.legislacao.ready = true;
+    },
+
+    editarLeg(dadosEditar) {
+      let leg = null;
+      leg = this.legislacao.legislacao.find(
+        (legislacao) => legislacao.numero === dadosEditar.split(" ")[0]
+      );
+      this.go(`/legislacao/editar/${leg.id}`);
+    },
+
     go: function (url, param) {
-      console.log(url);
       if (url.startsWith("http")) {
         window.location.href = url;
       } else {
