@@ -4,16 +4,20 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         4.	Planeamento da estratégia de preservação do sistema de informação
-        <InfoBox header="Estrategia SI" helpColor="white"/>
+        <InfoBox header="Estratégia SI" :text="myhelp.Ppd.Estrategia.geral" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
         <v-row>
           <v-col cols="12" xs="12" sm="12">
-            <div class="separador">Estratégia de preservação: utilização operacional</div>
+            <div class="separador">Estratégia de preservação: utilização operacional
+              <InfoBox header="Estratégia de preservação: utilização operacional" :text="myhelp.Ppd.Estrategia.utilOperacional" helpColor="white"/>
+            </div>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Identificação dos métodos de preservação</div>
+            <div class="info-label">Identificação dos métodos de preservação
+              <InfoBox header="Identificação dos métodos de preservação" :text="myhelp.Ppd.Estrategia.metodoPreservacao"/>
+            </div>
           </v-col>
           <v-col class="d-flex" cols="12" sm="9">
             <v-select
@@ -32,7 +36,9 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Fundamentação da escolha do método de preservação</div>
+            <div class="info-label">Fundamentação da escolha do método de preservação
+              <InfoBox header="Fundamentação da escolha do método de preservação" :text="myhelp.Ppd.Estrategia.fundMetodoPreservacao"/>
+            </div>
           </v-col>
           <v-col cols="12" xs="12" sm="9">
             <v-text-field
@@ -44,7 +50,9 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Identificação de lacunas e necessidade de desenvolvimento</div>
+            <div class="info-label">Identificação de lacunas e necessidade de desenvolvimento
+              <InfoBox header="Identificação de lacunas e necessidade de desenvolvimento" :text="myhelp.Ppd.Estrategia.lacunas"/>
+            </div>
           </v-col>
           <v-col cols="12" xs="12" sm="9">
             <v-text-field
@@ -56,10 +64,14 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" xs="12" sm="12">
-            <div class="separador">Estratégia de preservação: utilização memória</div>
+            <div class="separador">Estratégia de preservação: utilização memória
+              <InfoBox header="Estratégia de preservação: utilização memória" :text="myhelp.Ppd.Estrategia.utilMemoria" helpColor="white"/>
+            </div>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Identificação dos métodos de preservação</div>
+            <div class="info-label">Identificação dos métodos de preservação
+              <InfoBox header="Identificação dos métodos de preservação" :text="myhelp.Ppd.Estrategia.metodoPreservacaoMemoria"/>
+            </div>
           </v-col>
           <v-col class="d-flex" cols="12" sm="9">
             <v-select
@@ -78,7 +90,9 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Fundamentação da escolha do método de preservação</div>
+            <div class="info-label">Fundamentação da escolha do método de preservação
+              <InfoBox header="Fundamentação da escolha do método de preservação" :text="myhelp.Ppd.Estrategia.fundMetodoPreservacao"/>
+            </div>
           </v-col>
           <v-col cols="12" xs="12" sm="9">
             <v-text-field
@@ -90,7 +104,9 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Identificação de lacunas e necessidade de desenvolvimento</div>
+            <div class="info-label">Identificação de lacunas e necessidade de desenvolvimento
+              <InfoBox header="Identificação de lacunas e necessidade de desenvolvimento" :text="myhelp.Ppd.Estrategia.lacunas"/>
+            </div>
           </v-col>
           <v-col cols="12" xs="12" sm="9">
             <v-text-field
