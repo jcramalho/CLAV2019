@@ -657,6 +657,22 @@ module.exports.help = {
       geral:"A escolha de soluções de preservação deve ser feita para cada um dos sistemas identificados e que passaram para a fase 3."+
           "Para este efeito é necessário utilizar os dados recolhidos nas fases anteriores, cruzados com os aspetos gestionários, nomeadamente: a política e gestão orçamental, o alinhamento da plataforma tecnológica com o negócio, recursos humanos e impacto de eventual mudança."+
           "O planeamento é feito sobre duas perspetivas, que se complementam no tempo: a utilização operacional e a utilização como memória.",
+      utilOperacional: "Estratégia de preservação aplicável à informação durante o período vigente do PCA",
+      metodoPreservacao: "<ol><li><b>Retrocompatibilidade.</b> Continuar a aquisição de novas versões do sistema em que a informação é produzida e guardada. É aconselhável quando é imprescindível manter a operacionalização e funcionalidades específicas do sistema.</li>"+
+                         "<li><b>Migração da informação.</b> Passar a informação contida num sistema num determinado formato para um formato alternativo mais adequado a ser preservado. Abandona-se o sistema original em que os dados residiam e decrementa-se os mesmos para uma estrutura mais simplificada ou, se existir, para um formato estável e não proprietário mais adequado à preservação.A migração de dados pode ser feita em diversas situações, designadamente: "+
+
+                         "<ul><li>Quando uma versão do sistema é substituída por outra mais recente.</li>"+
+                         "<li>Quando um sistema é substituído por outro completamente diferente.</li>"+
+                         "<li>Quando há informação dentro de um sistema que já expirou o seu PCA e se pretenda extraí-la para melhorar o desempenho do sistema.</li>"+
+                         "<li>Quando seja necessário desativar um sistema que contenha informação de conservação definitiva.</li></ul> </li>"+
+                         "<li><b>Outro.</b> Especificar qual.</li></ol>",
+      fundMetodoPreservacao: "Explicitar os motivos que conduziram à seleção do método de preservação.Incluir a menção ao formato de preservação. O Regulamento de Interoperabilidade Digital preconiza um conjunto de formatos que devem ser utilizados. No entanto será necessário recorrer a outras fontes de autoridade sempre que seja identificado um formato que não conste deste regulamento.",
+      lacunas: "Indicar lacunas nos SI ou na plataforma teconológica que seja necessário modificar ou reforçar de forma a melhor a adaptar para preservar com segurança a informação durante o tempo em que a entidade dela necessita.",
+      utilMemoria: "Estratégia aplicável à informação de conservação definitiva que já tenha excedido o seu PCA.",
+      metodoPreservacaoMemoria: "<ol><li><b>Migração da informação.</b> Passar a informação contida num sistema num determinado formato para um formato alternativo mais adequado a ser preservado. Abandona-se o sistema original em que os dados residiam e decrementa-se os mesmos para uma estrutura mais simplificada ou, se existir, para um formato estável e não proprietário mais adequado à preservação.A migração de dados para arquivo digital especializado em preservação é uma opção.</li>"+
+                                "<li><b>Encapsulamento.</b> Gestão de Informação de Representação, de forma a permitir documentar tecnicamente a informação de arquivo detida no repositório, permitindo aos utilizadores interpretar a mesma sem ter de recorrer a especialistas ou a fontes de informação externa ao repositório.</li>"+
+                                "<li><b>Emulação.</b> Preservar as versões originais das representações digitais no repositório secundário.</li>"+
+                                "<li><b>Outro.</b> Especificar qual.</li></ol>",
     }
   }
 };
