@@ -123,7 +123,7 @@ export default {
           "/legislacao/" + this.idLegislacao
         );
         this.legislacao = await this.preparaLegislacao(response2.data);
-        this.titulo = `Tabela de Seleção de ${response2.data.tipo} ${response2.data.numero}`;
+        this.titulo = `RADA de ${response2.data.tipo} ${response2.data.numero}`;
       } else {
         this.idLegislacao = this.id.split("pgd_")[1];
         if (this.idLegislacao.includes("lc_"))

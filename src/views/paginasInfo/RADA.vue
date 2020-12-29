@@ -25,7 +25,7 @@
     <p class="content-text px-8 py-2">
         Uma tabela de seleção do RADA consiste numa estrutura hierárquica
         de classes que reflete a organização da documentação. Integra áreas
-        orgânico e/ou funcionais e series e subséries documentais, com as
+        orgânico e/ou funcionais e séries e subséries documentais, com as
         respetivas descrições de contextualização para avaliação. O último nível,
         série ou subsérie, fixa as decisões de avaliação, i.e., o período de
         tempo que deve manter a informação (prazo de conservação administrativa),
@@ -36,14 +36,14 @@
         instalação a que se aplica a tabela de seleção.
     </p>
     <p class="content-text px-8 py-2">
-        Para aceder ao catálogo dos RADA e respetivas tabelas de seleção aprovados
-        pela DGLAB e disponibilizados na CLAV, selecione a opção
+        Para aceder ao catálogo dos RADA e respetivas tabelas de seleção aprovadas
+        pela DGLAB e disponibilizadas na CLAV, selecione a opção
         <span class="content-title-2">CONSULTAR.</span>
     </p>
     <p class="content-text px-8 py-2">
         Para propor um RADA, selecione a opção <b>CRIAR. Deve estar registado
             na CLAV para aceder a esta funcionalidade. Consulte as instruções em
-            <a @click="$router.push('/forminstr')">Formulários e instruções</a></b>.
+            <a @click="$router.push('/docsporclasse')">Formulários e instruções</a></b>.
     </p>
     <p class="content-title-2 px-8 py-10 pb-3">
         CONSULTAR
