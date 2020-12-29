@@ -46,15 +46,10 @@ export default {
         this.$router.push("/rada/" + codigo);
     },
     async fazerDownloadRADA(codigo, tipo) {
-      if(tipo == 'RadaAntigo'){
-        alert('RADA antigo: ' + codigo)
-      }
-      else{
         let response = await this.$request("get", "/rada/" + codigo);
         let rada = response.data;
         if (!!rada) {
           gerarPDF(rada);
-        }
       }
     },
   },

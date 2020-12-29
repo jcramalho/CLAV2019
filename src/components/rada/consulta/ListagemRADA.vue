@@ -29,6 +29,11 @@
           :search="search"
           :footer-props="footer_props"
         >
+
+          <template v-slot:no-data>
+              <p>Ainda não há instrumentos deste tipo carregados na plataforma.</p>
+          </template>
+
           <template v-slot:no-results>
             <v-alert
               :value="true"
