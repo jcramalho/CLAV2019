@@ -228,7 +228,6 @@ const lhost = require("@/config/global").host;
 export default {
   props: ["lista", "tipo"],
   data: () => ({
-    ready: false,
     pathAPI: "",
     authToken: "",
     search: "",
@@ -294,7 +293,6 @@ export default {
     this.authToken = this.authToken.replace(" ", "=");
 
     this.pathAPI = lhost;
-    this.ready = true;
   },
 };
 </script>

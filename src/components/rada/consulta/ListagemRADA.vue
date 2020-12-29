@@ -49,10 +49,22 @@
               <td>{{ props.item.sumario }}</td>
               <td>{{ props.item.estado }}</td>
               <td>
-                <v-btn text @click="$emit('ver', props.item.codigo)"
+                <v-btn text @click="$emit('ver', props.item.idRADA, tipo)"
                   ><v-icon>remove_red_eye</v-icon></v-btn
                 >
-                <v-btn text @click="$emit('download', props.item.codigo)"
+
+                <v-btn v-if="(tipo=='RadaAntigo')&&(props.item.link.startsWith('CLAV'))" text 
+                  :href="
+                    pathAPI +
+                    '/ficheirosEstaticos?caminho=documentos%2FRADA%2FDespacho' +
+                    props.item.link.split('Despacho')[1] +
+                    '&' +
+                    authToken
+                  ">
+                    <v-icon color="#c62828">picture_as_pdf</v-icon>
+                </v-btn>
+
+                <v-btn v-else text @dblclick="$emit('download', props.item.idRADA, tipo)" @click="debug(props.item.link)"
                   ><v-icon color="#c62828">picture_as_pdf</v-icon></v-btn
                 >
               </td>
@@ -73,10 +85,13 @@
 </template>
 
 <script>
+const lhost = require("@/config/global").host;
 
 export default {
-  props: ["lista", "titulo"],
+  props: ["lista", "titulo", "tipo"],
   data: () => ({
+    pathAPI: "",
+    authToken: "",
     search: "",
     headers: [
         {
@@ -132,7 +147,14 @@ export default {
       "items-per-page-options": [10, 20, 100],
       "items-per-page-text": "Mostrar",
     },
-  })
+  }),
+
+  created: async function () {
+    this.authToken = await this.$getAuthToken();
+    this.authToken = this.authToken.replace(" ", "=");
+
+    this.pathAPI = lhost;
+  },
 };
 </script>
 

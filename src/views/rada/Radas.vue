@@ -15,6 +15,7 @@
     <ListagemRADA 
       v-else
       :lista="radaAntigos"
+      tipo="RadaAntigo"
       titulo="RADA"
       @download="fazerDownloadRADA"
       @ver="redirecionar"
@@ -38,15 +39,22 @@ export default {
     ListagemRADA, Loading,
   },
   methods: {
-    redirecionar(codigo) {
-      this.$router.push("/rada/" + codigo);
+    redirecionar(codigo, tipo) {
+      if(tipo == 'RadaAntigo')
+        this.$router.push("/pgd/" + codigo);
+      else
+        this.$router.push("/rada/" + codigo);
     },
-    async fazerDownloadRADA(codigo) {
-      let response = await this.$request("get", "/rada/" + codigo);
-      let rada = response.data;
-
-      if (!!rada) {
-        gerarPDF(rada);
+    async fazerDownloadRADA(codigo, tipo) {
+      if(tipo == 'RadaAntigo'){
+        alert('RADA antigo: ' + codigo)
+      }
+      else{
+        let response = await this.$request("get", "/rada/" + codigo);
+        let rada = response.data;
+        if (!!rada) {
+          gerarPDF(rada);
+        }
       }
     },
   },
