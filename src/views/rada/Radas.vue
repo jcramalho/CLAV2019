@@ -1,25 +1,29 @@
 <template>
   <div>
-    <Loading v-if="!radasReady" :message="'fontes de legitimação'" />
+    <div>
+      <Loading v-if="!radasReady" :message="'fontes de legitimação'" />
 
-    <ListagemRADA 
-      v-else
-      :lista="radas"
-      titulo="RADA/CLAV"
-      @download="fazerDownloadRADA"
-      @ver="redirecionar"
-    />
+      <ListagemRADA 
+        v-else
+        :lista="radas"
+        titulo="RADA/CLAV"
+        @download="fazerDownloadRADA"
+        @ver="redirecionar"
+      />
+    </div>
 
-    <Loading v-if="!radaAntigosReady" :message="'fontes de legitimação'" />
+    <div>
+      <Loading v-if="!radaAntigosReady" :message="'fontes de legitimação'" />
 
-    <ListagemRADA 
-      v-else
-      :lista="radaAntigos"
-      tipo="RadaAntigo"
-      titulo="RADA"
-      @download="fazerDownloadRADA"
-      @ver="redirecionar"
-    />
+      <ListagemRADA 
+        v-else
+        :lista="radaAntigos"
+        tipo="RadaAntigo"
+        titulo="RADA"
+        @download="fazerDownloadRADA"
+        @ver="redirecionar"
+      />
+    </div>
   </div> 
 </template>
 
