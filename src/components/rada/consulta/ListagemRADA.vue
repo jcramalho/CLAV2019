@@ -49,8 +49,15 @@
             <tr>
               <td>{{ props.item.data }}</td>
               <td>{{ props.item.tipo }}</td>
-              <td>{{ props.item.numero }}</td>
-              <td>{{ props.item.entidade }} ({{props.item.tipoEntidade}})</td>
+              <td><a :href="'/legislacao/' + props.item.idLeg">{{ props.item.numero }}</a></td>
+              <td>
+                  <span v-if="props.item.tipoEntidade == 'Entidade'">
+                        <a :href="'/entidades/ent_' + props.item.entidade">{{ props.item.entidade }} (Entidade)</a>
+                  </span>
+                  <span v-else>
+                        <a :href="'/tipologias/tip_' + props.item.entidade">{{ props.item.entidade }} (Tipologia)</a>
+                  </span>
+              </td>
               <td>{{ props.item.sumario }}</td>
               <td>{{ props.item.estado }}</td>
               <td>
@@ -147,7 +154,6 @@ export default {
             class: "subtitle-3",
         }
     ],
-    dialog: false,
     footer_props: {
       "items-per-page-options": [10, 20, 100],
       "items-per-page-text": "Mostrar",

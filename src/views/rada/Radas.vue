@@ -30,7 +30,7 @@
 <script>
 import ListagemRADA from "@/components/rada/consulta/ListagemRADA.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
-import { gerarPDF } from "@/utils/pdfRADA";
+//import { gerarPDF } from "@/utils/pdfRADA";
 
 export default {
   data: () => ({
@@ -50,11 +50,12 @@ export default {
         this.$router.push("/rada/" + codigo);
     },
     async fazerDownloadRADA(codigo, tipo) {
-        let response = await this.$request("get", "/rada/" + codigo);
-        let rada = response.data;
-        if (!!rada) {
-          gerarPDF(rada);
-      }
+        alert('Funcionalidade desativada para ser revista.')
+        //let response = await this.$request("get", "/rada/" + codigo);
+        //let rada = response.data;
+        //if (!!rada) {
+        //  gerarPDF(rada);
+      //}
     },
   },
   async created() {
