@@ -11,13 +11,13 @@
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
-    <Definicoes v-if="this.$store.state.token != ''" :drawer="drawD" :socket="socket" />
-    <Notificacoes
+    <Definicoes v-if="this.$store.state.token != ''" :drawer="drawD" />
+    <!-- <Notificacoes
       v-if="this.$store.state.token != ''"
       :drawer="drawN"
       :notificacoes="notificacoes"
       @removerNotificacao="removerNotificacao($event)"
-    />
+    /> -->
     <v-main class="px-4">
       <router-view class="pt-8" />
     </v-main>
@@ -32,7 +32,7 @@ import PageFooter from "@/components/PageFooter.vue"; // @ is an alias to /src
 import MainPageHeader from "@/components/MainPageHeader.vue"; // @ is an alias to /src
 import Definicoes from "@/components/principal/Definicoes.vue";
 import Notificacoes from "@/components/principal/Notificacoes.vue";
-import io from "socket.io-client";
+// import io from "socket.io-client";
 import { bus } from "./main";
 const lhost = require("@/config/global").host;
 
@@ -100,39 +100,39 @@ export default {
       this.size = size;
     },
     drawerDefinicoes() {
-      this.drawN = false;
+      //this.drawN = false;
       this.drawD = !this.drawD;
     },
-    drawerNotificacoes() {
-      this.drawD = false;
-      this.drawN = !this.drawN;
-    },
-    removerNotificacao(msg) {
-      const index = this.notificacoes.indexOf(msg);
-      if (index > -1) {
-        this.notificacoes.splice(index, 1);
-      }
-      this.socket.emit("remove", msg);
-    },
-    consume() {
-      this.notificacoes = [];
-      var email = this.$verifyTokenUser().email;
-      if (email) {
-        this.socket = io.connect("http://localhost:7779", {
-          reconnectionAttempts: 1,
-        }); //lhost.replace('/v2', '')
-        this.socket.emit("email", {
-          email: email,
-        });
-        this.socket.on(this.$verifyTokenUser().email, (data) => {
-          this.notificacoes.push(JSON.parse(data));
-        });
-      }
-    },
+    // drawerNotificacoes() {
+    //   this.drawD = false;
+    //   this.drawN = !this.drawN;
+    // },
+    // removerNotificacao(msg) {
+    //   const index = this.notificacoes.indexOf(msg);
+    //   if (index > -1) {
+    //     this.notificacoes.splice(index, 1);
+    //   }
+    //   this.socket.emit("remove", msg);
+    // },
+    // consume() {
+    //   this.notificacoes = [];
+    //   var email = this.$verifyTokenUser().email;
+    //   if (email) {
+    //     this.socket = io.connect("http://localhost:7779", {
+    //       reconnectionAttempts: 1,
+    //     }); //lhost.replace('/v2', '')
+    //     this.socket.emit("email", {
+    //       email: email,
+    //     });
+    //     this.socket.on(this.$verifyTokenUser().email, (data) => {
+    //       this.notificacoes.push(JSON.parse(data));
+    //     });
+    //   }
+    // },
   },
   data: () => ({
     drawD: false,
-    drawN: false,
+    //drawN: false,
     snackbar: false,
     authenticated: false,
     notificacoes: [],
@@ -144,12 +144,12 @@ export default {
     legislacaoOps: ["Listar", "Consultar", "Inserir", "Alterar", "Desativar"],
     level: 0,
   }),
-  created() {
-    if (this.$store.state.token != "") this.consume();
-    bus.$on("notificacoes", (d) => {
-      this.consume();
-    });
-  },
+  // created() {
+  //   if (this.$store.state.token != "") this.consume();
+  //   bus.$on("notificacoes", (d) => {
+  //     this.consume();
+  //   });
+  // },
 };
 </script>
 
