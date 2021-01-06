@@ -52,8 +52,8 @@ export default {
             text: leg.link
           },
           entidades: {
-            campo: "Entidades",
-            text: leg.entidades
+            campo: "Entidades/Tipologias",
+            text: leg.entidades.concat(leg.tipologias)
           }
         };
         return myLegislacao;
@@ -162,15 +162,6 @@ export default {
         );
         this.legislacao = await this.preparaLegislacao(response2.data);
         this.titulo = `Tabela de Seleção da ${response2.data.tipo} ${response2.data.numero}`;
-        let entidades = new Set();
-        this.classes
-          .filter(c => c.donos)
-          .map(c => c.donos.map(d => entidades.add(d.entDono)));
-        this.classes
-          .filter(c => c.participantes)
-          .map(c => c.participantes.map(p => entidades.add(p.entParticipante)));
-
-        this.legislacao.entidades.text = Array.from(entidades);
       }
     } catch (e) {
       this.classes = [];

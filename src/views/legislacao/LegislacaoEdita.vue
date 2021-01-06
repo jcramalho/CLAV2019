@@ -12,26 +12,36 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     EditaLegislacao,
-    Loading,
+    Loading
   },
 
   data: () => ({
     legislacao: {},
     dadosReady: false,
-    entidades: null,
+    entidades: null
   }),
 
   methods: {
     loadEntidades: async function() {
       try {
         let response = await this.$request("get", "/entidades");
+        let response2 = await this.$request("get", "/tipologias");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id,
+            id: item.id
           };
         });
+        this.entidades = this.entidades.concat(
+          response2.data.map(tip => {
+            return {
+              sigla: tip.sigla,
+              designacao: tip.designacao,
+              id: tip.id
+            };
+          })
+        );
       } catch (error) {
         return error;
       }
@@ -47,15 +57,17 @@ export default {
           data: leg.data,
           link: leg.link,
           diplomaFonte: leg.fonte,
-          entidadesSel: JSON.parse(JSON.stringify(leg.entidades)),
+          entidadesSel: JSON.parse(
+            JSON.stringify(leg.entidades.concat(leg.tipologias))
+          ),
           processosSel: proReg,
-          estado: leg.estado,
+          estado: leg.estado
         };
         return myLegislacao;
       } catch (e) {
         return {};
       }
-    },
+    }
   },
 
   created: async function() {
@@ -81,8 +93,8 @@ export default {
 
       let newEnts = [];
 
-      this.legislacao.entidadesSel.forEach((ent) => {
-        let index = this.entidades.findIndex((e) => e.sigla === ent.sigla);
+      this.legislacao.entidadesSel.forEach(ent => {
+        let index = this.entidades.findIndex(e => e.sigla === ent.sigla);
         newEnts.push(this.entidades[index]);
       });
 
@@ -92,6 +104,6 @@ export default {
     } catch (e) {
       return e;
     }
-  },
+  }
 };
 </script>
