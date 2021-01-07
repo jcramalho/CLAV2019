@@ -52,8 +52,8 @@ export default {
             text: leg.link
           },
           entidades: {
-            campo: "Entidades/Tipologias",
-            text: leg.entidades.concat(leg.tipologias)
+            campo: "Entidades",
+            text: leg.entidades
           }
         };
         return myLegislacao;

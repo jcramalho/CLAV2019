@@ -33,10 +33,7 @@
               <a :href="item.text" target="_blank">{{ item.text }}</a>
             </div>
             <div v-else>
-              <div
-                v-if="item.campo === 'Entidades/Tipologias'"
-                class="info-content"
-              >
+              <div v-if="item.campo === 'Entidades'" class="info-content">
                 <ol>
                   <li v-for="(ent, i) in item.text" :key="i">
                     <a :href="'/entidades/' + ent.id">{{ ent.sigla }}</a>

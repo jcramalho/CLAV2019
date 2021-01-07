@@ -60,7 +60,7 @@ export default {
           entidades: {
             campo: "Entidades",
             // text: await this.parseEntidades(leg.entidades)
-            text: leg.entidades.concat(leg.tipologias)
+            text: leg.entidades
           }
         };
         if (leg.estado == "Ativo") {

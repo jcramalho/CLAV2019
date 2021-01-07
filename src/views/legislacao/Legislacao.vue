@@ -96,13 +96,7 @@ export default {
               temp = temp + "," + listaLegislacao[i].entidades[j].sigla;
             }
           }
-          for (let j = 0; j < listaLegislacao[i].tipologias.length; j++) {
-            if (temp === "") {
-              temp = listaLegislacao[i].tipologias[j].sigla;
-            } else {
-              temp = temp + "," + listaLegislacao[i].tipologias[j].sigla;
-            }
-          }
+
           listaLegislacao[i].entidades = temp;
 
           myTree.push({
@@ -126,13 +120,6 @@ export default {
               temp = listaLegislacao[i].entidades[j].sigla;
             } else {
               temp = temp + "," + listaLegislacao[i].entidades[j].sigla;
-            }
-          }
-          for (let j = 0; j < listaLegislacao[i].tipologias.length; j++) {
-            if (temp === "") {
-              temp = listaLegislacao[i].tipologias[j].sigla;
-            } else {
-              temp = temp + "," + listaLegislacao[i].tipologias[j].sigla;
             }
           }
 

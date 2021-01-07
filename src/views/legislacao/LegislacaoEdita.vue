@@ -25,7 +25,6 @@ export default {
     loadEntidades: async function() {
       try {
         let response = await this.$request("get", "/entidades");
-        let response2 = await this.$request("get", "/tipologias");
         this.entidades = response.data.map(function(item) {
           return {
             sigla: item.sigla,
@@ -33,15 +32,6 @@ export default {
             id: item.id
           };
         });
-        this.entidades = this.entidades.concat(
-          response2.data.map(tip => {
-            return {
-              sigla: tip.sigla,
-              designacao: tip.designacao,
-              id: tip.id
-            };
-          })
-        );
       } catch (error) {
         return error;
       }
@@ -57,9 +47,7 @@ export default {
           data: leg.data,
           link: leg.link,
           diplomaFonte: leg.fonte,
-          entidadesSel: JSON.parse(
-            JSON.stringify(leg.entidades.concat(leg.tipologias))
-          ),
+          entidadesSel: JSON.parse(JSON.stringify(leg.entidades)),
           processosSel: proReg,
           estado: leg.estado
         };
