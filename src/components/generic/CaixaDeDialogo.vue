@@ -50,11 +50,17 @@
 <script>
 export default {
   name: "CaixaDeDialogo",
-  props: ["ativo", "items", "tipo"],
+  props: ["ativo", "tipo"],
   data() {
     return {
       dadosEditar: null,
       ativar: false,
+      items: [],
+      ready: false,
+      legislacao: {
+        legislacao: [],
+        legislacaoItems: [],
+      },
     };
   },
   methods: {
@@ -67,16 +73,65 @@ export default {
           this.$router.push(`/entidades/editar/ent_${this.dadosEditar.split(" ")[0]}`);
           break;
         case "Legislação":
-          this.$emit("editar", this.dadosEditar);
+          let leg = null;
+          leg = this.legislacao.legislacao.find(
+            (legislacao) => legislacao.numero === this.dadosEditar.split(" ")[0]
+          );
+          this.$router.push(`/legislacao/editar/${leg.id}`);
           break;
         default:
           break;
       }
-      this.$emit("fechar");
+      this.fechar();
+    },
+
+    // para os dialogs
+    preparaEntidades(dados) {
+      let dadosTratados = dados.filter((dado) => dado.estado === "Ativa");
+      dadosTratados = dadosTratados.map((dado) => `${dado.sigla} - ${dado.designacao}`);
+      this.items = dadosTratados;
+      this.ready = true;
+    },
+    preparaTipEntidades(dados) {
+      let dadosTratados = dados.filter((dado) => dado.estado === "Ativa");
+      dadosTratados = dadosTratados.map((dado) => `${dado.sigla} - ${dado.designacao}`);
+      this.items = dadosTratados;
+      this.ready = true;
+    },
+    preparaLegislacoes(legislacoes) {
+      this.legislacao.legislacao = JSON.parse(JSON.stringify(legislacoes));
+      let dadosTratados = legislacoes.filter((leg) => leg.estado === "Ativo");
+
+      dadosTratados = dadosTratados.map(
+        (legislacao) =>
+          `${legislacao.numero} - ${legislacao.sumario} - ${legislacao.tipo}`
+      );
+
+      this.legislacao.legislacaoItems = dadosTratados;
+      this.items = dadosTratados;
+      this.ready = true;
     },
     fechar() {
       this.$emit("fechar");
     },
+  },
+  async created() {
+    switch (this.tipo) {
+      case "Tipologia":
+        let responseTipologias = await this.$request("get", "/tipologias");
+        this.preparaTipEntidades(responseTipologias.data);
+        break;
+      case "Entidade":
+        let responseEntidades = await this.$request("get", "/entidades?processos=sem");
+        this.preparaEntidades(responseEntidades.data);
+        break;
+      case "Legislação":
+        let responseLegislacoes = await this.$request("get", "/legislacao");
+        this.preparaLegislacoes(responseLegislacoes.data);
+        break;
+      default:
+        break;
+    }
   },
 };
 </script>

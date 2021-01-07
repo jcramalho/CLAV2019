@@ -140,6 +140,7 @@ export default {
 
 .btns {
   grid-area: btns;
+  justify-self: right;
 }
 .panelbtn {
   color: rgb(18, 18, 172);
@@ -175,6 +176,5 @@ export default {
   background-color: white !important;
   color: black;
   grid-area: info;
-  overflow-y: scroll;
 }
 </style>

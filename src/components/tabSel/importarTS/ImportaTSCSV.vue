@@ -35,6 +35,48 @@
               class="content-text px-8 py-2 mb-3"
               style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
             >
+              Selecione a fonte de legitimação da Tabela de Seleção a importar:
+            </p>
+            <v-tooltip top color="info" open-delay="500">
+              <template v-slot:activator="{ on }">
+                <div
+                  class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
+                  style="min-height: 50px; max-width:70%;"
+                  v-on="on"
+                >
+                  <v-radio-group
+                    v-model="fonteLegitimacao"
+                    :rules="[
+                      v => !!v || 'Tem de escolher uma fonte de legitimação'
+                    ]"
+                    required
+                    row
+                    @change="fonteL"
+                  >
+                    <v-radio
+                      label="PGD/LC"
+                      color="indigo darken-4"
+                      value="PGD/LC"
+                    ></v-radio>
+                    <v-radio
+                      label="PGD"
+                      color="indigo darken-4"
+                      value="PGD"
+                    ></v-radio>
+                    <v-radio
+                      label="RADA"
+                      color="indigo darken-4"
+                      value="RADA"
+                    ></v-radio>
+                  </v-radio-group>
+                </div>
+              </template>
+              <span> Fonte de legitimação</span>
+            </v-tooltip>
+            <p
+              class="content-text px-8 py-2 mb-3"
+              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+            >
               Selecione o tipo de Tabela de Seleção:
             </p>
             <v-tooltip top color="info" open-delay="500">
@@ -44,28 +86,40 @@
                   style="min-height: 50px; max-width:70%;"
                   v-on="on"
                 >
-                  <v-select
-                    class="mt-n5 px-3"
-                    color="blue darken-3"
+                  <v-radio-group
                     :items="['Organizacional', 'Pluriorganizacional']"
-                    label="Tipo de Tabela de Seleção"
+                    required
                     v-model="tipo"
+                    row
                     @change="
                       {
                         entidade_tipologia = [];
-                        if (tipo == 'Pluriorganizacional') {
+                        if (
+                          tipo == 'Pluriorganizacional' &&
+                          fonteLegitimacao != 'RADA'
+                        ) {
                           designacao =
-                            'Tabela de seleção Pluriorganizacional...';
-                        } else {
+                            'Tabela de Seleção Pluriorganizacional...';
+                        } else if (
+                          tipo == 'Organizacional' &&
+                          fonteLegitimacao != 'RADA'
+                        ) {
                           designacao = null;
                         }
                       }
                     "
-                    clearable
-                    hide-details
-                    single-line
                   >
-                  </v-select>
+                    <v-radio
+                      label="Organizacional"
+                      color="indigo darken-4"
+                      value="Organizacional"
+                    ></v-radio>
+                    <v-radio
+                      label="Pluriorganizacional"
+                      color="indigo darken-4"
+                      value="Pluriorganizacional"
+                    ></v-radio>
+                  </v-radio-group>
                 </div>
               </template>
 
@@ -98,7 +152,10 @@
                         clearable
                         single-line
                         @change="
-                          designacao = `Tabela de Seleção de ${entidade_tipologia}`
+                          if (fonteLegitimacao != 'RADA')
+                            designacao = `Tabela de Seleção de ${entidade_tipologia}`;
+                          if (entidade_tipologia == undefined)
+                            designacao = null;
                         "
                       >
                       </v-autocomplete>
@@ -172,48 +229,7 @@
 
                 <span> Designação da Tabela de Seleção</span>
               </v-tooltip>
-              <p
-                class="content-text px-8 py-2 mb-3"
-                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
-              >
-                Selecione a fonte de legitimação da Tabela de Seleção a
-                importar:
-              </p>
-              <v-tooltip top color="info" open-delay="500">
-                <template v-slot:activator="{ on }">
-                  <div
-                    class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                    style="min-height: 50px; max-width:70%;"
-                    v-on="on"
-                  >
-                    <v-radio-group
-                      v-model="fonteLegitimacao"
-                      :rules="[
-                        v => !!v || 'Tem de escolher uma fonte de legitimação'
-                      ]"
-                      required
-                      row
-                    >
-                      <v-radio
-                        label="PGD/LC"
-                        color="indigo darken-4"
-                        value="PGD/LC"
-                      ></v-radio>
-                      <v-radio
-                        label="PGD"
-                        color="indigo darken-4"
-                        value="PGD"
-                      ></v-radio>
-                      <v-radio
-                        label="RADA"
-                        color="indigo darken-4"
-                        value="RADA"
-                      ></v-radio>
-                    </v-radio-group>
-                  </div>
-                </template>
-                <span> Fonte de legitimação</span>
-              </v-tooltip>
+
               <p
                 class="content-text px-8 py-2 mb-3"
                 style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
@@ -343,6 +359,7 @@
                     file.length == 0 ||
                     tipo == null ||
                     fonteLegitimacao == null ||
+                    entidade_tipologia == null ||
                     !entidade_tipologia.length
                 "
                 disabled
@@ -449,6 +466,26 @@
               </v-card-text>
             </div>
             <v-card-actions>
+              <v-btn
+                color="red darken-4"
+                rounded
+                dark
+                elevation="0"
+                class="px-4"
+                @click="goBack"
+              >
+                Voltar
+              </v-btn>
+              <v-btn
+                color="primary darken-1"
+                rounded
+                dark
+                elevation="0"
+                class="px-4"
+                @click="voltar"
+              >
+                Importar mais
+              </v-btn>
               <v-spacer></v-spacer>
               <v-btn
                 color="success darken-1"
@@ -548,7 +585,7 @@ export default {
     loading: false,
     entidades_tipologias: [],
     entidade_tipologia: [],
-    tipo: null,
+    tipo: "Organizacional",
     designacao: "",
     codigo: "",
     fonteLegitimacao: null,
@@ -615,7 +652,30 @@ export default {
           "/tabelasSelecao/importar",
           formData
         );
+        /*
+        var response2 = await this.$request(
+          "get",
+          "/legislacao/" + response.data.codigo.split("pgd_")[1]
+        );
 
+        Object.defineProperty(
+          response2.data,
+          "entidadesSel",
+          Object.getOwnPropertyDescriptor(response2.data, "entidades")
+        );
+        delete response2.data["entidades"];
+
+        console.log(response2.data);
+        response2.data.entidadesSel = response2.data.entidadesSel.concat(
+          response.data.entidadesSel
+        );
+
+        var response3 = await this.$request(
+          "put",
+          "/legislacao/" + response2.data.id,
+          response2.data
+        );
+        */
         var stats = "<ul>";
         for (var k in response.data.stats) {
           switch (k) {
@@ -678,14 +738,12 @@ export default {
           if (e.response.data.acrescenta) {
             this.dialogConfirmacao = {
               visivel: true,
-              mensagem:
-                "Erro ao inserir a Tabela de Seleção: As seguintes entidades estão presentes no ficheiro mas não foram selecionadas.\n"
+              mensagem: e.response.data.message
             };
           } else {
             this.dialogConfirmacao = {
               visivel: true,
-              mensagem:
-                "Erro ao inserir a Tabela de Seleção: As seguintes entidades foram selecionadas mas não se encontram presentes no ficheiro.\n"
+              mensagem: e.response.data.message
             };
           }
         } else {
@@ -713,9 +771,14 @@ export default {
     },
     selecionar: function() {
       this.dialogConfirmacao.visivel = false;
-      this.entidade_tipologia = this.entidade_tipologia.concat(
-        this.entidadesFalta.map(e => e.sigla)
-      );
+      if (this.tipo == "Pluriorganizacional")
+        this.entidade_tipologia = this.entidade_tipologia.concat(
+          this.entidadesFalta.map(e => e.sigla)
+        );
+      else {
+        this.entidade_tipologia = this.entidadesFalta.map(e => e.sigla)[0];
+        this.designacao = `Tabela de Seleção de ${this.entidade_tipologia}`;
+      }
       this.entidadesFalta = [];
       this.acrescenta = null;
     },
@@ -732,6 +795,31 @@ export default {
 
       this.entidadesFalta = [];
       this.acrescenta = null;
+    },
+    fonteL: function() {
+      if (this.fonteLegitimacao == "RADA") {
+        this.designacao =
+          "Relatório de Avaliação de Documentação Acumulada de ...";
+        this.tipo == "Pluriorganizacional"
+          ? (this.entidade_tipologia = [])
+          : "";
+      } else if (
+        this.tipo == "Pluriorganizacional" &&
+        this.fonteLegitimacao != "RADA"
+      )
+        this.designacao = "Tabela de Seleção Pluriorganizacional...";
+      else if (
+        this.tipo == "Organizacional" &&
+        this.fonteLegitimacao != "RADA" &&
+        this.entidade_tipologia &&
+        this.entidade_tipologia.length > 0
+      )
+        this.designacao = `Tabela de Seleção de ${this.entidade_tipologia}`;
+      else this.designacao = null;
+    },
+
+    voltar: function() {
+      this.$router.go();
     }
   }
 };

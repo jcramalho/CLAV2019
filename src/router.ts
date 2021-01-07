@@ -466,6 +466,12 @@ export default new Router({
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos"  }
     },
     {
+      path: "/pedidosnovos",
+      name: "pedidosNovos",
+      component: () => import("./components/pedidos/PedidosNovos.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos"  }
+    },
+    {
       path: "/pedidos/submissao/:idPedido",
       name: "submissaoPedido",
       component: () => import("./views/pedidos/PedidosSubmissao.vue"),

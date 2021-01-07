@@ -33,12 +33,15 @@
               <a :href="item.text" target="_blank">{{ item.text }}</a>
             </div>
             <div v-else>
-              <div v-if="item.campo === 'Entidades'" class="info-content">
-                <ul>
+              <div
+                v-if="item.campo === 'Entidades/Tipologias'"
+                class="info-content"
+              >
+                <ol>
                   <li v-for="(ent, i) in item.text" :key="i">
-                    <a :href="'/entidades/ent_' + ent">{{ ent }}</a>
+                    <a :href="'/entidades/' + ent.id">{{ ent.sigla }}</a>
                   </li>
-                </ul>
+                </ol>
               </div>
               <div v-else class="info-content">{{ item.text }}</div>
             </div>
@@ -205,13 +208,13 @@
                           <div class="info-label">Dono</div>
                         </v-col>
                         <v-col>
-                          <div class="info-content">
-                            <div v-for="(d, index) in item.donos" :key="index">
-                              <a :href="'/entidades/ent_' + d.entDono"
-                                >{{ d.entDono }};</a
-                              >
-                            </div>
-                          </div>
+                          <ol class="info-content">
+                            <li v-for="(d, index) in item.donos" :key="index">
+                              <a :href="'/entidades/ent_' + d.entDono">{{
+                                d.entDono
+                              }}</a>
+                            </li>
+                          </ol>
                         </v-col>
                       </v-row>
                       <v-row v-if="item.participantes">
@@ -219,17 +222,17 @@
                           <div class="info-label">Participante</div>
                         </v-col>
                         <v-col>
-                          <div class="info-content">
-                            <div
+                          <ol class="info-content">
+                            <li
                               v-for="(p, index) in item.participantes"
                               :key="index"
                             >
                               <a
                                 :href="'/entidades/ent_' + p.entParticipante"
                                 >{{ p.entParticipante }}</a
-                              >;
-                            </div>
-                          </div>
+                              >
+                            </li>
+                          </ol>
                         </v-col>
                       </v-row>
                     </v-card-text>

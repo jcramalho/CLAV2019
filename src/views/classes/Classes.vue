@@ -1,11 +1,11 @@
 <template>
-  <v-content
+  <v-main
     :class="{
       'px-6': $vuetify.breakpoint.smAndDown,
       'px-12': $vuetify.breakpoint.mdAndUp,
     }"
   >
-    <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
       <v-row>
         <v-col class="py-0 my-0">
           <v-row>
@@ -31,7 +31,7 @@
               </v-btn>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col class="py-0 my-0" style="text-align: right;">
+            <v-col class="py-0 my-0" style="text-align: right">
               <v-btn
                 @click="advancedSearch = !advancedSearch"
                 rounded
@@ -48,7 +48,7 @@
                   color="green lighten-2"
                   disabled
                   hide-details
-                  style="opacity: 1 !important;"
+                  style="opacity: 1 !important"
                 ></v-switch>
                 <unicon
                   name="zoom-icon"
@@ -62,19 +62,15 @@
             </v-col>
           </v-row>
 
-          <v-card flat style="border-radius: 10px !important;">
+          <v-card flat style="border-radius: 10px !important">
             <p
               class="content-title-1 py-5"
-              style="color: #4da0d0 !important;  text-align:center;"
+              style="color: #4da0d0 !important; text-align: center"
             >
               Consultar Lista Consolidada
             </p>
             <!-- !advancedSearch => Mostrar Classes Tree-->
-            <v-row
-              v-if="!advancedSearch"
-              justify="center"
-              class="text-center mx-0"
-            >
+            <v-row v-if="!advancedSearch" justify="center" class="text-center mx-0">
               <v-col class="mt-4">
                 <div
                   class="info-content"
@@ -86,8 +82,8 @@
                   <v-tooltip top color="info" open-delay="500">
                     <template v-slot:activator="{ on }">
                       <v-text-field
-                        style="text-align: center !important;"
-                        class="centered-input mt-n1 mb-2 px-8"
+                        style="text-align: center !important"
+                        class="centered-input mb-2 px-8"
                         v-model="search"
                         v-on="on"
                         label="Pesquisar por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
@@ -101,9 +97,8 @@
                       ></v-text-field>
                     </template>
                     <span
-                      >Pesquisar por código, título, notas de aplicação,
-                      exemplos de notas de aplicação ou termos de
-                      índice...</span
+                      >Pesquisar por código, título, notas de aplicação, exemplos de notas
+                      de aplicação ou termos de índice...</span
                     >
                   </v-tooltip>
                 </div>
@@ -169,14 +164,12 @@
                     dark
                     class="info-card mb-4"
                     v-if="
-                      classesCarregadas &&
-                        camposUsados[0].campo &&
-                        camposUsados[0].valor
+                      classesCarregadas && camposUsados[0].campo && camposUsados[0].valor
                     "
                   >
                     <v-card-title
                       class="headline mb-4"
-                      style="word-break: break-word !important;"
+                      style="word-break: break-word !important"
                     >
                       De seguida apresenta-se as classes em que:
                     </v-card-title>
@@ -185,39 +178,41 @@
                         <span v-if="c.campo.label">
                           <v-chip
                             class="ma-2"
-                            style="background-color: rgba(0, 0, 0, 0.25) !important;"
+                            style="background-color: rgba(0, 0, 0, 0.25) !important"
                           >
                             <span
                               class="font-weight-medium white--text mx-3"
-                              style="font-size: 1.1rem !important;"
+                              style="font-size: 1.1rem !important"
                             >
-                              {{
-                                entidades.filter((e) => e.value == c.valor)[0]
-                                  .text
-                              }}
+                              {{ entidades.filter((e) => e.value == c.valor)[0].text }}
                             </span>
                             <span
                               v-if="c.not"
                               class="mt-1"
-                              style="color: #ff5252; text-shadow: 0px 1px 2px rgba(255, 82, 82, 0.5);"
+                              style="
+                                color: #ff5252;
+                                text-shadow: 0px 1px 2px rgba(255, 82, 82, 0.5);
+                              "
                             >
                               não é
                             </span>
                             <span
                               class="mt-1"
-                              style="color: #00ae07; text-shadow: 0px 1px 2px rgba(0, 174, 7, 0.5);"
+                              style="
+                                color: #00ae07;
+                                text-shadow: 0px 1px 2px rgba(0, 174, 7, 0.5);
+                              "
                               v-else
                             >
                               é
                             </span>
                             <span
                               class="font-weight-medium white--text mx-3"
-                              style="font-size: 1.1rem !important;"
+                              style="font-size: 1.1rem !important"
                             >
                               {{
-                                c.campo.enum.filter(
-                                  (e) => e.value == c.campo.nome
-                                )[0].text
+                                c.campo.enum.filter((e) => e.value == c.campo.nome)[0]
+                                  .text
                               }}
                             </span>
                           </v-chip>
@@ -225,11 +220,11 @@
                         <span v-else>
                           <v-chip
                             class="ma-2"
-                            style="background-color: rgba(0, 0, 0, 0.25) !important;"
+                            style="background-color: rgba(0, 0, 0, 0.25) !important"
                           >
                             <span
                               class="font-weight-medium white--text mx-3"
-                              style="font-size: 1.1rem !important;"
+                              style="font-size: 1.1rem !important"
                             >
                               {{
                                 camposPesquisa.filter(
@@ -240,26 +235,30 @@
                             <span
                               v-if="c.not"
                               class="mt-1"
-                              style="color: #ff5252; text-shadow: 0px 1px 2px rgba(255, 82, 82, 0.5);"
+                              style="
+                                color: #ff5252;
+                                text-shadow: 0px 1px 2px rgba(255, 82, 82, 0.5);
+                              "
                             >
                               não é igual a
                             </span>
                             <span
                               class="mt-1"
-                              style="color: #00ae07; text-shadow: 0px 1px 2px rgba(0, 174, 7, 0.5);"
+                              style="
+                                color: #00ae07;
+                                text-shadow: 0px 1px 2px rgba(0, 174, 7, 0.5);
+                              "
                               v-else
                             >
                               é igual a
                             </span>
                             <span
                               class="font-weight-medium white--text mx-3"
-                              style="font-size: 1.1rem !important;"
+                              style="font-size: 1.1rem !important"
                             >
                               {{
                                 c.campo.enum.length > 0
-                                  ? c.campo.enum.filter(
-                                      (e) => e.value == c.valor
-                                    )[0].text
+                                  ? c.campo.enum.filter((e) => e.value == c.valor)[0].text
                                   : c.valor
                               }}
                             </span>
@@ -267,7 +266,10 @@
                         </span>
                         <div class="ma-2" v-if="i + 1 < camposUsados.length">
                           <v-chip
-                            style="background-color: rgba(0, 0, 0, 0.25) !important; color: #ffc107 !important;"
+                            style="
+                              background-color: rgba(0, 0, 0, 0.25) !important;
+                              color: #ffc107 !important;
+                            "
                             >{{ conetor }}</v-chip
                           >
                         </div>
@@ -343,11 +345,7 @@
                             v-model="camposUsados[index].not"
                           />
                         </v-col>
-                        <v-col
-                          cols="12"
-                          md="4"
-                          v-if="camposUsados[index].campo"
-                        >
+                        <v-col cols="12" md="4" v-if="camposUsados[index].campo">
                           <div v-if="camposUsados[index].campo.label">
                             <v-autocomplete
                               :items="camposUsados[index].campo.enum"
@@ -363,9 +361,7 @@
                             />
                           </div>
                           <div v-else>
-                            <div
-                              v-if="camposUsados[index].campo.enum.length > 0"
-                            >
+                            <div v-if="camposUsados[index].campo.enum.length > 0">
                               <v-autocomplete
                                 :items="camposUsados[index].campo.enum"
                                 label="Valor a pesquisar"
@@ -477,201 +473,201 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-content>
+  </v-main>
 </template>
 
 <script>
-import Loading from '@/components/generic/Loading';
+import Loading from "@/components/generic/Loading";
 export default {
-  props: ['savedSearch'],
+  props: ["savedSearch"],
   components: {
     Loading,
   },
   data: () => ({
     advancedSearch: false,
     // showClasses: true,
-    regraCampo: [(v) => !!v || 'Campo a pesquisar é obrigatório.'],
-    regraValor: [(v) => !!v || 'Valor a pesquisar é obrigatório.'],
-    regraV: [(v) => !!v || 'Obrigatório. Escolha um valor.'],
-    conetor: 'E',
-    opLogicas: ['E', 'OU'],
+    regraCampo: [(v) => !!v || "Campo a pesquisar é obrigatório."],
+    regraValor: [(v) => !!v || "Valor a pesquisar é obrigatório."],
+    regraV: [(v) => !!v || "Obrigatório. Escolha um valor."],
+    conetor: "E",
+    opLogicas: ["E", "OU"],
     camposUsados: [
       {
         campo: null,
         subcampo: null,
-        valor: '',
+        valor: "",
         not: false,
       },
     ],
     camposPesquisa: [
       {
-        text: 'Código',
+        text: "Código",
         value: {
-          nome: 'id',
-          mask: '###.##.###.##',
+          nome: "id",
+          mask: "###.##.###.##",
           enum: [],
         },
       },
       {
-        text: 'Título',
+        text: "Título",
         value: {
-          nome: 'titulo',
+          nome: "titulo",
           enum: [],
         },
       },
       {
-        text: 'Estado',
+        text: "Estado",
         value: {
-          nome: 'status',
+          nome: "status",
           enum: [],
         },
       },
       {
-        text: 'Descrição',
+        text: "Descrição",
         value: {
-          nome: 'descricao',
+          nome: "descricao",
           enum: [],
         },
       },
       {
-        text: 'Tipo de processo',
+        text: "Tipo de processo",
         value: {
-          nome: 'tp',
+          nome: "tp",
           enum: [],
         },
       },
       {
-        text: 'Processo Transversal',
+        text: "Processo Transversal",
         value: {
-          nome: 'pt',
+          nome: "pt",
           enum: [],
         },
       },
       {
-        text: 'Notas de Aplicação',
+        text: "Notas de Aplicação",
         value: {
-          nome: 'na',
+          nome: "na",
           enum: [],
         },
       },
       {
-        text: 'Exemplos de Notas de Aplicação',
+        text: "Exemplos de Notas de Aplicação",
         value: {
-          nome: 'exemploNa',
+          nome: "exemploNa",
           enum: [],
         },
       },
       {
-        text: 'Notas de Exclusão',
+        text: "Notas de Exclusão",
         value: {
-          nome: 'ne',
+          nome: "ne",
           enum: [],
         },
       },
       {
-        text: 'Termos de Índice',
+        text: "Termos de Índice",
         value: {
-          nome: 'ti',
+          nome: "ti",
           enum: [],
         },
       },
       {
-        text: 'PCA',
+        text: "PCA",
         value: {
-          nome: 'pca',
+          nome: "pca",
           enum: [],
         },
       },
       {
-        text: 'Forma de contagem do PCA',
+        text: "Forma de contagem do PCA",
         value: {
-          nome: 'fc_pca',
+          nome: "fc_pca",
           enum: [],
         },
       },
       {
-        text: 'Subforma de contagem do PCA',
+        text: "Subforma de contagem do PCA",
         value: {
-          nome: 'sfc_pca',
+          nome: "sfc_pca",
           enum: [],
         },
       },
       {
-        text: 'Justificação do PCA',
+        text: "Justificação do PCA",
         value: {
-          nome: 'crit_pca',
+          nome: "crit_pca",
           enum: [],
         },
       },
       {
-        text: 'DF',
+        text: "DF",
         value: {
-          nome: 'df',
+          nome: "df",
           enum: [
             {
-              text: 'Conservação',
-              value: 'C',
+              text: "Conservação",
+              value: "C",
             },
             {
-              text: 'Conservação Parcial',
-              value: 'CP',
+              text: "Conservação Parcial",
+              value: "CP",
             },
             {
-              text: 'Eliminação',
-              value: 'E',
+              text: "Eliminação",
+              value: "E",
             },
             {
-              text: 'Não Especificado',
-              value: 'NE',
+              text: "Não Especificado",
+              value: "NE",
             },
           ],
         },
       },
       {
-        text: 'Justificação do DF',
+        text: "Justificação do DF",
         value: {
-          nome: 'crit_df',
+          nome: "crit_df",
           enum: [],
         },
       },
       {
-        text: 'Entidade',
+        text: "Entidade",
         value: {
-          nome: 'entidade',
-          label: 'Entidade a pesquisar',
+          nome: "entidade",
+          label: "Entidade a pesquisar",
           enum: [
             {
-              text: 'Dona',
-              value: 'donos',
+              text: "Dona",
+              value: "donos",
             },
             {
-              text: 'Participante',
-              value: 'participantes',
+              text: "Participante",
+              value: "participantes",
             },
           ],
         },
       },
       {
-        text: 'Tipologia',
+        text: "Tipologia",
         value: {
-          nome: 'tipologia',
-          label: 'Tipologia a pesquisar',
+          nome: "tipologia",
+          label: "Tipologia a pesquisar",
           enum: [
             {
-              text: 'Dona',
-              value: 'donos',
+              text: "Dona",
+              value: "donos",
             },
             {
-              text: 'Participante',
-              value: 'participantes',
+              text: "Participante",
+              value: "participantes",
             },
           ],
         },
       },
       {
-        text: 'Tipo de participação',
+        text: "Tipo de participação",
         value: {
-          nome: 'tipo_participacao',
+          nome: "tipo_participacao",
           enum: [],
         },
       },
@@ -684,20 +680,20 @@ export default {
     search: null,
     selected: [],
     selectedParents: [],
-    exportTypes: ['JSON', 'XML', 'CSV'],
+    exportTypes: ["JSON", "XML", "CSV"],
     notValues: [
       {
-        text: 'é',
+        text: "é",
         value: false,
       },
       {
-        text: 'não é',
+        text: "não é",
         value: true,
       },
     ],
   }),
-  created: async function() {
-    var myClasses = await this.$request('get', '/classes?info=pesquisa');
+  created: async function () {
+    var myClasses = await this.$request("get", "/classes?info=pesquisa");
     this.classesTree = await this.preparaTree(myClasses.data);
     this.classesOriginal = this.classesTree;
 
@@ -719,7 +715,7 @@ export default {
       await this.loadTiposParticipacoes();
     }
 
-    var entidades = await this.$request('get', '/entidades');
+    var entidades = await this.$request("get", "/entidades");
     this.entidades = entidades.data.map((e) => {
       return {
         text: e.designacao,
@@ -727,7 +723,7 @@ export default {
       };
     });
 
-    var tipologias = await this.$request('get', '/tipologias');
+    var tipologias = await this.$request("get", "/tipologias");
     this.tipologias = tipologias.data.map((e) => {
       return {
         text: e.designacao,
@@ -738,21 +734,21 @@ export default {
   },
   methods: {
     goBack() {
-      this.$router.push('/lcinfo');
+      this.$router.push("/lcinfo");
     },
     //Necessário para o caso especial de pesquisar com o campo Entidade
-    cleanNome: function() {
+    cleanNome: function () {
       for (var i = 0; i < this.camposPesquisa.length; i++) {
-        if (this.camposPesquisa[i].text == 'Entidade') {
-          this.camposPesquisa[i].value.nome = '';
+        if (this.camposPesquisa[i].text == "Entidade") {
+          this.camposPesquisa[i].value.nome = "";
         }
       }
     },
-    load: async function(voc, transF, campo) {
-      var response = await this.$request('get', '/vocabularios/' + voc);
+    load: async function (voc, transF, campo) {
+      var response = await this.$request("get", "/vocabularios/" + voc);
       var list = response.data.map(transF);
 
-      if (list.length > 0 && typeof list[0] === 'object') {
+      if (list.length > 0 && typeof list[0] === "object") {
         list = list.sort((a, b) => a.text.localeCompare(b.text));
       } else {
         list = list.sort();
@@ -766,17 +762,17 @@ export default {
         }
       }
     },
-    loadStatus: async function() {
+    loadStatus: async function () {
       var transF = (item) => {
         return {
           text: item.termo,
-          value: item.idtermo.split('#vc_status_')[1],
+          value: item.idtermo.split("#vc_status_")[1],
         };
       };
 
-      await this.load('vc_status', transF, 'Estado');
+      await this.load("vc_status", transF, "Estado");
     },
-    loadTipoProc: async function() {
+    loadTipoProc: async function () {
       var transF = (item) => {
         return {
           text: item.termo,
@@ -784,9 +780,9 @@ export default {
         };
       };
 
-      await this.load('vc_processoTipo', transF, 'Tipo de processo');
+      await this.load("vc_processoTipo", transF, "Tipo de processo");
     },
-    loadProcTrans: async function() {
+    loadProcTrans: async function () {
       var transF = (item) => {
         return {
           text: item.termo,
@@ -794,13 +790,9 @@ export default {
         };
       };
 
-      await this.load(
-        'vc_processoTransversalidade',
-        transF,
-        'Processo Transversal'
-      );
+      await this.load("vc_processoTransversalidade", transF, "Processo Transversal");
     },
-    loadPCAFormasContagem: async function() {
+    loadPCAFormasContagem: async function () {
       var transF = (item) => {
         return {
           text: item.termo,
@@ -808,13 +800,9 @@ export default {
         };
       };
 
-      await this.load(
-        'vc_pcaFormaContagem',
-        transF,
-        'Forma de contagem do PCA'
-      );
+      await this.load("vc_pcaFormaContagem", transF, "Forma de contagem do PCA");
     },
-    loadPCASubFormasContagem: async function() {
+    loadPCASubFormasContagem: async function () {
       var transF = (item) => {
         return {
           text: item.desc,
@@ -822,56 +810,48 @@ export default {
         };
       };
 
-      await this.load(
-        'vc_pcaSubformaContagem',
-        transF,
-        'Subforma de contagem do PCA'
-      );
+      await this.load("vc_pcaSubformaContagem", transF, "Subforma de contagem do PCA");
     },
-    loadCriterios: async function() {
+    loadCriterios: async function () {
       var transF = (item) => {
         return {
           text: item.termo,
           value:
-            'CriterioJustificacao' +
+            "CriterioJustificacao" +
             item.termo
-              .normalize('NFD')
-              .replace(/[\u0300-\u036f]/g, '')
-              .replace('informacional', 'Info')
-              .replace(' ', ''),
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .replace("informacional", "Info")
+              .replace(" ", ""),
         };
       };
 
-      await this.load('vc_pcaCriterios', transF, 'Justificação do PCA');
-      await this.load('vc_dfCriterios', transF, 'Justificação do DF');
+      await this.load("vc_pcaCriterios", transF, "Justificação do PCA");
+      await this.load("vc_dfCriterios", transF, "Justificação do DF");
     },
-    loadTiposParticipacoes: async function() {
+    loadTiposParticipacoes: async function () {
       var transF = (item) => {
-        let name = item.idtermo.split('#vc_processoParticipante_')[1];
+        let name = item.idtermo.split("#vc_processoParticipante_")[1];
         return {
           text: name.charAt(0).toUpperCase() + name.slice(1),
           value: name,
         };
       };
 
-      await this.load(
-        'vc_processoTipoParticipacao',
-        transF,
-        'Tipo de participação'
-      );
+      await this.load("vc_processoTipoParticipacao", transF, "Tipo de participação");
     },
-    addActive: function(code) {
+    addActive: function (code) {
       if (!this.selected.includes(code)) {
         this.selected.push(code);
       }
     },
-    buscarpais: function(code) {
-      let levelIds = code.split('.');
+    buscarpais: function (code) {
+      let levelIds = code.split(".");
       let iter = levelIds.length;
 
       for (let i = 0; i < iter; i++) {
         levelIds.splice(levelIds.length - 1, 1);
-        let levelId = levelIds.join('.');
+        let levelId = levelIds.join(".");
 
         if (!this.selectedParents.includes(levelId)) {
           this.selectedParents.push(levelId);
@@ -879,44 +859,41 @@ export default {
       }
     },
 
-    removerCampo: function(index) {
+    removerCampo: function (index) {
       this.camposUsados.splice(index, 1);
       if (this.camposUsados.length == 1) {
-        this.opLogicas = ['E', 'OU'];
+        this.opLogicas = ["E", "OU"];
       }
     },
 
-    cancelarPesquisa: function() {
+    cancelarPesquisa: function () {
       this.classesTree = this.classesOriginal;
       this.selected = [];
       this.selectedParents = [];
       this.camposUsados = [
         {
           campo: null,
-          valor: '',
+          valor: "",
           not: false,
         },
       ];
       this.cleanNome();
-      this.opLogicas = ['E', 'OU'];
-      this.conetor = 'E';
+      this.opLogicas = ["E", "OU"];
+      this.conetor = "E";
       this.advancedSearch = false;
       // this.showClasses = true;
     },
 
-    advancedFilter: async function(classes, op) {
+    advancedFilter: async function (classes, op) {
       var classesAux = [];
 
       for (var i = 0; i < classes.length; i++) {
-        classes[i].children = await this.advancedFilter(
-          classes[i].children,
-          op
-        );
+        classes[i].children = await this.advancedFilter(classes[i].children, op);
 
         var stat = op;
         for (let c of this.camposUsados) {
           var statAux;
-          let campo = '';
+          let campo = "";
 
           if (c.subcampo) {
             campo = c.subcampo;
@@ -931,7 +908,7 @@ export default {
               statAux = classes[i][campo] == c.valor;
             }
           } else {
-            let regExp = new RegExp(c.valor, 'g');
+            let regExp = new RegExp(c.valor, "g");
             statAux = regExp.test(classes[i][campo]);
           }
 
@@ -952,7 +929,7 @@ export default {
       return classesAux;
     },
 
-    pesquisaAvancada: async function() {
+    pesquisaAvancada: async function () {
       var valid = true;
 
       for (var i = 0; i < this.camposUsados.length; i++) {
@@ -971,9 +948,9 @@ export default {
           c.valor = c.valor.toLowerCase();
         }
 
-        if (this.conetor == 'E') {
+        if (this.conetor == "E") {
           classesFiltradas = await this.advancedFilter(classesFiltradas, true);
-        } else if (this.conetor == 'OU') {
+        } else if (this.conetor == "OU") {
           classesFiltradas = await this.advancedFilter(classesFiltradas, false);
         }
 
@@ -984,13 +961,13 @@ export default {
       }
     },
 
-    simpleFilter: async function(classes, searchText) {
+    simpleFilter: async function (classes, searchText) {
       var classesAux = [];
 
       for (var classe of classes) {
         var c = JSON.parse(JSON.stringify(classe));
         c.children = await this.simpleFilter(c.children, searchText);
-        let regExp = new RegExp(searchText, 'g');
+        let regExp = new RegExp(searchText, "g");
 
         if (
           regExp.test(c.id) ||
@@ -1001,8 +978,7 @@ export default {
         ) {
           this.addActive(c.id);
           this.buscarpais(c.id);
-          if (classe.children.length == 0 && c.children.length == 0)
-            classesAux.push(c);
+          if (classe.children.length == 0 && c.children.length == 0) classesAux.push(c);
         }
 
         if (c.children.length > 0) classesAux.push(c);
@@ -1010,19 +986,16 @@ export default {
       return classesAux;
     },
 
-    processaPesquisa: async function() {
+    processaPesquisa: async function () {
       this.classesTree = this.classesOriginal;
       var classesFiltradas = [];
       this.selected = [];
       this.selectedParents = [];
 
-      if (this.search != '' && this.search != null) {
+      if (this.search != "" && this.search != null) {
         var searchText = this.search.toLowerCase();
 
-        classesFiltradas = await this.simpleFilter(
-          this.classesOriginal,
-          searchText
-        );
+        classesFiltradas = await this.simpleFilter(this.classesOriginal, searchText);
       } else {
         classesFiltradas = this.classesOriginal;
       }
@@ -1031,8 +1004,8 @@ export default {
       this.advancedSearch = false;
       // this.showClasses = true;
     },
-    getTitulo: function(id) {
-      var codigos = id.split('.');
+    getTitulo: function (id) {
+      var codigos = id.split(".");
       var nivel = codigos.length;
       var found;
       var classes = this.classesTree;
@@ -1040,12 +1013,12 @@ export default {
       for (var i = 0; i < nivel; i++) {
         found = null;
         for (var j = 0; j < classes.length && !found; j++) {
-          if (classes[j].id == codigos.slice(0, i + 1).join('.')) {
+          if (classes[j].id == codigos.slice(0, i + 1).join(".")) {
             if (i == nivel - 1) {
-              found = classes[j].name.split(' - ')[1];
+              found = classes[j].name.split(" - ")[1];
             } else {
               classes = classes[j].children;
-              found = '';
+              found = "";
             }
           }
         }
@@ -1055,7 +1028,7 @@ export default {
     },
     download(filename, content, format) {
       var blob = new Blob([content], {
-        type: format + ';charset=utf-8;',
+        type: format + ";charset=utf-8;",
       });
 
       if (window.navigator.msSaveBlob) {
@@ -1064,25 +1037,25 @@ export default {
       } else {
         // FOR OTHER BROWSERS
         var url = URL.createObjectURL(blob);
-        var element = document.createElement('a');
+        var element = document.createElement("a");
 
-        element.setAttribute('href', url);
-        element.setAttribute('download', filename);
-        element.style.display = 'none';
+        element.setAttribute("href", url);
+        element.setAttribute("download", filename);
+        element.style.display = "none";
 
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
       }
     },
-    toXML: function(e, i) {
+    toXML: function (e, i) {
       var ret = `\t<item index="${i}" type="object">\n`;
       ret += `\t\t<codigo type="string">${e.codigo}</codigo>\n`;
       ret += `\t\t<titulo type="string">${e.titulo}</titulo>\n`;
       ret += `\t</item>`;
       return ret;
     },
-    exportarResultados: function(format) {
+    exportarResultados: function (format) {
       var res = JSON.parse(JSON.stringify(this.selected)).sort();
 
       res = res.map((c) => {
@@ -1094,31 +1067,31 @@ export default {
 
       var mediatype;
       switch (format) {
-        case 'JSON':
+        case "JSON":
           res = JSON.stringify(res, null, 4);
-          mediatype = 'application/json';
+          mediatype = "application/json";
           break;
-        case 'XML':
-          res = res.map(this.toXML).join('\n');
-          res = '<root>\n' + res;
-          res = res + '\n</root>';
+        case "XML":
+          res = res.map(this.toXML).join("\n");
+          res = "<root>\n" + res;
+          res = res + "\n</root>";
           res = `<?xml version="1.0" encoding="utf-8"?>\n` + res;
-          mediatype = 'application/xml';
+          mediatype = "application/xml";
           break;
-        case 'CSV':
-          res = res.map((e) => `"${e.codigo}","${e.titulo}"`).join('\n');
+        case "CSV":
+          res = res.map((e) => `"${e.codigo}","${e.titulo}"`).join("\n");
           res = `"Código","Título"\n` + res;
-          mediatype = 'text/csv';
+          mediatype = "text/csv";
           break;
         default:
           res = JSON.stringify(res, null, 4);
-          format = 'JSON';
-          mediatype = 'application/json';
+          format = "JSON";
+          mediatype = "application/json";
           break;
       }
-      this.download('classes.' + format.toLowerCase(), res, mediatype);
+      this.download("classes." + format.toLowerCase(), res, mediatype);
     },
-    preparaTree: function(lclasses) {
+    preparaTree: function (lclasses) {
       var myTree = [];
       for (var i = 0; i < lclasses.length; i++) {
         myTree.push({
@@ -1141,15 +1114,13 @@ export default {
           crit_df: lclasses[i].crit_df.map((j) => j.toLowerCase()),
           donos: lclasses[i].donos.map((d) => d.toLowerCase()),
           participantes: lclasses[i].participantes.map((p) => p.toLowerCase()),
-          tipo_participacao: lclasses[i].tipo_participacao.map((p) =>
-            p.toLowerCase()
-          ),
+          tipo_participacao: lclasses[i].tipo_participacao.map((p) => p.toLowerCase()),
           children: this.preparaTree(lclasses[i].filhos),
         });
       }
       return myTree;
     },
-    goToClasse: function(id) {
+    goToClasse: function (id) {
       var ss = undefined;
 
       if (this.selected.length > 0) {
@@ -1165,20 +1136,20 @@ export default {
       }
 
       this.$router.push({
-        name: 'consultaClasse',
+        name: "consultaClasse",
         params: {
-          idClasse: 'c' + id,
+          idClasse: "c" + id,
           savedSearch: ss,
         },
       });
     },
-    get: function(name) {
+    get: function (name) {
       return this[name];
     },
   },
   watch: {
-    search: function(newValue) {
-      if (newValue == '' || newValue == null) {
+    search: function (newValue) {
+      if (newValue == "" || newValue == null) {
         this.selected = [];
         this.selectedParents = [];
         this.classesTree = this.classesOriginal;
