@@ -175,6 +175,7 @@ export default {
   padding: 0% 5%;
   background-color: white !important;
   color: black;
+  overflow: auto;
   grid-area: info;
 }
 </style>

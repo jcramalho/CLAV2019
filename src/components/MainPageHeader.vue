@@ -1031,6 +1031,7 @@ export default {
 
 .acoes {
   position: absolute;
+  right: 30%;
   display: grid;
   grid-template-columns: auto auto auto;
   justify-items: center;
