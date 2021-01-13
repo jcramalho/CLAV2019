@@ -24,7 +24,7 @@
         <v-data-table
           class="content-table"
           v-if="tipo == 'TABELAS DE SELEÇÃO INSERIDAS NA CLAV'"
-          :headers="headersTS"
+          :headers="headers"
           :items="lista"
           :search="search"
           :footer-props="footer_props"
@@ -63,7 +63,9 @@
             </v-tooltip>
           </template>
           <template v-slot:[`item.entidades`]="{ item }">
-            <span v-for="(ent, index) in item.entidades" :key="index">{{ ent }}</span>
+            <span v-for="(ent, index) in item.entidades" :key="index">{{
+              ent
+            }}</span>
           </template>
 
           <template v-slot:pageText="props">
@@ -102,10 +104,10 @@
                   rounded
                   :href="
                     pathAPI +
-                    '/ficheirosEstaticos?caminho=documentos%2FRADA%2FDespacho' +
-                    item.link.split('Despacho')[1] +
-                    '&' +
-                    authToken
+                      '/ficheirosEstaticos?caminho=documentos%2FRADA%2FDespacho' +
+                      item.link.split('Despacho')[1] +
+                      '&' +
+                      authToken
                   "
                 >
                   <unicon
@@ -235,65 +237,50 @@ export default {
       {
         text: "Data",
         value: "data",
-        width: "8%",
+        width: "10%"
       },
       {
         text: "Tipo",
         value: "tipo",
-        width: "10%",
+        width: "10%"
       },
       {
         text: "Número",
         value: "numero",
-        width: "10%",
+        width: "10%"
       },
+      { text: "Entidade", value: "entidades", width: "10%" },
       {
         text: "Sumário",
         value: "sumario",
-        width: "64%",
+        width: "40%"
+      },
+      {
+        text: "Estado",
+        value: "estado",
+        width: "10%"
       },
       {
         text: "Acesso",
         value: "link",
-        width: "8%",
-      },
+        width: "10%"
+      }
     ],
-    headersTS: [
-      {
-        text: "Data",
-        value: "data",
-        width: "8%",
-      },
-      {
-        text: "Entidades",
-        value: "entidades",
-        width: "20%",
-      },
-      {
-        text: "Sumário",
-        value: "designacao",
-        width: "64%",
-      },
-      {
-        text: "Acesso",
-        value: "link",
-        width: "8%",
-      },
-    ],
+
     dialog: false,
     footer_props: {
       "items-per-page-options": [10, 20, -1],
       "items-per-page-text": "Mostrar",
-      "items-per-page-all-text": "Todos",
-    },
+      "items-per-page-all-text": "Todos"
+    }
   }),
 
-  created: async function () {
+  created: async function() {
     this.authToken = await this.$getAuthToken();
     this.authToken = this.authToken.replace(" ", "=");
 
     this.pathAPI = lhost;
-  },
+  }
 };
 </script>
 

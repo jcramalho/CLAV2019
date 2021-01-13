@@ -2,7 +2,7 @@
   <v-content
     :class="{
       'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
+      'px-12': $vuetify.breakpoint.mdAndUp
     }"
   >
     <v-container fluid class="pa-0 ma-0" style="max-width:100%">
@@ -15,7 +15,7 @@
             class="white--text mb-6"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
-              'px-2': $vuetify.breakpoint.mdAndDown,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             id="default-button"
           >
@@ -45,7 +45,7 @@
                     class="white--text"
                     :class="{
                       'px-8': $vuetify.breakpoint.lgAndUp,
-                      'px-2': $vuetify.breakpoint.mdAndDown,
+                      'px-2': $vuetify.breakpoint.mdAndDown
                     }"
                     color="success darken-1"
                     id="botao-shadow"
@@ -67,7 +67,7 @@
                     class="white--text"
                     :class="{
                       'px-8': $vuetify.breakpoint.lgAndUp,
-                      'px-2': $vuetify.breakpoint.mdAndDown,
+                      'px-2': $vuetify.breakpoint.mdAndDown
                     }"
                     style="background-color: rgb(153, 17, 17);"
                     id="botao-shadow"
@@ -90,13 +90,13 @@
                     style="outline: none"
                     :class="{
                       'text-center': $vuetify.breakpoint.smAndDown,
-                      'text-left': $vuetify.breakpoint.mdAndUp,
+                      'text-left': $vuetify.breakpoint.mdAndUp
                     }"
                     class="pa-3"
                   >
                     <div
                       :class="{
-                        'px-3': $vuetify.breakpoint.mdAndUp,
+                        'px-3': $vuetify.breakpoint.mdAndUp
                       }"
                       class="separador"
                     >
@@ -111,7 +111,12 @@
                       <span class="ml-3 mr-1"
                         >Tabelas de Seleção inseridas na Clav</span
                       >
-                      <InfoBox header="Tabelas de Seleção criadas na Clav" :text="myhelp.TS_LC" helpColor="white" helpWidth="80%"/>
+                      <InfoBox
+                        header="Tabelas de Seleção criadas na Clav"
+                        :text="myhelp.TS_LC"
+                        helpColor="white"
+                        helpWidth="80%"
+                      />
                     </div>
                   </v-expansion-panel-header>
                   <v-expansion-panel-content id="expanded-content">
@@ -126,7 +131,6 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
 
-                
                 <Loading
                   v-if="!fontesPGDLCReady"
                   :message="'fontes de legitimação'"
@@ -136,13 +140,13 @@
                     style="outline: none"
                     :class="{
                       'text-center': $vuetify.breakpoint.smAndDown,
-                      'text-left': $vuetify.breakpoint.mdAndUp,
+                      'text-left': $vuetify.breakpoint.mdAndUp
                     }"
                     class="pa-3"
                   >
                     <div
                       :class="{
-                        'px-3': $vuetify.breakpoint.mdAndUp,
+                        'px-3': $vuetify.breakpoint.mdAndUp
                       }"
                       class="separador"
                     >
@@ -158,7 +162,12 @@
                         >Tabelas de Seleção (derivadas da LC) inseridas em
                         portaria de gestão de documentos</span
                       >
-                      <InfoBox header="PGD/LC inseridas em PGD" :text="myhelp.PGD_LC" helpColor="white" helpWidth="80%"/>
+                      <InfoBox
+                        header="PGD/LC inseridas em PGD"
+                        :text="myhelp.PGD_LC"
+                        helpColor="white"
+                        helpWidth="80%"
+                      />
                     </div>
                   </v-expansion-panel-header>
                   <v-expansion-panel-content id="expanded-content">
@@ -182,13 +191,13 @@
                     style="outline: none"
                     :class="{
                       'text-center': $vuetify.breakpoint.smAndDown,
-                      'text-left': $vuetify.breakpoint.mdAndUp,
+                      'text-left': $vuetify.breakpoint.mdAndUp
                     }"
                     class="pa-3"
                   >
                     <div
                       :class="{
-                        'px-3': $vuetify.breakpoint.mdAndUp,
+                        'px-3': $vuetify.breakpoint.mdAndUp
                       }"
                       class="separador"
                     >
@@ -201,10 +210,15 @@
                         fill="#ffffff"
                       />
                       <span class="ml-3 mr-1"
-                        >Tabelas de Seleção (não derivadas da LC) inseridas em portaria de gestão de
-                        documentos</span
+                        >Tabelas de Seleção (não derivadas da LC) inseridas em
+                        portaria de gestão de documentos</span
                       >
-                      <InfoBox header="TS inseridas em PGD" :text="myhelp.PGD" helpColor="white" helpWidth="80%"/>
+                      <InfoBox
+                        header="TS inseridas em PGD"
+                        :text="myhelp.PGD"
+                        helpColor="white"
+                        helpWidth="80%"
+                      />
                     </div>
                   </v-expansion-panel-header>
                   <v-expansion-panel-content id="expanded-content">
@@ -227,10 +241,10 @@
   </v-content>
 </template>
 <script>
-import ListagemLeg from '@/components/tabSel/consulta/ListagemLeg.vue'; // @ is an alias to /src
-import Loading from '@/components/generic/Loading';
+import ListagemLeg from "@/components/tabSel/consulta/ListagemLeg.vue"; // @ is an alias to /src
+import Loading from "@/components/generic/Loading";
 
-import { NIVEL_MINIMO_ALTERAR } from '@/utils/consts';
+import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
 const help = require("@/config/help").help.TS.Consulta;
 import InfoBox from "@/components/generic/infoBox.vue";
 
@@ -256,7 +270,7 @@ export default {
   },
   methods: {
     goBack() {
-      this.$router.push('/tsInfo');
+      this.$router.push("/tsInfo");
     },
     // Abrir todos os v-expansion-panel
     expandAll() {
@@ -265,49 +279,53 @@ export default {
     // Fechar todos os v-expansion-panel
     closeAll() {
       this.tabsSel = [];
-    },
+    }
   },
   created: async function() {
-    await this.$request('get', '/pgd/lc')
-      .then((response2) => {
-        this.fontesPGDLC = response2.data.map((f) => {
+    await this.$request("get", "/pgd/lc")
+      .then(response2 => {
+        this.fontesPGDLC = response2.data.map(f => {
           return {
             idPGD: f.idPGD,
             data: f.data,
             tipo: f.tipo,
             numero: f.numero,
+            entidades: f.entidades ? f.entidades : [],
             sumario: f.sumario,
-            link: f.link,
+            estado: f.estado,
+            link: f.link
           };
         });
         this.fontesPGDLCReady = true;
       })
-      .catch((e) => {
+      .catch(e => {
         return e;
       });
 
-    await this.$request('get', '/legislacao?fonte=PGD')
-      .then((response) => {
-        this.fontesPGD = response.data.map((f) => {
+    await this.$request("get", "/legislacao?fonte=PGD")
+      .then(response => {
+        this.fontesPGD = response.data.map(f => {
           return {
             data: f.data,
             tipo: f.tipo,
             numero: f.numero,
+            entidades: f.entidades,
             sumario: f.sumario,
-            link: f.link,
+            estado: f.estado,
+            link: f.link
           };
         });
         this.fontesPGDReady = true;
       })
-      .catch((e2) => {
+      .catch(e2 => {
         return e2;
       });
 
-    await this.$request('get', '/pgd')
-      .then((response) => {
-        this.fontesPGDTS = this.fontesPGD.map((f) => {
+    await this.$request("get", "/pgd")
+      .then(response => {
+        this.fontesPGDTS = this.fontesPGD.map(f => {
           var obj = response.data.find(
-            (res) => res.tipo == f.tipo && res.numero == f.numero
+            res => res.tipo == f.tipo && res.numero == f.numero
           );
           if (obj)
             return {
@@ -315,44 +333,51 @@ export default {
               data: obj.data,
               tipo: obj.tipo,
               numero: obj.numero,
+              entidades: obj.entidades ? obj.entidades : [],
               sumario: obj.sumario,
-              link: obj.link,
+              estado: obj.estado,
+              link: obj.link
             };
           else
             return {
-              idPGD: '',
+              idPGD: "",
               data: f.data,
               tipo: f.tipo,
               numero: f.numero,
+              entidades: f.entidades ? f.entidades : [],
               sumario: f.sumario,
-              link: f.link,
+              estado: f.estado ? f.estado : "Ativo",
+              link: f.link
             };
         });
         this.fontesPGDTSReady = true;
       })
-      .catch((e2) => {
+      .catch(e2 => {
         return e2;
       });
 
-    await this.$request('get', '/tabelasSelecao')
-      .then((response) => {
-        this.fontesTS = response.data.map((f) => {
+    await this.$request("get", "/tabelasSelecao")
+      .then(response => {
+        this.fontesTS = response.data.map(f => {
           return {
-            id: f.id.split('clav#')[1],
+            id: f.id.split("clav#")[1],
             data: f.data,
-            designacao: f.designacao,
-            entidades: f.entidades.map((e) => {
-              return e.split('ent_')[1];
+            tipo: "",
+            numero: "",
+            sumario: f.designacao,
+            entidades: f.entidades.map(e => {
+              return e.split("ent_")[1];
             }),
-            link: '',
+            estado: f.estado ? f.estado : "Ativo",
+            link: ""
           };
         });
         this.fontesTSReady = true;
       })
-      .catch((e) => {
+      .catch(e => {
         return e;
       });
-  },
+  }
 };
 </script>
 <style scoped>
