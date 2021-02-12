@@ -362,11 +362,11 @@ export default {
           return {
             id: f.id.split("clav#")[1],
             data: f.data,
-            tipo: "",
-            numero: "",
+            tipo: f.tipoLeg,
+            numero: f.numLeg,
             sumario: f.designacao,
             entidades: f.entidades.map(e => {
-              return e.split("ent_")[1];
+              return e.split("ent_")[1]+" ";
             }),
             estado: f.estado ? f.estado : "Ativo",
             link: ""

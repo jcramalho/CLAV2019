@@ -590,11 +590,14 @@ export default {
           1
         )
       );
-      historico[0].ts["procsAselecionar"] = {
-        cor: "vermelho",
+      if (this.listaProcessos.procsAselecionar > 0){
+
+        historico[0].ts["procsAselecionar"] = {
+          cor: "vermelho",
         dados: this.listaProcessos.procsAselecionar,
         nota: null
       };
+        }
 
       return historico;
     },

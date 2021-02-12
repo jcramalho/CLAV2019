@@ -710,7 +710,6 @@ export default {
     alterarOriginal() {
       let n_vermelhos = 0;
       Object.keys(this.novoHistorico).map(k => {
-        console.log(this.novoHistorico[k]);
         if (k != "ts") {
           this.novoHistorico[k].nota = null;
           n_vermelhos =

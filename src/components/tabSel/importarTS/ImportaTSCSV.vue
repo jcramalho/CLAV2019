@@ -245,7 +245,6 @@
                   >
                     <v-file-input
                       v-model="file"
-                      label="Ficheiro CSV/Excel"
                       placeholder="Selecione o ficheiro CSV/Excel com a Tabela de Seleção"
                       show-size
                       accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
