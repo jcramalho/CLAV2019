@@ -68,8 +68,8 @@ export default {
           "Tipo",
           "Entidade(s)",
           "Número",
-          "Estado",
-          "Sumário"
+          "Sumário",
+          "Estado"
         ];
         this.campos = [
           "data",

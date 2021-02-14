@@ -246,6 +246,7 @@ export default {
   },
 
   async created() {
+    console.log(JSON.stringify(this.p))
     if (this.p.estado !== "Submetido") {
       this.erroDialog.visivel = true;
       this.erroDialog.mensagem = "Este pedido não se encontra neste estado.";
