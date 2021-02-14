@@ -4,6 +4,7 @@
       <v-row>
         <v-col>
           <v-radio-group
+            class="ml-5"
             v-on:change="ordenaProcs(filtroLabel)"
             v-model="filtroLabel"
             row
@@ -36,13 +37,14 @@
           </v-radio-group>
         </v-col>
 
-        <v-btn class="mx-2" dark color="green" @click="importFlag = true">
+        <v-btn class="mx-5" dark color="green" @click="importFlag = true">
           <unicon
+            class="mt-2 mr-1"
             name="importar-icon"
             width="20"
             height="20"
             fill="#ffffff"
-            :style="{ 'margin-top': '5' + 'px', 'margin-right': '5' + 'px' }"
+            
           />
           <p>Importar Processos</p>
         </v-btn>
@@ -142,7 +144,7 @@
         </template>
       </v-data-table>
 
-      <v-row wrap>
+      <v-row wrap class="ml-1">
         <v-col>
           Nº de processos selecionados:
           {{ numProcessosSelecionados }}

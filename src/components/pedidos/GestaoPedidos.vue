@@ -237,6 +237,8 @@ export default {
         this.pedidosDevolvidos = pedidos.filter((p) => p.estado === "Devolvido");
         this.pedidosProcessados = pedidos.filter((p) => p.estado === "Validado");
 
+        this.pedidosEmDespacho = pedidos.filter((p) => p.estado === "Em Despacho");
+
         if (this.temPermissaoDistribuir()) await this.listaUtilizadoresParaAnalisar();
       } catch (e) {
         console.warn("e", e);

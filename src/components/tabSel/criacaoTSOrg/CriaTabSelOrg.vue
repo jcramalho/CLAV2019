@@ -1267,11 +1267,12 @@ export default {
           1
         )
       );
+      this.listaProcessos.procsAselecionar > 0 ? 
       historico[0].ts["procsAselecionar"] = {
         cor: "vermelho",
         dados: this.listaProcessos.procsAselecionar,
         nota: null
-      };
+      } : ""
       return historico;
     },
     //Importação de processos
