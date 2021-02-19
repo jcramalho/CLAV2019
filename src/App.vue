@@ -1,28 +1,34 @@
 <template>
   <v-app v-if="authenticated">
+    <!-- Header -->
     <MainPageHeader
       :n="notificacoes ? notificacoes.length : 0"
       @drawerDefinicoes="drawerDefinicoes()"
       @drawerNotificacoes="drawerNotificacoes()"
     />
 
-    <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="-1">
-      {{ text }}
-      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-    </v-snackbar>
-
-    <Definicoes v-if="this.$store.state.token != ''" :drawer="drawD" />
+    <!-- Drawers -->
+    <Definicoes v-if="this.$store.state.token" :drawer="drawD" />
     <!-- <Notificacoes
       v-if="this.$store.state.token != ''"
       :drawer="drawN"
       :notificacoes="notificacoes"
       @removerNotificacao="removerNotificacao($event)"
     /> -->
-    <v-main class="px-4">
-      <router-view class="pt-8" />
+
+    <!-- Main content -->
+    <v-main>
+      <router-view />
     </v-main>
 
+    <!-- Footer -->
     <PageFooter />
+
+    <!-- Utils -->
+    <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="4000">
+      {{ text }}
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -156,6 +162,18 @@ export default {
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap");
 
+/* Classes genéricas */
+
+/* Gradiente de azul */
+.clav-linear-background {
+  background: linear-gradient(
+    to right,
+    var(--v-gradientleft-base) 0%,
+    var(--v-gradientright-base) 100%
+  );
+}
+
+/* TODO Para remover depois de remover todas as utilizações */
 #app {
   font-family: "Montserrat", sans-serif;
   --primary: #1a237e;
@@ -195,7 +213,7 @@ export default {
 .v-application--is-ltr .v-treeview-node__toggle--open {
   color: var(--success) !important;
 }
-.v-btn {
+/* .v-btn {
   text-transform: none !important;
   font-weight: 600 !important;
   outline: none !important;
@@ -203,7 +221,7 @@ export default {
 .v-btn__content {
   width: 100%;
   white-space: normal;
-}
+} */
 .v-card__subtitle,
 .v-card__text {
   line-height: 1.8rem !important;
@@ -369,10 +387,10 @@ b {
   font-weight: 500 !important;
   text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
 }
-#botao-shadow {
+/* #botao-shadow {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
   outline: none !important;
-}
+} */
 .content-title-1 {
   font-size: 2rem;
   font-weight: 600;
@@ -394,15 +412,15 @@ b {
 }
 #default-button {
   background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-  outline: none !important;
+  /* box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
+  outline: none !important;*/
 }
 #default-chip {
   background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
 }
-#default-button:hover {
+/* #default-button:hover {
   background: linear-gradient(to right, #353d83 0%, #216fc7 100%);
-}
+} */
 
 label {
   margin-bottom: 0 !important;
