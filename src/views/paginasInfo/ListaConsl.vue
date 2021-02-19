@@ -36,12 +36,11 @@
         <v-col cols="12" md="4">
           <v-btn
             @click="$router.push('/classes/consultar')"
-            rounded
-            class="white--text"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
+            class="white--text"
             id="default-button"
           >
             <unicon

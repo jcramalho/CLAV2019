@@ -16,7 +16,7 @@ export default new Router({
     {
       path: "/",
       name: "home",
-      component: () => import("./views/Entidade.vue"),
+      component: () => import("./views/Home.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "CLAV", ent: true}
     },
     {
