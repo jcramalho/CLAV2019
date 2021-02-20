@@ -1,111 +1,393 @@
 <template>
-  <v-main
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
-    }"
-  >
-    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
-      <v-row>
-        <v-col class="py-0 my-0">
-          <v-row>
-            <v-col class="py-0 my-0">
-              <v-btn
-                @click="goBack"
-                rounded
-                class="white--text mb-6"
-                :class="{
-                  'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown,
-                }"
-                id="default-button"
-              >
-                <unicon
-                  name="arrow-back-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.71 37.261"
-                  fill="#ffffff"
-                />
-                <p class="ml-2">Voltar</p>
-              </v-btn>
-            </v-col>
-            <v-spacer></v-spacer>
-            <v-col class="py-0 my-0" style="text-align: right">
-              <v-btn
-                @click="advancedSearch = !advancedSearch"
-                rounded
-                class="white--text mb-6"
-                :class="{
-                  'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown,
-                }"
-                id="default-button"
-              >
-                <!--falta fazer: search = '' -->
-                <v-switch
-                  v-model="advancedSearch"
-                  color="green lighten-2"
-                  disabled
-                  hide-details
-                  style="opacity: 1 !important"
-                ></v-switch>
-                <unicon
-                  name="zoom-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.71 20.697"
-                  fill="#ffffff"
-                />
-                <p class="ml-2">Pesquisa Avançada</p>
-              </v-btn>
-            </v-col>
-          </v-row>
+  <v-card flat class="pa-3">
+    <v-row align="center" justify="center">
+      <v-col cols="12" md="3" align="center"> <Voltar /> </v-col>
+      <v-col cols="12" md="5" align="center">
+        <p class="content-title-1 py-5" style="color: #4da0d0 !important">
+          Consultar Lista Consolidada
+        </p>
+      </v-col>
+      <v-col cols="12" md="4" align="center">
+        <v-btn
+          @click="advancedSearch = !advancedSearch"
+          rounded
+          class="white--text px-2"
+          id="default-button"
+        >
+          <!--falta fazer: search = '' -->
+          <v-switch
+            v-model="advancedSearch"
+            color="green lighten-2"
+            disabled
+            hide-details
+            style="opacity: 1 !important"
+          ></v-switch>
+          <unicon
+            name="zoom-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Pesquisa Avançada</p>
+        </v-btn>
+      </v-col>
+    </v-row>
 
-          <v-card flat style="border-radius: 10px !important">
-            <p
-              class="content-title-1 py-5"
-              style="color: #4da0d0 !important; text-align: center"
+    <!-- !advancedSearch => Mostrar Classes Tree-->
+    <v-row v-if="!advancedSearch" justify="center">
+      <v-col align="center">
+        <div class="clav-info-content">
+          <v-tooltip top color="info" open-delay="500">
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                style="text-align: center !important"
+                class="centered-input mb-2 px-8"
+                v-model="search"
+                v-on="on"
+                label="Pesquisar por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
+                text
+                hide-details
+                single-line
+                clearable
+                @click:clear="classesTree = classesOriginal"
+                v-on:keyup.enter="processaPesquisa()"
+                color="blue darken-3"
+              ></v-text-field>
+            </template>
+            <span
+              >Pesquisar por código, título, notas de aplicação, exemplos de notas de
+              aplicação ou termos de índice...</span
             >
-              Consultar Lista Consolidada
-            </p>
-            <!-- !advancedSearch => Mostrar Classes Tree-->
-            <v-row v-if="!advancedSearch" justify="center" class="text-center mx-0">
-              <v-col class="mt-4">
-                <div
-                  class="info-content"
-                  :class="{
-                    'margin-mdUp': $vuetify.breakpoint.mdAndUp,
-                    'margin-smDown': $vuetify.breakpoint.smAndDown,
-                  }"
-                >
-                  <v-tooltip top color="info" open-delay="500">
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        style="text-align: center !important"
-                        class="centered-input mb-2 px-8"
-                        v-model="search"
-                        v-on="on"
-                        label="Pesquisar por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
-                        text
-                        hide-details
-                        single-line
-                        clearable
-                        @click:clear="classesTree = classesOriginal"
-                        v-on:keyup.enter="processaPesquisa()"
-                        color="blue darken-3"
-                      ></v-text-field>
-                    </template>
+          </v-tooltip>
+        </div>
+        <v-btn
+          @click="processaPesquisa()"
+          rounded
+          class="white--text mt-12 mr-8"
+          :class="{
+            'px-12': $vuetify.breakpoint.lgAndUp,
+            'px-8': $vuetify.breakpoint.mdAndDown,
+          }"
+          id="default-button"
+        >
+          <unicon
+            name="consultar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Pesquisar</p>
+        </v-btn>
+        <v-menu
+          v-if="this.selected.length > 0"
+          class="text-center"
+          offset-y
+          nudge-top="16"
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              rounded
+              class="white--text mt-12 ml-8"
+              :class="{
+                'px-12': $vuetify.breakpoint.lgAndUp,
+                'px-8': $vuetify.breakpoint.mdAndDown,
+              }"
+              id="default-button"
+            >
+              <unicon
+                name="exportar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.697"
+                fill="#ffffff"
+              />
+              <p class="ml-2">Exportar</p>
+            </v-btn>
+          </template>
+          <v-list rounded dark id="dark-background-list">
+            <v-list-item
+              v-for="tipo in exportTypes"
+              :key="tipo"
+              @click="exportarResultados(tipo)"
+              class="text-center"
+            >
+              <v-list-item-title v-text="tipo"></v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-card-text class="mt-12 text-left" id="treeview-card">
+          <v-card
+            dark
+            class="clav-linear-background mb-4"
+            v-if="classesCarregadas && camposUsados[0].campo && camposUsados[0].valor"
+          >
+            <v-card-title class="headline mb-4" style="word-break: break-word !important">
+              De seguida apresenta-se as classes em que:
+            </v-card-title>
+            <v-card-text class="font-weight-medium">
+              <div v-for="(c, i) in camposUsados" :key="i" class="ma-2">
+                <span v-if="c.campo.label">
+                  <v-chip
+                    class="ma-2"
+                    style="background-color: rgba(0, 0, 0, 0.25) !important"
+                  >
                     <span
-                      >Pesquisar por código, título, notas de aplicação, exemplos de notas
-                      de aplicação ou termos de índice...</span
+                      class="font-weight-medium white--text mx-3"
+                      style="font-size: 1.1rem !important"
                     >
-                  </v-tooltip>
+                      {{ entidades.filter((e) => e.value == c.valor)[0].text }}
+                    </span>
+                    <span
+                      v-if="c.not"
+                      class="mt-1"
+                      style="
+                        color: #ff5252;
+                        text-shadow: 0px 1px 2px rgba(255, 82, 82, 0.5);
+                      "
+                    >
+                      não é
+                    </span>
+                    <span
+                      class="mt-1"
+                      style="
+                        color: #00ae07;
+                        text-shadow: 0px 1px 2px rgba(0, 174, 7, 0.5);
+                      "
+                      v-else
+                    >
+                      é
+                    </span>
+                    <span
+                      class="font-weight-medium white--text mx-3"
+                      style="font-size: 1.1rem !important"
+                    >
+                      {{ c.campo.enum.filter((e) => e.value == c.campo.nome)[0].text }}
+                    </span>
+                  </v-chip>
+                </span>
+                <span v-else>
+                  <v-chip
+                    class="ma-2"
+                    style="background-color: rgba(0, 0, 0, 0.25) !important"
+                  >
+                    <span
+                      class="font-weight-medium white--text mx-3"
+                      style="font-size: 1.1rem !important"
+                    >
+                      {{
+                        camposPesquisa.filter((e) => e.value.nome == c.campo.nome)[0].text
+                      }}
+                    </span>
+                    <span
+                      v-if="c.not"
+                      class="mt-1"
+                      style="
+                        color: #ff5252;
+                        text-shadow: 0px 1px 2px rgba(255, 82, 82, 0.5);
+                      "
+                    >
+                      não é igual a
+                    </span>
+                    <span
+                      class="mt-1"
+                      style="
+                        color: #00ae07;
+                        text-shadow: 0px 1px 2px rgba(0, 174, 7, 0.5);
+                      "
+                      v-else
+                    >
+                      é igual a
+                    </span>
+                    <span
+                      class="font-weight-medium white--text mx-3"
+                      style="font-size: 1.1rem !important"
+                    >
+                      {{
+                        c.campo.enum.length > 0
+                          ? c.campo.enum.filter((e) => e.value == c.valor)[0].text
+                          : c.valor
+                      }}
+                    </span>
+                  </v-chip>
+                </span>
+                <div class="ma-2" v-if="i + 1 < camposUsados.length">
+                  <v-chip
+                    style="
+                      background-color: rgba(0, 0, 0, 0.25) !important;
+                      color: #ffc107 !important;
+                    "
+                    >{{ conetor }}</v-chip
+                  >
                 </div>
+              </div>
+            </v-card-text>
+          </v-card>
+          <div v-if="classesCarregadas">
+            <v-treeview
+              rounded
+              hoverable
+              multiple-active
+              :items="classesTree"
+              item-key="id"
+              :open="selectedParents"
+              :active="selected"
+            >
+              <template slot="label" slot-scope="{ item }">
+                <v-tooltip bottom color="info" open-delay="500">
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      v-on="on"
+                      rounded
+                      text
+                      color="blue"
+                      @click="goToClasse(item.id)"
+                    >
+                      {{ item.name }}
+                    </v-btn>
+                  </template>
+                  <span> {{ item.name }} </span>
+                </v-tooltip>
+                <br />
+              </template>
+            </v-treeview>
+            <v-alert
+              color="error"
+              icon="warning"
+              class="font-weight-medium my-auto white--text"
+              id="alerta-erro"
+              :value="classesTree.length == 0"
+            >
+              Sem resultados. Volte a pesquisar...
+            </v-alert>
+          </div>
+          <Loading v-else :message="'classes'" />
+        </v-card-text>
+      </v-col>
+    </v-row>
+    <!-- advancedSearch -->
+    <v-row v-else justify="center" class="text-center mx-12">
+      <v-col>
+        <v-card-text>
+          <v-form
+            v-for="(campo, index) in camposUsados"
+            :key="index"
+            ref="forms"
+            lazy-validation
+          >
+            <div class="clav-info-content">
+              <v-row class="px-3">
+                <v-col cols="12" md="4">
+                  <v-autocomplete
+                    :items="camposPesquisa"
+                    label="Campo a pesquisar"
+                    :rules="regraCampo"
+                    v-model="camposUsados[index].campo"
+                  />
+                </v-col>
+                <v-col cols="12" md="2">
+                  <v-autocomplete :items="notValues" v-model="camposUsados[index].not" />
+                </v-col>
+                <v-col cols="12" md="4" v-if="camposUsados[index].campo">
+                  <div v-if="camposUsados[index].campo.label">
+                    <v-autocomplete
+                      :items="camposUsados[index].campo.enum"
+                      label="É"
+                      :rules="regraV"
+                      v-model="camposUsados[index].campo.nome"
+                    />
+                    <v-autocomplete
+                      :items="entidades"
+                      :label="camposUsados[index].campo.label"
+                      :rules="regraV"
+                      v-model="camposUsados[index].valor"
+                    />
+                  </div>
+                  <div v-else>
+                    <div v-if="camposUsados[index].campo.enum.length > 0">
+                      <v-autocomplete
+                        :items="camposUsados[index].campo.enum"
+                        label="Valor a pesquisar"
+                        :rules="regraValor"
+                        v-model="camposUsados[index].valor"
+                      />
+                    </div>
+                    <div v-else>
+                      <v-text-field
+                        v-if="camposUsados[index].campo.mask"
+                        label="Valor a pesquisar"
+                        :rules="regraValor"
+                        v-mask="camposUsados[index].campo.mask"
+                        v-model="camposUsados[index].valor"
+                      />
+                      <v-text-field
+                        v-else
+                        label="Valor a pesquisar"
+                        :rules="regraValor"
+                        v-model="camposUsados[index].valor"
+                      />
+                    </div>
+                  </div>
+                </v-col>
+                <v-col>
+                  <v-select
+                    :items="opLogicas"
+                    v-model="conetor"
+                    @input="
+                      camposUsados.push({
+                        campo: null,
+                        valor: '',
+                        not: false,
+                      });
+                      opLogicas = [conetor];
+                    "
+                  />
+                </v-col>
+                <v-col cols="12" md="1" v-if="camposUsados.length > 1">
+                  <v-btn align="center" icon color="red" @click="removerCampo(index)">
+                    <unicon
+                      name="remove-icon"
+                      width="15"
+                      height="15"
+                      viewBox="0 0 20.71 20.697"
+                      fill="#ff5252"
+                    />
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+          </v-form>
+
+          <v-container fluid class="text-center">
+            <v-row justify="center" align="center">
+              <v-col cols="12" md="4">
                 <v-btn
-                  @click="processaPesquisa()"
+                  @click="cancelarPesquisa"
                   rounded
-                  class="white--text mt-12 mr-8"
+                  class="white--text"
+                  :class="{
+                    'px-12': $vuetify.breakpoint.lgAndUp,
+                    'px-8': $vuetify.breakpoint.mdAndDown,
+                  }"
+                  id="default-button"
+                >
+                  <unicon
+                    name="remove-icon"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20.71 20.721"
+                    fill="#ffffff"
+                  />
+                  <p class="ml-2">Cancelar</p>
+                </v-btn>
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-btn
+                  @click="pesquisaAvancada"
+                  rounded
+                  class="white--text"
                   :class="{
                     'px-12': $vuetify.breakpoint.lgAndUp,
                     'px-8': $vuetify.breakpoint.mdAndDown,
@@ -121,367 +403,23 @@
                   />
                   <p class="ml-2">Pesquisar</p>
                 </v-btn>
-                <v-menu
-                  v-if="this.selected.length > 0"
-                  class="text-center"
-                  offset-y
-                  nudge-top="16"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      v-on="on"
-                      rounded
-                      class="white--text mt-12 ml-8"
-                      :class="{
-                        'px-12': $vuetify.breakpoint.lgAndUp,
-                        'px-8': $vuetify.breakpoint.mdAndDown,
-                      }"
-                      id="default-button"
-                    >
-                      <unicon
-                        name="exportar-icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20.71 20.697"
-                        fill="#ffffff"
-                      />
-                      <p class="ml-2">Exportar</p>
-                    </v-btn>
-                  </template>
-                  <v-list rounded dark id="dark-background-list">
-                    <v-list-item
-                      v-for="tipo in exportTypes"
-                      :key="tipo"
-                      @click="exportarResultados(tipo)"
-                      class="text-center"
-                    >
-                      <v-list-item-title v-text="tipo"></v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-                <v-card-text class="mt-12 text-left" id="treeview-card">
-                  <v-card
-                    dark
-                    class="info-card mb-4"
-                    v-if="
-                      classesCarregadas && camposUsados[0].campo && camposUsados[0].valor
-                    "
-                  >
-                    <v-card-title
-                      class="headline mb-4"
-                      style="word-break: break-word !important"
-                    >
-                      De seguida apresenta-se as classes em que:
-                    </v-card-title>
-                    <v-card-text class="font-weight-medium">
-                      <div v-for="(c, i) in camposUsados" :key="i" class="ma-2">
-                        <span v-if="c.campo.label">
-                          <v-chip
-                            class="ma-2"
-                            style="background-color: rgba(0, 0, 0, 0.25) !important"
-                          >
-                            <span
-                              class="font-weight-medium white--text mx-3"
-                              style="font-size: 1.1rem !important"
-                            >
-                              {{ entidades.filter((e) => e.value == c.valor)[0].text }}
-                            </span>
-                            <span
-                              v-if="c.not"
-                              class="mt-1"
-                              style="
-                                color: #ff5252;
-                                text-shadow: 0px 1px 2px rgba(255, 82, 82, 0.5);
-                              "
-                            >
-                              não é
-                            </span>
-                            <span
-                              class="mt-1"
-                              style="
-                                color: #00ae07;
-                                text-shadow: 0px 1px 2px rgba(0, 174, 7, 0.5);
-                              "
-                              v-else
-                            >
-                              é
-                            </span>
-                            <span
-                              class="font-weight-medium white--text mx-3"
-                              style="font-size: 1.1rem !important"
-                            >
-                              {{
-                                c.campo.enum.filter((e) => e.value == c.campo.nome)[0]
-                                  .text
-                              }}
-                            </span>
-                          </v-chip>
-                        </span>
-                        <span v-else>
-                          <v-chip
-                            class="ma-2"
-                            style="background-color: rgba(0, 0, 0, 0.25) !important"
-                          >
-                            <span
-                              class="font-weight-medium white--text mx-3"
-                              style="font-size: 1.1rem !important"
-                            >
-                              {{
-                                camposPesquisa.filter(
-                                  (e) => e.value.nome == c.campo.nome
-                                )[0].text
-                              }}
-                            </span>
-                            <span
-                              v-if="c.not"
-                              class="mt-1"
-                              style="
-                                color: #ff5252;
-                                text-shadow: 0px 1px 2px rgba(255, 82, 82, 0.5);
-                              "
-                            >
-                              não é igual a
-                            </span>
-                            <span
-                              class="mt-1"
-                              style="
-                                color: #00ae07;
-                                text-shadow: 0px 1px 2px rgba(0, 174, 7, 0.5);
-                              "
-                              v-else
-                            >
-                              é igual a
-                            </span>
-                            <span
-                              class="font-weight-medium white--text mx-3"
-                              style="font-size: 1.1rem !important"
-                            >
-                              {{
-                                c.campo.enum.length > 0
-                                  ? c.campo.enum.filter((e) => e.value == c.valor)[0].text
-                                  : c.valor
-                              }}
-                            </span>
-                          </v-chip>
-                        </span>
-                        <div class="ma-2" v-if="i + 1 < camposUsados.length">
-                          <v-chip
-                            style="
-                              background-color: rgba(0, 0, 0, 0.25) !important;
-                              color: #ffc107 !important;
-                            "
-                            >{{ conetor }}</v-chip
-                          >
-                        </div>
-                      </div>
-                    </v-card-text>
-                  </v-card>
-                  <div v-if="classesCarregadas">
-                    <v-treeview
-                      rounded
-                      hoverable
-                      multiple-active
-                      :items="classesTree"
-                      item-key="id"
-                      :open="selectedParents"
-                      :active="selected"
-                    >
-                      <template slot="label" slot-scope="{ item }">
-                        <v-tooltip bottom color="info" open-delay="500">
-                          <template v-slot:activator="{ on }">
-                            <v-btn
-                              v-on="on"
-                              rounded
-                              text
-                              color="blue"
-                              @click="goToClasse(item.id)"
-                            >
-                              {{ item.name }}
-                            </v-btn>
-                          </template>
-                          <span> {{ item.name }} </span>
-                        </v-tooltip>
-                        <br />
-                      </template>
-                    </v-treeview>
-                    <v-alert
-                      color="error"
-                      icon="warning"
-                      class="font-weight-medium my-auto"
-                      id="alerta-erro"
-                      :value="classesTree.length == 0"
-                    >
-                      Sem resultados. Volte a pesquisar...
-                    </v-alert>
-                  </div>
-                  <Loading v-else :message="'classes'" />
-                </v-card-text>
               </v-col>
             </v-row>
-            <!-- advancedSearch -->
-            <v-row v-else justify="center" class="text-center mx-12">
-              <v-col>
-                <v-card-text>
-                  <v-form
-                    v-for="(campo, index) in camposUsados"
-                    :key="index"
-                    ref="forms"
-                    lazy-validation
-                    class="mb-5"
-                  >
-                    <div class="info-content">
-                      <v-row class="px-3">
-                        <v-col cols="12" md="4">
-                          <v-autocomplete
-                            :items="camposPesquisa"
-                            label="Campo a pesquisar"
-                            :rules="regraCampo"
-                            v-model="camposUsados[index].campo"
-                          />
-                        </v-col>
-                        <v-col cols="12" md="2">
-                          <v-autocomplete
-                            :items="notValues"
-                            v-model="camposUsados[index].not"
-                          />
-                        </v-col>
-                        <v-col cols="12" md="4" v-if="camposUsados[index].campo">
-                          <div v-if="camposUsados[index].campo.label">
-                            <v-autocomplete
-                              :items="camposUsados[index].campo.enum"
-                              label="É"
-                              :rules="regraV"
-                              v-model="camposUsados[index].campo.nome"
-                            />
-                            <v-autocomplete
-                              :items="entidades"
-                              :label="camposUsados[index].campo.label"
-                              :rules="regraV"
-                              v-model="camposUsados[index].valor"
-                            />
-                          </div>
-                          <div v-else>
-                            <div v-if="camposUsados[index].campo.enum.length > 0">
-                              <v-autocomplete
-                                :items="camposUsados[index].campo.enum"
-                                label="Valor a pesquisar"
-                                :rules="regraValor"
-                                v-model="camposUsados[index].valor"
-                              />
-                            </div>
-                            <div v-else>
-                              <v-text-field
-                                v-if="camposUsados[index].campo.mask"
-                                label="Valor a pesquisar"
-                                :rules="regraValor"
-                                v-mask="camposUsados[index].campo.mask"
-                                v-model="camposUsados[index].valor"
-                              />
-                              <v-text-field
-                                v-else
-                                label="Valor a pesquisar"
-                                :rules="regraValor"
-                                v-model="camposUsados[index].valor"
-                              />
-                            </div>
-                          </div>
-                        </v-col>
-                        <v-col>
-                          <v-select
-                            :items="opLogicas"
-                            v-model="conetor"
-                            @input="
-                              camposUsados.push({
-                                campo: null,
-                                valor: '',
-                                not: false,
-                              });
-                              opLogicas = [conetor];
-                            "
-                          />
-                        </v-col>
-                        <v-col cols="12" md="1" v-if="camposUsados.length > 1">
-                          <v-btn
-                            align="center"
-                            icon
-                            color="red"
-                            @click="removerCampo(index)"
-                          >
-                            <unicon
-                              name="remove-icon"
-                              width="15"
-                              height="15"
-                              viewBox="0 0 20.71 20.697"
-                              fill="#ff5252"
-                            />
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                    </div>
-                  </v-form>
-
-                  <v-container fluid class="text-center">
-                    <v-row justify="center" align="center">
-                      <v-col cols="12" md="4">
-                        <v-btn
-                          @click="cancelarPesquisa"
-                          rounded
-                          class="white--text"
-                          :class="{
-                            'px-12': $vuetify.breakpoint.lgAndUp,
-                            'px-8': $vuetify.breakpoint.mdAndDown,
-                          }"
-                          id="default-button"
-                        >
-                          <unicon
-                            name="remove-icon"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20.71 20.721"
-                            fill="#ffffff"
-                          />
-                          <p class="ml-2">Cancelar</p>
-                        </v-btn>
-                      </v-col>
-                      <v-col cols="12" md="4">
-                        <v-btn
-                          @click="pesquisaAvancada"
-                          rounded
-                          class="white--text"
-                          :class="{
-                            'px-12': $vuetify.breakpoint.lgAndUp,
-                            'px-8': $vuetify.breakpoint.mdAndDown,
-                          }"
-                          id="default-button"
-                        >
-                          <unicon
-                            name="consultar-icon"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20.71 20.697"
-                            fill="#ffffff"
-                          />
-                          <p class="ml-2">Pesquisar</p>
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-main>
+          </v-container>
+        </v-card-text>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
 import Loading from "@/components/generic/Loading";
+import Voltar from "@/components/generic/Voltar";
 export default {
   props: ["savedSearch"],
   components: {
     Loading,
+    Voltar,
   },
   data: () => ({
     advancedSearch: false,
@@ -733,9 +671,6 @@ export default {
     this.classesCarregadas = true;
   },
   methods: {
-    goBack() {
-      this.$router.push("/lcinfo");
-    },
     //Necessário para o caso especial de pesquisar com o campo Entidade
     cleanNome: function () {
       for (var i = 0; i < this.camposPesquisa.length; i++) {
@@ -1160,10 +1095,6 @@ export default {
 </script>
 
 <style scoped>
-#text-field {
-  text-align: center !important;
-}
-
 .centered-input >>> input {
   text-align: center;
 }
@@ -1176,34 +1107,8 @@ export default {
   border-radius: 0 20px 20px 0;
 }
 
-.info-content {
-  padding: 8px;
-  background-color: #f1f6f8 !important;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 10px;
-}
-
 #dark-background-list {
   background-color: #0056b6 !important;
-}
-
-.v-btn__content {
-  color: black !important;
-}
-
-.margin-mdUp {
-  margin-right: 10% !important;
-  margin-left: 10% !important;
-}
-
-.margin-smDown {
-  margin-right: 2% !important;
-  margin-left: 2% !important;
-}
-
-.info-card {
-  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
-  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 #treeview-card {

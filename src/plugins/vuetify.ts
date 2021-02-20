@@ -17,6 +17,7 @@ export default new Vuetify({
         error: "#b71c1c",
         neutral: "#d8d8d8",
         neutralblue: "#09337f",
+        infocontent: "#f1f6f8"
       },
       dark: {
         primary: "#black",

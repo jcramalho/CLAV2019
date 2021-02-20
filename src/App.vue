@@ -18,7 +18,9 @@
 
     <!-- Main content -->
     <v-main>
-      <router-view />
+      <div class="px-5 py-10">
+        <router-view />
+      </div>
     </v-main>
 
     <!-- Footer -->
@@ -172,6 +174,13 @@ export default {
     var(--v-gradientright-base) 100%
   );
 }
+/* Usado em v-text-field */
+.clav-info-content {
+  padding: 8px;
+  background-color: var(--v-infocontent-base) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
+}
 
 /* TODO Para remover depois de remover todas as utilizações */
 #app {
@@ -185,9 +194,12 @@ export default {
   --text-shadow: rgba(0, 0, 0, 0.22);
 }
 
+/* Alterações globais dos componentes vuetify */
+
 .v-alert {
   text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
 }
+
 .v-application .body-2 {
   font-family: "Montserrat", sans-serif !important;
 }
@@ -213,6 +225,7 @@ export default {
 .v-application--is-ltr .v-treeview-node__toggle--open {
   color: var(--success) !important;
 }
+
 /* .v-btn {
   text-transform: none !important;
   font-weight: 600 !important;
@@ -222,6 +235,7 @@ export default {
   width: 100%;
   white-space: normal;
 } */
+
 .v-card__subtitle,
 .v-card__text {
   line-height: 1.8rem !important;
@@ -232,10 +246,7 @@ export default {
 .v-chip .v-chip__close.v-icon {
   color: var(--error) !important;
 }
-.v-main {
-  padding: 5.125rem 0 1.75rem !important;
-  color: #606060 !important;
-}
+
 .v-data-table td {
   padding-top: 10px;
   padding-bottom: 10px;
