@@ -1,6 +1,6 @@
 <template>
-  <v-main class="px-12">
-    <p class="content-title-1">Legislação</p>
+  <v-card flat class="pa-3">
+    <p class="clav-content-title-1">Legislação</p>
     <p class="content-text px-8 py-2">
       Catálogo de legislação que regula os processos de negócio (classes de 3º nível da
       Lista Consolidada) e enquadra os respetivos prazos de conservação administrativa
@@ -25,12 +25,11 @@
           <v-btn
             @click="$router.push('/legislacao/consultar')"
             rounded
-            class="white--text"
+            class="white--text clav-linear-background"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
           >
             <unicon
               name="consultar-icon"
@@ -54,12 +53,11 @@
           <v-btn
             @click="$router.push('/legislacao/criar')"
             rounded
-            class="white--text"
+            class="white--text clav-linear-background"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
           >
             <unicon
               name="criar-icon"
@@ -83,12 +81,11 @@
           <v-btn
             @click="legislacaoDialog = true"
             rounded
-            class="white--text"
+            class="white--text clav-linear-background"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
           >
             <unicon
               name="alterar-icon"
@@ -109,7 +106,7 @@
       @fechar="legislacaoDialog = !legislacaoDialog"
       @editar="editar($event)"
     />
-  </v-main>
+  </v-card>
 </template>
 
 <script>

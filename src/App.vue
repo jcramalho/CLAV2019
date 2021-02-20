@@ -182,6 +182,29 @@ export default {
   border-radius: 10px;
 }
 
+/* Titulo */
+.clav-content-title-1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--v-h1color-base);
+  text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.32);
+  text-align: center;
+}
+
+/* Subtitulo */
+.clav-content-title-2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--v-h1color-base);
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22);
+}
+
+/* Alterações globais dos componentes vuetify */
+
+.v-alert {
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
+}
+
 /* TODO Para remover depois de remover todas as utilizações */
 #app {
   font-family: "Montserrat", sans-serif;
@@ -192,12 +215,6 @@ export default {
   --error: #b71c1c;
   --neutral: #d8d8d8;
   --text-shadow: rgba(0, 0, 0, 0.22);
-}
-
-/* Alterações globais dos componentes vuetify */
-
-.v-alert {
-  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
 }
 
 .v-application .body-2 {
@@ -236,10 +253,11 @@ export default {
   white-space: normal;
 } */
 
-.v-card__subtitle,
+/* .v-card__subtitle,
 .v-card__text {
   line-height: 1.8rem !important;
-}
+} */
+
 .v-chip {
   white-space: normal !important;
 }
@@ -402,30 +420,18 @@ b {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
   outline: none !important;
 } */
-.content-title-1 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #4da0d0;
-  text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.32);
-  padding-bottom: 2rem;
-  text-align: center;
-}
-.content-title-2 {
-  font-size: 1.2rem;
-  font-weight: 500;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22);
-}
+
 .content-text {
   color: #666666 !important;
   font-size: 1rem;
   word-spacing: 2px;
   line-height: 1.8;
 }
-#default-button {
+/* #default-button {
   background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
-  /* box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-  outline: none !important;*/
-}
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
+  outline: none !important;
+} */
 #default-chip {
   background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
 }

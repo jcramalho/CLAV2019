@@ -3,9 +3,7 @@
     <v-row align="center" justify="center">
       <v-col cols="12" md="3" align="center"> <Voltar /> </v-col>
       <v-col cols="12" md="5" align="center">
-        <p class="content-title-1 py-5" style="color: #4da0d0 !important">
-          Consultar Lista Consolidada
-        </p>
+        <p class="clav-content-title-1">Consultar Lista Consolidada</p>
       </v-col>
       <v-col cols="12" md="4" align="center">
         <v-btn
@@ -107,7 +105,7 @@
               <p class="ml-2">Exportar</p>
             </v-btn>
           </template>
-          <v-list rounded dark id="dark-background-list">
+          <v-list rounded dark color="neutralblue">
             <v-list-item
               v-for="tipo in exportTypes"
               :key="tipo"
@@ -118,7 +116,7 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        <v-card-text class="mt-12 text-left" id="treeview-card">
+        <v-card-text class="mt-12 text-left clav-info-content">
           <v-card
             dark
             class="clav-linear-background mb-4"
@@ -1097,23 +1095,5 @@ export default {
 <style scoped>
 .centered-input >>> input {
   text-align: center;
-}
-
-#advanced-search-card {
-  padding: 8px;
-  background: #dee2f8;
-  color: #1a237e;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 0 20px 20px 0;
-}
-
-#dark-background-list {
-  background-color: #0056b6 !important;
-}
-
-#treeview-card {
-  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.32);
-  border-radius: 10px;
-  background-color: #f4f5f7;
 }
 </style>
