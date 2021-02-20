@@ -26,7 +26,7 @@
       show-arrows-on-hover
     >
       <v-carousel-item v-for="(n, index) in this.noticias" :key="index">
-        <v-sheet class="conteudo" color="white" height="100%" tile>
+        <v-sheet class="conteudo clav-info-content" height="100%" tile>
           <span class="titulopainel">{{ n.titulo }}</span>
           <data class="data">{{ n.data }}</data>
           <div class="info">

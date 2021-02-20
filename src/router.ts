@@ -7,12 +7,6 @@ export default new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
-    // {
-    //   path: "/oldentry",
-    //   name: "oldentry",
-    //   component: () => import("./views/Principal.vue"),
-    //   meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
-    // },
     {
       path: "/",
       name: "home",

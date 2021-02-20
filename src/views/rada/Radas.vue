@@ -1,132 +1,100 @@
 <template>
-  <v-content
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
-    }"
-  >
-    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
-      <v-row>
-        <!-- HEADER -->
-        <v-col class="py-0 my-0">
+  <v-card fluid class="pa-3">
+    <!-- HEADER -->
+    <v-row align="center">
+      <v-col cols="12" md="3" align="center">
+        <Voltar />
+      </v-col>
+      <v-col cols="12" md="6" align="center" justify="center">
+        <p class="clav-content-title-1">Consultar RADA's</p>
+      </v-col>
+      <v-col cols="12" md="3"></v-col>
+    </v-row>
+    <v-card-text>
+      <v-row justify="center" class="mt-3">
+        <v-col cols="12" sm="3" class="text-center">
           <v-btn
-            @click="goBack"
+            @click="expandAll"
             rounded
-            class="white--text mb-6"
+            class="white--text"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
+            color="success darken-1"
+            id="botao-shadow"
           >
             <unicon
-              name="arrow-back-icon"
+              name="expand-all-icon"
               width="20"
               height="20"
-              viewBox="0 0 20.71 37.261"
+              viewBox="0 0 20.714 20.71"
               fill="#ffffff"
             />
-            <p class="ml-2">Voltar</p>
+            <p class="ml-2">Expandir Tudo</p>
           </v-btn>
-          <v-card flat style="border-radius: 10px !important">
-            <p
-              class="content-title-1 pt-5"
-              style="
-                color: #4da0d0 !important;
-                text-align: center;
-                padding-bottom: 0.7rem !important;
-              "
-            >
-              Consultar RADA's
-            </p>
-            <v-card-text>
-              <v-row justify="center" class="mt-3">
-                <v-col cols="12" sm="3" class="text-center">
-                  <v-btn
-                    @click="expandAll"
-                    rounded
-                    class="white--text"
-                    :class="{
-                      'px-8': $vuetify.breakpoint.lgAndUp,
-                      'px-2': $vuetify.breakpoint.mdAndDown,
-                    }"
-                    color="success darken-1"
-                    id="botao-shadow"
-                  >
-                    <unicon
-                      name="expand-all-icon"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20.714 20.71"
-                      fill="#ffffff"
-                    />
-                    <p class="ml-2">Expandir Tudo</p>
-                  </v-btn>
-                </v-col>
-                <v-col cols="12" sm="3" class="text-center">
-                  <v-btn
-                    @click="closeAll"
-                    rounded
-                    class="white--text"
-                    :class="{
-                      'px-8': $vuetify.breakpoint.lgAndUp,
-                      'px-2': $vuetify.breakpoint.mdAndDown,
-                    }"
-                    style="background-color: rgb(153, 17, 17)"
-                    id="botao-shadow"
-                  >
-                    <unicon
-                      name="close-all-icon"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20.71 20.818"
-                      fill="#ffffff"
-                    />
-                    <p class="ml-2">Fechar Tudo</p>
-                  </v-btn>
-                </v-col>
-              </v-row>
-
-              <v-expansion-panels multiple v-model="toggles">
-                <PainelCLAV titulo="RADA/CLAV">
-                  <template v-slot:conteudo>
-                    <Loading v-if="!radasReady" message="fontes de legitimação" />
-                    <ListagemRADA
-                      v-else
-                      :lista="radas"
-                      @download="fazerDownloadRADA"
-                      @ver="redirecionar"
-                    />
-                  </template>
-                </PainelCLAV>
-                <PainelCLAV titulo="RADA">
-                  <template v-slot:conteudo>
-                    <Loading
-                      v-if="!radaAntigosReady"
-                      :message="'fontes de legitimação'"
-                    />
-                    <ListagemRADA
-                      v-else
-                      :lista="radaAntigos"
-                      tipo="RadaAntigo"
-                      @download="fazerDownloadRADA"
-                      @ver="redirecionar"
-                    />
-                  </template>
-                </PainelCLAV>
-              </v-expansion-panels>
-            </v-card-text>
-          </v-card>
+        </v-col>
+        <v-col cols="12" sm="3" class="text-center">
+          <v-btn
+            @click="closeAll"
+            rounded
+            class="white--text"
+            :class="{
+              'px-8': $vuetify.breakpoint.lgAndUp,
+              'px-2': $vuetify.breakpoint.mdAndDown,
+            }"
+            style="background-color: rgb(153, 17, 17)"
+            id="botao-shadow"
+          >
+            <unicon
+              name="close-all-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.71 20.818"
+              fill="#ffffff"
+            />
+            <p class="ml-2">Fechar Tudo</p>
+          </v-btn>
         </v-col>
       </v-row>
-    </v-container>
-  </v-content>
+
+      <v-expansion-panels multiple v-model="toggles">
+        <PainelCLAV titulo="RADA/CLAV" icon="mdi-book">
+          <template v-slot:conteudo>
+            <Loading v-if="!radasReady" message="fontes de legitimação" />
+            <ListagemRADA
+              v-else
+              :lista="radas"
+              @download="fazerDownloadRADA"
+              @ver="redirecionar"
+            />
+          </template>
+        </PainelCLAV>
+        <PainelCLAV titulo="RADA">
+          <template v-slot:icon>
+            <v-icon color="secondary"> mdi-book-arrow-up </v-icon>
+          </template>
+          <template v-slot:conteudo>
+            <Loading v-if="!radaAntigosReady" :message="'fontes de legitimação'" />
+            <ListagemRADA
+              v-else
+              :lista="radaAntigos"
+              tipo="RadaAntigo"
+              @download="fazerDownloadRADA"
+              @ver="redirecionar"
+            />
+          </template>
+        </PainelCLAV>
+      </v-expansion-panels>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
 import ListagemRADA from "@/components/rada/consulta/ListagemRADA.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
 import PainelCLAV from "@/components/generic/PainelCLAV";
+import Voltar from "@/components/generic/Voltar";
 //import { gerarPDF } from "@/utils/pdfRADA";
 
 export default {
@@ -142,6 +110,7 @@ export default {
     ListagemRADA,
     Loading,
     PainelCLAV,
+    Voltar,
   },
   methods: {
     // Abrir todos os v-expansion-panel

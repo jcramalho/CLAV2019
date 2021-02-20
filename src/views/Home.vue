@@ -1,12 +1,8 @@
 <template>
-  <v-main>
-    <v-row>
-      <v-col cols="12">
-        <Info />
-        <Noticias :level="level" />
-      </v-col>
-    </v-row>
-  </v-main>
+  <v-card flat class="pa-3">
+    <Info />
+    <Noticias :level="level" />
+  </v-card>
 </template>
 
 <script>
