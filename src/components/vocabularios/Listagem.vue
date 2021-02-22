@@ -7,9 +7,14 @@
       <v-col cols="1">
         <v-dialog v-if="temPermissao()" v-model="dialog" persistent max-width="600px">
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" class="ml-4" fab dark small color="primary">
-              <v-icon>add</v-icon>
-            </v-btn>
+            <v-tooltip top color="info" v-on="on">
+              <template v-slot:activator="{ on }">
+                <v-btn color="primary">
+                  <v-icon v-on="on" color="secondary">add</v-icon>
+                </v-btn>
+              </template>
+              <span>Adicionar um vocabulário controlado</span>
+            </v-tooltip>
           </template>
           <v-card>
             <v-card-title class="headline">

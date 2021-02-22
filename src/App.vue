@@ -213,6 +213,10 @@ export default {
   background-color: var(--v-infocontent-base) !important;
 }
 
+.v-tab {
+  text-transform: none !important;
+}
+
 /* TODO Para remover depois de remover todas as utilizações */
 #app {
   font-family: "Montserrat", sans-serif;
