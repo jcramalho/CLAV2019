@@ -179,7 +179,6 @@ export default {
   padding: 8px;
   background-color: var(--v-infocontent-base) !important;
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 10px;
 }
 
 /* Titulo */
@@ -199,10 +198,19 @@ export default {
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22);
 }
 
-/* Alterações globais dos componentes vuetify */
+/* Subtitulo */
+.content-text {
+  font-size: 1rem;
+  word-spacing: 2px;
+}
 
+/* Alterações globais dos componentes vuetify */
 .v-alert {
   text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
+}
+
+.v-data-table {
+  background-color: var(--v-infocontent-base) !important;
 }
 
 /* TODO Para remover depois de remover todas as utilizações */
@@ -421,12 +429,6 @@ b {
   outline: none !important;
 } */
 
-.content-text {
-  color: #666666 !important;
-  font-size: 1rem;
-  word-spacing: 2px;
-  line-height: 1.8;
-}
 /* #default-button {
   background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;

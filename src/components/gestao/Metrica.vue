@@ -1,7 +1,8 @@
 <template>
-  <v-container fluid grid-list-lg class="mx-0 pa-2">
-    <v-layout row wrap>
-      <v-flex md3 sm6 xs12 v-for="(stat, index) in stats" v-bind:key="index">
+  <v-card flat class="pa-3">
+    <p class="clav-content-title-1">Métricas de API</p>
+    <v-row>
+      <v-col cols="12" sm="6" md="3" v-for="(stat, index) in stats" :key="index">
         <v-card :class="stat.bgColor" dark>
           <v-container fluid grid-list-sm dark>
             <v-layout class="mt-0 mb-0 mx-0" row wrap>
@@ -32,26 +33,22 @@
             </v-layout>
           </v-container>
         </v-card>
-      </v-flex>
-    </v-layout>
-    <v-layout class="" row wrap>
-      <v-flex md6 xs12>
-        <v-card light>
-          <doughnut></doughnut>
-        </v-card>
-      </v-flex>
-      <v-flex md6 xs12>
-        <v-card light>
-          <bar></bar>
-        </v-card>
-      </v-flex>
-      <!--v-flex md6 xs12>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" sm="6" md="3">
+        <v-card flat> <doughnut></doughnut> </v-card>
+      </v-col>
+      <v-col cols="12" sm="6" md="3">
+        <v-card flat> <bar></bar> </v-card>
+      </v-col>
+    </v-row>
+    <!--v-flex md6 xs12>
         <v-card light>
           <line-chart></line-chart>
         </v-card>
       </v-flex-->
-    </v-layout>
-  </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -68,7 +65,7 @@ export default {
   },
   data() {
     return {
-      stats: []
+      stats: [],
     };
   },
   mounted() {
@@ -80,7 +77,7 @@ export default {
   methods: {
     async getNumeroEntidades() {
       await this.$request("get", "/entidades")
-        .then(res => {
+        .then((res) => {
           this.stats.push({
             bgColor: "primary",
             icon: "account_balance",
@@ -88,15 +85,15 @@ export default {
             data: res.data.length,
             action: {
               label: "Mais info",
-              link: "/entidades"
-            }
+              link: "/entidades",
+            },
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     async getNumeroUtilizadores() {
       await this.$request("get", "/users")
-        .then(res => {
+        .then((res) => {
           this.numeroUtilizadores = res.data.length;
           this.stats.push({
             bgColor: "primary",
@@ -105,15 +102,15 @@ export default {
             data: res.data.length,
             action: {
               label: "Mais info",
-              link: "/users/listagem"
-            }
+              link: "/users/listagem",
+            },
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     async getApiCalls() {
       await this.$request("get", "/logsAgregados/total")
-        .then(res => {
+        .then((res) => {
           this.stats.push({
             bgColor: "primary",
             icon: "lock",
@@ -121,15 +118,15 @@ export default {
             data: res.data,
             action: {
               label: "",
-              link: ""
-            }
+              link: "",
+            },
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     async getNumeroChavesApi() {
       await this.$request("get", "/chaves/")
-        .then(res => {
+        .then((res) => {
           this.numeroChavesApi = res.data.length;
           this.stats.push({
             bgColor: "primary",
@@ -138,15 +135,15 @@ export default {
             data: res.data.length,
             action: {
               label: "Mais info",
-              link: "/gestao/api/listagem"
-            }
+              link: "/gestao/api/listagem",
+            },
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     irPara(path) {
       this.$router.push(path);
-    }
-  }
+    },
+  },
 };
 </script>

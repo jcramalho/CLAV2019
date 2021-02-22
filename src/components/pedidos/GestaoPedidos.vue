@@ -1,147 +1,110 @@
 <template>
-  <v-main
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
-    }"
-  >
-    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
-      <v-row>
-        <!-- HEADER -->
-        <v-col class="py-0 my-0">
-          <v-btn
-            @click="goBack"
-            rounded
-            class="white--text mb-6"
-            :class="{
-              'px-8': $vuetify.breakpoint.lgAndUp,
-              'px-2': $vuetify.breakpoint.mdAndDown,
+  <v-card flat class="ma-3">
+    <v-row>
+      <!-- HEADER -->
+      <v-col>
+        <p class="clav-content-title-1">Gestão de Pedidos</p>
+        <!-- CONTENT -->
+        <v-card-text class="mt-0">
+          <v-row justify="center" class="mt-3">
+            <v-col cols="12" md="3" class="text-center">
+              <v-btn
+                @click="expandAll"
+                rounded
+                class="white--text"
+                :class="{
+                  'px-8': $vuetify.breakpoint.lgAndUp,
+                  'px-2': $vuetify.breakpoint.mdAndDown,
+                }"
+                color="success darken-1"
+                id="botao-shadow"
+              >
+                <unicon
+                  name="expand-all-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.714 20.71"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Expandir Tudo</p>
+              </v-btn>
+            </v-col>
+            <v-col cols="12" md="3" class="text-center">
+              <v-btn
+                @click="closeAll"
+                rounded
+                class="white--text"
+                :class="{
+                  'px-8': $vuetify.breakpoint.lgAndUp,
+                  'px-2': $vuetify.breakpoint.mdAndDown,
+                }"
+                style="background-color: rgb(153, 17, 17)"
+                id="botao-shadow"
+              >
+                <unicon
+                  name="close-all-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 20.818"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Fechar Tudo</p>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-expansion-panels flat multiple v-model="panelsArr" class="mt-4">
+            <PedidosNovos
+              :pedidos="pedidosSubmetidos"
+              :pesquisaPedidos="pesquisaPedidos"
+              @distribuir="distribuiPedido($event)"
+            />
+
+            <PedidosAnalise
+              :pedidos="pedidosDistribuidos"
+              :pesquisaPedidos="pesquisaPedidos"
+              @analisar="analisaPedido($event)"
+            />
+
+            <PedidosValidacao
+              :pedidos="pedidosValidados"
+              :pesquisaPedidos="pesquisaPedidos"
+              @validar="validaPedido($event)"
+            />
+
+            <PedidosEmDespacho
+              :pedidos="pedidosEmDespacho"
+              :pesquisaPedidos="pesquisaPedidos"
+              @despachar="despacharPedido($event)"
+            />
+
+            <PedidosDevolvidos
+              :pedidos="pedidosDevolvidos"
+              :pesquisaPedidos="pesquisaPedidos"
+            />
+
+            <PedidosProcessados
+              :pedidos="pedidosProcessados"
+              :pesquisaPedidos="pesquisaPedidos"
+            />
+          </v-expansion-panels>
+        </v-card-text>
+
+        <v-dialog v-model="distribuir" width="80%" persistent>
+          <AvancarPedido
+            :utilizadores="utilizadoresParaAnalisar"
+            :texto="{
+              textoTitulo: 'Distribuição',
+              textoAlert: 'análise',
+              textoBotao: 'Distribuir',
             }"
-            id="default-button"
-          >
-            <unicon
-              name="arrow-back-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 20.71 37.261"
-              fill="#ffffff"
-            />
-            <p class="ml-2">Voltar</p>
-          </v-btn>
-          <v-card flat style="border-radius: 10px !important">
-            <p
-              class="content-title-1 pt-5"
-              style="
-                color: #4da0d0 !important;
-                text-align: center;
-                padding-bottom: 0.7rem !important;
-              "
-            >
-              Gestão de Pedidos
-            </p>
-            <!-- CONTENT -->
-            <v-card-text class="mt-0">
-              <v-row justify="center" class="mt-3">
-                <v-col cols="12" md="3" class="text-center">
-                  <v-btn
-                    @click="expandAll"
-                    rounded
-                    class="white--text"
-                    :class="{
-                      'px-8': $vuetify.breakpoint.lgAndUp,
-                      'px-2': $vuetify.breakpoint.mdAndDown,
-                    }"
-                    color="success darken-1"
-                    id="botao-shadow"
-                  >
-                    <unicon
-                      name="expand-all-icon"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20.714 20.71"
-                      fill="#ffffff"
-                    />
-                    <p class="ml-2">Expandir Tudo</p>
-                  </v-btn>
-                </v-col>
-                <v-col cols="12" md="3" class="text-center">
-                  <v-btn
-                    @click="closeAll"
-                    rounded
-                    class="white--text"
-                    :class="{
-                      'px-8': $vuetify.breakpoint.lgAndUp,
-                      'px-2': $vuetify.breakpoint.mdAndDown,
-                    }"
-                    style="background-color: rgb(153, 17, 17)"
-                    id="botao-shadow"
-                  >
-                    <unicon
-                      name="close-all-icon"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20.71 20.818"
-                      fill="#ffffff"
-                    />
-                    <p class="ml-2">Fechar Tudo</p>
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <v-expansion-panels flat multiple v-model="panelsArr" class="mt-4">
-                <PedidosNovos
-                  :pedidos="pedidosSubmetidos"
-                  :pesquisaPedidos="pesquisaPedidos"
-                  @distribuir="distribuiPedido($event)"
-                />
-
-                <PedidosAnalise
-                  :pedidos="pedidosDistribuidos"
-                  :pesquisaPedidos="pesquisaPedidos"
-                  @analisar="analisaPedido($event)"
-                />
-
-                <PedidosValidacao
-                  :pedidos="pedidosValidados"
-                  :pesquisaPedidos="pesquisaPedidos"
-                  @validar="validaPedido($event)"
-                />
-
-                <PedidosEmDespacho
-                  :pedidos="pedidosEmDespacho"
-                  :pesquisaPedidos="pesquisaPedidos"
-                  @despachar="despacharPedido($event)"
-                />
-
-                <PedidosDevolvidos
-                  :pedidos="pedidosDevolvidos"
-                  :pesquisaPedidos="pesquisaPedidos"
-                />
-
-                <PedidosProcessados
-                  :pedidos="pedidosProcessados"
-                  :pesquisaPedidos="pesquisaPedidos"
-                />
-              </v-expansion-panels>
-            </v-card-text>
-          </v-card>
-
-          <v-dialog v-model="distribuir" width="80%" persistent>
-            <AvancarPedido
-              :utilizadores="utilizadoresParaAnalisar"
-              :texto="{
-                textoTitulo: 'Distribuição',
-                textoAlert: 'análise',
-                textoBotao: 'Distribuir',
-              }"
-              :pedido="pedidoParaDistribuir.codigo"
-              @fecharDialog="fecharDialog()"
-              @avancarPedido="atribuirPedido($event)"
-            />
-          </v-dialog>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-main>
+            :pedido="pedidoParaDistribuir.codigo"
+            @fecharDialog="fecharDialog()"
+            @avancarPedido="atribuirPedido($event)"
+          />
+        </v-dialog>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>

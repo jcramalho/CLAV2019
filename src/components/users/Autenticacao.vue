@@ -1,25 +1,16 @@
 <template>
-  <v-main
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp
-    }"
-    class="mb-n5"
-  >
+  <v-card flat class="pa-3">
     <v-container fluid class="pa-0 ma-auto">
-      <v-row style="min-height: 376px;">
-        <v-card flat style="border-radius: 10px !important; width:100%;">
+      <v-row style="min-height: 376px">
+        <v-card flat style="border-radius: 10px !important; width: 100%">
           <v-tabs-items v-model="active_tab">
             <v-tab-item v-for="item in tab_items" :key="item.id">
               <v-row>
-                <v-col class="pt-0">
-                  <p
-                    class="content-title-1 py-5"
-                    style="color: #4da0d0 !important;  text-align:center;"
-                  >
+                <v-col>
+                  <p class="clav-content-title-1">
                     {{ item.tab }}
                   </p>
-                  <v-card-text class="px-12 content-text">
+                  <v-card-text class="content-text">
                     <p v-if="item.texto">{{ item.texto }}</p>
                     <div v-if="item.item_ul" class="pt-5">
                       <ul v-for="i_ul in item.item_ul" :key="i_ul.elemento">
@@ -30,7 +21,7 @@
                     <v-row
                       v-if="item.botoes"
                       class="align-center mt-11"
-                      style="text-align:center;"
+                      style="text-align: center"
                     >
                       <v-col
                         cols="12"
@@ -43,12 +34,7 @@
                           type="submit"
                           @click="HandleFunctionCall(botao.click_event)"
                           rounded
-                          class="white--text"
-                          :class="{
-                            'px-8': $vuetify.breakpoint.lgAndUp,
-                            'px-2': $vuetify.breakpoint.mdAndDown
-                          }"
-                          id="default-button"
+                          class="white--text clav-linear-background"
                         >
                           <unicon
                             :name="botao.icon.nome"
@@ -73,12 +59,7 @@
                           <v-btn
                             type="submit"
                             rounded
-                            class="white--text"
-                            :class="{
-                              'px-8': $vuetify.breakpoint.lgAndUp,
-                              'px-2': $vuetify.breakpoint.mdAndDown
-                            }"
-                            id="default-button"
+                            class="white--text clav-linear-background"
                           >
                             <unicon
                               :name="botao.icon.nome"
@@ -95,18 +76,16 @@
                     <v-row
                       v-if="item.linkAjuda"
                       class="align-center mt-6"
-                      style="text-align:center;"
+                      style="text-align: center"
                     >
                       <v-col>
-                        <p style="display:inline;">
+                        <p style="display: inline">
                           {{ item.linkAjuda.texto }}
                         </p>
 
                         <a
-                          style="display:inline;"
-                          @click="
-                            HandleFunctionCall(item.linkAjuda.click_event)
-                          "
+                          style="display: inline"
+                          @click="HandleFunctionCall(item.linkAjuda.click_event)"
                         >
                           Recuperar
                         </a>
@@ -120,13 +99,8 @@
         </v-card>
       </v-row>
       <v-row color="#f3f7fc">
-        <hr style="border-top: 2px solid #d8d8d8; width: 100%;" class="mx-7" />
-        <v-tabs
-          v-model="active_tab"
-          grow
-          show-arrows
-          background-color="#f3f7fc"
-        >
+        <hr style="border-top: 2px solid #d8d8d8; width: 100%" class="mx-7" />
+        <v-tabs v-model="active_tab" grow show-arrows background-color="#f3f7fc">
           <v-tabs-slider color="blue darken-3"></v-tabs-slider>
           <v-tab v-for="item in tab_items" :key="item.id">
             {{ item.tab }}
@@ -134,7 +108,7 @@
         </v-tabs>
       </v-row>
     </v-container>
-  </v-main>
+  </v-card>
 </template>
 
 <script>
@@ -162,10 +136,9 @@ export default {
             { elemento: "Cartão de Cidadão;" },
             { elemento: "Chave Móvel Digital;" },
             {
-              elemento:
-                "Email pessoal institucional e respetiva senha de acesso."
-            }
-          ]
+              elemento: "Email pessoal institucional e respetiva senha de acesso.",
+            },
+          ],
         },
         {
           id: 1,
@@ -176,76 +149,71 @@ export default {
           botoes: [
             {
               descricao: "Cartão de Cidadão",
-              form_action:
-                "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
-              form_action_comment:
-                "https://autenticacao.gov.pt/fa/Default.aspx",
+              form_action: "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
+              form_action_comment: "https://autenticacao.gov.pt/fa/Default.aspx",
               saml_type: "CC",
               icon: {
                 nome: "cc-icon",
-                viewbox: "0 0 20.71 15.532"
-              }
+                viewbox: "0 0 20.71 15.532",
+              },
             },
             {
               descricao: "Chave Móvel Digital",
-              form_action:
-                "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
-              form_action_comment:
-                "https://autenticacao.gov.pt/fa/Default.aspx",
+              form_action: "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
+              form_action_comment: "https://autenticacao.gov.pt/fa/Default.aspx",
               saml_type: "CMD",
               icon: {
                 nome: "cmd-icon",
-                viewbox: "0 0 20.711 22.947"
-              }
+                viewbox: "0 0 20.711 22.947",
+              },
             },
             {
               descricao: "Email Pessoal Institucional",
               icon: {
                 nome: "email-icon",
-                viewbox: "0 0 20.71 20.005"
+                viewbox: "0 0 20.71 20.005",
               },
-              click_event: "loginEmail"
-            }
+              click_event: "loginEmail",
+            },
           ],
           linkAjuda: {
             texto: "Esqueceu a sua password?",
-            click_event: "recuperarPw"
-          }
+            click_event: "recuperarPw",
+          },
         },
         {
           id: 2,
           tab: "Registo de chaves API",
-          texto: "É um fornecedor de serviços? Registe aqui a sua chave API",
+          texto: "É um fornecedor de serviços? Registe aqui a sua chave API.",
           md_botao_prop: 12,
           botoes: [
             {
               descricao: "Registar",
               icon: {
                 nome: "api-icon",
-                viewbox: "0 0 20.71 20.71"
+                viewbox: "0 0 20.71 20.71",
               },
-              click_event: "registarApi"
-            }
-          ]
+              click_event: "registarApi",
+            },
+          ],
         },
         {
           id: 3,
           tab: "Renovação de chaves API",
-          texto:
-            "A sua chave API expirou? Peça aqui a renovação da sua chave API",
+          texto: "A sua chave API expirou? Peça aqui a renovação da sua chave API.",
           md_botao_prop: 12,
           botoes: [
             {
               descricao: "Renovar",
               icon: {
                 nome: "renovar-api-icon",
-                viewbox: "0 0 20.71 20.404"
+                viewbox: "0 0 20.71 20.404",
               },
-              click_event: "renovarApi"
-            }
-          ]
-        }
-      ]
+              click_event: "renovarApi",
+            },
+          ],
+        },
+      ],
     };
   },
   methods: {
@@ -271,48 +239,46 @@ export default {
     partialXML(uuid) {
       var xml = builder
         .begin({
-          encoding: "utf-8"
+          encoding: "utf-8",
         })
         .ele({
           AuthnRequest: {
             "@ID": uuid,
             "@Version": "2.0",
             "@IssueInstant": new Date().toISOString(),
-            "@Destination":
-              "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
+            "@Destination": "https://preprod.autenticacao.gov.pt/fa/Default.aspx",
             //Versão prod: "https://autenticacao.gov.pt/fa/Default.aspx",
-            "@ProtocolBinding":
-              "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+            "@ProtocolBinding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
             "@AssertionConsumerServiceURL": lhost + "/users/callback",
             "@ProviderName": "CLAV",
             "@xmlns": "urn:oasis:names:tc:SAML:2.0:protocol",
             "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
             "@xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
-            "@Consent": "urn:oasis:names:tc:SAML:2.0:consent:unspecified"
-          }
+            "@Consent": "urn:oasis:names:tc:SAML:2.0:consent:unspecified",
+          },
         })
         .ele(
           "Issuer",
           {
-            xmlns: "urn:oasis:names:tc:SAML:2.0:assertion"
+            xmlns: "urn:oasis:names:tc:SAML:2.0:assertion",
           },
           "http://clav-auth.di.uminho.pt"
         )
         .up()
         .ele("Extensions")
         .ele("fa:RequestedAttributes", {
-          "xmlns:fa": "http://autenticacao.cartaodecidadao.pt/atributos"
+          "xmlns:fa": "http://autenticacao.cartaodecidadao.pt/atributos",
         })
         .ele("fa:RequestedAttribute", {
           Name: "http://interop.gov.pt/MDC/Cidadao/NIC",
           NameFormat: "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
-          isRequired: "True"
+          isRequired: "True",
         })
         .up()
         .ele("fa:RequestedAttribute", {
           Name: "http://interop.gov.pt/MDC/Cidadao/NomeCompleto",
           NameFormat: "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
-          isRequired: "True"
+          isRequired: "True",
         });
       return xml;
     },
@@ -327,24 +293,23 @@ export default {
         .ele(
           "fa:FAAALevel",
           {
-            "xmlns:fa": "http://autenticacao.cartaodecidadao.pt/atributos"
+            "xmlns:fa": "http://autenticacao.cartaodecidadao.pt/atributos",
           },
           3
         )
         .up()
         //Politicas de Apresentação
         .ele("fa:AuthTabPresentationPolicies", {
-          "xmlns:fa":
-            "http://autenticacao.cartaodecidadao.pt/presentationpolicy"
+          "xmlns:fa": "http://autenticacao.cartaodecidadao.pt/presentationpolicy",
         })
         //seleciona a Tab default do CMD
         .ele("fa:defaultSelectedAuthTab", {
-          TabId: "CMD"
+          TabId: "CMD",
         })
         .up()
         //Esconde a tab do CC (retirar esta parte se se pretender mostrar as hipóteses CC e CMD)
         .ele("fa:hideAuthTab", {
-          TabId: "CC"
+          TabId: "CC",
         })
         .end();
 
@@ -353,7 +318,7 @@ export default {
     buildSamlRequest(xml, uuid) {
       this.$request("post", "/auth/adicionar", {
         id: uuid,
-        url: window.location.protocol + "//" + window.location.host
+        url: window.location.protocol + "//" + window.location.host,
       });
 
       var sig = new SignedXml();
@@ -363,12 +328,12 @@ export default {
         "//*[local-name(.)='AuthnRequest']",
         [
           "http://www.w3.org/2000/09/xmldsig#enveloped-signature",
-          "http://www.w3.org/2001/10/xml-exc-c14n#"
+          "http://www.w3.org/2001/10/xml-exc-c14n#",
         ],
         "http://www.w3.org/2000/09/xmldsig#sha1"
       );
       sig.computeSignature(xml, {
-        location: { reference: "//*[local-name(.)='Issuer']", action: "after" }
+        location: { reference: "//*[local-name(.)='Issuer']", action: "after" },
       });
 
       //Metodo auxiliar pra adicionar X509, visto o keyInfoProvider nao funcionar em Typescript
@@ -388,9 +353,7 @@ export default {
         return pemData[1].replace(/[\r\n|\n]/g, "");
       } else {
         const stripped = pem.replace(/[\r\n|\n]/g, "");
-        const base64DecodedAndBack = Buffer.from(stripped, "base64").toString(
-          "base64"
-        );
+        const base64DecodedAndBack = Buffer.from(stripped, "base64").toString("base64");
         if (stripped == base64DecodedAndBack) {
           return stripped;
         } else {
@@ -411,8 +374,8 @@ export default {
       else if (type == "CMD") xml = this.cmdXML(uuid);
       else throw "ERRO: tipo inválido";
       return btoa(this.stripExtension(this.buildSamlRequest(xml, uuid)));
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
