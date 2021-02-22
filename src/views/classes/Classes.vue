@@ -9,8 +9,7 @@
         <v-btn
           @click="advancedSearch = !advancedSearch"
           rounded
-          class="white--text px-2"
-          id="default-button"
+          class="white--text clav-linear-background"
         >
           <!--falta fazer: search = '' -->
           <v-switch
@@ -62,12 +61,7 @@
         <v-btn
           @click="processaPesquisa()"
           rounded
-          class="white--text mt-12 mr-8"
-          :class="{
-            'px-12': $vuetify.breakpoint.lgAndUp,
-            'px-8': $vuetify.breakpoint.mdAndDown,
-          }"
-          id="default-button"
+          class="white--text clav-linear-background mt-3"
         >
           <unicon
             name="consultar-icon"
@@ -85,16 +79,7 @@
           nudge-top="16"
         >
           <template v-slot:activator="{ on }">
-            <v-btn
-              v-on="on"
-              rounded
-              class="white--text mt-12 ml-8"
-              :class="{
-                'px-12': $vuetify.breakpoint.lgAndUp,
-                'px-8': $vuetify.breakpoint.mdAndDown,
-              }"
-              id="default-button"
-            >
+            <v-btn v-on="on" rounded class="white--text clav-linear-background mt-4 ml-8">
               <unicon
                 name="exportar-icon"
                 width="20"
@@ -365,11 +350,7 @@
                   @click="cancelarPesquisa"
                   rounded
                   class="white--text"
-                  :class="{
-                    'px-12': $vuetify.breakpoint.lgAndUp,
-                    'px-8': $vuetify.breakpoint.mdAndDown,
-                  }"
-                  id="default-button"
+                  color="error"
                 >
                   <unicon
                     name="remove-icon"
@@ -385,12 +366,7 @@
                 <v-btn
                   @click="pesquisaAvancada"
                   rounded
-                  class="white--text"
-                  :class="{
-                    'px-12': $vuetify.breakpoint.lgAndUp,
-                    'px-8': $vuetify.breakpoint.mdAndDown,
-                  }"
-                  id="default-button"
+                  class="white--text clav-linear-background"
                 >
                   <unicon
                     name="consultar-icon"
