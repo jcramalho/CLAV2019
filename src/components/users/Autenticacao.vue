@@ -1,113 +1,91 @@
 <template>
   <v-card flat class="pa-3">
-    <v-container fluid class="pa-0 ma-auto">
-      <v-row style="min-height: 376px">
-        <v-card flat style="border-radius: 10px !important; width: 100%">
-          <v-tabs-items v-model="active_tab">
-            <v-tab-item v-for="item in tab_items" :key="item.id">
-              <v-row>
-                <v-col>
-                  <p class="clav-content-title-1">
-                    {{ item.tab }}
-                  </p>
-                  <v-card-text class="content-text">
-                    <p v-if="item.texto">{{ item.texto }}</p>
-                    <div v-if="item.item_ul" class="pt-5">
-                      <ul v-for="i_ul in item.item_ul" :key="i_ul.elemento">
-                        <li>{{ i_ul.elemento }}</li>
-                      </ul>
-                    </div>
+    <v-tabs-items v-model="active_tab" style="min-height: 376px">
+      <v-tab-item v-for="item in tab_items" :key="item.id">
+        <p class="clav-content-title-1">
+          {{ item.tab }}
+        </p>
+        <p v-if="item.texto">{{ item.texto }}</p>
+        <div v-if="item.item_ul" class="pt-5">
+          <ul v-for="i_ul in item.item_ul" :key="i_ul.elemento">
+            <li>{{ i_ul.elemento }}</li>
+          </ul>
+        </div>
 
-                    <v-row
-                      v-if="item.botoes"
-                      class="align-center mt-11"
-                      style="text-align: center"
-                    >
-                      <v-col
-                        cols="12"
-                        :md="item.md_botao_prop"
-                        v-for="botao in item.botoes"
-                        :key="botao.descricao"
-                      >
-                        <v-btn
-                          v-if="!botao.form_action"
-                          type="submit"
-                          @click="HandleFunctionCall(botao.click_event)"
-                          rounded
-                          class="white--text clav-linear-background"
-                        >
-                          <unicon
-                            :name="botao.icon.nome"
-                            width="20"
-                            height="20"
-                            :viewBox="botao.icon.viewbox"
-                            fill="#ffffff"
-                          />
-                          <p class="ml-2">{{ botao.descricao }}</p>
-                        </v-btn>
-                        <form
-                          v-else
-                          :action="botao.form_action"
-                          :action_comment="botao.form_action_comment"
-                          method="POST"
-                        >
-                          <input
-                            type="hidden"
-                            name="SAMLRequest"
-                            v-bind:value="createSAML(botao.saml_type)"
-                          />
-                          <v-btn
-                            type="submit"
-                            rounded
-                            class="white--text clav-linear-background"
-                          >
-                            <unicon
-                              :name="botao.icon.nome"
-                              width="20"
-                              height="20"
-                              :viewBox="botao.icon.viewbox"
-                              fill="#ffffff"
-                            />
-                            <p class="ml-2">{{ botao.descricao }}</p>
-                          </v-btn>
-                        </form>
-                      </v-col>
-                    </v-row>
-                    <v-row
-                      v-if="item.linkAjuda"
-                      class="align-center mt-6"
-                      style="text-align: center"
-                    >
-                      <v-col>
-                        <p style="display: inline">
-                          {{ item.linkAjuda.texto }}
-                        </p>
+        <v-row v-if="item.botoes" class="my-5">
+          <v-col
+            class="pa-0"
+            align="center"
+            cols="12"
+            :md="item.md_botao_prop"
+            v-for="botao in item.botoes"
+            :key="botao.descricao"
+          >
+            <v-btn
+              v-if="!botao.form_action"
+              type="submit"
+              @click="HandleFunctionCall(botao.click_event)"
+              rounded
+              class="white--text clav-linear-background"
+            >
+              <unicon
+                :name="botao.icon.nome"
+                width="20"
+                height="20"
+                :viewBox="botao.icon.viewbox"
+                fill="#ffffff"
+              />
+              <p>{{ botao.descricao }}</p>
+            </v-btn>
+            <form
+              v-else
+              :action="botao.form_action"
+              :action_comment="botao.form_action_comment"
+              method="POST"
+            >
+              <input
+                type="hidden"
+                name="SAMLRequest"
+                v-bind:value="createSAML(botao.saml_type)"
+              />
+              <v-btn type="submit" rounded class="white--text clav-linear-background">
+                <unicon
+                  :name="botao.icon.nome"
+                  width="20"
+                  height="20"
+                  :viewBox="botao.icon.viewbox"
+                  fill="#ffffff"
+                />
+                <p>{{ botao.descricao }}</p>
+              </v-btn>
+            </form>
+          </v-col>
+        </v-row>
+        <v-row v-if="item.linkAjuda" class="align-center mt-6" style="text-align: center">
+          <v-col>
+            <p style="display: inline">
+              {{ item.linkAjuda.texto }}
+            </p>
 
-                        <a
-                          style="display: inline"
-                          @click="HandleFunctionCall(item.linkAjuda.click_event)"
-                        >
-                          Recuperar
-                        </a>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-col>
-              </v-row>
-            </v-tab-item>
-          </v-tabs-items>
-        </v-card>
-      </v-row>
-      <v-row color="#f3f7fc">
-        <hr style="border-top: 2px solid #d8d8d8; width: 100%" class="mx-7" />
-        <v-tabs v-model="active_tab" grow show-arrows background-color="#f3f7fc">
-          <v-tabs-slider color="blue darken-3"></v-tabs-slider>
-          <v-tab v-for="item in tab_items" :key="item.id">
-            {{ item.tab }}
-          </v-tab>
-        </v-tabs>
-      </v-row>
-    </v-container>
+            <a
+              style="display: inline"
+              @click="HandleFunctionCall(item.linkAjuda.click_event)"
+            >
+              Recuperar
+            </a>
+          </v-col>
+        </v-row>
+      </v-tab-item>
+    </v-tabs-items>
+    <v-row color="#f3f7fc">
+      <hr style="border-top: 2px solid #d8d8d8; width: 100%" class="mx-7" />
+      <v-tabs v-model="active_tab" grow show-arrows background-color="infocontent">
+        <v-tabs-slider color="primary"></v-tabs-slider>
+        <v-tab v-for="item in tab_items" :key="item.id">
+          {{ item.tab }}
+        </v-tab>
+      </v-tabs>
+    </v-row>
   </v-card>
 </template>
 
@@ -379,22 +357,16 @@ export default {
 };
 </script>
 <style scoped>
-.v-tab {
-  text-transform: none !important;
-}
 ul li {
   list-style: none;
-  color: #606060;
   font-size: 0.9em;
-  margin-bottom: 1rem;
-  position: relative;
 }
 ul li::before {
   content: "\2022";
-  position: absolute;
-  left: -1.8rem;
-  top: -0.3rem;
-  font-size: 4em;
-  color: #4da0d0;
+  color: var(--v-info-base);
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
 }
 </style>

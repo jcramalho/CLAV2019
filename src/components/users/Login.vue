@@ -1,16 +1,11 @@
 <template>
-  <v-main
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
-    }"
-  >
+  <v-card flat class="ma-3">
     <v-container fluid class="pa-0 ma-auto">
       <v-row>
         <v-col class="pt-0">
           <v-card flat style="border-radius: 10px !important">
             <p
-              class="content-title-1 py-5"
+              class="clav-content-title-1"
               style="color: #4da0d0 !important; text-align: center"
             >
               Login
@@ -137,7 +132,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-main>
+  </v-card>
 </template>
 
 <script>
