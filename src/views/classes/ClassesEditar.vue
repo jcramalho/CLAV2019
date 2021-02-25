@@ -2,16 +2,16 @@
   <v-content
     :class="{
       'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp
+      'px-12': $vuetify.breakpoint.mdAndUp,
     }"
   >
-    <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
       <v-row>
         <v-col class="pt-0">
-          <v-card flat style="border-radius: 10px !important;">
+          <v-card flat style="border-radius: 10px !important">
             <p
               class="content-title-1 py-5"
-              style="color: #4da0d0 !important;  text-align:center;"
+              style="color: #4da0d0 !important; text-align: center"
             >
               Alterar Classe
             </p>
@@ -21,13 +21,13 @@
                   class="info-content"
                   :class="{
                     'margin-mdUp': $vuetify.breakpoint.mdAndUp,
-                    'margin-smDown': $vuetify.breakpoint.smAndDown
+                    'margin-smDown': $vuetify.breakpoint.smAndDown,
                   }"
                 >
                   <v-tooltip top color="info" open-delay="500">
                     <template v-slot:activator="{ on }">
                       <v-text-field
-                        style="text-align: center !important;"
+                        style="text-align: center !important"
                         class="centered-input mt-n1 mb-2 px-8"
                         v-model="search"
                         v-on="on"
@@ -41,21 +41,15 @@
                       ></v-text-field>
                     </template>
                     <span
-                      >Pesquisar por código, título, notas de aplicação,
-                      exemplos de notas de aplicação ou termos de
-                      índice...</span
+                      >Pesquisar por código, título, notas de aplicação, exemplos de notas
+                      de aplicação ou termos de índice...</span
                     >
                   </v-tooltip>
                 </div>
                 <v-btn
                   @click="processaPesquisa()"
                   rounded
-                  class="white--text mt-12 mr-8"
-                  :class="{
-                    'px-12': $vuetify.breakpoint.lgAndUp,
-                    'px-8': $vuetify.breakpoint.mdAndDown
-                  }"
-                  id="default-button"
+                  class="white--text clav-linear-background"
                 >
                   <unicon
                     name="consultar-icon"
@@ -87,9 +81,7 @@
                               rounded
                               text
                               color="blue"
-                              @click="
-                                $router.push('/classes/editar/c' + item.id)
-                              "
+                              @click="$router.push('/classes/editar/c' + item.id)"
                             >
                               {{ item.name }}
                             </v-btn>
@@ -131,19 +123,19 @@ export default {
     realSearch: null,
     myIndice: [],
     selected: [],
-    selectedParents: []
+    selectedParents: [],
   }),
-  mounted: async function() {
+  mounted: async function () {
     var myClasses = await this.$request("get", "/classes");
     var myIndice = await this.$request("get", "/indicePesquisa");
     this.classesTree = await this.preparaTree(myClasses.data, myIndice.data);
     this.classesCarregadas = true;
   },
   methods: {
-    addActive: function(code) {
+    addActive: function (code) {
       this.selected.push(code);
     },
-    buscarpais: function(code) {
+    buscarpais: function (code) {
       let levelIds = code.split(".");
       let iter = levelIds.length;
 
@@ -152,7 +144,7 @@ export default {
         this.selectedParents.push(levelIds.join("."));
       }
     },
-    processaPesquisa: function() {
+    processaPesquisa: function () {
       if (this.search != "" && this.search != null) {
         this.selected = [];
         this.selectedParents = [];
@@ -161,11 +153,11 @@ export default {
         this.realSearch = null;
       }
     },
-    preparaTree: async function(lclasses, linfo) {
+    preparaTree: async function (lclasses, linfo) {
       try {
         var myTree = [];
         for (var i = 0; i < lclasses.length; i++) {
-          var infoIndex = linfo.findIndex(c => c.codigo == lclasses[i].codigo);
+          var infoIndex = linfo.findIndex((c) => c.codigo == lclasses[i].codigo);
           myTree.push({
             id: lclasses[i].codigo,
             name: lclasses[i].codigo + " - " + linfo[infoIndex].titulo,
@@ -173,23 +165,23 @@ export default {
             notas: linfo[infoIndex].notas.join(" ").toLowerCase(),
             exemplos: linfo[infoIndex].exemplos.join(" ").toLowerCase(),
             tis: linfo[infoIndex].tis.join(" ").toLowerCase(),
-            children: await this.preparaTree(lclasses[i].filhos, linfo)
+            children: await this.preparaTree(lclasses[i].filhos, linfo),
           });
         }
         return myTree;
       } catch (error) {
         return [];
       }
-    }
+    },
   },
   watch: {
-    search: function(newValue) {
+    search: function (newValue) {
       if (newValue == "" || newValue == null) {
         this.selected = [];
         this.selectedParents = [];
         this.realSearch = null;
       }
-    }
+    },
   },
   computed: {
     filter() {
@@ -220,8 +212,8 @@ export default {
           return 0;
         }
       };
-    }
-  }
+    },
+  },
 };
 </script>
 

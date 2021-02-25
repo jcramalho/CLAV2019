@@ -1,18 +1,9 @@
 <template>
-  <v-container fluid class="pa-0 ma-0" style="max-width:100%">
+  <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
     <v-row>
       <!-- HEADER -->
       <v-col class="py-0 my-0">
-        <v-btn
-          @click="goBack"
-          rounded
-          class="white--text mb-6"
-          :class="{
-            'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown
-          }"
-          id="default-button"
-        >
+        <v-btn @click="goBack" rounded class="white--text clav-linear-background">
           <unicon
             name="arrow-back-icon"
             width="20"
@@ -22,10 +13,14 @@
           />
           <p class="ml-2">Voltar</p>
         </v-btn>
-        <v-card flat style="border-radius: 10px !important;">
+        <v-card flat style="border-radius: 10px !important">
           <p
             class="content-title-1 pt-5"
-            style="color: #4da0d0 !important; text-align: center;  padding-bottom: 0.7rem !important;"
+            style="
+              color: #4da0d0 !important;
+              text-align: center;
+              padding-bottom: 0.7rem !important;
+            "
           >
             Importar Tabela de Seleção
           </p>
@@ -33,7 +28,7 @@
           <v-card-text class="mt-0">
             <p
               class="content-text px-8 py-2 mb-3"
-              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
             >
               Selecione a fonte de legitimação da Tabela de Seleção a importar:
             </p>
@@ -41,14 +36,12 @@
               <template v-slot:activator="{ on }">
                 <div
                   class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                  style="min-height: 50px; max-width:70%;"
+                  style="min-height: 50px; max-width: 70%"
                   v-on="on"
                 >
                   <v-radio-group
                     v-model="fonteLegitimacao"
-                    :rules="[
-                      v => !!v || 'Tem de escolher uma fonte de legitimação'
-                    ]"
+                    :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
                     required
                     row
                     @change="fonteL"
@@ -58,16 +51,8 @@
                       color="indigo darken-4"
                       value="PGD/LC"
                     ></v-radio>
-                    <v-radio
-                      label="PGD"
-                      color="indigo darken-4"
-                      value="PGD"
-                    ></v-radio>
-                    <v-radio
-                      label="RADA"
-                      color="indigo darken-4"
-                      value="RADA"
-                    ></v-radio>
+                    <v-radio label="PGD" color="indigo darken-4" value="PGD"></v-radio>
+                    <v-radio label="RADA" color="indigo darken-4" value="RADA"></v-radio>
                   </v-radio-group>
                 </div>
               </template>
@@ -75,7 +60,7 @@
             </v-tooltip>
             <p
               class="content-text px-8 py-2 mb-3"
-              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
             >
               Selecione o tipo de Tabela de Seleção:
             </p>
@@ -83,7 +68,7 @@
               <template v-slot:activator="{ on }">
                 <div
                   class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                  style="min-height: 50px; max-width:70%;"
+                  style="min-height: 50px; max-width: 70%"
                   v-on="on"
                 >
                   <v-radio-group
@@ -94,12 +79,8 @@
                     @change="
                       {
                         entidade_tipologia = [];
-                        if (
-                          tipo == 'Pluriorganizacional' &&
-                          fonteLegitimacao != 'RADA'
-                        ) {
-                          designacao =
-                            'Tabela de Seleção Pluriorganizacional...';
+                        if (tipo == 'Pluriorganizacional' && fonteLegitimacao != 'RADA') {
+                          designacao = 'Tabela de Seleção Pluriorganizacional...';
                         } else if (
                           tipo == 'Organizacional' &&
                           fonteLegitimacao != 'RADA'
@@ -130,7 +111,7 @@
               <div class="pa-0 ma-0" v-if="tipo == 'Organizacional'">
                 <p
                   class="content-text px-8 py-2 mb-3"
-                  style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+                  style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
                 >
                   Identifique a entidade ou tipologia da Tabela de Seleção:
                 </p>
@@ -138,7 +119,7 @@
                   <template v-slot:activator="{ on }">
                     <div
                       class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                      style="min-height: 50px; max-width:70%;"
+                      style="min-height: 50px; max-width: 70%"
                       v-on="on"
                     >
                       <v-autocomplete
@@ -154,8 +135,7 @@
                         @change="
                           if (fonteLegitimacao != 'RADA')
                             designacao = `Tabela de Seleção de ${entidade_tipologia}`;
-                          if (entidade_tipologia == undefined)
-                            designacao = null;
+                          if (entidade_tipologia == undefined) designacao = null;
                         "
                       >
                       </v-autocomplete>
@@ -168,7 +148,7 @@
               <div class="pa-0 ma-0" v-else>
                 <p
                   class="content-text px-8 py-2 mb-3"
-                  style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+                  style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
                 >
                   Identifique as entidades e tipologias da Tabela de Seleção:
                 </p>
@@ -176,7 +156,7 @@
                   <template v-slot:activator="{ on }">
                     <div
                       class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                      style="min-height: 50px; max-width:70%;"
+                      style="min-height: 50px; max-width: 70%"
                       v-on="on"
                     >
                       <v-autocomplete
@@ -190,9 +170,9 @@
                         single-line
                         multiple
                         :rules="[
-                          v =>
+                          (v) =>
                             (!!v && v.length > 1) ||
-                            'Tem de escolher pelo menos duas entidades!'
+                            'Tem de escolher pelo menos duas entidades!',
                         ]"
                       >
                       </v-autocomplete>
@@ -204,7 +184,7 @@
               </div>
               <p
                 class="content-text px-8 py-2 mb-3"
-                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
               >
                 Insira a designação para a Tabela de Seleção:
               </p>
@@ -212,7 +192,7 @@
                 <template v-slot:activator="{ on }">
                   <div
                     class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                    style="min-height: 50px; max-width:70%;"
+                    style="min-height: 50px; max-width: 70%"
                     v-on="on"
                   >
                     <v-text-field
@@ -232,7 +212,7 @@
 
               <p
                 class="content-text px-8 py-2 mb-3"
-                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
               >
                 Selecione o ficheiro com a Tabela de Seleção a importar:
               </p>
@@ -240,7 +220,7 @@
                 <template v-slot:activator="{ on }">
                   <div
                     class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                    style="min-height: 50px; max-width:70%;"
+                    style="min-height: 50px; max-width: 70%"
                     v-on="on"
                   >
                     <v-file-input
@@ -262,22 +242,20 @@
               <v-card
                 id="info-import-file"
                 class="mx-auto pa-4 content-text"
-                style="max-width:60%;"
+                style="max-width: 60%"
               >
                 <div v-if="tipo == 'Organizacional'">
                   <b>Caso o ficheiro seja CSV deve respeitar o seguinte:</b>
 
                   <ul class="px-9 pt-3 pb-4">
-                    <li>
-                      Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'
-                    </li>
+                    <li>Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'</li>
                     <li>O quote e o escape são realizados através de "</li>
                     <li>O encoding do ficheiro tem de ser UTF-8</li>
                   </ul>
 
                   <b>
-                    O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma
-                    sheet em que tenha:</b
+                    O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma sheet em que
+                    tenha:</b
                   >
 
                   <ul class="px-9 pt-3">
@@ -308,33 +286,31 @@
                   <b>Caso o ficheiro seja CSV deve respeitar o seguinte:</b>
 
                   <ul class="px-9 pt-3 pb-4">
-                    <li>
-                      Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'
-                    </li>
+                    <li>Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'</li>
                     <li>O quote e o escape são realizados através de "</li>
                     <li>O encoding do ficheiro tem de ser UTF-8</li>
                   </ul>
 
                   <b
-                    >O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma
-                    sheet em que tenha:</b
+                    >O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma sheet em que
+                    tenha:</b
                   >
 
                   <ul class="px-9 pt-3">
                     <li>Uma coluna 'Código' com os códigos dos processos</li>
                     <li>Uma coluna 'Título' com os títulos dos processos</li>
                     <li>
-                      Uma coluna 'Dono' com as siglas das entidades/tipologias
-                      que são donas separadas por '#'
+                      Uma coluna 'Dono' com as siglas das entidades/tipologias que são
+                      donas separadas por '#'
                     </li>
                     <li>
-                      Uma coluna 'Participante' com as siglas das
-                      entidades/tipologias que são donas separadas por '#'
+                      Uma coluna 'Participante' com as siglas das entidades/tipologias que
+                      são donas separadas por '#'
                     </li>
                     <li>
-                      Uma coluna 'Tipo de participação' com os tipos de
-                      participação das entidades/tipologias referidas na coluna
-                      'Participante' separados por '#'
+                      Uma coluna 'Tipo de participação' com os tipos de participação das
+                      entidades/tipologias referidas na coluna 'Participante' separados
+                      por '#'
                     </li>
                     <li>
                       Os tipos de participação válidos são:
@@ -355,17 +331,17 @@
               <v-btn
                 v-if="
                   (tipo == 'Organizacional' && designacao == '') ||
-                    file.length == 0 ||
-                    tipo == null ||
-                    fonteLegitimacao == null ||
-                    entidade_tipologia == null ||
-                    !entidade_tipologia.length
+                  file.length == 0 ||
+                  tipo == null ||
+                  fonteLegitimacao == null ||
+                  entidade_tipologia == null ||
+                  !entidade_tipologia.length
                 "
                 disabled
                 rounded
                 :class="{
                   'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown
+                  'px-2': $vuetify.breakpoint.mdAndDown,
                 }"
                 class="mb-6"
                 id="botao-shadow"
@@ -382,16 +358,16 @@
               <v-btn
                 v-else-if="
                   (tipo == 'Pluriorganizacional' && designacao == '') ||
-                    file.length == 0 ||
-                    tipo == null ||
-                    fonteLegitimacao == null ||
-                    entidade_tipologia.length < 2
+                  file.length == 0 ||
+                  tipo == null ||
+                  fonteLegitimacao == null ||
+                  entidade_tipologia.length < 2
                 "
                 disabled
                 rounded
                 :class="{
                   'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown
+                  'px-2': $vuetify.breakpoint.mdAndDown,
                 }"
                 class="mb-6"
                 id="botao-shadow"
@@ -408,12 +384,7 @@
                 v-else
                 @click="enviarFicheiro()"
                 rounded
-                class="white--text mb-6"
-                :class="{
-                  'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown
-                }"
-                id="default-button"
+                class="white--text clav-linear-background"
               >
                 <unicon
                   name="importar-icon"
@@ -499,11 +470,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-dialog
-          v-model="dialogConfirmacao.visivel"
-          persistent
-          max-width="60%"
-        >
+        <v-dialog v-model="dialogConfirmacao.visivel" persistent max-width="60%">
           <v-card dark class="info-card">
             <v-card-title class="headline mb-2">
               Não foi possível criar o pedido de criação de tabela de
@@ -512,12 +479,8 @@
             <div class="info-content-card px-3 mx-6 mb-2">
               <v-card-text class="pa-2 px-4 font-weight-medium">
                 <p class="error--text">{{ dialogConfirmacao.mensagem }}</p>
-                <p v-if="acrescenta" class="error--text title">
-                  Pretende selecioná-las?
-                </p>
-                <p v-else class="error--text title">
-                  Pretende desselecioná-las?
-                </p>
+                <p v-if="acrescenta" class="error--text title">Pretende selecioná-las?</p>
+                <p v-else class="error--text title">Pretende desselecioná-las?</p>
                 <ol v-if="entidadesFalta.length > 0">
                   <li v-for="(item, i) in entidadesFalta" v-bind:key="i">
                     {{ item.sigla }} - {{ item.designacao }}
@@ -591,27 +554,27 @@ export default {
     dialogConfirmacao: {
       visivel: false,
       mensagem: "",
-      dados: null
+      dados: null,
     },
     entidadesFalta: [],
-    acrescenta: null
+    acrescenta: null,
   }),
 
-  mounted: async function() {
+  mounted: async function () {
     try {
       var response = await this.$request("get", "/entidades");
-      var entidades = response.data.map(ent => {
+      var entidades = response.data.map((ent) => {
         return {
           text: ent.sigla + " - " + ent.designacao,
-          value: ent.sigla
+          value: ent.sigla,
         };
       });
 
       response = await this.$request("get", "/tipologias");
-      var tipologias = response.data.map(tip => {
+      var tipologias = response.data.map((tip) => {
         return {
           text: tip.sigla + " - " + tip.designacao,
-          value: tip.sigla
+          value: tip.sigla,
         };
       });
 
@@ -629,7 +592,7 @@ export default {
     goBack() {
       this.$router.push("/tsInfo");
     },
-    enviarFicheiro: async function() {
+    enviarFicheiro: async function () {
       try {
         this.erro = "";
         this.erroDialog = false;
@@ -639,18 +602,11 @@ export default {
         var formData = new FormData();
         formData.append("file", this.file[0]);
         formData.append("designacao", this.designacao);
-        formData.append(
-          "entidades_ts",
-          JSON.stringify(this.entidade_tipologia)
-        );
+        formData.append("entidades_ts", JSON.stringify(this.entidade_tipologia));
         formData.append("tipo_ts", "TS " + this.tipo);
         formData.append("fonteL", this.fonteLegitimacao);
 
-        var response = await this.$request(
-          "post",
-          "/tabelasSelecao/importar",
-          formData
-        );
+        var response = await this.$request("post", "/tabelasSelecao/importar", formData);
         /*
         var response2 = await this.$request(
           "get",
@@ -679,14 +635,11 @@ export default {
         for (var k in response.data.stats) {
           switch (k) {
             case "processos":
-              stats +=
-                "<li>Número de Processos: " + response.data.stats[k] + "</li>";
+              stats += "<li>Número de Processos: " + response.data.stats[k] + "</li>";
               break;
             case "donos":
               stats +=
-                "<li>Número de Processos Donos: " +
-                response.data.stats[k] +
-                "</li>";
+                "<li>Número de Processos Donos: " + response.data.stats[k] + "</li>";
               break;
             case "participantes":
               stats +=
@@ -700,9 +653,7 @@ export default {
                 switch (kb) {
                   case "processos":
                     stats +=
-                      "<li>Número de Processos: " +
-                      response.data.stats[k][kb] +
-                      "</li>";
+                      "<li>Número de Processos: " + response.data.stats[k][kb] + "</li>";
                     break;
                   case "donos":
                     stats +=
@@ -737,12 +688,12 @@ export default {
           if (e.response.data.acrescenta) {
             this.dialogConfirmacao = {
               visivel: true,
-              mensagem: e.response.data.message
+              mensagem: e.response.data.message,
             };
           } else {
             this.dialogConfirmacao = {
               visivel: true,
-              mensagem: e.response.data.message
+              mensagem: e.response.data.message,
             };
           }
         } else {
@@ -752,7 +703,7 @@ export default {
         }
       }
     },
-    seguirPedido: function() {
+    seguirPedido: function () {
       switch (this.fonteLegitimacao) {
         case "TS/LC":
           this.$router.push(`/pedidos/submissao/${this.codigo}`);
@@ -768,25 +719,25 @@ export default {
           break;
       }
     },
-    selecionar: function() {
+    selecionar: function () {
       this.dialogConfirmacao.visivel = false;
       if (this.tipo == "Pluriorganizacional")
         this.entidade_tipologia = this.entidade_tipologia.concat(
-          this.entidadesFalta.map(e => e.sigla)
+          this.entidadesFalta.map((e) => e.sigla)
         );
       else {
-        this.entidade_tipologia = this.entidadesFalta.map(e => e.sigla)[0];
+        this.entidade_tipologia = this.entidadesFalta.map((e) => e.sigla)[0];
         this.designacao = `Tabela de Seleção de ${this.entidade_tipologia}`;
       }
       this.entidadesFalta = [];
       this.acrescenta = null;
     },
-    desselecionar: function() {
+    desselecionar: function () {
       this.dialogConfirmacao.visivel = false;
-      this.entidadesFalta.map(e =>
+      this.entidadesFalta.map((e) =>
         this.entidade_tipologia.splice(
           this.entidade_tipologia[
-            this.entidade_tipologia.findIndex(ent => e.sigla == ent)
+            this.entidade_tipologia.findIndex((ent) => e.sigla == ent)
           ],
           1
         )
@@ -795,17 +746,11 @@ export default {
       this.entidadesFalta = [];
       this.acrescenta = null;
     },
-    fonteL: function() {
+    fonteL: function () {
       if (this.fonteLegitimacao == "RADA") {
-        this.designacao =
-          "Relatório de Avaliação de Documentação Acumulada de ...";
-        this.tipo == "Pluriorganizacional"
-          ? (this.entidade_tipologia = [])
-          : "";
-      } else if (
-        this.tipo == "Pluriorganizacional" &&
-        this.fonteLegitimacao != "RADA"
-      )
+        this.designacao = "Relatório de Avaliação de Documentação Acumulada de ...";
+        this.tipo == "Pluriorganizacional" ? (this.entidade_tipologia = []) : "";
+      } else if (this.tipo == "Pluriorganizacional" && this.fonteLegitimacao != "RADA")
         this.designacao = "Tabela de Seleção Pluriorganizacional...";
       else if (
         this.tipo == "Organizacional" &&
@@ -817,10 +762,10 @@ export default {
       else this.designacao = null;
     },
 
-    voltar: function() {
+    voltar: function () {
       this.$router.go();
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

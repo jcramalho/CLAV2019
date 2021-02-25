@@ -149,9 +149,10 @@
               <!--Lista de opções dos menus-->
               <v-list color="neutralblue">
                 <v-list-item
+                  class="mb-3 pa-1 mx-2"
                   v-for="(menuLink, i) in tab.menu"
                   :key="menuLink.opcao"
-                  @mouseleave="hover = false"
+                  @mouseleave="hoveropt ? (hover = true) : (hover = false)"
                   @mouseover="
                     hover = true;
                     activeItem = i;
@@ -176,6 +177,8 @@
                           icon
                           class="white--text"
                           color="neutralblue"
+                          @mouseover="hoveropt = true"
+                          @mouseleave="hoveropt = false"
                         >
                           <unicon
                             :name="action.icon"
@@ -192,6 +195,8 @@
                           icon
                           class="white--text"
                           color="neutralblue"
+                          @mouseover="hoveropt = true"
+                          @mouseleave="hoveropt = false"
                         >
                           <unicon
                             :name="action.icon"
@@ -402,6 +407,7 @@ export default {
   data() {
     return {
       hover: false,
+      hoveropt: false,
       activeItem: -1,
       snackbar: false,
       dialog: false,
