@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-0 ma-0" style="max-width:100%">
+  <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
     <v-row>
       <!-- HEADER -->
       <v-col class="py-0 my-0">
@@ -9,7 +9,7 @@
           class="white--text mb-6"
           :class="{
             'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown
+            'px-2': $vuetify.breakpoint.mdAndDown,
           }"
           id="default-button"
         >
@@ -22,10 +22,14 @@
           />
           <p class="ml-2">Voltar</p>
         </v-btn>
-        <v-card flat style="border-radius: 10px !important;">
+        <v-card flat style="border-radius: 10px !important">
           <p
             class="content-title-1 pt-5"
-            style="color: #4da0d0 !important; text-align: center;  padding-bottom: 0.7rem !important;"
+            style="
+              color: #4da0d0 !important;
+              text-align: center;
+              padding-bottom: 0.7rem !important;
+            "
           >
             Nova Tabela de Seleção (continuação do trabalho guardado)
           </p>
@@ -36,21 +40,21 @@
               id="stepper-card"
               :class="{
                 'mx-8': $vuetify.breakpoint.lgAndUp,
-                'mx-0': $vuetify.breakpoint.mdAndDown
+                'mx-0': $vuetify.breakpoint.mdAndDown,
               }"
-              class=" mt-n3 pa-4"
+              class="mt-n3 pa-4"
             >
               <v-stepper-step
                 :complete="stepNo > 1"
                 step="1"
                 :class="{
-                  'mt-n12': stepNo > 1
+                  'mt-n12': stepNo > 1,
                 }"
               >
                 <font
                   size="3"
                   :class="{
-                    'mt-12': stepNo > 1
+                    'mt-12': stepNo > 1,
                   }"
                   class="font-weight-medium"
                   ><b>
@@ -63,8 +67,7 @@
                   class="mt-1"
                 >
                   <v-chip
-                    class="my-2 mx-4"
-                    id="default-chip"
+                    class="my-2 mx-4 clav-linear-background"
                     text-color="white"
                   >
                     <unicon
@@ -77,8 +80,8 @@
                     />
                     {{
                       tabelaSelecao.idEntidade.split("_")[1] +
-                        ": " +
-                        tabelaSelecao.designacaoEntidade
+                      ": " +
+                      tabelaSelecao.designacaoEntidade
                     }}
                   </v-chip>
                 </span>
@@ -87,8 +90,7 @@
                   class="mt-1"
                 >
                   <v-chip
-                    class="my-2 mx-4"
-                    id="default-chip"
+                    class="my-2 mx-4 clav-linear-background"
                     text-color="white"
                   >
                     <unicon
@@ -101,8 +103,8 @@
                     />
                     {{
                       tabelaSelecao.idTipologia.split("_")[1] +
-                        ": " +
-                        tabelaSelecao.designacaoTipologia
+                      ": " +
+                      tabelaSelecao.designacaoTipologia
                     }}
                   </v-chip>
                 </span>
@@ -112,13 +114,13 @@
                 :complete="stepNo > 2"
                 step="2"
                 :class="{
-                  'mt-n12': stepNo > 1
+                  'mt-n12': stepNo > 1,
                 }"
               >
                 <font
                   size="3"
                   :class="{
-                    'mt-12': stepNo > 1
+                    'mt-12': stepNo > 1,
                   }"
                   class="font-weight-medium"
                 >
@@ -126,8 +128,7 @@
                 >
                 <span v-if="stepNo > 1" class="mt-1">
                   <v-chip
-                    class="my-2 mx-4"
-                    id="default-chip"
+                    class="my-2 mx-4 clav-linear-background"
                     text-color="white"
                   >
                     <unicon
@@ -147,12 +148,12 @@
                 class="pt-0"
                 :class="{
                   'mx-8': $vuetify.breakpoint.lgAndUp,
-                  'mx-0': $vuetify.breakpoint.mdAndDown
+                  'mx-0': $vuetify.breakpoint.mdAndDown,
                 }"
               >
                 <v-col
                   :class="{
-                    'ma-0 pa-0': $vuetify.breakpoint.mdAndDown
+                    'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
                   }"
                 >
                   <v-form ref="nomeTS" class="px-4">
@@ -161,7 +162,7 @@
                     >
                     <div
                       class="info-content py-2 pl-6 pr-3 mt-2"
-                      style="min-height: 50px;"
+                      style="min-height: 50px"
                     >
                       <unicon
                         name="description-icon"
@@ -170,7 +171,7 @@
                         viewBox="0 0 20.71 23.668"
                         fill="#1976d2"
                         class="mr-3"
-                        style="white-space: nowrap !important;"
+                        style="white-space: nowrap !important"
                       />
                       <v-tooltip top color="info" open-delay="500">
                         <template v-slot:activator="{ on }">
@@ -179,7 +180,11 @@
                             class="mt-n3"
                             :placeholder="tabelaSelecao.designacao"
                             v-model="tabelaSelecao.designacao"
-                            style="display: inline-block; width: 90%; white-space: nowrap !important;"
+                            style="
+                              display: inline-block;
+                              width: 90%;
+                              white-space: nowrap !important;
+                            "
                           ></v-text-field>
                         </template>
                         <span> Designação para a tabela de seleção</span>
@@ -196,7 +201,7 @@
                   class="white--text mt-5 ml-4"
                   :class="{
                     'px-6': $vuetify.breakpoint.lgAndUp,
-                    'px-2': $vuetify.breakpoint.mdAndDown
+                    'px-2': $vuetify.breakpoint.mdAndDown,
                   }"
                   color="success darken-1"
                   id="botao-shadow"
@@ -221,12 +226,16 @@
                   cols="12"
                   :class="{
                     'px-4': $vuetify.breakpoint.lgAndUp,
-                    'ma-0 pa-0': $vuetify.breakpoint.mdAndDown
+                    'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
                   }"
                 >
                   <div
                     class="info-content"
-                    style="padding-left: 0 !important; padding-right: 0 !important; min-height: 50px;"
+                    style="
+                      padding-left: 0 !important;
+                      padding-right: 0 !important;
+                      min-height: 50px;
+                    "
                   >
                     <ListaProcessos
                       v-if="!importadoFlag"
@@ -246,7 +255,7 @@
                   >Ainda não foi possível carregar a informação dos
                   Processos...</v-col
                 >
-                <v-row class="align-center pa-3" style="text-align:center;">
+                <v-row class="align-center pa-3" style="text-align: center">
                   <!-- Voltar ao passo anterior ............................................-->
                   <v-col cols="12" md="4" lg="2">
                     <v-btn
@@ -256,9 +265,9 @@
                       class="white--text"
                       :class="{
                         'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown
+                        'px-2': $vuetify.breakpoint.mdAndDown,
                       }"
-                      style="width: 100%; background-color: rgb(153, 17, 17);"
+                      style="width: 100%; background-color: rgb(153, 17, 17)"
                       id="botao-shadow"
                     >
                       <unicon
@@ -281,9 +290,9 @@
                       class="white--text"
                       :class="{
                         'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown
+                        'px-2': $vuetify.breakpoint.mdAndDown,
                       }"
-                      style="width: 100%;"
+                      style="width: 100%"
                       id="default-button"
                     >
                       <unicon
@@ -311,9 +320,9 @@
                       class="white--text"
                       :class="{
                         'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown
+                        'px-2': $vuetify.breakpoint.mdAndDown,
                       }"
-                      style="width: 100%;"
+                      style="width: 100%"
                       id="default-button"
                     >
                       <unicon
@@ -341,9 +350,9 @@
                       class="white--text"
                       :class="{
                         'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown
+                        'px-2': $vuetify.breakpoint.mdAndDown,
                       }"
-                      style="width: 100%;"
+                      style="width: 100%"
                       id="default-button"
                     >
                       <unicon
@@ -370,15 +379,15 @@
                   <v-col cols="12" md="4" lg="2">
                     <v-btn
                       v-if="stepNo > 2"
-                      @click="submeterTS"
+                      @click="verificaTS"
                       color="success darken-1"
                       rounded
                       class="white--text"
                       :class="{
                         'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown
+                        'px-2': $vuetify.breakpoint.mdAndDown,
                       }"
-                      style="width: 100%;"
+                      style="width: 100%"
                       id="botao-shadow"
                     >
                       <unicon
@@ -401,9 +410,9 @@
                       class="white--text"
                       :class="{
                         'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown
+                        'px-2': $vuetify.breakpoint.mdAndDown,
                       }"
-                      style="width: 100%;"
+                      style="width: 100%"
                       id="botao-shadow"
                     >
                       <unicon
@@ -484,7 +493,7 @@ export default {
     DialogValidacaoOK,
     DialogValidacaoErros,
     DialogSair,
-    ConfirmacaoOperacao
+    ConfirmacaoOperacao,
   },
   data() {
     return {
@@ -496,12 +505,12 @@ export default {
         designacaoTipologia: "",
         designacaoTS: "",
         tipologias: [],
-        listaProcessos: {}
+        listaProcessos: {},
       },
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
-        dados: null
+        dados: null,
       },
 
       // Fecho Transitivo dos processos
@@ -558,31 +567,31 @@ export default {
       // Dialog de confirmação de abandonar a operação
       sairOperacao: false,
       //Verificação de ficheiro importado
-      importadoFlag: false
+      importadoFlag: false,
     };
   },
   methods: {
     goBack() {
       this.$router.push("/ts/criar");
     },
-    debug: function(obj) {
+    debug: function (obj) {
       alert(JSON.stringify(obj));
     },
-    validaTSnome: function() {
+    validaTSnome: function () {
       if (this.$refs.nomeTS.validate()) {
         this.stepNo = 3;
       }
     },
     // Vai à API buscar todas as entidades
-    loadEntidades: async function() {
+    loadEntidades: async function () {
       try {
         var response = await this.$request("get", "/entidades");
-        this.entidades = response.data.map(function(item) {
+        this.entidades = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
             id: item.id,
-            label: item.sigla + " - " + item.designacao
+            label: item.sigla + " - " + item.designacao,
           };
         });
         this.entidadesReady = true;
@@ -590,7 +599,7 @@ export default {
         console.log("Erro ao recuperar a lista de entidades: " + err);
       }
     },
-    guardaEntidade: async function() {
+    guardaEntidade: async function () {
       this.tabelaSelecao.designacao =
         "Tabela de Seleção de " + this.ent.designacao;
       this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
@@ -602,7 +611,7 @@ export default {
       }
       this.stepNo = this.stepNo + 1;
     },
-    guardaTipologia: function() {
+    guardaTipologia: function () {
       // id e designação
       this.tabelaSelecao.designacao =
         "Tabela de seleção de " + this.tipSel.designacao;
@@ -610,7 +619,7 @@ export default {
       this.tabelaSelecao.idTipologia = this.tipSel.id;
       this.stepNo = this.stepNo + 1;
     },
-    guardaEntidadeUtilizador: function() {
+    guardaEntidadeUtilizador: function () {
       // id e designação
       this.tabelaSelecao.designacao =
         "Tabela de seleção de " + this.entidadeUtilizador.designacao;
@@ -619,19 +628,19 @@ export default {
       this.stepNo = this.stepNo + 1;
     },
     // Vai à API buscar todas as tipologias a que pertence a entidade do utilizador
-    loadTipologiasUtilizador: async function() {
+    loadTipologiasUtilizador: async function () {
       try {
         // Tipologias onde a entidade se encontra
         var tipologias = await this.$request(
           "get",
           "/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
-        this.tipSel = tipologias.data.map(function(item) {
+        this.tipSel = tipologias.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
             id: item.id,
-            label: item.sigla + " - " + item.designacao
+            label: item.sigla + " - " + item.designacao,
           };
         });
       } catch (e) {
@@ -641,15 +650,15 @@ export default {
       }
     },
     // Vai à API buscar todas as tipologias
-    loadTipologias: async function() {
+    loadTipologias: async function () {
       try {
         var response = await this.$request("get", "/tipologias/");
-        this.tipologias = response.data.map(function(item) {
+        this.tipologias = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
             id: item.id,
-            label: item.sigla + " - " + item.designacao
+            label: item.sigla + " - " + item.designacao,
           };
         });
         this.tipologiasReady = true;
@@ -658,25 +667,25 @@ export default {
       }
     },
     // Carrega apenas as tipologias da entidade selecionada
-    loadTipologiasDaEntidade: async function() {
+    loadTipologiasDaEntidade: async function () {
       try {
         // Tipologias onde a entidade se encontra
         var tipologias = await this.$request(
           "get",
           "/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
-        this.tipSel = tipologias.data.map(function(item) {
+        this.tipSel = tipologias.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
             id: item.id,
-            label: item.sigla + " - " + item.designacao
+            label: item.sigla + " - " + item.designacao,
           };
         });
         // Retira da lista de todas as tipologias as que já pertencem à entidade selecionada
         for (var i = 0; i < this.tipSel.length; i++) {
           var index = this.tipologias.findIndex(
-            e => e.id === this.tipSel[i].id
+            (e) => e.id === this.tipSel[i].id
           );
           this.tipologias.splice(index, 1);
         }
@@ -685,7 +694,7 @@ export default {
       }
     },
     // Carregamento dos processos
-    loadProcessos: async function() {
+    loadProcessos: async function () {
       try {
         if (!this.listaProcessosReady) {
           this.listaProcessos.numProcessosSelecionados = 0;
@@ -715,7 +724,7 @@ export default {
         console.log("Erro ao carregar os processos: " + err);
       }
     },
-    loadProcessosEspecificos: async function(entidade) {
+    loadProcessosEspecificos: async function (entidade) {
       try {
         var url = "/classes?nivel=3&tipo=especifico&ents=" + entidade.id;
         var response = await this.$request("get", url);
@@ -740,7 +749,7 @@ export default {
       }
     },
     // Carrega os processos específicos da entidade e das tipologias em causa
-    loadProcEspecificos: async function() {
+    loadProcEspecificos: async function () {
       try {
         if (!this.listaProcEspReady) {
           var url =
@@ -762,13 +771,13 @@ export default {
                 classe: response.data[x].codigo,
                 designacao: response.data[x].titulo,
                 dono: false,
-                participante: false
+                participante: false,
               });
             } else {
               this.listaProcEsp.push({
                 classe: response.data[x].codigo,
                 designacao: response.data[x].titulo,
-                dono: true
+                dono: true,
               });
             }
           }
@@ -779,64 +788,64 @@ export default {
         return error;
       }
     },
-    criaHistoricoTS: async function(userBD) {
+    criaHistoricoTS: async function (userBD) {
       let historico = [
         {
           designacao: {
             cor: "verde",
             dados: this.tabelaSelecao.designacao,
-            nota: null
+            nota: null,
           },
           data: {
             cor: "verde",
             dados: new Date(),
-            nota: null
+            nota: null,
           },
           entProd: {
             cor: "verde",
             dados: userBD.entidade.split("_")[1],
-            nota: null
+            nota: null,
           },
           ts: {
             entidade: {
               cor: "verde",
               dados: this.tabelaSelecao.designacaoEntidade,
-              nota: null
+              nota: null,
             },
             tipologia: {
               cor: "verde",
               dados: this.tabelaSelecao.designacaoTipologia,
-              nota: null
+              nota: null,
             },
             classes: {
               cor: "verde",
-              dados: this.tabelaSelecao.listaProcessos.procs.map(c => {
+              dados: this.tabelaSelecao.listaProcessos.procs.map((c) => {
                 return {
                   cor: "verde",
                   dados: JSON.parse(JSON.stringify(c)),
-                  nota: null
+                  nota: null,
                 };
               }),
-              nota: null
-            }
-          }
-        }
+              nota: null,
+            },
+          },
+        },
       ];
       // Cria histórico para cada processo
       for (let i = 0; i < historico[0].ts.classes.dados.length; i++) {
-        Object.keys(historico[0].ts.classes.dados[i].dados).map(p => {
+        Object.keys(historico[0].ts.classes.dados[i].dados).map((p) => {
           historico[0].ts.classes.dados[i].dados[p] = {
             cor: "verde",
             dados: historico[0].ts.classes.dados[i].dados[p],
-            nota: null
+            nota: null,
           };
           if (p === "pca" || p === "df") {
             Object.keys(historico[0].ts.classes.dados[i].dados[p].dados).map(
-              d => {
+              (d) => {
                 historico[0].ts.classes.dados[i].dados[p].dados[d] = {
                   cor: "verde",
                   dados: historico[0].ts.classes.dados[i].dados[p].dados[d],
-                  nota: null
+                  nota: null,
                 };
               }
             );
@@ -844,38 +853,37 @@ export default {
         });
       }
       var procs = this.listaProcessos.procs.filter(
-        p => p.dono || p.participante != "NP"
+        (p) => p.dono || p.participante != "NP"
       );
-      procs.map(p =>
+      procs.map((p) =>
         this.listaProcessos.procsAselecionar.splice(
           this.listaProcessos.procsAselecionar.findIndex(
-            c => c.codigo === p.codigo
+            (c) => c.codigo === p.codigo
           ),
           1
         )
       );
-      if (this.listaProcessos.procsAselecionar > 0){
-
+      if (this.listaProcessos.procsAselecionar.length > 0) {
         historico[0].ts["procsAselecionar"] = {
           cor: "vermelho",
-        dados: this.listaProcessos.procsAselecionar,
-        nota: null
-      };
-        }
+          dados: this.listaProcessos.procsAselecionar,
+          nota: null,
+        };
+      }
       return historico;
     },
     //Verifica a TS antes de submeter
-    verificaTS: async function() {
+    verificaTS: async function () {
       var procs = this.listaProcessos.procs.filter(
-        p => p.dono || p.participante != "NP"
+        (p) => p.dono || p.participante != "NP"
       );
       if (
         procs
-          .map(p => p.codigo)
+          .map((p) => p.codigo)
           .sort()
           .join(",") !==
           this.listaProcessos.procsAselecionar
-            .map(p => p.codigo)
+            .map((p) => p.codigo)
             .sort()
             .join(",") &&
         this.listaProcessos.numProcessosPreSelecionados -
@@ -888,19 +896,16 @@ export default {
             "Existem " +
             (this.listaProcessos.numProcessosPreSelecionados -
               this.listaProcessos.processosPreSelecionados) +
-            " processos por selecionar, deseja mesmo continuar com a submissão do pedido?"
+            " processos por selecionar, deseja mesmo continuar com a submissão do pedido?",
         };
       } else await this.submeterTS();
     },
     // Lança o pedido de submissão de uma TS
-    submeterTS: async function() {
+    submeterTS: async function () {
       // É preciso testar se há um Pendente criado para o apagar
       if (this.pendente._id) {
         try {
-          var response = await this.$request(
-            "delete",
-            "/pendentes/" + this.pendente._id
-          );
+          await this.$request("delete", "/pendentes/" + this.pendente._id);
         } catch (e) {
           console.log("Erro ao remover o pendente na submissão da TS: " + e);
         }
@@ -915,12 +920,12 @@ export default {
         );
         if (!this.importadoFlag) {
           this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-            p => p.dono || p.participante != "NP"
+            (p) => p.dono || p.participante != "NP"
           );
-          this.tabelaSelecao.listaProcessos.procs.map(p =>
+          this.tabelaSelecao.listaProcessos.procs.map((p) =>
             this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
               this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
-                c => c.codigo === p.codigo
+                (c) => c.codigo === p.codigo
               ),
               1
             )
@@ -933,7 +938,7 @@ export default {
           designacao: this.tabelaSelecao.designacao,
           idTipologia: this.tabelaSelecao.idTipologia,
           designacaoTipologia: this.tabelaSelecao.designacaoTipologia,
-          listaProcessos: this.tabelaSelecao.listaProcessos
+          listaProcessos: this.tabelaSelecao.listaProcessos,
         };
         var pedidoParams = {
           tipoPedido: "Criação",
@@ -942,7 +947,7 @@ export default {
           user: { email: userBD.email },
           entidade: userBD.entidade,
           token: this.$store.state.token,
-          historico: await this.criaHistoricoTS(userBD)
+          historico: await this.criaHistoricoTS(userBD),
         };
         var codigoPedido = await this.$request(
           "post",
@@ -955,8 +960,9 @@ export default {
       }
     },
     // Guarda o trabalho de criação de uma TS
-    guardarTrabalho: async function() {
+    guardarTrabalho: async function () {
       try {
+        var response;
         var userBD = this.$verifyTokenUser();
         // Guardam-se apenas os processos que foram alterados
         // Ao carregar será preciso fazer Merge com a LC
@@ -966,7 +972,7 @@ export default {
         );
         if (!this.importadoFlag) {
           this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-            p => p.dono || p.participante != "NP" || p.descriptionEdited
+            (p) => p.dono || p.participante != "NP" || p.descriptionEdited
           );
           this.tabelaSelecao.participante = this.participante;
         }
@@ -978,24 +984,16 @@ export default {
           objeto: this.tabelaSelecao,
           criadoPor: userBD.email,
           user: { email: userBD.email },
-          token: this.$store.state.token
+          token: this.$store.state.token,
         };
         // É preciso testar se há um Pendente criado para não criar um novo
         if (this.pendente._id) {
           pendenteParams._id = this.pendente._id;
           pendenteParams.numInterv = ++this.pendente.numInterv;
-          var response = await this.$request(
-            "put",
-            "/pendentes",
-            pendenteParams
-          );
+          response = await this.$request("put", "/pendentes", pendenteParams);
         } else {
           pendenteParams.numInterv = 1;
-          var response = await this.$request(
-            "post",
-            "/pendentes",
-            pendenteParams
-          );
+          response = await this.$request("post", "/pendentes", pendenteParams);
         }
         this.pendente = response.data;
         this.pendenteGuardado = true;
@@ -1004,21 +1002,21 @@ export default {
       }
     },
     // Elimina todo o trabalho feito até esse momento
-    eliminarTS: async function() {
+    eliminarTS: async function () {
       this.$router.push("/");
     },
     // Valida a TS construída até ao momento
-    validarTS: async function() {
+    validarTS: async function () {
       var procs = this.listaProcessos.procs.filter(
-        p => p.dono || p.participante != "NP"
+        (p) => p.dono || p.participante != "NP"
       );
       if (
         procs
-          .map(p => p.codigo)
+          .map((p) => p.codigo)
           .sort()
           .join(",") !==
           this.listaProcessos.procsAselecionar
-            .map(p => p.codigo)
+            .map((p) => p.codigo)
             .sort()
             .join(",") &&
         this.listaProcessos.numProcessosPreSelecionados -
@@ -1027,17 +1025,17 @@ export default {
       ) {
         this.mensagensErro.push({
           sobre: "Escolha de processos",
-          mensagem: `Ainda tem ${this.listaProcessos
-            .numProcessosPreSelecionados -
-            this.listaProcessos
-              .processosPreSelecionados} processos por selecionar`
+          mensagem: `Ainda tem ${
+            this.listaProcessos.numProcessosPreSelecionados -
+            this.listaProcessos.processosPreSelecionados
+          } processos por selecionar`,
         });
         this.numeroErros++;
       }
       this.validacaoTerminada = true;
     },
     // Quando a validação termina chama-se esta rotina para fazer reset ao estado da Validação
-    fechoValidacao: async function() {
+    fechoValidacao: async function () {
       this.numeroErros = 0;
       this.mensagensErro = [];
       //this.notasApSet = [];
@@ -1046,17 +1044,14 @@ export default {
       this.validacaoTerminada = false;
     },
     // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
-    sair: async function() {
+    sair: async function () {
       this.$router.push("/");
     },
     // Abortar a operação apagando o pendente se existir
-    abortar: async function() {
+    abortar: async function () {
       if (this.pendente && this.pendente._id) {
         try {
-          var response = await this.$request(
-            "delete",
-            "/pendentes/" + this.pendente._id
-          );
+          await this.$request("delete", "/pendentes/" + this.pendente._id);
         } catch (e) {
           console.log("Erro ao eliminar o pendente: " + e);
         }
@@ -1064,7 +1059,7 @@ export default {
       this.$router.push("/");
     },
     // Carrega os fechos transitivos necessários para os que já estão selecionados
-    loadFechoTransitivo: async function() {
+    loadFechoTransitivo: async function () {
       try {
         var response = await this.$request("get", "/travessiaV2");
         this.fechoTransitivo = response.data;
@@ -1073,12 +1068,12 @@ export default {
       }
     },
     // Faz a pré-seleção do fecho transitivo dos processos já selecionados
-    acrescentaFecho: function(processo) {
+    acrescentaFecho: function (processo) {
       var fecho = this.fechoTransitivo[processo.codigo];
       !fecho.includes(processo.codigo) ? fecho.push(processo.codigo) : "";
       for (let i = 0; i < fecho.length; i++) {
         var index = this.listaProcessos.procs.findIndex(
-          p => p.codigo == fecho[i]
+          (p) => p.codigo == fecho[i]
         );
         //Só acrescenta processos a selecionar que não tenham sido selecionados antes de guardar o trabalho
         if (
@@ -1097,12 +1092,12 @@ export default {
       }
     },
     // Merge do estado antigo dos processos com os que foram carregados da BD
-    mergeProcs: async function() {
+    mergeProcs: async function () {
       // Merge com os processos que já estavam selecionados
       var index;
       for (let i = 0; i < this.tabelaSelecao.listaProcessos.procs.length; i++) {
         index = this.listaProcessos.procs.findIndex(
-          p => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
+          (p) => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
         );
         if (index != -1) {
           this.listaProcessos.procs[
@@ -1122,7 +1117,7 @@ export default {
       this.listaProcessosReady = true;
     },
     //Importação de processos
-    enviarFicheiro: async function(file) {
+    enviarFicheiro: async function (file) {
       try {
         var formData = new FormData();
         formData.append("file", file);
@@ -1147,9 +1142,9 @@ export default {
         this.erro = e.response.data[0].msg || e.response.data;
         this.erroDialog = true;
       }
-    }
+    },
   },
-  created: async function() {
+  created: async function () {
     this.pendente = this.obj;
     this.participante = this.obj.objeto.participante;
     delete this.obj.objeto.participante;
@@ -1167,7 +1162,7 @@ export default {
         console.log("Erro no carregamento dinicial: " + e);
       }
     }
-  }
+  },
 };
 </script>
 

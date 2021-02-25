@@ -10,7 +10,7 @@
       >
         <template v-slot:input="props">
           <v-text-field
-            :rules="[v => !!v || 'Campo obrigatório']"
+            :rules="[(v) => !!v || 'Campo obrigatório']"
             solo
             v-model="props.items.campoEditado"
             @input="props.items.updateValue"
@@ -56,13 +56,18 @@
       />
 
       <ValidaCampo
-        v-if="p.objeto.dados.ts.listaProcessos.procsAselecionar.length > 0"
+        v-if="
+          p.objeto.dados.ts.listaProcessos.procsAselecionar.length > 0 ||
+          listaProcs == true
+        "
         :dadosOriginais="p.objeto.dados.ts.listaProcessos"
         :novoHistorico="novoHistorico.ts"
         campoValue="procsAselecionar"
         campoText="Processos por selecionar"
-        :permitirEditar="false"
+        :permitirEditar="true"
         tipo="procsAselecionar"
+        :tabelaSelecao="p.objeto.dados.ts"
+        @listaProcessos="listaProcs = true"
       />
 
       <v-row>
@@ -98,9 +103,7 @@
             show-expand
           >
             <template v-slot:[`item.dono`]="{ item }">
-              <v-icon v-if="item.dono">
-                done
-              </v-icon>
+              <v-icon v-if="item.dono"> done </v-icon>
             </template>
             <template v-slot:[`item.participante`]="{ item }">
               <span v-if="item.participante != 'NP'">
@@ -137,7 +140,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -147,7 +150,7 @@
                             tipo="estado"
                             :info="{
                               header: 'Estado',
-                              text: myhelp.Classe.Campos.Estado
+                              text: myhelp.Classe.Campos.Estado,
                             }"
                           />
 
@@ -156,7 +159,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -166,7 +169,7 @@
                             tipo="string"
                             :info="{
                               text: myhelp.Classe.Campos.Descricao,
-                              header: 'Descrição'
+                              header: 'Descrição',
                             }"
                           />
                           <ValidaCampo
@@ -175,7 +178,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -186,7 +189,7 @@
                             arrayValue="nota"
                             :info="{
                               header: 'Notas de Aplicação',
-                              text: myhelp.Classe.Campos.NotasAp
+                              text: myhelp.Classe.Campos.NotasAp,
                             }"
                           />
 
@@ -196,7 +199,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -207,7 +210,7 @@
                             arrayValue="exemplo"
                             :info="{
                               header: 'Exemplos de Notas de Aplicação',
-                              text: myhelp.Classe.Campos.ExemplosNotasAp
+                              text: myhelp.Classe.Campos.ExemplosNotasAp,
                             }"
                           />
 
@@ -217,7 +220,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -228,7 +231,7 @@
                             arrayValue="nota"
                             :info="{
                               header: 'Notas de Exclusão',
-                              text: myhelp.Classe.Campos.NotasEx
+                              text: myhelp.Classe.Campos.NotasEx,
                             }"
                           />
 
@@ -238,7 +241,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -249,7 +252,7 @@
                             arrayValue="termo"
                             :info="{
                               header: 'Termos de Indice',
-                              text: myhelp.Classe.Campos.TermosIndice
+                              text: myhelp.Classe.Campos.TermosIndice,
                             }"
                           />
                         </v-expansion-panel-content>
@@ -278,7 +281,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -288,7 +291,7 @@
                             tipo="string"
                             :info="{
                               header: 'Tipo de Processo',
-                              text: myhelp.Classe.Campos.TipoProcesso
+                              text: myhelp.Classe.Campos.TipoProcesso,
                             }"
                           />
 
@@ -299,7 +302,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -309,7 +312,7 @@
                             tipo="procTrans"
                             :info="{
                               header: 'Processo Transversal',
-                              text: myhelp.Classe.Campos.ProcessoTransversal
+                              text: myhelp.Classe.Campos.ProcessoTransversal,
                             }"
                           />
                           <ValidaCampo
@@ -318,7 +321,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -328,7 +331,7 @@
                             tipo="donos"
                             :info="{
                               header: 'Donos do processo',
-                              text: myhelp.Classe.Campos.Donos
+                              text: myhelp.Classe.Campos.Donos,
                             }"
                           />
                           <ValidaCampo
@@ -337,7 +340,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -347,7 +350,7 @@
                             tipo="participantes"
                             :info="{
                               header: 'Participantes no processo',
-                              text: myhelp.Classe.Campos.Participantes
+                              text: myhelp.Classe.Campos.Participantes,
                             }"
                           />
                           <ValidaCampo
@@ -356,7 +359,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -366,7 +369,7 @@
                             tipo="procRel"
                             :info="{
                               header: 'Processos Relacionados',
-                              text: myhelp.Classe.Campos.ProcessosRelacionados
+                              text: myhelp.Classe.Campos.ProcessosRelacionados,
                             }"
                           />
                           <ValidaCampo
@@ -375,7 +378,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados
                             "
@@ -385,7 +388,7 @@
                             tipo="legs"
                             :info="{
                               header: 'Legislação',
-                              text: myhelp.Classe.Campos.Legislacao
+                              text: myhelp.Classe.Campos.Legislacao,
                             }"
                           />
                         </v-expansion-panel-content>
@@ -393,7 +396,7 @@
                       <v-expansion-panel
                         v-if="
                           (item.nivel == 3 && !item.temSubclasses4Nivel) ||
-                            item.nivel == 4
+                          item.nivel == 4
                         "
                       >
                         <v-expansion-panel-header
@@ -432,7 +435,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados.pca.dados
                             "
@@ -442,7 +445,7 @@
                             tipo="prazo"
                             :info="{
                               header: 'Prazo',
-                              text: myhelp.Classe.Campos.Prazo
+                              text: myhelp.Classe.Campos.Prazo,
                             }"
                           />
                           <!-- NOTAS -->
@@ -452,7 +455,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados.pca.dados
                             "
@@ -462,7 +465,7 @@
                             tipo="string"
                             :info="{
                               header: 'Notas ao PCA',
-                              text: myhelp.Classe.Campos.Notas
+                              text: myhelp.Classe.Campos.Notas,
                             }"
                           />
 
@@ -473,7 +476,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados.pca.dados
                             "
@@ -483,7 +486,7 @@
                             tipo="string"
                             :info="{
                               header: 'Forma de Contagem',
-                              text: myhelp.Classe.Campos.FormaContagem
+                              text: myhelp.Classe.Campos.FormaContagem,
                             }"
                           />
 
@@ -494,7 +497,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados.pca.dados
                             "
@@ -504,7 +507,7 @@
                             tipo="string"
                             :info="{
                               header: 'Subforma de Contagem',
-                              text: myhelp.Classe.Campos.SubformaContagem
+                              text: myhelp.Classe.Campos.SubformaContagem,
                             }"
                           />
                           <!-- JUSTIFICAÇÂO -->
@@ -514,7 +517,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados.pca.dados
                             "
@@ -524,7 +527,7 @@
                             tipo="justPCA"
                             :info="{
                               header: 'Justificação do PCA',
-                              text: myhelp.Classe.Campos.JustificacaoPCA
+                              text: myhelp.Classe.Campos.JustificacaoPCA,
                             }"
                           />
 
@@ -549,7 +552,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados.df.dados
                             "
@@ -559,7 +562,7 @@
                             tipo="df"
                             :info="{
                               header: 'Destino Final',
-                              text: myhelp.Classe.Campos.DF
+                              text: myhelp.Classe.Campos.DF,
                             }"
                           />
 
@@ -571,7 +574,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados.df.dados
                             "
@@ -581,7 +584,7 @@
                             tipo="string"
                             :info="{
                               header: 'Nota ao DF',
-                              text: myhelp.Classe.Campos.NotasDF
+                              text: myhelp.Classe.Campos.NotasDF,
                             }"
                           />
 
@@ -592,7 +595,7 @@
                             :novoHistorico="
                               novoHistorico.ts.classes.dados[
                                 novoHistorico.ts.classes.dados.findIndex(
-                                  e => e.dados.chave.dados === item.chave
+                                  (e) => e.dados.chave.dados === item.chave
                                 )
                               ].dados.df.dados
                             "
@@ -602,7 +605,7 @@
                             tipo="justDF"
                             :info="{
                               header: 'Justificação do DF',
-                              text: myhelp.Classe.Campos.JustificacaoDF
+                              text: myhelp.Classe.Campos.JustificacaoDF,
                             }"
                           />
                         </v-expansion-panel-content>
@@ -652,13 +655,13 @@ import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperaca
 export default {
   props: {
     p: {},
-    fase: { type: String, required: true }
+    fase: { type: String, required: true },
   },
   components: {
     InfoBox,
     ValidaCampo,
     PO,
-    ConfirmacaoOperacao
+    ConfirmacaoOperacao,
   },
 
   data() {
@@ -671,8 +674,9 @@ export default {
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
-        dados: null
+        dados: null,
       },
+      listaProcs: false,
       tsHeaders: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
         { text: "Título", value: "titulo", class: "subtitle-1" },
@@ -682,15 +686,15 @@ export default {
         {
           text: "",
           value: "data-table-expand",
-          width: "5%"
-        }
+          width: "5%",
+        },
       ],
       tsFooterProps: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos"
+        "items-per-page-all-text": "Todos",
       },
-      myhelp: require("@/config/help").help
+      myhelp: require("@/config/help").help,
     };
   },
   methods: {
@@ -709,7 +713,7 @@ export default {
     },
     alterarOriginal() {
       let n_vermelhos = 0;
-      Object.keys(this.novoHistorico).map(k => {
+      Object.keys(this.novoHistorico).map((k) => {
         if (k != "ts") {
           this.novoHistorico[k].nota = null;
           n_vermelhos =
@@ -718,7 +722,7 @@ export default {
               : n_vermelhos;
         }
       });
-      Object.keys(this.novoHistorico.ts).map(k => {
+      Object.keys(this.novoHistorico.ts).map((k) => {
         this.novoHistorico.ts[k].nota = null;
         n_vermelhos =
           this.novoHistorico.ts[k].cor === "vermelho"
@@ -726,9 +730,9 @@ export default {
             : n_vermelhos;
       });
 
-      this.novoHistorico.ts.classes.dados.forEach(classe => {
+      this.novoHistorico.ts.classes.dados.forEach((classe) => {
         classe.nota = null;
-        Object.keys(classe.dados).map(k => {
+        Object.keys(classe.dados).map((k) => {
           classe.dados[k].nota = null;
           n_vermelhos =
             classe.dados[k].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
@@ -749,7 +753,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -760,7 +764,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -789,15 +793,15 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email
+            email: dados.utilizadorSelecionado.email,
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.$router.go(-1);
@@ -816,7 +820,7 @@ export default {
             "Existem " +
             existem_vermelhos +
             " campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
-          dados: dados
+          dados: dados,
         };
       // Caso contrário segue para a finalização do pedido
       else await this.finalizarPedido(dados);
@@ -833,14 +837,14 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho
+          despacho: dados.mensagemDespacho,
         };
 
         pedido.estado = estado;
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
         this.overlay = false;
         this.sucessDialog = true;
@@ -854,13 +858,13 @@ export default {
 
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
-            parsedError.data.forEach(erro => {
+            parsedError.data.forEach((erro) => {
               this.erros.push({ parametro: erro.param, mensagem: erro.msg });
             });
           }
         }
       }
-    }
+    },
   },
   mounted() {
     this.json = JSON.stringify(this.p, null, 2);
@@ -869,26 +873,26 @@ export default {
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );
-    Object.keys(this.novoHistorico).map(k => {
+    Object.keys(this.novoHistorico).map((k) => {
       if (k != "ts") {
         this.novoHistorico[k].nota = null;
       }
     });
-    Object.keys(this.novoHistorico.ts).map(k => {
+    Object.keys(this.novoHistorico.ts).map((k) => {
       this.novoHistorico.ts[k].nota = null;
     });
 
-    this.novoHistorico.ts.classes.dados.forEach(classe => {
+    this.novoHistorico.ts.classes.dados.forEach((classe) => {
       classe.nota = null;
-      Object.keys(classe.dados).map(k => {
+      Object.keys(classe.dados).map((k) => {
         classe.dados[k].nota = null;
         if (k === "pca" || k === "df") {
-          Object.keys(classe.dados[k].dados).map(d => {
+          Object.keys(classe.dados[k].dados).map((d) => {
             classe.dados[k].dados[d].nota = null;
           });
         }
       });
     });
-  }
+  },
 };
 </script>
