@@ -217,8 +217,8 @@ export default {
 .info-content {
   padding: 5px;
   width: 100%;
-  background-color: var(--secondary) !important;
-  text-shadow: 0px 1px 2px var(--text-shadow) !important;
+  background-color: var(--v-secondary-base) !important;
+  text-shadow: 0px 1px 2px var(--v-textshadow-base) !important;
   border-radius: 10px;
 }
 </style>

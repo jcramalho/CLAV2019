@@ -114,12 +114,7 @@
                 <v-btn
                   @click="cancelar"
                   rounded
-                  class="white--text"
-                  :class="{
-                    'px-12': $vuetify.breakpoint.lgAndUp,
-                    'px-8': $vuetify.breakpoint.mdAndDown,
-                  }"
-                  id="default-button"
+                  class="white--text clav-linear-background"
                 >
                   <unicon
                     name="arrow-back-icon"
@@ -135,12 +130,7 @@
                 <v-btn
                   @click="executar"
                   rounded
-                  class="white--text"
-                  :class="{
-                    'px-12': $vuetify.breakpoint.lgAndUp,
-                    'px-8': $vuetify.breakpoint.mdAndDown,
-                  }"
-                  id="default-button"
+                  class="white--text clav-linear-background"
                 >
                   <v-icon dark>{{ exportIcon }}</v-icon>
                   <span class="ml-3"> Exportar </span>

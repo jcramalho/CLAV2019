@@ -747,7 +747,7 @@ export default {
 
 <style scoped>
 .info-label {
-  color: #1a237e !important;
+  color: var(--v-primary-base) !important;
   padding: 8px;
   width: 100%;
   background-color: #dee2f8;
