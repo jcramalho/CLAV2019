@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-0 ma-0" style="max-width:100%">
+  <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
     <v-row>
       <!-- HEADER -->
       <v-col class="py-0 my-0">
@@ -9,7 +9,7 @@
           class="white--text mb-6"
           :class="{
             'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown
+            'px-2': $vuetify.breakpoint.mdAndDown,
           }"
           id="default-button"
         >
@@ -22,10 +22,14 @@
           />
           <p class="ml-2">Voltar</p>
         </v-btn>
-        <v-card flat style="border-radius: 10px !important;">
+        <v-card flat style="border-radius: 10px !important">
           <p
             class="content-title-1 pt-5"
-            style="color: #4da0d0 !important; text-align: center;  padding-bottom: 0.7rem !important;"
+            style="
+              color: #4da0d0 !important;
+              text-align: center;
+              padding-bottom: 0.7rem !important;
+            "
           >
             Importar Tabela de Seleção
           </p>
@@ -33,7 +37,7 @@
           <v-card-text class="mt-0">
             <p
               class="content-text px-8 py-2 mb-3"
-              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
             >
               Selecione a fonte de legitimação da Tabela de Seleção a importar:
             </p>
@@ -41,13 +45,13 @@
               <template v-slot:activator="{ on }">
                 <div
                   class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                  style="min-height: 50px; max-width:70%;"
+                  style="min-height: 50px; max-width: 70%"
                   v-on="on"
                 >
                   <v-radio-group
                     v-model="fonteLegitimacao"
                     :rules="[
-                      v => !!v || 'Tem de escolher uma fonte de legitimação'
+                      (v) => !!v || 'Tem de escolher uma fonte de legitimação',
                     ]"
                     required
                     row
@@ -75,7 +79,7 @@
             </v-tooltip>
             <p
               class="content-text px-8 py-2 mb-3"
-              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+              style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
             >
               Selecione o tipo de Tabela de Seleção:
             </p>
@@ -83,7 +87,7 @@
               <template v-slot:activator="{ on }">
                 <div
                   class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                  style="min-height: 50px; max-width:70%;"
+                  style="min-height: 50px; max-width: 70%"
                   v-on="on"
                 >
                   <v-radio-group
@@ -130,7 +134,9 @@
               <div class="pa-0 ma-0" v-if="tipo == 'Organizacional'">
                 <p
                   class="content-text px-8 py-2 mb-3"
-                  style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+                  style="
+                    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+                  "
                 >
                   Identifique a entidade ou tipologia da Tabela de Seleção:
                 </p>
@@ -138,7 +144,7 @@
                   <template v-slot:activator="{ on }">
                     <div
                       class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                      style="min-height: 50px; max-width:70%;"
+                      style="min-height: 50px; max-width: 70%"
                       v-on="on"
                     >
                       <v-autocomplete
@@ -168,7 +174,9 @@
               <div class="pa-0 ma-0" v-else>
                 <p
                   class="content-text px-8 py-2 mb-3"
-                  style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+                  style="
+                    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+                  "
                 >
                   Identifique as entidades e tipologias da Tabela de Seleção:
                 </p>
@@ -176,7 +184,7 @@
                   <template v-slot:activator="{ on }">
                     <div
                       class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                      style="min-height: 50px; max-width:70%;"
+                      style="min-height: 50px; max-width: 70%"
                       v-on="on"
                     >
                       <v-autocomplete
@@ -190,9 +198,9 @@
                         single-line
                         multiple
                         :rules="[
-                          v =>
+                          (v) =>
                             (!!v && v.length > 1) ||
-                            'Tem de escolher pelo menos duas entidades!'
+                            'Tem de escolher pelo menos duas entidades!',
                         ]"
                       >
                       </v-autocomplete>
@@ -204,7 +212,7 @@
               </div>
               <p
                 class="content-text px-8 py-2 mb-3"
-                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
               >
                 Insira a designação para a Tabela de Seleção:
               </p>
@@ -212,7 +220,7 @@
                 <template v-slot:activator="{ on }">
                   <div
                     class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                    style="min-height: 50px; max-width:70%;"
+                    style="min-height: 50px; max-width: 70%"
                     v-on="on"
                   >
                     <v-text-field
@@ -232,7 +240,7 @@
 
               <p
                 class="content-text px-8 py-2 mb-3"
-                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;"
+                style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
               >
                 Selecione o ficheiro com a Tabela de Seleção a importar:
               </p>
@@ -240,7 +248,7 @@
                 <template v-slot:activator="{ on }">
                   <div
                     class="info-content pa-4 px-5 pb-6 mx-auto mb-12"
-                    style="min-height: 50px; max-width:70%;"
+                    style="min-height: 50px; max-width: 70%"
                     v-on="on"
                   >
                     <v-file-input
@@ -262,7 +270,7 @@
               <v-card
                 id="info-import-file"
                 class="mx-auto pa-4 content-text"
-                style="max-width:60%;"
+                style="max-width: 60%"
               >
                 <div v-if="tipo == 'Organizacional'">
                   <b>Caso o ficheiro seja CSV deve respeitar o seguinte:</b>
@@ -354,18 +362,24 @@
             <div class="text-center mt-6">
               <v-btn
                 v-if="
-                  (tipo == 'Organizacional' && designacao == '') ||
-                    file.length == 0 ||
-                    tipo == null ||
-                    fonteLegitimacao == null ||
-                    entidade_tipologia == null ||
-                    !entidade_tipologia.length
+                  (tipo == 'Organizacional' &&
+                    (designacao == null ||
+                      file.length == 0 ||
+                      tipo == null ||
+                      fonteLegitimacao == null ||
+                      entidade_tipologia == null ||
+                      !entidade_tipologia.length)) ||
+                  (tipo == 'Pluriorganizacional' &&
+                    (designacao == null ||
+                      file.length == 0 ||
+                      tipo == null ||
+                      fonteLegitimacao == null))
                 "
                 disabled
                 rounded
                 :class="{
                   'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown
+                  'px-2': $vuetify.breakpoint.mdAndDown,
                 }"
                 class="mb-6"
                 id="botao-shadow"
@@ -379,31 +393,7 @@
                 />
                 <p class="ml-2">Importar</p>
               </v-btn>
-              <v-btn
-                v-else-if="
-                  (tipo == 'Pluriorganizacional' && designacao == '') ||
-                    file.length == 0 ||
-                    tipo == null ||
-                    fonteLegitimacao == null ||
-                    entidade_tipologia.length < 2
-                "
-                disabled
-                rounded
-                :class="{
-                  'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown
-                }"
-                class="mb-6"
-                id="botao-shadow"
-                ><unicon
-                  name="importar-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.71 18.121"
-                  fill="#b8b8b8"
-                />
-                <p class="ml-2">Importar</p>
-              </v-btn>
+
               <v-btn
                 v-else
                 @click="enviarFicheiro()"
@@ -411,7 +401,7 @@
                 class="white--text mb-6"
                 :class="{
                   'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown
+                  'px-2': $vuetify.breakpoint.mdAndDown,
                 }"
                 id="default-button"
               >
@@ -591,27 +581,27 @@ export default {
     dialogConfirmacao: {
       visivel: false,
       mensagem: "",
-      dados: null
+      dados: null,
     },
     entidadesFalta: [],
-    acrescenta: null
+    acrescenta: null,
   }),
 
-  mounted: async function() {
+  mounted: async function () {
     try {
       var response = await this.$request("get", "/entidades");
-      var entidades = response.data.map(ent => {
+      var entidades = response.data.map((ent) => {
         return {
           text: ent.sigla + " - " + ent.designacao,
-          value: ent.sigla
+          value: ent.sigla,
         };
       });
 
       response = await this.$request("get", "/tipologias");
-      var tipologias = response.data.map(tip => {
+      var tipologias = response.data.map((tip) => {
         return {
           text: tip.sigla + " - " + tip.designacao,
-          value: tip.sigla
+          value: tip.sigla,
         };
       });
 
@@ -629,7 +619,7 @@ export default {
     goBack() {
       this.$router.push("/tsInfo");
     },
-    enviarFicheiro: async function() {
+    enviarFicheiro: async function () {
       try {
         this.erro = "";
         this.erroDialog = false;
@@ -737,12 +727,12 @@ export default {
           if (e.response.data.acrescenta) {
             this.dialogConfirmacao = {
               visivel: true,
-              mensagem: e.response.data.message
+              mensagem: e.response.data.message,
             };
           } else {
             this.dialogConfirmacao = {
               visivel: true,
-              mensagem: e.response.data.message
+              mensagem: e.response.data.message,
             };
           }
         } else {
@@ -752,7 +742,7 @@ export default {
         }
       }
     },
-    seguirPedido: function() {
+    seguirPedido: function () {
       switch (this.fonteLegitimacao) {
         case "TS/LC":
           this.$router.push(`/pedidos/submissao/${this.codigo}`);
@@ -768,26 +758,24 @@ export default {
           break;
       }
     },
-    selecionar: function() {
+    selecionar: function () {
       this.dialogConfirmacao.visivel = false;
       if (this.tipo == "Pluriorganizacional")
         this.entidade_tipologia = this.entidade_tipologia.concat(
-          this.entidadesFalta.map(e => e.sigla)
+          this.entidadesFalta.map((e) => e.sigla)
         );
       else {
-        this.entidade_tipologia = this.entidadesFalta.map(e => e.sigla)[0];
+        this.entidade_tipologia = this.entidadesFalta.map((e) => e.sigla)[0];
         this.designacao = `Tabela de Seleção de ${this.entidade_tipologia}`;
       }
       this.entidadesFalta = [];
       this.acrescenta = null;
     },
-    desselecionar: function() {
+    desselecionar: function () {
       this.dialogConfirmacao.visivel = false;
-      this.entidadesFalta.map(e =>
+      this.entidadesFalta.map((e) =>
         this.entidade_tipologia.splice(
-          this.entidade_tipologia[
-            this.entidade_tipologia.findIndex(ent => e.sigla == ent)
-          ],
+          this.entidade_tipologia.findIndex((ent) => e.sigla == ent),
           1
         )
       );
@@ -795,7 +783,7 @@ export default {
       this.entidadesFalta = [];
       this.acrescenta = null;
     },
-    fonteL: function() {
+    fonteL: function () {
       if (this.fonteLegitimacao == "RADA") {
         this.designacao =
           "Relatório de Avaliação de Documentação Acumulada de ...";
@@ -817,10 +805,10 @@ export default {
       else this.designacao = null;
     },
 
-    voltar: function() {
+    voltar: function () {
       this.$router.go();
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
