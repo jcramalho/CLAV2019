@@ -355,6 +355,7 @@
                 />
                 <p class="ml-2">Importar</p>
               </v-btn>
+
               <v-btn
                 v-else-if="
                   (tipo == 'Pluriorganizacional' && designacao == '') ||
@@ -380,6 +381,7 @@
                 />
                 <p class="ml-2">Importar</p>
               </v-btn>
+
               <v-btn
                 v-else
                 @click="enviarFicheiro()"
