@@ -12,7 +12,7 @@ export default new Vuetify({
         gradientright: "#0056b6",
         primary: "#1a237e",
         secondary: "#f3f7fc",
-        accent: "#1976d2",
+        accent: "#1976d2", 
         success: "#46c354",
         error: "#b71c1c",
         neutral: "#d8d8d8",

@@ -1,36 +1,21 @@
 <template>
-  <v-expansion-panel popout>
-    <v-expansion-panel-header
-      style="outline: none"
-      :class="{
-        'text-center': $vuetify.breakpoint.smAndDown,
-        'text-left': $vuetify.breakpoint.mdAndUp,
-      }"
-      class="pa-3"
-    >
-      <div
-        :class="{
-          'px-3': $vuetify.breakpoint.mdAndUp,
-        }"
-        class="separador"
-      >
-        <v-badge color="red" overlap offset-x="9" offset-y="20">
-          <unicon
-            class="mt-3"
-            name="pedido-aprovado-icon"
-            width="20"
-            height="20"
-            viewBox="0 0 20.712 20.71"
-            fill="#ffffff"
-          />
-          <template v-slot:badge>
-            {{ pedidos.length }}
-          </template>
-        </v-badge>
-        <span class="ml-4">Pedidos Aprovados</span>
-      </div>
-    </v-expansion-panel-header>
-    <v-expansion-panel-content id="expanded-content">
+  <PainelCLAV titulo="Pedidos Aprovados" infoHeader="Pedidos Aprovados">
+    <template v-slot:icon>
+      <v-badge color="red" overlap offset-x="9" offset-y="20">
+        <unicon
+          class="mt-3"
+          name="pedido-aprovado-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 20.712 20.71"
+          fill="#ffffff"
+        />
+        <template v-slot:badge>
+          {{ pedidos.length }}
+        </template>
+      </v-badge>
+    </template>
+    <template v-slot:conteudo>
       <v-row>
         <v-col>
           <div class="info-content pa-4">
@@ -121,14 +106,17 @@
           </div>
         </v-col>
       </v-row>
-    </v-expansion-panel-content>
-  </v-expansion-panel>
+    </template>
+  </PainelCLAV>
 </template>
 
 <script>
+import PainelCLAV from "@/components/generic/PainelCLAV";
 export default {
   props: ["pedidos", "pesquisaPedidos"],
-
+  components: {
+    PainelCLAV,
+  },
   data: () => {
     return {
       procurar: "",
