@@ -1,29 +1,40 @@
 <template>
-  <v-main>
-    <v-card>
-      <v-card-title>
-        <h1>Listagem de Chaves API</h1>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" @click="registo">
-              <v-icon large color="primary">person_add</v-icon>
-            </v-btn>
-          </template>
-          <span>Adicionar nova chave API</span>
-        </v-tooltip>
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="search"
-          label="Filtrar"
-          single-line
-        ></v-text-field>
-      </v-card-title>
+  <v-card flat class="pa-3">
+    <v-card-title>
+      <p class="clav-content-title-1">Listagem de Chaves API</p>
+      <v-spacer></v-spacer>
+      <v-tooltip top color="info" open-delay="500">
+        <template v-slot:activator="{ on }">
+          <v-btn color="primary" v-on="on" @click="registo">
+            <v-icon large>person_add</v-icon>
+          </v-btn>
+        </template>
+        <span>Adicionar nova chave API</span>
+      </v-tooltip>
+    </v-card-title>
+    <v-card flat class="clav-info-content">
+      <v-tooltip top color="info" open-delay="500">
+        <template v-slot:activator="{ on }">
+          <v-text-field
+            v-on="on"
+            v-model="search"
+            append-icon="search"
+            label="Procurar / filtrar tabela"
+            text
+            single-line
+            hide-details
+            clearable
+            color="blue darken-3"
+            class="mt-n2 mb-3 mx-6 font-weight-medium"
+          ></v-text-field>
+        </template>
+
+        <span> Filtrar tabela</span>
+      </v-tooltip>
       <v-data-table
         :headers="headers"
         :items="chaves"
         :search="search"
-        class="elevation-1"
         footer-props.items-per-page-options="[10, 20, 50]"
         footer-props.items-per-page-text="Mostrar"
       >
@@ -54,11 +65,7 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-btn
-                    icon
-                    v-on="on"
-                    @click="renovarId = props.item.contactInfo"
-                  >
+                  <v-btn icon v-on="on" @click="renovarId = props.item.contactInfo">
                     <v-icon medium color="primary">refresh</v-icon>
                   </v-btn>
                 </template>
@@ -159,29 +166,18 @@
     <v-dialog :value="renovarId != ''" max-width="290">
       <v-card v-if="apikey == ''">
         <v-card-title class="headline">Confirmar ação</v-card-title>
-        <v-card-text>
-          Tem a certeza que pretende renovar a chave API?
-        </v-card-text>
+        <v-card-text> Tem a certeza que pretende renovar a chave API? </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="renovarId = ''">
-            Cancelar
-          </v-btn>
-          <v-btn color="primary" text @click="renovar(renovarId)">
-            Confirmar
-          </v-btn>
+          <v-btn color="red" text @click="renovarId = ''"> Cancelar </v-btn>
+          <v-btn color="primary" text @click="renovar(renovarId)"> Confirmar </v-btn>
         </v-card-actions>
       </v-card>
       <v-card v-else>
         <v-card-title class="headline">Chave API renovada</v-card-title>
         <v-card-text>
-          <p>
-            A chave API com email igual a '{{ renovarId }}' foi renovada com
-            sucesso!
-          </p>
-          <p>
-            O valor da chave API agora é:
-          </p>
+          <p>A chave API com email igual a '{{ renovarId }}' foi renovada com sucesso!</p>
+          <p>O valor da chave API agora é:</p>
           <span class="subtitle-2" style="color: green">
             <b>
               {{ apikey }}
@@ -207,14 +203,10 @@
     <v-dialog :value="desativarId != ''" max-width="290">
       <v-card>
         <v-card-title class="headline">Confirmar ação</v-card-title>
-        <v-card-text>
-          Tem a certeza que pretende desativar a chave API?
-        </v-card-text>
+        <v-card-text> Tem a certeza que pretende desativar a chave API? </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="desativarId = ''">
-            Cancelar
-          </v-btn>
+          <v-btn color="red" text @click="desativarId = ''"> Cancelar </v-btn>
           <v-btn
             color="primary"
             text
@@ -231,14 +223,10 @@
     <v-dialog :value="ativarId != ''" max-width="290">
       <v-card>
         <v-card-title class="headline">Confirmar ação</v-card-title>
-        <v-card-text>
-          Tem a certeza que pretende ativar a chave API?
-        </v-card-text>
+        <v-card-text> Tem a certeza que pretende ativar a chave API? </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="ativarId = ''">
-            Cancelar
-          </v-btn>
+          <v-btn color="red" text @click="ativarId = ''"> Cancelar </v-btn>
           <v-btn
             color="primary"
             text
@@ -255,14 +243,10 @@
     <v-dialog :value="eliminarId != ''" max-width="290">
       <v-card>
         <v-card-title class="headline">Confirmar ação</v-card-title>
-        <v-card-text>
-          Tem a certeza que pretende eliminar a chave API?
-        </v-card-text>
+        <v-card-text> Tem a certeza que pretende eliminar a chave API? </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="eliminarId = ''">
-            Cancelar
-          </v-btn>
+          <v-btn color="red" text @click="eliminarId = ''"> Cancelar </v-btn>
           <v-btn
             color="primary"
             text
@@ -276,26 +260,21 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar
-      v-model="snackbar"
-      :color="color"
-      :timeout="timeout"
-      :top="true"
-    >
+    <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :top="true">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
-  </v-main>
+  </v-card>
 </template>
 
 <script>
 export default {
   data: () => ({
-    regraNome: [v => !!v || "Nome é obrigatório."],
-    regraEntidade: [v => !!v || "Entidade é obrigatório."],
+    regraNome: [(v) => !!v || "Nome é obrigatório."],
+    regraEntidade: [(v) => !!v || "Entidade é obrigatório."],
     regraEmail: [
-      v => !!v || "Email é obrigatório.",
-      v => /.+@.+/.test(v) || "Email tem de ser válido."
+      (v) => !!v || "Email é obrigatório.",
+      (v) => /.+@.+/.test(v) || "Email tem de ser válido.",
     ],
     search: "",
     editedIndex: -1,
@@ -304,38 +283,38 @@ export default {
       name: "",
       contactInfo: "",
       entity: "",
-      active: ""
+      active: "",
     },
     headers: [
       {
         text: "Chave",
         sortable: true,
         value: "key",
-        class: "title"
+        class: "title",
       },
       {
         text: "Nome",
         sortable: true,
         value: "name",
-        class: "title"
+        class: "title",
       },
       {
         text: "Entidade",
         sortable: true,
         value: "entity",
-        class: "title"
+        class: "title",
       },
       {
         text: "Contacto",
         sortable: true,
         value: "contactInfo",
-        class: "title"
+        class: "title",
       },
       {
         text: "Ativa?",
         sortable: true,
         value: "active",
-        class: "title"
+        class: "title",
       },
       // {
       //   text: "Utilizações",
@@ -353,20 +332,20 @@ export default {
         text: "Data Criação",
         sortable: true,
         value: "created",
-        class: "title"
+        class: "title",
       },
       {
         text: "Data Expiração",
         sortable: true,
         value: "expiration",
-        class: "title"
+        class: "title",
       },
       {
         text: "Ações",
         sortable: false,
         value: "",
-        class: "title"
-      }
+        class: "title",
+      },
     ],
     dialog: false,
     ativarId: "",
@@ -380,7 +359,7 @@ export default {
     color: "",
     done: false,
     timeout: 4000,
-    text: ""
+    text: "",
   }),
   async created() {
     await this.getChavesApi();
@@ -397,15 +376,15 @@ export default {
     },
     async getEntidades() {
       await this.$request("get", "/entidades")
-        .then(res => {
-          this.ent_list = res.data.map(ent => {
+        .then((res) => {
+          this.ent_list = res.data.map((ent) => {
             return {
               label: ent.sigla + " - " + ent.designacao,
-              value: "ent_" + ent.sigla
+              value: "ent_" + ent.sigla,
             };
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     editar(item) {
       this.editedIndex = this.chaves.indexOf(item);
@@ -414,14 +393,14 @@ export default {
     },
     desativar(id) {
       this.$request("put", "/chaves/" + id + "/desativar")
-        .then(res => {
+        .then((res) => {
           this.text = "Chave API desativada com sucesso!";
           this.color = "success";
           this.snackbar = true;
           this.done = true;
           this.getChavesApi();
         })
-        .catch(err => {
+        .catch((err) => {
           this.text = err.response.data[0].msg || err.response.data;
           this.color = "error";
           this.snackbar = true;
@@ -430,14 +409,14 @@ export default {
     },
     ativar(id) {
       this.$request("put", "/chaves/" + id + "/ativar")
-        .then(res => {
+        .then((res) => {
           this.text = "Chave API ativada com sucesso!";
           this.color = "success";
           this.snackbar = true;
           this.done = true;
           this.getChavesApi();
         })
-        .catch(err => {
+        .catch((err) => {
           this.text = err.response.data[0].msg || err.response.data;
           this.color = "error";
           this.snackbar = true;
@@ -446,14 +425,14 @@ export default {
     },
     eliminar(id) {
       this.$request("delete", "/chaves/" + id)
-        .then(res => {
+        .then((res) => {
           this.text = "Chave API eliminada com sucesso!";
           this.color = "success";
           this.snackbar = true;
           this.done = true;
           this.getChavesApi();
         })
-        .catch(err => {
+        .catch((err) => {
           this.text = err.response.data[0].msg || err.response.data;
           this.color = "error";
           this.snackbar = true;
@@ -463,10 +442,10 @@ export default {
     renovar(email) {
       this.$request("put", "/chaves/renovar?email=" + email, {
         headers: {
-          "Content-length": 0
-        }
+          "Content-length": 0,
+        },
       })
-        .then(res => {
+        .then((res) => {
           this.text = "Chave API renovada com sucesso!";
           this.color = "success";
           this.snackbar = true;
@@ -474,7 +453,7 @@ export default {
           this.apikey = res.data.apikey;
           this.getChavesApi();
         })
-        .catch(err => {
+        .catch((err) => {
           this.text = err.response.data[0].msg || err.response.data;
           this.color = "error";
           this.snackbar = true;
@@ -486,9 +465,9 @@ export default {
         this.$request("put", "/chaves/" + this.editedItem.id + "/atualizar/", {
           name: this.editedItem.name,
           contactInfo: this.editedItem.contactInfo,
-          entity: this.editedItem.entity
+          entity: this.editedItem.entity,
         })
-          .then(res => {
+          .then((res) => {
             this.text = "Chave API atualizada com sucesso!";
             this.color = "success";
             this.snackbar = true;
@@ -496,7 +475,7 @@ export default {
             this.dialog = false;
             this.getChavesApi();
           })
-          .catch(err => {
+          .catch((err) => {
             this.text = err.response.data[0].msg || err.response.data;
             this.color = "error";
             this.snackbar = true;
@@ -518,7 +497,7 @@ export default {
     },
     format(key) {
       return key.substring(15, 25) + "...";
-    }
-  }
+    },
+  },
 };
 </script>

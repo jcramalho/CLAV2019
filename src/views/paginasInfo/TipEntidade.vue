@@ -1,6 +1,6 @@
 <template>
-  <v-main class="px-12">
-    <p class="content-title-1">Tipologias de Entidade</p>
+  <v-card flat class="pa-3">
+    <p class="clav-content-title-1">Tipologias de Entidade</p>
     <p class="content-text px-8 py-2">
       Catálogo de tipologias de entidade, ou seja, agrupamentos de entidades,que intervêm
       nosprocessos de negócio (classes de 3º nível da Lista Consolidada). Podem integrar
@@ -18,18 +18,17 @@
       Para editar tipologias de entidades, selecione a opção
       <b>EDITAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
-    <v-container fluid style="text-align: center">
+    
       <v-row justify="center" align="center">
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="4" justify="center" align="center">
           <v-btn
             @click="$router.push('/tipologias/consultar')"
             rounded
-            class="white--text"
+            class="white--text clav-linear-background"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
           >
             <unicon
               name="consultar-icon"
@@ -42,23 +41,23 @@
           </v-btn>
         </v-col>
         <v-col
-          cols="12"
-          md="4"
           v-if="
             [1, 3, 3.5, 4, 5, 6, 7].includes(this.$userLevel()) &&
             this.$store.state.token != '' &&
             this.$store.state.name != ''
           "
+          cols="12"
+          md="4"
+          justify="center" align="center"
         >
           <v-btn
             @click="$router.push('/tipologias/criar')"
             rounded
-            class="white--text"
+            class="white--text clav-linear-background"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
           >
             <unicon
               name="criar-icon"
@@ -71,23 +70,23 @@
           </v-btn>
         </v-col>
         <v-col
-          cols="12"
-          md="4"
           v-if="
             [4, 5, 6, 7].includes(this.$userLevel()) &&
             this.$store.state.token != '' &&
             this.$store.state.name != ''
           "
+          cols="12"
+          md="4"
+          justify="center" align="center"
         >
           <v-btn
             @click="tipologiasDialog = true"
             rounded
-            class="white--text"
+            class="white--text clav-linear-background"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
           >
             <unicon
               name="alterar-icon"
@@ -107,7 +106,7 @@
       tipo="Tipologia"
       @fechar="tipologiasDialog = !tipologiasDialog"
     />
-  </v-main>
+  </v-card>
 </template>
 
 <script>

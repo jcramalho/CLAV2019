@@ -2,21 +2,16 @@
   <v-content
     :class="{
       'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp
+      'px-12': $vuetify.breakpoint.mdAndUp,
     }"
   >
-    <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
+    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
       <v-row>
         <v-col class="py-0 my-0">
           <v-btn
             @click="$router.go(-1)"
             rounded
-            class="white--text mb-6"
-            :class="{
-              'px-8': $vuetify.breakpoint.lgAndUp,
-              'px-2': $vuetify.breakpoint.mdAndDown
-            }"
-            id="default-button"
+            class="white--text clav-linear-background"
           >
             <unicon
               name="arrow-back-icon"
@@ -28,16 +23,20 @@
             <p class="ml-2">Voltar</p>
           </v-btn>
           <!-- HEADER -->
-          <v-card flat style="border-radius: 10px !important;">
+          <v-card flat style="border-radius: 10px !important">
             <p
               class="content-title-1 pt-5"
-              style="color: #4da0d0 !important; text-align: center;  padding-bottom: 0.7rem !important;"
+              style="
+                color: #4da0d0 !important;
+                text-align: center;
+                padding-bottom: 0.7rem !important;
+              "
             >
               Alterar Classe
             </p>
             <p
               class="content-title-2 pb-5"
-              style="color: #4da0d0 !important; text-align: center;"
+              style="color: #4da0d0 !important; text-align: center"
             >
               {{ classe.codigo }} -
               {{ classe.titulo }}
@@ -89,7 +88,7 @@ export default {
   components: {
     BlocoIdentificativo,
     BlocoDescritivo,
-    PainelOperacoes
+    PainelOperacoes,
   },
 
   props: ["idc"],
@@ -106,17 +105,17 @@ export default {
 
     codeFormats: {
       1: /^[0-9]{3}$/,
-      2: /^[0-9]{3}\.[0-9]{2}$/
+      2: /^[0-9]{3}\.[0-9]{2}$/,
     },
 
     formatoCodigo: {
       1: "ddd (d - digito)",
-      2: "ddd.dd (d - digito)"
+      2: "ddd.dd (d - digito)",
     },
 
     classeNiveis: [
       { label: "Nível 1", value: "1" },
-      { label: "Nível 2", value: "2" }
+      { label: "Nível 2", value: "2" },
     ],
 
     classesPai: [],
@@ -130,26 +129,26 @@ export default {
       paisReady: false,
       classesReady: false,
       entidadesReady: false,
-      legislacaoReady: false
+      legislacaoReady: false,
     },
 
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para alterar a Classe!",
-    mensValCodigo: ""
+    mensValCodigo: "",
   }),
 
-  created: function() {
+  created: function () {
     this.$request("get", "/classes/" + this.idc)
-      .then(async response => {
+      .then(async (response) => {
         this.classe = response.data;
         this.classeCopia = JSON.parse(JSON.stringify(this.classe));
         this.semaforos.classeLoaded = true;
       })
-      .catch(error => {
+      .catch((error) => {
         return error;
       });
-  }
+  },
 };
 </script>
 

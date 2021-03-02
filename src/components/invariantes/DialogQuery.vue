@@ -1,9 +1,7 @@
 <template>
   <v-dialog v-model="dialog" width="700">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" small color="indigo darken-4" dark @click.stop>
-        Ver query
-      </v-btn>
+      <v-btn v-on="on" small color="primary" rounded @click.stop> Ver query </v-btn>
     </template>
 
     <v-card color="#E0F2F1">
@@ -21,13 +19,9 @@
       <v-divider></v-divider>
 
       <v-card-actions>
-        <v-btn color="red darken-4" text @click="goToInvariante()">
-          Correr query
-        </v-btn>
+        <v-btn color="red darken-4" text @click="goToInvariante()"> Correr query </v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="red darken-4" text @click="dialog = false">
-          Fechar
-        </v-btn>
+        <v-btn color="red darken-4" text @click="dialog = false"> Fechar </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -38,16 +32,14 @@ export default {
   props: ["title", "subtitle", "query", "idRel", "idInv"],
   data() {
     return {
-      dialog: false
+      dialog: false,
     };
   },
 
   methods: {
-    goToInvariante: function() {
-      this.$router.push(
-        "/invariantes?idRel=" + this.idRel + "&idInv=" + this.idInv
-      );
-    }
-  }
+    goToInvariante: function () {
+      this.$router.push("/invariantes?idRel=" + this.idRel + "&idInv=" + this.idInv);
+    },
+  },
 };
 </script>

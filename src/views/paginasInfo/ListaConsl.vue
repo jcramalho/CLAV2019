@@ -1,6 +1,6 @@
 <template>
-  <v-main class="px-12">
-    <p class="content-title-1">Lista Consolidada</p>
+  <v-card flat class="pa-3">
+    <p class="clav-content-title-1">Lista Consolidada</p>
     <p class="content-text px-8 py-2">
       A "Lista Consolidada para a classificação e avaliação da informação pública" é o
       referencial disponibilizado pela Direção-Geral do Livro, dos Arquivos e das
@@ -36,13 +36,12 @@
         <v-col cols="12" md="4">
           <v-btn
             @click="$router.push('/classes/consultar')"
-            rounded
-            class="white--text"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
+            rounded
+            class="white--text clav-linear-background"
           >
             <unicon
               name="consultar-icon"
@@ -66,12 +65,11 @@
           <v-btn
             @click="$router.push('/classes/criar')"
             rounded
-            class="white--text"
+            class="white--text clav-linear-background"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
           >
             <unicon
               name="criar-icon"
@@ -95,12 +93,11 @@
           <v-btn
             @click="$router.push('/classes/editar')"
             rounded
-            class="white--text"
+            class="white--text clav-linear-background"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            id="default-button"
           >
             <unicon
               name="alterar-icon"
@@ -114,7 +111,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-main>
+  </v-card>
 </template>
 
 <script>

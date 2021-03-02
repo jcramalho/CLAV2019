@@ -1,17 +1,12 @@
 <template>
-  <v-main
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp
-    }"
-  >
+  <v-card flat class="ma-3">
     <v-container fluid class="pa-0 ma-auto">
       <v-row>
         <v-col class="pt-0">
-          <v-card flat style="border-radius: 10px !important;">
+          <v-card flat style="border-radius: 10px !important">
             <p
-              class="content-title-1 py-5"
-              style="color: #4da0d0 !important;  text-align:center;"
+              class="clav-content-title-1"
+              style="color: #4da0d0 !important; text-align: center"
             >
               Login
             </p>
@@ -28,10 +23,7 @@
                     />
                   </v-col>
                   <v-col cols="11" class="ma-0 pa-0">
-                    <div
-                      class="info-content py-2 px-3 pb-1"
-                      style="min-height: 50px;"
-                    >
+                    <div class="info-content py-2 px-3 pb-1" style="min-height: 50px">
                       <v-text-field
                         class="mt-0 px-3"
                         name="email"
@@ -56,10 +48,7 @@
                     />
                   </v-col>
                   <v-col cols="11" class="ma-0 pa-0">
-                    <div
-                      class="info-content py-2 px-3 pb-1"
-                      style="min-height: 50px;"
-                    >
+                    <div class="info-content py-2 px-3 pb-1" style="min-height: 50px">
                       <v-text-field
                         class="mt-0 px-3"
                         name="password"
@@ -76,18 +65,17 @@
               </v-form>
             </v-card-text>
             <v-card-actions>
-              <v-row class="align-center pa-3" style="text-align:center;">
+              <v-row class="align-center pa-3" style="text-align: center">
                 <v-col>
                   <v-btn
                     type="submit"
                     @click="loginUtilizador"
                     rounded
-                    class="white--text"
+                    class="white--text clav-linear-background"
                     :class="{
                       'px-8': $vuetify.breakpoint.lgAndUp,
-                      'px-2': $vuetify.breakpoint.mdAndDown
+                      'px-2': $vuetify.breakpoint.mdAndDown,
                     }"
-                    id="default-button"
                   >
                     <unicon
                       name="login-icon"
@@ -108,10 +96,13 @@
                     class="white--text"
                     :class="{
                       'px-8': $vuetify.breakpoint.lgAndUp,
-                      'px-2': $vuetify.breakpoint.mdAndDown
+                      'px-2': $vuetify.breakpoint.mdAndDown,
                     }"
-                    style="box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-outline: none !important;"
+                    style="
+                      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+                        0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
+                      outline: none !important;
+                    "
                   >
                     <unicon
                       name="remove-icon"
@@ -125,12 +116,7 @@ outline: none !important;"
                 </v-col>
               </v-row>
             </v-card-actions>
-            <v-snackbar
-              v-model="snackbar"
-              :timeout="timeout"
-              :color="color"
-              :top="true"
-            >
+            <v-snackbar v-model="snackbar" :timeout="timeout" :color="color" :top="true">
               {{ text }}
               <v-btn icon color="white" @click="fecharSnackbar">
                 <unicon
@@ -146,11 +132,11 @@ outline: none !important;"
         </v-col>
       </v-row>
     </v-container>
-  </v-main>
+  </v-card>
 </template>
 
 <script>
-import { bus } from "../../main"
+import { bus } from "../../main";
 
 export default {
   name: "login",
@@ -158,18 +144,18 @@ export default {
     return {
       form: {
         email: "",
-        password: ""
+        password: "",
       },
       regraEmail: [
-        v => !!v || "Email é obrigatório.",
-        v => /.+@.+/.test(v) || "Email tem de ser válido."
+        (v) => !!v || "Email é obrigatório.",
+        (v) => /.+@.+/.test(v) || "Email tem de ser válido.",
       ],
-      regraPassword: [v => !!v || "Password é obrigatório."],
+      regraPassword: [(v) => !!v || "Password é obrigatório."],
       snackbar: false,
       color: "",
       timeout: 4000,
       text: "",
-      done: false
+      done: false,
     };
   },
   methods: {
@@ -177,9 +163,9 @@ export default {
       if (this.$refs.form.validate()) {
         this.$request("post", "/users/login", {
           username: this.$data.form.email,
-          password: this.$data.form.password
+          password: this.$data.form.password,
         })
-          .then(res => {
+          .then((res) => {
             if (res.data.token != undefined && res.data.name != undefined) {
               // this.text = "Login efetuado com sucesso!";
               // this.color = "success";
@@ -200,7 +186,7 @@ export default {
               this.done = false;
             }
           })
-          .catch(err => {
+          .catch((err) => {
             this.text =
               "Ocorreu um erro ao realizar o login: Por favor verifique as suas credenciais!";
             this.color = "error";
@@ -215,7 +201,7 @@ export default {
       }
     },
     notificacoes() {
-      bus.$emit("notificacoes", "logged")
+      bus.$emit("notificacoes", "logged");
     },
     fecharSnackbar() {
       this.snackbar = false;
@@ -223,16 +209,16 @@ export default {
     },
     cancelar() {
       this.$router.push("/users/autenticacao");
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
 .info-content {
   padding: 5px;
   width: 100%;
-  background-color: var(--secondary) !important;
-  text-shadow: 0px 1px 2px var(--text-shadow) !important;
+  background-color: var(--v-secondary-base) !important;
+  text-shadow: 0px 1px 2px var(--v-textshadow-base) !important;
   border-radius: 10px;
 }
 </style>

@@ -1,55 +1,41 @@
 <template>
-  <v-navigation-drawer
-    :value="drawer"
-    width="320px"
-    right
-    absolute
-    style="position: fixed; top: 38px"
-  >
-    <v-toolbar dark class="d-flex justify-center pt-4 mt-12">
-      <v-toolbar-title class="font-weight-medium" id="drawer-title">
-        Definições
-      </v-toolbar-title>
-    </v-toolbar>
-
-    <v-card-text>
-      <v-list dense rounded dark>
-        <v-list-item-group color="primary">
-          <v-list-item @click="$router.push('/users/pedidos')">
-            <v-list-item-content class="font-weight-medium">
-              {{ this.$store.state.name }}</v-list-item-content
-            >
-            <v-list-item-icon>
-              <v-icon>account_circle</v-icon>
-            </v-list-item-icon>
-          </v-list-item>
-          <v-list-item @click="$router.push('/users/alteracaoPassword')">
-            <v-list-item-content>
-              <p class="font-weight-medium" id="alterarPasswordText">Alterar Password</p>
-            </v-list-item-content>
-            <unicon
-              name="alterar-password-icon"
-              width="22"
-              height="22"
-              viewBox="0 0 20.71 20.404"
-              fill="#ffd54f"
-            />
-          </v-list-item>
-          <v-list-item @click="logoutUtilizador">
-            <v-list-item-content>
-              <p class="font-weight-medium" id="terminarSessaoText">Terminar sessão</p>
-            </v-list-item-content>
-            <unicon
-              name="terminar-sessao-icon"
-              width="22"
-              height="22"
-              viewBox="0 0 20.71 23.481"
-              fill="#ef5350"
-            />
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-card-text>
+  <v-navigation-drawer :value="drawer" width="320px" right absolute clipped>
+    <v-list dense rounded>
+      <v-list-item-group color="primary">
+        <v-list-item @click="$router.push('/users/pedidos')">
+          <v-list-item-content class="font-weight-medium white--text">
+            {{ this.$store.state.name }}</v-list-item-content
+          >
+          <v-list-item-icon>
+            <v-icon>account_circle</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+        <v-list-item @click="$router.push('/users/alteracaoPassword')">
+          <v-list-item-content>
+            <p class="font-weight-medium" id="alterarPasswordText">Alterar Password</p>
+          </v-list-item-content>
+          <unicon
+            name="alterar-password-icon"
+            width="22"
+            height="22"
+            viewBox="0 0 20.71 20.404"
+            fill="#ffd54f"
+          />
+        </v-list-item>
+        <v-list-item @click="logoutUtilizador">
+          <v-list-item-content>
+            <p class="font-weight-medium" id="terminarSessaoText">Terminar sessão</p>
+          </v-list-item-content>
+          <unicon
+            name="terminar-sessao-icon"
+            width="22"
+            height="22"
+            viewBox="0 0 20.71 23.481"
+            fill="#ef5350"
+          />
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
   </v-navigation-drawer>
 </template>
 

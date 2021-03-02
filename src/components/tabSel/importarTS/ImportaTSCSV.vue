@@ -3,16 +3,7 @@
     <v-row>
       <!-- HEADER -->
       <v-col class="py-0 my-0">
-        <v-btn
-          @click="goBack"
-          rounded
-          class="white--text mb-6"
-          :class="{
-            'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown,
-          }"
-          id="default-button"
-        >
+        <v-btn @click="goBack" rounded class="white--text clav-linear-background">
           <unicon
             name="arrow-back-icon"
             width="20"
@@ -50,9 +41,7 @@
                 >
                   <v-radio-group
                     v-model="fonteLegitimacao"
-                    :rules="[
-                      (v) => !!v || 'Tem de escolher uma fonte de legitimação',
-                    ]"
+                    :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
                     required
                     row
                     @change="fonteL"
@@ -62,16 +51,8 @@
                       color="indigo darken-4"
                       value="PGD/LC"
                     ></v-radio>
-                    <v-radio
-                      label="PGD"
-                      color="indigo darken-4"
-                      value="PGD"
-                    ></v-radio>
-                    <v-radio
-                      label="RADA"
-                      color="indigo darken-4"
-                      value="RADA"
-                    ></v-radio>
+                    <v-radio label="PGD" color="indigo darken-4" value="PGD"></v-radio>
+                    <v-radio label="RADA" color="indigo darken-4" value="RADA"></v-radio>
                   </v-radio-group>
                 </div>
               </template>
@@ -98,12 +79,8 @@
                     @change="
                       {
                         entidade_tipologia = [];
-                        if (
-                          tipo == 'Pluriorganizacional' &&
-                          fonteLegitimacao != 'RADA'
-                        ) {
-                          designacao =
-                            'Tabela de Seleção Pluriorganizacional...';
+                        if (tipo == 'Pluriorganizacional' && fonteLegitimacao != 'RADA') {
+                          designacao = 'Tabela de Seleção Pluriorganizacional...';
                         } else if (
                           tipo == 'Organizacional' &&
                           fonteLegitimacao != 'RADA'
@@ -134,9 +111,7 @@
               <div class="pa-0 ma-0" v-if="tipo == 'Organizacional'">
                 <p
                   class="content-text px-8 py-2 mb-3"
-                  style="
-                    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-                  "
+                  style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
                 >
                   Identifique a entidade ou tipologia da Tabela de Seleção:
                 </p>
@@ -160,8 +135,7 @@
                         @change="
                           if (fonteLegitimacao != 'RADA')
                             designacao = `Tabela de Seleção de ${entidade_tipologia}`;
-                          if (entidade_tipologia == undefined)
-                            designacao = null;
+                          if (entidade_tipologia == undefined) designacao = null;
                         "
                       >
                       </v-autocomplete>
@@ -174,9 +148,7 @@
               <div class="pa-0 ma-0" v-else>
                 <p
                   class="content-text px-8 py-2 mb-3"
-                  style="
-                    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-                  "
+                  style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
                 >
                   Identifique as entidades e tipologias da Tabela de Seleção:
                 </p>
@@ -276,16 +248,14 @@
                   <b>Caso o ficheiro seja CSV deve respeitar o seguinte:</b>
 
                   <ul class="px-9 pt-3 pb-4">
-                    <li>
-                      Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'
-                    </li>
+                    <li>Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'</li>
                     <li>O quote e o escape são realizados através de "</li>
                     <li>O encoding do ficheiro tem de ser UTF-8</li>
                   </ul>
 
                   <b>
-                    O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma
-                    sheet em que tenha:</b
+                    O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma sheet em que
+                    tenha:</b
                   >
 
                   <ul class="px-9 pt-3">
@@ -316,33 +286,31 @@
                   <b>Caso o ficheiro seja CSV deve respeitar o seguinte:</b>
 
                   <ul class="px-9 pt-3 pb-4">
-                    <li>
-                      Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'
-                    </li>
+                    <li>Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'</li>
                     <li>O quote e o escape são realizados através de "</li>
                     <li>O encoding do ficheiro tem de ser UTF-8</li>
                   </ul>
 
                   <b
-                    >O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma
-                    sheet em que tenha:</b
+                    >O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma sheet em que
+                    tenha:</b
                   >
 
                   <ul class="px-9 pt-3">
                     <li>Uma coluna 'Código' com os códigos dos processos</li>
                     <li>Uma coluna 'Título' com os títulos dos processos</li>
                     <li>
-                      Uma coluna 'Dono' com as siglas das entidades/tipologias
-                      que são donas separadas por '#'
+                      Uma coluna 'Dono' com as siglas das entidades/tipologias que são
+                      donas separadas por '#'
                     </li>
                     <li>
-                      Uma coluna 'Participante' com as siglas das
-                      entidades/tipologias que são donas separadas por '#'
+                      Uma coluna 'Participante' com as siglas das entidades/tipologias que
+                      são donas separadas por '#'
                     </li>
                     <li>
-                      Uma coluna 'Tipo de participação' com os tipos de
-                      participação das entidades/tipologias referidas na coluna
-                      'Participante' separados por '#'
+                      Uma coluna 'Tipo de participação' com os tipos de participação das
+                      entidades/tipologias referidas na coluna 'Participante' separados
+                      por '#'
                     </li>
                     <li>
                       Os tipos de participação válidos são:
@@ -362,18 +330,12 @@
             <div class="text-center mt-6">
               <v-btn
                 v-if="
-                  (tipo == 'Organizacional' &&
-                    (designacao == null ||
-                      file.length == 0 ||
-                      tipo == null ||
-                      fonteLegitimacao == null ||
-                      entidade_tipologia == null ||
-                      !entidade_tipologia.length)) ||
-                  (tipo == 'Pluriorganizacional' &&
-                    (designacao == null ||
-                      file.length == 0 ||
-                      tipo == null ||
-                      fonteLegitimacao == null))
+                  (tipo == 'Organizacional' && designacao == '') ||
+                  file.length == 0 ||
+                  tipo == null ||
+                  fonteLegitimacao == null ||
+                  entidade_tipologia == null ||
+                  !entidade_tipologia.length
                 "
                 disabled
                 rounded
@@ -395,15 +357,36 @@
               </v-btn>
 
               <v-btn
-                v-else
-                @click="enviarFicheiro()"
+                v-else-if="
+                  (tipo == 'Pluriorganizacional' && designacao == '') ||
+                  file.length == 0 ||
+                  tipo == null ||
+                  fonteLegitimacao == null ||
+                  entidade_tipologia.length < 2
+                "
+                disabled
                 rounded
-                class="white--text mb-6"
                 :class="{
                   'px-8': $vuetify.breakpoint.lgAndUp,
                   'px-2': $vuetify.breakpoint.mdAndDown,
                 }"
-                id="default-button"
+                class="mb-6"
+                id="botao-shadow"
+                ><unicon
+                  name="importar-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 18.121"
+                  fill="#b8b8b8"
+                />
+                <p class="ml-2">Importar</p>
+              </v-btn>
+
+              <v-btn
+                v-else
+                @click="enviarFicheiro()"
+                rounded
+                class="white--text clav-linear-background"
               >
                 <unicon
                   name="importar-icon"
@@ -489,11 +472,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-dialog
-          v-model="dialogConfirmacao.visivel"
-          persistent
-          max-width="60%"
-        >
+        <v-dialog v-model="dialogConfirmacao.visivel" persistent max-width="60%">
           <v-card dark class="info-card">
             <v-card-title class="headline mb-2">
               Não foi possível criar o pedido de criação de tabela de
@@ -502,12 +481,8 @@
             <div class="info-content-card px-3 mx-6 mb-2">
               <v-card-text class="pa-2 px-4 font-weight-medium">
                 <p class="error--text">{{ dialogConfirmacao.mensagem }}</p>
-                <p v-if="acrescenta" class="error--text title">
-                  Pretende selecioná-las?
-                </p>
-                <p v-else class="error--text title">
-                  Pretende desselecioná-las?
-                </p>
+                <p v-if="acrescenta" class="error--text title">Pretende selecioná-las?</p>
+                <p v-else class="error--text title">Pretende desselecioná-las?</p>
                 <ol v-if="entidadesFalta.length > 0">
                   <li v-for="(item, i) in entidadesFalta" v-bind:key="i">
                     {{ item.sigla }} - {{ item.designacao }}
@@ -629,18 +604,11 @@ export default {
         var formData = new FormData();
         formData.append("file", this.file[0]);
         formData.append("designacao", this.designacao);
-        formData.append(
-          "entidades_ts",
-          JSON.stringify(this.entidade_tipologia)
-        );
+        formData.append("entidades_ts", JSON.stringify(this.entidade_tipologia));
         formData.append("tipo_ts", "TS " + this.tipo);
         formData.append("fonteL", this.fonteLegitimacao);
 
-        var response = await this.$request(
-          "post",
-          "/tabelasSelecao/importar",
-          formData
-        );
+        var response = await this.$request("post", "/tabelasSelecao/importar", formData);
         /*
         var response2 = await this.$request(
           "get",
@@ -669,14 +637,11 @@ export default {
         for (var k in response.data.stats) {
           switch (k) {
             case "processos":
-              stats +=
-                "<li>Número de Processos: " + response.data.stats[k] + "</li>";
+              stats += "<li>Número de Processos: " + response.data.stats[k] + "</li>";
               break;
             case "donos":
               stats +=
-                "<li>Número de Processos Donos: " +
-                response.data.stats[k] +
-                "</li>";
+                "<li>Número de Processos Donos: " + response.data.stats[k] + "</li>";
               break;
             case "participantes":
               stats +=
@@ -690,9 +655,7 @@ export default {
                 switch (kb) {
                   case "processos":
                     stats +=
-                      "<li>Número de Processos: " +
-                      response.data.stats[k][kb] +
-                      "</li>";
+                      "<li>Número de Processos: " + response.data.stats[k][kb] + "</li>";
                     break;
                   case "donos":
                     stats +=
@@ -775,7 +738,9 @@ export default {
       this.dialogConfirmacao.visivel = false;
       this.entidadesFalta.map((e) =>
         this.entidade_tipologia.splice(
-          this.entidade_tipologia.findIndex((ent) => e.sigla == ent),
+          this.entidade_tipologia[
+            this.entidade_tipologia.findIndex((ent) => e.sigla == ent)
+          ],
           1
         )
       );
@@ -785,15 +750,9 @@ export default {
     },
     fonteL: function () {
       if (this.fonteLegitimacao == "RADA") {
-        this.designacao =
-          "Relatório de Avaliação de Documentação Acumulada de ...";
-        this.tipo == "Pluriorganizacional"
-          ? (this.entidade_tipologia = [])
-          : "";
-      } else if (
-        this.tipo == "Pluriorganizacional" &&
-        this.fonteLegitimacao != "RADA"
-      )
+        this.designacao = "Relatório de Avaliação de Documentação Acumulada de ...";
+        this.tipo == "Pluriorganizacional" ? (this.entidade_tipologia = []) : "";
+      } else if (this.tipo == "Pluriorganizacional" && this.fonteLegitimacao != "RADA")
         this.designacao = "Tabela de Seleção Pluriorganizacional...";
       else if (
         this.tipo == "Organizacional" &&
