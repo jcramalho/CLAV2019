@@ -1,37 +1,21 @@
 <template>
-  <v-expansion-panel popout>
-    <v-expansion-panel-header
-      style="outline: none"
-      :class="{
-        'text-center': $vuetify.breakpoint.smAndDown,
-        'text-left': $vuetify.breakpoint.mdAndUp,
-      }"
-      class="pa-3"
-    >
-      <div
-        :class="{
-          'px-3': $vuetify.breakpoint.mdAndUp,
-        }"
-        class="separador"
-      >
-        <v-badge color="red" overlap offset-x="9" offset-y="20">
-          <unicon
-            class="mt-3"
-            name="pedido-novo-icon"
-            width="20"
-            height="20"
-            viewBox="0 0 20.71 20.709"
-            fill="#ffffff"
-          />
-          <template v-slot:badge>
-            {{ pedidos.length }}
-          </template>
-        </v-badge>
-        <span class="ml-4">Pedidos Novos</span>
-      </div>
-    </v-expansion-panel-header>
-
-    <v-expansion-panel-content id="expanded-content">
+  <PainelCLAV titulo="Pedidos Novos" infoHeader="Pedidos Novos">
+    <template v-slot:icon>
+      <v-badge color="red" overlap offset-x="9" offset-y="20">
+        <unicon
+          class="mt-3"
+          name="pedido-novo-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 20.71 20.709"
+          fill="#ffffff"
+        />
+        <template v-slot:badge>
+          {{ pedidos.length }}
+        </template>
+      </v-badge>
+    </template>
+    <template v-slot:conteudo>
       <v-row>
         <v-col>
           <div class="info-content pa-4">
@@ -163,27 +147,28 @@
           </div>
         </v-col>
       </v-row>
-    </v-expansion-panel-content>
 
-    <!-- Campo despacho -->
-    <v-dialog v-model="devolverPedidoDialog" width="60%" persistent>
-      <DevolverPedido
-        @fecharDialog="fecharDialog()"
-        @devolverPedido="despacharPedido($event)"
-      />
-    </v-dialog>
+      <!-- Campo despacho -->
+      <v-dialog v-model="devolverPedidoDialog" width="60%" persistent>
+        <DevolverPedido
+          @fecharDialog="fecharDialog()"
+          @devolverPedido="despacharPedido($event)"
+        />
+      </v-dialog>
 
-    <!-- Dialog de erros -->
-    <v-dialog v-model="erroDialog.visivel" width="60%" persistent>
-      <ErroDialog :erros="erroDialog.mensagem" uri="/" />
-    </v-dialog>
-  </v-expansion-panel>
+      <!-- Dialog de erros -->
+      <v-dialog v-model="erroDialog.visivel" width="60%" persistent>
+        <ErroDialog :erros="erroDialog.mensagem" uri="/" />
+      </v-dialog>
+    </template>
+  </PainelCLAV>
 </template>
 
 <script>
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 import ErroDialog from "@/components/generic/ErroDialog";
 import { NIVEIS_DISTRIBUIR_PEDIDO, NIVEIS_DEVOLVER_PEDIDO } from "@/utils/consts";
+import PainelCLAV from "@/components/generic/PainelCLAV";
 
 export default {
   props: ["pedidos", "pesquisaPedidos"],
@@ -191,6 +176,7 @@ export default {
   components: {
     DevolverPedido,
     ErroDialog,
+    PainelCLAV,
   },
 
   data: () => {

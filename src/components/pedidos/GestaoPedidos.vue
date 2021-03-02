@@ -12,10 +12,6 @@
                 @click="expandAll"
                 rounded
                 class="white--text"
-                :class="{
-                  'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown,
-                }"
                 color="success darken-1"
                 id="botao-shadow"
               >
@@ -34,11 +30,7 @@
                 @click="closeAll"
                 rounded
                 class="white--text"
-                :class="{
-                  'px-8': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown,
-                }"
-                style="background-color: rgb(153, 17, 17)"
+                color="error"
                 id="botao-shadow"
               >
                 <unicon
