@@ -319,7 +319,7 @@ export default {
             tooltip: operacoes[i].tooltip,
             html: operacoes[i].html,
             texto: operacoes[i].texto,
-            ops: operacoes[i].ops.filter(o => o.level.includes(this.level)),
+            ops: operacoes[i].ops.filter(o => o.level.includes(this.level))
           });
         }
       }
@@ -327,7 +327,7 @@ export default {
     },
 
     preparaEntidades(dados, entOuTip) {
-      let dadosTratados = dados//.filter(dado => dado.estado === "Ativa");
+      let dadosTratados = dados; //.filter(dado => dado.estado === "Ativa");
       dadosTratados = dadosTratados.map(
         dado => `${dado.sigla} - ${dado.designacao}`
       );
@@ -352,7 +352,7 @@ export default {
 
       this.legislacao.legislacaoItems = dadosTratados;
       this.legislacao.ready = true;
-    },
+    }
   },
 
   async created() {
@@ -373,7 +373,7 @@ export default {
   computed: {
     fops: function() {
       return this.filtraOps(this.operacoes);
-    },
+    }
   },
 
   data() {
@@ -383,16 +383,16 @@ export default {
       tipologiasDialog: false,
       tipologias: {
         tipologias: [],
-        ready: false,
+        ready: false
       },
       entidades: {
         entidades: [],
-        ready: false,
+        ready: false
       },
       legislacao: {
         legislacao: [],
         legislacaoItems: [],
-        ready: false,
+        ready: false
       },
       dadosEditar: null,
       panelHeaderColor: "indigo darken-4",
@@ -407,19 +407,19 @@ export default {
             {
               label: "Consultar",
               url: "/classes",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar Classe",
               url: "/classes/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Alterar Classe",
               url: "/classes/editar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Tabelas de Seleção",
@@ -430,19 +430,19 @@ export default {
             {
               label: "Consultar",
               url: "/ts",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar",
               url: "/ts/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Importar",
               url: "/ts/importar/csv",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         /*{
           entidade: "Portaria de Gestão de Documentos",
@@ -464,14 +464,14 @@ export default {
             {
               label: "Consultar",
               url: "/rada",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar",
               url: "/rada/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Autos de Eliminação",
@@ -481,19 +481,19 @@ export default {
             {
               label: "Consultar",
               url: "/autosEliminacao",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar",
               url: "/autosEliminacao/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Importar",
               url: "/autosEliminacao/importar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Planos de Preservação Digital",
@@ -502,19 +502,19 @@ export default {
             {
               label: "Consultar",
               url: "/ppd",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Criar",
               url: "/ppd/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Importar",
               url: "/ppd/importar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Entidades",
@@ -523,14 +523,14 @@ export default {
             {
               label: "Consultar",
               url: "/entidades",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
               url: "/entidades/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Tipologias de Entidades",
@@ -539,14 +539,14 @@ export default {
             {
               label: "Consultar",
               url: "/tipologias",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
               url: "/tipologias/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Legislação",
@@ -555,14 +555,14 @@ export default {
             {
               label: "Consultar",
               url: "/legislacao",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
               url: "/legislacao/criar",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [1, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Termos de Indice",
@@ -571,14 +571,14 @@ export default {
             {
               label: "Consultar",
               url: "/termosIndice",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             } /*,
             {
               label: "Adicionar",
               url: "/termosIndice/criar",
               level: [1, 3, 3.5, 4, 5, 6, 7]
-            }*/,
-          ],
+            }*/
+          ]
         },
 
         {
@@ -589,9 +589,9 @@ export default {
             {
               label: "Área de exportação",
               url: "/exportar",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "API de dados",
@@ -600,9 +600,9 @@ export default {
             {
               label: "Aceder",
               url: lhost + "/docs",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-            },
-          ],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
+            }
+          ]
         },
         {
           entidade: "Colaborações",
@@ -612,18 +612,18 @@ export default {
             {
               label: "Consultar",
               url: "/colaboracoes",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7]
             },
             {
               label: "Adicionar",
               url: "/colaboracoes/criar",
-              level: [3.5, 4, 5, 6, 7],
-            },
-          ],
-        },
-      ],
+              level: [3.5, 4, 5, 6, 7]
+            }
+          ]
+        }
+      ]
     };
-  },
+  }
 };
 </script>
 

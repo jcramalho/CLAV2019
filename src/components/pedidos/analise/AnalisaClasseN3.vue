@@ -3,79 +3,30 @@
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row v-if="allowedInfo.includes(campo)" dense class="ma-1">
-          <v-col cols="2">
-            <div
-              :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
-              class="info-descricao"
-              :class="`info-descricao-${novoHistorico[campo].cor}`"
-            >
-              {{ transformaKeys(campo) }}
-            </div>
-          </v-col>
-
-          <v-col>
-            <div v-if="!(info instanceof Array)" class="info-conteudo">
-              <span v-if="info === '' || info === null">
-                [Campo não preenchido na submissão do pedido]
-              </span>
-              <span v-else-if="campo === 'tipoProc'">{{
-                info === "PC" ? "Processo Comum" : "Processo Específico"
-              }}</span>
-              <span v-else-if="campo === 'procTrans'">{{
-                info === "S" ? "Sim" : "Não"
-              }}</span>
-              <span v-else>{{ info }}</span>
-            </div>
-
-            <div v-else>
-              <VerNotas
-                :header="headerNotas[campo]"
-                :footer-props="footerProps"
-                :items="info"
-                :addFunc="abrirNotaAplicacao"
-                :removeFunc="removeNota"
-                :campo="campo"
-              />
-            </div>
-          </v-col>
-
-          <!-- Operações -->
-          <v-col cols="auto">
-            <span v-if="!esconderOperacoes[campo]">
-              <v-icon class="mr-1" color="green" @click="verifica(campo)">
-                check
-              </v-icon>
-              <v-icon class="mr-1" color="red" @click="anula(campo)">
-                clear
-              </v-icon>
-            </span>
-            <v-icon
-              v-if="!(info instanceof Array)"
-              class="mr-1"
-              color="orange"
-              @click="edita(campo)"
-            >
-              create
-            </v-icon>
-
-            <v-icon @click="abrirNotaDialog(campo)">
-              add_comment
-            </v-icon>
-          </v-col>
-        </v-row>
+        <CampoPedido
+          v-if="allowedInfo.includes(campo)"
+          :title="transformaKeys(campo)"
+          :campo="campo"
+          :info="formatInfo(campo, info)"
+          :estado="novoHistorico[campo].cor"
+          :hideOps="esconderOperacoes[campo]"
+          :validate="mudarEstado('verde')"
+          :invalidate="mudarEstado('vermelho')"
+          :edit="!blockedEdit.includes(campo) ? edita : null"
+          :add="abrirNotaAplicacao"
+          :remove="removeNota"
+          :comment="abrirNotaDialog"
+          :header="headerNotas[campo]"
+        />
       </div>
     </div>
 
-    <v-row>
-      <v-spacer />
-      <PO
-        :operacao="validar ? 'Validar' : 'Analisar'"
-        @avancarPedido="encaminharPedido($event)"
-        @finalizarPedido="verificaEstadoCampos($event)"
-        @devolverPedido="despacharPedido($event)"
-      />
-    </v-row>
+    <PainelOperacoesPedido
+      :p="p"
+      :historico="historico"
+      :novoHistorico="novoHistorico"
+      :validar="validar"
+    />
 
     <!-- Dialog da nota -->
     <v-dialog v-model="notaDialog.visivel" width="70%" persistent>
@@ -92,7 +43,7 @@
       <EditarCamposDialog
         :campo="editaCampo"
         :tipoPedido="p.objeto.tipo"
-        @fechar="fechaEditaCampoDialog($event)"
+        @fechar="editaCampo.visivel = false"
         @editarCampo="editarCampo($event)"
       />
     </v-dialog>
@@ -156,53 +107,37 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
-      <ConfirmacaoOperacao
-        :mensagem="dialogConfirmacao.mensagem"
-        @fechar="fechaDialogConfirmacao()"
-        @confirma="finalizarPedido(dialogConfirmacao.dados)"
-      />
-    </v-dialog>
   </div>
 </template>
 
 <script>
 const nanoid = require("nanoid");
+import PainelOperacoesPedido from "@/components/pedidos/generic/PainelOperacoesPedido";
+import CampoPedido from "@/components/pedidos/generic/CampoPedido";
 
-import PO from "@/components/pedidos/generic/PainelOperacoes";
 import Loading from "@/components/generic/Loading";
 import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
 import AdicionarNotaAplicacao from "@/components/pedidos/generic/AdicionarNotaAplicacao";
-import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
-import VerNotas from "@/components/pedidos/generic/VerNotas";
 import DonosSelect from "@/components/classes/criacao/DonosSelect.vue";
 import ProcessosRelacionadosSelect from "@/components/classes/criacao/ProcessosRelacionadosSelect.vue";
 import LegislacaoSelect from "@/components/classes/criacao/LegislacaoSelect.vue";
 
 import ErroDialog from "@/components/generic/ErroDialog";
 
-import {
-  comparaSigla,
-  mapKeys,
-  identificaItemAdicionado,
-  adicionarNotaComRemovidos
-} from "@/utils/utils";
-import { createCipher } from "crypto";
+import { mapKeys, adicionarNotaComRemovidos } from "@/utils/utils";
 
 export default {
   props: { p: Object, validar: Boolean },
 
   components: {
-    PO,
+    PainelOperacoesPedido,
+    CampoPedido,
     Loading,
     AdicionarNota,
     EditarCamposDialog,
     ErroDialog,
     AdicionarNotaAplicacao,
-    ConfirmacaoOperacao,
-    VerNotas,
     DonosSelect,
     ProcessosRelacionadosSelect,
     LegislacaoSelect
@@ -231,6 +166,7 @@ export default {
         "processosRelacionados",
         "legislacao"
       ],
+      blockedEdit: ["nivel", "codigo"],
       novoHistorico: {},
       formatNotas: {
         notasAp: { id: "id", nota: "nota", idType: "na" },
@@ -415,7 +351,34 @@ export default {
     transformaKeys(key) {
       return mapKeys(key);
     },
-
+    mudarEstado(estado) {
+      return campo => {
+        this.novoHistorico[campo] = {
+          ...this.novoHistorico[campo],
+          cor: estado
+        };
+      };
+    },
+    editarDados(campo, dados) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        dados: dados,
+        cor: "amarelo"
+      };
+      this.esconderOperacoes[campo] = true;
+    },
+    formatInfo(campo, info) {
+      switch (campo) {
+        case "tipoProc":
+          return info === "PC" ? "Processo Comum" : "Processo Específico";
+          break;
+        case "procTrans":
+          return info === "S" ? "Sim" : "Não";
+        default:
+          return info;
+          break;
+      }
+    },
     abrirNotaDialog(campo) {
       this.notaDialog.visivel = true;
       this.notaDialog.campo = campo;
@@ -439,29 +402,6 @@ export default {
         valorAtual: this.dados[campo]
       };
     },
-
-    verifica(campo) {
-      this.novoHistorico[campo] = {
-        ...this.novoHistorico[campo],
-        cor: "verde"
-      };
-
-      this.animacoes[campo] = !this.animacoes[campo];
-    },
-
-    anula(campo) {
-      this.novoHistorico[campo] = {
-        ...this.novoHistorico[campo],
-        cor: "vermelho"
-      };
-
-      this.animacoes[campo] = !this.animacoes[campo];
-    },
-
-    fechaEditaCampoDialog(campo) {
-      this.editaCampo.visivel = false;
-    },
-
     fechaDialogConfirmacao() {
       this.dialogConfirmacao = {
         visivel: false,
@@ -469,19 +409,10 @@ export default {
         dados: null
       };
     },
-
     editarCampo(event) {
       this.editaCampo.visivel = false;
-
       this.dados[event.campo.key] = event.dados;
-      this.novoHistorico[event.campo.key] = {
-        ...this.novoHistorico[event.campo.key],
-        dados: event.dados,
-        cor: "amarelo"
-      };
-
-      this.esconderOperacoes[event.campo.key] = true;
-      this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
+      this.editarDados(event.campo.key, event.dados);
     },
 
     abrirNotaAplicacao(campo) {
@@ -527,14 +458,7 @@ export default {
 
       if (index !== -1) {
         const bs = this.dados[campo].splice(index, 1);
-        this.novoHistorico[campo] = {
-          ...this.novoHistorico[campo],
-          cor: "amarelo",
-          dados: this.dados[campo]
-        };
-
-        this.animacoes[campo] = !this.animacoes[campo];
-        this.esconderOperacoes[campo] = true;
+        this.editarDados(campo, this.dados[campo]);
       }
     },
 
@@ -543,44 +467,21 @@ export default {
       this.entidadesD.splice(index, 1);
 
       this.dados[campo].push(entidade);
-      this.novoHistorico[campo] = {
-        ...this.novoHistorico[campo],
-        dados: this.dados[campo],
-        cor: "amarelo"
-      };
-
-      this.esconderOperacoes[campo] = true;
-      this.animacoes[campo] = !this.animacoes[campo];
+      this.editarDados(campo, this.dados[campo]);
     },
 
     selectDiploma: function(leg, campo) {
       var index = this.listaLegislacao.findIndex(e => e.id === leg.id);
       this.listaLegislacao.splice(index, 1);
-
       this.dados[campo].push(leg);
-      this.novoHistorico[campo] = {
-        ...this.novoHistorico[campo],
-        dados: this.dados[campo],
-        cor: "amarelo"
-      };
-
-      this.esconderOperacoes[campo] = true;
-      this.animacoes[campo] = !this.animacoes[campo];
+      this.editarDados(campo, this.dados[campo]);
     },
 
     selectProcesso: function(processo, campo) {
       var index = this.listaProcessos.findIndex(e => e.id === processo.id);
       this.listaProcessos.splice(index, 1);
-
       this.dados[campo].push(processo);
-      this.novoHistorico[campo] = {
-        ...this.novoHistorico[campo],
-        dados: this.dados[campo],
-        cor: "amarelo"
-      };
-
-      this.esconderOperacoes[campo] = true;
-      this.animacoes[campo] = !this.animacoes[campo];
+      this.editarDados(campo, this.dados[campo]);
     },
 
     async loadTipologias() {
@@ -600,7 +501,6 @@ export default {
           "Erro ao carregar os dados, por favor tente novamente";
       }
     },
-
     async loadEntidades() {
       try {
         var response = await this.$request("get", "/entidades");
@@ -643,7 +543,6 @@ export default {
         return erro;
       }
     },
-
     async loadProcessos() {
       try {
         var response = await this.$request("get", "/classes?nivel=3");
@@ -674,7 +573,6 @@ export default {
         return error;
       }
     },
-
     async loadLegislacao() {
       try {
         var response = await this.$request("get", "/legislacao?estado=Ativo");
@@ -695,228 +593,7 @@ export default {
       } catch (error) {
         return error;
       }
-    },
-
-    async despacharPedido(dados) {
-      try {
-        const estado = "Devolvido";
-
-        let dadosUtilizador = this.$verifyTokenUser();
-
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: dados.mensagemDespacho
-        };
-
-        let pedido = JSON.parse(JSON.stringify(this.p));
-
-        pedido.estado = estado;
-
-        this.novoHistorico = adicionarNotaComRemovidos(
-          this.historico[this.historico.length - 1],
-          this.novoHistorico
-        );
-
-        pedido.historico.push(this.novoHistorico);
-
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao
-        });
-
-        this.$router.go(-1);
-      } catch (e) {
-        this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao devolver o pedido, por favor tente novamente";
-      }
-    },
-
-    async encaminharPedido(dados) {
-      try {
-        let dadosUtilizador = this.$verifyTokenUser();
-
-        let pedido = JSON.parse(JSON.stringify(this.p));
-
-        const estado =
-          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
-
-        pedido.estado = estado;
-
-        this.novoHistorico = adicionarNotaComRemovidos(
-          this.historico[this.historico.length - 1],
-          this.novoHistorico
-        );
-
-        pedido.historico.push(this.novoHistorico);
-
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          proximoResponsavel: {
-            nome: dados.utilizadorSelecionado.name,
-            entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email
-          },
-          data: new Date(),
-          despacho: dados.mensagemDespacho
-        };
-
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao
-        });
-
-        this.$router.go(-1);
-      } catch (e) {
-        console.log(e);
-        this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao distribuir o pedido, por favor tente novamente";
-      }
-    },
-    async verificaEstadoCampos(dados) {
-      // procura campos a vermelho
-      const haVermelhos = Object.keys(this.novoHistorico).some(
-        key => this.novoHistorico[key].cor === "vermelho"
-      );
-      // Se existirem abre dialog de confirmação
-      if (haVermelhos)
-        this.dialogConfirmacao = {
-          visivel: true,
-          mensagem:
-            "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
-          dados: dados
-        };
-      // Caso contrário segue para a finalização do pedido
-      else await this.finalizarPedido(dados);
-    },
-    async finalizarPedido(dados) {
-      try {
-        let pedido = JSON.parse(JSON.stringify(this.p));
-
-        let numeroErros = 0;
-
-        if (numeroErros === 0) {
-          for (const key in pedido.objeto.dados) {
-            if (
-              pedido.objeto.dados[key] === null ||
-              pedido.objeto.dados[key] === ""
-            ) {
-              delete pedido.objeto.dados[key];
-            }
-          }
-
-          await this.$request("post", "/classes", pedido.objeto.dados);
-
-          const estado = "Validado";
-
-          let dadosUtilizador = this.$verifyTokenUser();
-
-          const novaDistribuicao = {
-            estado: estado,
-            responsavel: dadosUtilizador.email,
-            data: new Date(),
-            despacho: dados.mensagemDespacho
-          };
-
-          pedido.estado = estado;
-
-          this.novoHistorico = adicionarNotaComRemovidos(
-            this.historico[this.historico.length - 1],
-            this.novoHistorico
-          );
-
-          pedido.historico.push(this.novoHistorico);
-
-          await this.$request("put", "/pedidos", {
-            pedido: pedido,
-            distribuicao: novaDistribuicao
-          });
-
-          this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
-        } else {
-          this.erroPedido = true;
-        }
-      } catch (e) {
-        this.erroPedido = true;
-
-        let parsedError = Object.assign({}, e);
-        parsedError = parsedError.response;
-
-        if (parsedError !== undefined) {
-          if (parsedError.status === 422) {
-            parsedError.data.forEach(erro => {
-              this.erros.push({
-                parametro: mapKeys(erro.param),
-                mensagem: erro.msg
-              });
-            });
-          }
-        } else {
-          this.erros.push({
-            sobre: "Acesso à Ontologia",
-            mensagem: "Ocorreu um erro ao aceder à ontologia."
-          });
-        }
-      }
     }
   }
 };
 </script>
-
-<style scoped>
-.info-conteudo {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
-}
-
-.info-descricao {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-descricao-verde {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
-  background-color: #c8e6c9; /* lighten-4 */
-}
-
-.info-descricao-vermelho {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
-  background-color: #ffcdd2; /* lighten-4 */
-}
-
-.info-descricao-amarelo {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
-  background-color: #ffe0b2; /* lighten-4 */
-}
-
-@keyframes fadeInOpacity {
-  0% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-</style>

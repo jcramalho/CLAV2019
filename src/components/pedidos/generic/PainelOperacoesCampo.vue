@@ -3,7 +3,7 @@
     <span v-if="!hide">
       <v-icon
         v-if="validate"
-        class="mr-1"
+        class="mr-1 check"
         color="green"
         @click="validate(campo)"
       >
@@ -11,17 +11,17 @@
       </v-icon>
       <v-icon
         v-if="invalidate"
-        class="mr-1"
+        class="mr-1 clear"
         color="red"
         @click="invalidate(campo)"
       >
         clear
       </v-icon>
     </span>
-    <v-icon v-if="edit" class="mr-1" color="orange" @click="edit(campo)">
+    <v-icon v-if="edit" class="mr-1 create" color="orange" @click="edit(campo)">
       create
     </v-icon>
-    <v-icon v-if="comment" @click="comment(campo)">
+    <v-icon class="comment" v-if="comment" @click="comment(campo)">
       add_comment
     </v-icon>
   </v-col>
@@ -42,3 +42,18 @@ export default {
   }
 };
 </script>
+<style scoped>
+.check {
+  color: #4caf50 !important;
+}
+.clear {
+  color: #f44336 !important;
+}
+.create {
+  color: #ff9800 !important;
+}
+
+.comment {
+  color: darkgrey !important;
+}
+</style>
