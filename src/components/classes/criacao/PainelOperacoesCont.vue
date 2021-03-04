@@ -163,7 +163,7 @@ import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBo
 export default {
   props: ["o"],
   components: {
-    ValidaClasseInfoBox,
+    ValidaClasseInfoBox
   },
   data() {
     return {
@@ -184,8 +184,8 @@ export default {
         1: /^[0-9]{3}$/,
         2: /^[0-9]{3}\.[0-9]{2}$/,
         3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
-      },
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
+      }
     };
   },
 
@@ -196,7 +196,7 @@ export default {
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    },
+    }
   },
 
   methods: {
@@ -215,7 +215,7 @@ export default {
             objeto: this.o.objeto,
             criadoPor: userBD.email,
             user: { email: userBD.email },
-            token: this.$store.state.token,
+            token: this.$store.state.token
           };
           var response = this.$request("put", "/pendentes", pendenteParams);
           this.pendenteGuardado = true;
@@ -597,7 +597,7 @@ export default {
           ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
-              mensagem: "Está repetido noutra subclasse.",
+              mensagem: "Está repetido noutra subclasse."
             });
           }
           // PCA: prazo
@@ -646,7 +646,7 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: [],
+              historico: []
             };
 
             var response = await this.$request(
@@ -654,8 +654,9 @@ export default {
               "/pedidos",
               pedidoParams
             );
-            this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-            this.dialogClasseCriada = true;
+            this.$router.push(`/pedidos/submissao/${response.data}`);
+            // this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
+            // this.dialogClasseCriada = true;
           } else {
             this.errosValidacao = true;
           }
@@ -676,8 +677,8 @@ export default {
 
     cancelarCriacaoClasse: function() {
       this.$router.push("/");
-    },
-  },
+    }
+  }
 };
 </script>
 <style>
