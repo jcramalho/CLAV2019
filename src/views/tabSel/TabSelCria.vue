@@ -1,16 +1,9 @@
 <template>
-  <v-content
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
-    }"
-  >
-    <CriaTabSel />
-  </v-content>
+  <CriaTabSel />
 </template>
 
 <script>
-import CriaTabSel from '@/components/tabSel/CriaTabSelTipo.vue';
+import CriaTabSel from "@/components/tabSel/CriaTabSelTipo.vue";
 
 export default {
   components: {

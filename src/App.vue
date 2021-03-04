@@ -18,9 +18,11 @@
 
     <!-- Main content -->
     <v-main>
-      <v-container fluid>
-        <router-view />
-      </v-container>
+      <v-row justify="center" class="my-5">
+        <v-col cols="12" sm="10" md="9">
+          <router-view />
+        </v-col>
+      </v-row>
     </v-main>
 
     <!-- Footer -->
@@ -65,7 +67,9 @@ export default {
       if (to.matched.some((record) => !record.meta.levels.includes(0))) {
         if (this.$store.state.token != "" && this.level > 0) {
           //se está autenticado, verifica se tem permissões suficientes para a ceder a página
-          if (to.matched.some((record) => record.meta.levels.includes(this.level))) {
+          if (
+            to.matched.some((record) => record.meta.levels.includes(this.level))
+          ) {
             this.authenticated = true;
           } else {
             this.text = "Não tem permissões para aceder a esta página!";
@@ -211,7 +215,8 @@ export default {
 /* TODO /* TODO /* TODO /* TODO
 /* TODO Para remover depois de remover todas as utilizações */
 #botao-shadow {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+    0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
   outline: none !important;
 }
 
@@ -222,10 +227,11 @@ export default {
 .v-text-field--filled > .v-input__control > .v-input__slot {
   background: none !important;
 }
-
+/*
 .v-input__slot::before {
   border-color: var(--v-info-base) !important;
 }
+*/
 .v-input--selection-controls {
   margin-top: 0 !important;
   padding-top: 0 !important;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card flat outlined>
     <div v-if="infoReady" class="pa-5">
       <v-row>
         <v-col>
@@ -93,6 +93,7 @@
             </td>
             <td>
               <v-radio-group
+                class="mt-5"
                 v-model="participante[props.item.chave]"
                 v-on:change="
                   selecionaParticipacao(
@@ -119,20 +120,16 @@
             </td>
             <td>
               <v-btn
-                v-if="props.item.descriptionEdited"
+                rounded
                 small
-                class="ma-2"
+                class="clav-linear-background white--text"
                 @click="editaBlocoDescritivo(props.item)"
               >
-                <v-icon dark>{{ editadoIcon }}</v-icon>
-              </v-btn>
-              <v-btn
-                v-else
-                small
-                class="ma-2"
-                @click="editaBlocoDescritivo(props.item)"
-              >
-                <v-icon dark>{{ editaBlocoDescritivoIcon }}</v-icon>
+                <v-icon>{{
+                  props.item.descriptionEdited
+                    ? editadoIcon
+                    : editaBlocoDescritivoIcon
+                }}</v-icon>
               </v-btn>
             </td>
           </tr>
@@ -236,7 +233,7 @@
     <div v-else>
       <p>A preparar a informação dos processos...</p>
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -285,6 +282,7 @@ export default {
     filtroLabel: "Todos",
     importFlag: false,
     file: null,
+
     // Cabeçalho da tabela para selecionar os PNs comuns
     headers: [
       {
@@ -293,6 +291,7 @@ export default {
         width: "10%",
         class: ["body-2", "font-weight-bold"],
         filterable: false,
+        sortable: false,
       },
       {
         text: "Título",
@@ -300,20 +299,6 @@ export default {
         width: "30%",
         class: ["body-2", "font-weight-bold"],
         filterable: false,
-      },
-      {
-        text: "Tipo",
-        value: "tipoProc",
-        width: "0%",
-        class: ["body-2", "font-weight-bold"],
-        align: " d-none",
-      },
-      {
-        text: "Pré-Selecionado",
-        value: "preSelectedLabel",
-        width: "0%",
-        class: ["body-2", "font-weight-bold"],
-        align: " d-none",
       },
       {
         text: "Dono",
@@ -326,12 +311,14 @@ export default {
         text: "Participante",
         value: "participante",
         class: ["body-2", "font-weight-bold"],
+        width: "50%",
         filterable: false,
       },
       {
         text: "Operações",
         class: ["body-2", "font-weight-bold"],
-        filterable: false,
+        width: "5%",
+        sortable: false,
       },
     ],
     procsFooterProps: {

@@ -14,7 +14,7 @@
         </v-row>
         <!-- CONTENT -->
         <v-card-text class="mt-0">
-          <v-row justify="center" class="mt-3">
+          <v-row justify="center" class="my-3">
             <v-col cols="12" md="3" class="text-center">
               <v-btn
                 @click="expandAll"
@@ -61,146 +61,89 @@
             </v-col>
           </v-row>
 
-          <v-expansion-panels flat multiple v-model="tabsSel" class="mt-4">
-            <v-expansion-panel popout v-if="fontesTSReady">
-              <v-expansion-panel-header
-                style="outline: none"
-                :class="{
-                  'text-center': $vuetify.breakpoint.smAndDown,
-                  'text-left': $vuetify.breakpoint.mdAndUp,
-                }"
-                class="pa-3"
-              >
-                <div
-                  :class="{
-                    'px-3': $vuetify.breakpoint.mdAndUp,
-                  }"
-                  class="separador"
-                >
-                  <unicon
-                    class="mt-3"
-                    name="ts-icon"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20.71 23.668"
-                    fill="#ffffff"
-                  />
-                  <span class="ml-3 mr-1">Tabelas de Seleção inseridas na Clav</span>
-                  <InfoBox
-                    header="Tabelas de Seleção criadas na Clav"
-                    :text="myhelp.TS_LC"
-                    helpColor="white"
-                    helpWidth="80%"
-                  />
-                </div>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content id="expanded-content">
-                <v-row>
-                  <v-col>
-                    <ListagemLeg
-                      :lista="fontesTS"
-                      tipo="TABELAS DE SELEÇÃO INSERIDAS NA CLAV"
-                    />
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+          <v-expansion-panels flat multiple v-model="tabsSel">
+            <PainelCLAV
+              v-if="fontesTSReady"
+              titulo="Tabelas de Seleção inseridas na Clav"
+              infoHeader="Tabelas de Seleção criadas na Clav"
+              :infoBody="myhelp.TS_LC"
+            >
+              <template v-slot:icon>
+                <unicon
+                  name="ts-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 23.668"
+                  fill="#ffffff"
+                />
+              </template>
+              <template v-slot:conteudo>
+                <ListagemLeg
+                  :lista="fontesTS"
+                  tipo="TABELAS DE SELEÇÃO INSERIDAS NA CLAV"
+                />
+              </template>
+            </PainelCLAV>
 
-            <Loading v-if="!fontesPGDLCReady" :message="'fontes de legitimação'" />
-            <v-expansion-panel popout v-if="fontesPGDLCReady">
-              <v-expansion-panel-header
-                style="outline: none"
-                :class="{
-                  'text-center': $vuetify.breakpoint.smAndDown,
-                  'text-left': $vuetify.breakpoint.mdAndUp,
-                }"
-                class="pa-3"
-              >
-                <div
-                  :class="{
-                    'px-3': $vuetify.breakpoint.mdAndUp,
-                  }"
-                  class="separador"
-                >
-                  <unicon
-                    class="mt-3"
-                    name="ts-icon"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20.71 23.668"
-                    fill="#ffffff"
-                  />
-                  <span class="ml-3 mr-1"
-                    >Tabelas de Seleção (derivadas da LC) inseridas em portaria de gestão
-                    de documentos</span
-                  >
-                  <InfoBox
-                    header="PGD/LC inseridas em PGD"
-                    :text="myhelp.PGD_LC"
-                    helpColor="white"
-                    helpWidth="80%"
-                  />
-                </div>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content id="expanded-content">
-                <v-row>
-                  <v-col>
-                    <ListagemLeg
-                      :lista="fontesPGDLC"
-                      tipo="TABELAS DE SELEÇÃO (DERIVADAS DA LC) INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS"
-                    />
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+            <Loading
+              v-if="!fontesPGDLCReady"
+              :message="'fontes de legitimação'"
+            />
 
-            <Loading v-if="!fontesPGDTSReady" :message="'fontes de legitimação'" />
-            <v-expansion-panel popout v-if="fontesPGDTSReady">
-              <v-expansion-panel-header
-                style="outline: none"
-                :class="{
-                  'text-center': $vuetify.breakpoint.smAndDown,
-                  'text-left': $vuetify.breakpoint.mdAndUp,
-                }"
-                class="pa-3"
-              >
-                <div
-                  :class="{
-                    'px-3': $vuetify.breakpoint.mdAndUp,
-                  }"
-                  class="separador"
-                >
-                  <unicon
-                    class="mt-3"
-                    name="ts-icon"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20.71 23.668"
-                    fill="#ffffff"
-                  />
-                  <span class="ml-3 mr-1"
-                    >Tabelas de Seleção (não derivadas da LC) inseridas em portaria de
-                    gestão de documentos</span
-                  >
-                  <InfoBox
-                    header="TS inseridas em PGD"
-                    :text="myhelp.PGD"
-                    helpColor="white"
-                    helpWidth="80%"
-                  />
-                </div>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content id="expanded-content">
-                <v-row>
-                  <v-col>
-                    <ListagemLeg
-                      :lista="fontesPGDTS"
-                      tipo="TABELAS DE SELEÇÃO INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS"
-                    />
-                  </v-col>
-                </v-row>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
+            <PainelCLAV
+              v-if="fontesPGDLCReady"
+              titulo="Tabelas de Seleção (derivadas da LC) inseridas em portaria
+                    de gestão de documentos"
+              infoHeader="Tabelas de Seleção (derivadas da LC) inseridas em portaria
+                    de gestão de documentos"
+              :infoBody="myhelp.PGD_LC"
+            >
+              <template v-slot:icon>
+                <unicon
+                  name="ts-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 23.668"
+                  fill="#ffffff"
+                />
+              </template>
+              <template v-slot:conteudo>
+                <ListagemLeg
+                  :lista="fontesPGDLC"
+                  tipo="TABELAS DE SELEÇÃO (DERIVADAS DA LC) INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS"
+                />
+              </template>
+            </PainelCLAV>
+
+            <Loading
+              v-if="!fontesPGDTSReady"
+              :message="'fontes de legitimação'"
+            />
+
+            <PainelCLAV
+              v-if="fontesPGDTSReady"
+              titulo="Tabelas de Seleção (não derivadas da LC) inseridas em
+                    portaria de gestão de documentos"
+              infoHeader="Tabelas de Seleção (não derivadas da LC) inseridas em
+                    portaria de gestão de documentos"
+              :infoBody="myhelp.PGD"
+            >
+              <template v-slot:icon>
+                <unicon
+                  name="ts-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 23.668"
+                  fill="#ffffff"
+                />
+              </template>
+              <template v-slot:conteudo>
+                <ListagemLeg
+                  :lista="fontesPGDTS"
+                  tipo="TABELAS DE SELEÇÃO INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS"
+                />
+              </template>
+            </PainelCLAV>
           </v-expansion-panels>
         </v-card-text>
       </v-col>
@@ -211,6 +154,7 @@
 import ListagemLeg from "@/components/tabSel/consulta/ListagemLeg.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
 import Voltar from "@/components/generic/Voltar";
+import PainelCLAV from "@/components/generic/PainelCLAV";
 
 import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
 const help = require("@/config/help").help.TS.Consulta;
@@ -236,6 +180,7 @@ export default {
     Loading,
     InfoBox,
     Voltar,
+    PainelCLAV,
   },
   methods: {
     goBack() {

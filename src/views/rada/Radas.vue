@@ -11,7 +11,7 @@
       <v-col cols="12" md="3"></v-col>
     </v-row>
     <v-card-text>
-      <v-row justify="center" class="mt-3">
+      <v-row justify="center" class="my-3">
         <v-col cols="12" sm="3" class="text-center">
           <v-btn
             @click="expandAll"
@@ -75,7 +75,10 @@
             <v-icon color="secondary"> mdi-book-arrow-up </v-icon>
           </template>
           <template v-slot:conteudo>
-            <Loading v-if="!radaAntigosReady" :message="'fontes de legitimação'" />
+            <Loading
+              v-if="!radaAntigosReady"
+              :message="'fontes de legitimação'"
+            />
             <ListagemRADA
               v-else
               :lista="radaAntigos"
