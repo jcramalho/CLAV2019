@@ -18,7 +18,7 @@
           <v-tooltip top color="info" open-delay="500">
             <template v-slot:activator="{ on }">
               <v-radio-group
-                class="py-5"
+                class="py-5 mt-5"
                 v-model="fonteLegitimacao"
                 :rules="[
                   (v) => !!v || 'Tem de escolher uma fonte de legitimação',
@@ -50,7 +50,7 @@
                 v-model="tipo"
                 row
                 v-on="on"
-                class="py-5"
+                class="py-5 mt-5"
                 @change="
                   {
                     entidade_tipologia = [];
@@ -131,11 +131,6 @@
                   single-line
                   v-on="on"
                   multiple
-                  :rules="[
-                    (v) =>
-                      (!!v && v.length > 1) ||
-                      'Tem de escolher pelo menos duas entidades!',
-                  ]"
                 >
                 </v-autocomplete>
               </template>
@@ -349,7 +344,7 @@
           </v-card>
         </v-dialog>
         <v-dialog v-model="successDialog" persistent max-width="60%">
-          <v-card dark class="info-card">
+          <v-card class="info-card">
             <v-card-title class="headline mb-2">
               Pedido de criação de tabela de seleção criado com sucesso
             </v-card-title>
@@ -424,7 +419,6 @@
                 v-if="acrescenta"
                 color="green darken-2"
                 rounded
-                dark
                 elevation="0"
                 class="px-4"
                 @click="selecionar"
@@ -435,7 +429,6 @@
                 v-else
                 color="green darken-2"
                 rounded
-                dark
                 elevation="0"
                 class="px-4"
                 @click="desselecionar"
@@ -746,5 +739,17 @@ ul li > ul li::before {
   top: -1rem;
   font-size: 2.5em;
   color: #4da0d0;
+}
+.info-card {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
+}
+
+.info-content-card {
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  color: #606060;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>
