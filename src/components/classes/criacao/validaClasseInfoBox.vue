@@ -167,6 +167,17 @@ export default {
               this.numeroErros++;
             }
           }
+          // if (!this.codeFormats[this.c.nivel].test(this.c.codigo)) {
+          //   this.mensagensErro.push({
+          //     sobre: "Código",
+          //     mensagem:
+          //       "Formato de código inválido! Deve ser: " +
+          //       this.formatoCodigo[this.c.nivel]
+          //   });
+          //   this.numeroErros++;
+          // }
+        }
+        try {
           if (!this.codeFormats[this.c.nivel].test(this.c.codigo)) {
             this.mensagensErro.push({
               sobre: "Código",
@@ -176,8 +187,6 @@ export default {
             });
             this.numeroErros++;
           }
-        }
-        try {
           var existe = await this.verificaExistenciaCodigo(this.c.codigo);
           if (existe) {
             this.mensagensErro.push({

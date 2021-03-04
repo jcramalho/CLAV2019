@@ -107,6 +107,10 @@
                           {{ dado.sigla }}
                         </li>
 
+                        <li v-if="dado.nota">
+                          {{ dado.nota }}
+                        </li>
+
                         <li v-else>
                           {{ dado.codigo }}
                         </li>
@@ -184,6 +188,26 @@
                           </span>
                         </li>
 
+                        <li v-if="dado.nota">
+                          <v-badge
+                            v-if="
+                              novoItemAdicionado(
+                                dado.nota,
+                                item.colunaA,
+                                'nota'
+                              )
+                            "
+                            right
+                            dot
+                            inline
+                            >{{ dado.nota }}</v-badge
+                          >
+
+                          <span v-else>
+                            {{ dado.nota }}
+                          </span>
+                        </li>
+
                         <li v-else>
                           <v-badge
                             v-if="
@@ -257,18 +281,19 @@ export default {
       etapasSelecionadas: [],
       defaultHeaders: [],
       footerProps: {
-        "items-per-page-options": [-1],
+        "items-per-page-options": [-1]
       },
+      classesAllowedInfo: ["descricao", "titulo", "notasAp", "notasEx"]
     };
   },
 
   computed: {
     etapas() {
-      return this.distribuicao.map((d) => {
+      return this.distribuicao.map(d => {
         if (d.estado !== "Distribuído" && d.estado !== "Redistribuído")
           return d;
       });
-    },
+    }
   },
 
   created() {
@@ -340,14 +365,14 @@ export default {
         value: "campo",
         class: "title",
         width: "20%",
-        sortable: false,
+        sortable: false
       });
 
       let indexA = this.distribuicao.findIndex(
-        (dist) => dist === this.etapasSelecionadas[0]
+        dist => dist === this.etapasSelecionadas[0]
       );
       let indexB = this.distribuicao.findIndex(
-        (dist) => dist === this.etapasSelecionadas[1]
+        dist => dist === this.etapasSelecionadas[1]
       );
 
       if (indexA > indexB) {
@@ -361,14 +386,14 @@ export default {
             value: "colunaA",
             class: "title",
             width: "40%",
-            sortable: false,
+            sortable: false
           },
           {
             text: this.etapasSelecionadas[0],
             value: "colunaB",
             class: "title",
             width: "40%",
-            sortable: false,
+            sortable: false
           }
         );
       } else {
@@ -378,29 +403,35 @@ export default {
             value: "colunaA",
             class: "title",
             width: "40%",
-            sortable: false,
+            sortable: false
           },
           {
             text: this.etapasSelecionadas[1],
             value: "colunaB",
             class: "title",
             width: "40%",
-            sortable: false,
+            sortable: false
           }
         );
       }
 
       let campos = [];
 
-      Object.keys(this.historico[indexA]).forEach((item) => {
-        if (item !== "estado" && item !== "id") campos.push(item);
-      });
+      if (this.tipoPedido === "Classe_N1" || this.tipoPedido === "Classe_N2") {
+        Object.keys(this.historico[indexA]).forEach(item => {
+          if (this.classesAllowedInfo.includes(item)) campos.push(item);
+        });
+      } else {
+        Object.keys(this.historico[indexA]).forEach(item => {
+          if (item !== "estado" && item !== "id") campos.push(item);
+        });
+      }
 
-      campos.forEach((campo) => {
+      campos.forEach(campo => {
         this.dadosTabela.push({
           campo: mapKeys(campo),
           colunaA: this.historico[indexA][campo],
-          colunaB: this.historico[indexB][campo],
+          colunaB: this.historico[indexB][campo]
         });
       });
 
@@ -411,7 +442,7 @@ export default {
       this.voltar();
 
       this.$emit("fecharDialog");
-    },
-  },
+    }
+  }
 };
 </script>

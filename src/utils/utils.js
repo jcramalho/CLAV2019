@@ -269,7 +269,15 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
       siglaOuCodigo = "codigo";
       designacaoOuTitulo = "titulo";
     }
+    if (listaAnterior[0].nota !== undefined) {
+      siglaOuCodigo = "nota";
+      designacaoOuTitulo = null;
+    }
   } else if (listaAtual[0] !== undefined) {
+    if (listaAtual[0].nota !== undefined) {
+      siglaOuCodigo = "nota";
+      designacaoOuTitulo = null;
+    }
     if (listaAtual[0].sigla === undefined) {
       siglaOuCodigo = "codigo";
       designacaoOuTitulo = "titulo";
@@ -284,7 +292,11 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
         itemAtual => itemAtual[siglaOuCodigo] === itemAnterior[siglaOuCodigo]
       )
     )
-      notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
+      if (designacaoOuTitulo === null) {
+        notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]};`;
+      } else {
+        notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
+      }
   });
 
   if (notaComRemovidos === "\nItens removidos:") return null;
