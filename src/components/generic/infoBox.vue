@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" :width="widthDialog">
     <template v-slot:activator="{ on }">
-      <v-icon v-on="on" small :color="helpColor ? helpColor : 'secondary'">
+      <v-icon v-on="on" small :color="helpColor ? helpColor : 'info'">
         info_outline
       </v-icon>
     </template>

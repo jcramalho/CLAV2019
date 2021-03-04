@@ -9,11 +9,7 @@
   >
     <template v-slot:header="props">
       <tr>
-        <th
-          v-for="h in props.headers"
-          :key="h.value"
-          class="body-2 font-weight-bold"
-        >
+        <th v-for="h in props.headers" :key="h.value" class="body-2 font-weight-bold">
           {{ h.text }}
         </th>
       </tr>
@@ -21,7 +17,7 @@
     <template v-slot:item="props">
       <tr
         :style="{
-          backgroundColor: novaLista[props.item.classe].backgroundColor
+          backgroundColor: novaLista[props.item.classe].backgroundColor,
         }"
       >
         <td>
@@ -39,9 +35,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-btn small color="primary" v-on="on" @click="compKey += 1">
-                <v-icon>
-                  edit
-                </v-icon>
+                <v-icon> edit </v-icon>
               </v-btn>
             </template>
             <v-card>
@@ -53,21 +47,28 @@
               </v-card-title>
               <v-divider></v-divider>
 
-              <v-card-text style="height: 500px;">
-                <NotasAp
-                  :lista="novaLista[props.item.classe]"
-                  :compKeyNA="compKey"
-                />
+              <v-card-text style="height: 500px">
+                <Campo
+                  nome="Notas de Aplicação"
+                  infoHeader="Notas de Aplicação"
+                  :infoBody="myhelp.Classe.Campos.NotasAp"
+                  color="neutralpurple"
+                >
+                  <template v-slot:conteudo>
+                    <ul>
+                      <li v-for="n in novaLista[props.item.classe]" :key="n.idNota">
+                        {{ n.nota }}
+                      </li>
+                    </ul>
+                  </template>
+                </Campo>
                 <hr />
                 <ExemplosNotasAp
                   :lista="novaLista[props.item.classe]"
                   :compKeyENA="compKey"
                 />
                 <hr />
-                <NotasEx
-                  :lista="novaLista[props.item.classe]"
-                  :compKeyNE="compKey"
-                />
+                <NotasEx :lista="novaLista[props.item.classe]" :compKeyNE="compKey" />
                 <hr />
                 <TermosIndice
                   :lista="novaLista[props.item.classe]"
@@ -86,18 +87,10 @@
                 >
                   Guardar
                 </v-btn>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="eliminarParteDescritiva = true"
-                >
+                <v-btn color="blue darken-1" text @click="eliminarParteDescritiva = true">
                   Cancelar
                 </v-btn>
-                <v-dialog
-                  v-model="eliminarParteDescritiva"
-                  persistent
-                  width="660"
-                >
+                <v-dialog v-model="eliminarParteDescritiva" persistent width="660">
                   <v-card>
                     <v-card-title class="title"
                       >Eliminar alterações da parte descritiva do processo
@@ -105,17 +98,13 @@
                     >
                     <v-card-text>
                       <p>
-                        Esta ação reverte a parte descritiva deste processo para
-                        as suas descrições iniciais
+                        Esta ação reverte a parte descritiva deste processo para as suas
+                        descrições iniciais
                       </p>
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn
-                        color="red"
-                        text
-                        @click="eliminarParteDescritiva = false"
-                      >
+                      <v-btn color="red" text @click="eliminarParteDescritiva = false">
                         Cancelar
                       </v-btn>
                       <v-btn
@@ -149,7 +138,6 @@
 </template>
 
 <script>
-import NotasAp from "@/components/tabSel/parteDescritiva/NotasAp.vue";
 import ExemplosNotasAp from "@/components/tabSel/parteDescritiva/ExemplosNotasAp.vue";
 import NotasEx from "@/components/tabSel/parteDescritiva/NotasEx.vue";
 import TermosIndice from "@/components/tabSel/parteDescritiva/TermosIndice.vue";
@@ -157,33 +145,32 @@ import TermosIndice from "@/components/tabSel/parteDescritiva/TermosIndice.vue";
 export default {
   props: ["lista", "it"],
   components: {
-    NotasAp,
     ExemplosNotasAp,
     NotasEx,
-    TermosIndice
+    TermosIndice,
   },
   data: () => ({
     headers: [
       {
         text: "Classe",
         value: "classe",
-        width: "10%"
+        width: "10%",
       },
       {
         text: "Designação",
         value: "designacao",
-        width: "65%"
+        width: "65%",
       },
       {
         text: "Parte Descritiva",
         value: "parteDescritiva",
-        width: "25%"
-      }
+        width: "25%",
+      },
     ],
     procsFooterProps: {
       "items-per-page-text": "Processos por página",
       "items-per-page-options": [10, 20, 100, -1],
-      "items-per-page-all-text": "Todos"
+      "items-per-page-all-text": "Todos",
     },
     novaLista: [],
     novaListaReady: false,
@@ -194,22 +181,20 @@ export default {
     componentKey: 0,
     eliminarParteDescritiva: false,
     info: {},
-    compKey: 0
+    compKey: 0,
   }),
   methods: {
-    guardar: async function(classe) {
+    guardar: async function (classe) {
       // Slice para copiar o array
       this.notasAp[classe] = this.novaLista[classe].notasAp.slice(0);
-      this.exemplosNotasAp[classe] = this.novaLista[
-        classe
-      ].exemplosNotasAp.slice(0);
+      this.exemplosNotasAp[classe] = this.novaLista[classe].exemplosNotasAp.slice(0);
       this.notasEx[classe] = this.novaLista[classe].notasEx.slice(0);
       this.termosInd[classe] = this.novaLista[classe].termosInd.slice(0);
       this.novaLista[classe].backgroundColor = "#E8EAF6";
       this.$emit("listaTotalSelUpdate", this.novaLista);
       this.componentKey += 1;
     },
-    cancelar: async function(classe) {
+    cancelar: async function (classe) {
       var res = await this.$request("get", "/classes?nivel=3&info=completa");
 
       for (var j = 0; j < res.data.length; j++) {
@@ -218,37 +203,29 @@ export default {
           for (var ap = 0; ap < this.novaLista[classe].notasAp.length; ap++) {
             this.novaLista[classe].notasAp[ap].backgroundColor = "transparent";
           }
-          this.novaLista[classe].exemplosNotasAp = res.data[
-            j
-          ].exemplosNotasAp.slice(0);
+          this.novaLista[classe].exemplosNotasAp = res.data[j].exemplosNotasAp.slice(0);
           for (
             var exAp = 0;
             exAp < this.novaLista[classe].exemplosNotasAp.length;
             exAp++
           ) {
-            this.novaLista[classe].exemplosNotasAp[exAp].backgroundColor =
-              "transparent";
+            this.novaLista[classe].exemplosNotasAp[exAp].backgroundColor = "transparent";
           }
           this.novaLista[classe].notasEx = res.data[j].notasEx.slice(0);
           for (var ex = 0; ex < this.novaLista[classe].notasEx.length; ex++) {
             this.novaLista[classe].notasEx[ex].backgroundColor = "transparent";
           }
           this.novaLista[classe].termosInd = res.data[j].termosInd.slice(0);
-          for (
-            var ter = 0;
-            ter < this.novaLista[classe].termosInd.length;
-            ter++
-          ) {
-            this.novaLista[classe].termosInd[ter].backgroundColor =
-              "transparent";
+          for (var ter = 0; ter < this.novaLista[classe].termosInd.length; ter++) {
+            this.novaLista[classe].termosInd[ter].backgroundColor = "transparent";
           }
           this.compKey += 1;
           break;
         }
       }
-    }
+    },
   },
-  created: async function() {
+  created: async function () {
     try {
       var res = await this.$request("get", "/classes?nivel=3&info=completa");
       this.info = res.data;
@@ -298,9 +275,8 @@ export default {
             exAp < this.novaLista[this.lista[i].classe].exemplosNotasAp.length;
             exAp++
           ) {
-            this.novaLista[this.lista[i].classe].exemplosNotasAp[
-              exAp
-            ].backgroundColor = "transparent";
+            this.novaLista[this.lista[i].classe].exemplosNotasAp[exAp].backgroundColor =
+              "transparent";
           }
         }
         this.exemplosNotasAp[this.lista[i].classe] = this.novaLista[
@@ -325,9 +301,7 @@ export default {
         ].notasEx.slice(0);
 
         if (this.lista[i].termosInd) {
-          this.novaLista[this.lista[i].classe].termosInd = this.lista[
-            i
-          ].termosInd;
+          this.novaLista[this.lista[i].classe].termosInd = this.lista[i].termosInd;
         } else {
           this.novaLista[this.lista[i].classe].termosInd = ti;
           for (
@@ -335,9 +309,8 @@ export default {
             ter < this.novaLista[this.lista[i].classe].termosInd.length;
             ter++
           ) {
-            this.novaLista[this.lista[i].classe].termosInd[
-              ter
-            ].backgroundColor = "transparent";
+            this.novaLista[this.lista[i].classe].termosInd[ter].backgroundColor =
+              "transparent";
           }
         }
         this.termosInd[this.lista[i].classe] = this.novaLista[
@@ -350,7 +323,7 @@ export default {
     } catch (err) {
       return err;
     }
-  }
+  },
 };
 </script>
 
