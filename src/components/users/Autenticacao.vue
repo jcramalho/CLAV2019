@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <v-tabs-items v-model="active_tab" style="min-height: 376px">
-      <v-tab-item v-for="item in tab_items" :key="item.id">
+      <v-tab-item v-for="item in tab_items" :key="item.id" class="pa-2">
         <p class="clav-content-title-1">
           {{ item.tab }}
         </p>

@@ -14,15 +14,10 @@
     </v-col>
     <v-col xs="10" sm="10">
       <div class="info-content">
-        <v-data-table
-          :headers="headers"
-          :items="myParticipantes"
-          class="elevation-1"
-          hide-default-footer
-        >
+        <v-data-table :headers="headers" :items="myParticipantes" hide-default-footer>
           <template v-slot:item="props">
             <tr>
-              <td style="color: #1A237E;">{{ props.item.label }}</td>
+              <td>{{ props.item.label }}</td>
               <td>
                 <ul>
                   <li v-for="p in props.item.participantes" :key="p.label">
@@ -47,22 +42,14 @@
     </v-col>
   </v-row>
   <div v-else>
-    <v-data-table
-      :headers="headers"
-      :items="myParticipantes"
-      class="elevation-1"
-      hide-default-footer
-    >
+    <v-data-table :headers="headers" :items="myParticipantes" hide-default-footer>
       <template v-slot:item="props">
         <tr>
-          <td style="color: #1A237E;">{{ props.item.label }}</td>
+          <td style="color: #1a237e">{{ props.item.label }}</td>
           <td>
             <ul>
               <li v-for="p in props.item.participantes" :key="p.label">
-                <a
-                  v-if="p.idTipo == 'Entidade'"
-                  :href="'/entidades/' + p.idParticipante"
-                >
+                <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idParticipante">
                   {{ p.sigla }}
                   ({{ p.idTipo }}) - {{ p.designacao }}
                 </a>
@@ -87,7 +74,7 @@ export default {
   props: ["entidades", "valida"],
   components: { InfoBox },
 
-  data: function() {
+  data: function () {
     return {
       headers: [
         {
@@ -95,13 +82,13 @@ export default {
           align: "left",
           sortable: false,
           value: "label",
-          class: ["table-header", "body-2", "font-weight-bold"]
+          class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
           text: "Participantes",
           value: "participantes",
-          class: ["table-header", "body-2", "font-weight-bold"]
-        }
+          class: ["table-header", "body-2", "font-weight-bold"],
+        },
       ],
       participPorTipo: {
         Apreciador: [],
@@ -109,20 +96,20 @@ export default {
         Comunicador: [],
         Decisor: [],
         Executor: [],
-        Iniciador: []
+        Iniciador: [],
       },
       myParticipantes: [],
-      myhelp: help
+      myhelp: help,
     };
   },
 
   methods: {
-    go: function(idClasse) {
+    go: function (idClasse) {
       this.$router.push("/entidades/" + idClasse);
       this.$router.go();
     },
 
-    normaliza: function(tipo) {
+    normaliza: function (tipo) {
       var res = "";
       switch (tipo) {
         case "Assessor":
@@ -147,10 +134,10 @@ export default {
           res = "Desconhecido";
       }
       return res;
-    }
+    },
   },
 
-  mounted: function() {
+  mounted: function () {
     var tipo;
     for (var i = 0; i < this.entidades.length; i++) {
       tipo = this.entidades[i].participLabel;
@@ -161,11 +148,11 @@ export default {
       if (this.participPorTipo[tipo].length > 0) {
         this.myParticipantes.push({
           label: this.normaliza(tipo),
-          participantes: this.participPorTipo[tipo]
+          participantes: this.participPorTipo[tipo],
         });
       }
     }
-  }
+  },
 };
 </script>
 
