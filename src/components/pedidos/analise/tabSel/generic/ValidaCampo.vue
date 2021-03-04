@@ -263,6 +263,7 @@
                     right
                     dot
                     inline
+                    color="error"
                   ></v-badge>
                   <v-icon v-else class="mr-1" color="green">check</v-icon>
                 </li>
