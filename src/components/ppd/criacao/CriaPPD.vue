@@ -480,7 +480,6 @@ export default {
         return error;
       }
     },
-    
 
     apagar: function() {
       this.$refs.form.reset();
@@ -668,6 +667,7 @@ export default {
         this.$refs.form.reset();//   ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.panels = [];
         this.addSI = false;
+        this.ppd.si.avaliacao.sistemasRelacionados = []
         await this.loadConsultaPGD();
       } else {
         this.dialog= true;
