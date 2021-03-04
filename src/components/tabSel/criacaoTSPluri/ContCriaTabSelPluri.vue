@@ -6,7 +6,7 @@
           >Nova Tabela de Seleção Pluriorganizacional</v-toolbar-title
         >
       </v-app-bar>
-      <v-stepper v-model="stepNo" vertical style="background-color:#fafafa">
+      <v-stepper v-model="stepNo" vertical style="background-color: #fafafa">
         <v-stepper-step color="amber accent-3" :complete="stepNo > 1" step="1"
           ><font size="4"><b> Entidades abrangidas pela TS</b></font>
           <span v-if="stepNo > 1">
@@ -43,7 +43,7 @@
               <v-text-field
                 placeholder="Designação da Nova Tabela de Seleção"
                 v-model="tabelaSelecao.designacao"
-                :rules="[v => !!v || 'A designação não pode ser vazia']"
+                :rules="[(v) => !!v || 'A designação não pode ser vazia']"
               ></v-text-field>
             </v-form>
             <v-btn
@@ -179,7 +179,7 @@ export default {
     DialogValidacaoOK,
     DialogValidacaoErros,
     DialogSair,
-    ConfirmacaoOperacao
+    ConfirmacaoOperacao,
   },
   data() {
     return {
@@ -187,13 +187,13 @@ export default {
       tabelaSelecao: {
         designacao: "",
         entidades: [],
-        listaProcessos: {}
+        listaProcessos: {},
       },
 
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
-        dados: null
+        dados: null,
       },
 
       // Fecho Transitivo dos processos
@@ -231,11 +231,11 @@ export default {
       // Dialog de confirmação de abandonar a operação
       sairOperacao: false,
       // Dialog de confirmação finalização de TS
-      finalizaUltPasso: false
+      finalizaUltPasso: false,
     };
   },
 
-  created: async function() {
+  created: async function () {
     this.pendente = this.obj;
     this.tabelaSelecao = this.obj.objeto;
     try {
@@ -247,7 +247,7 @@ export default {
       var index;
       for (let i = 0; i < this.tabelaSelecao.listaProcessos.procs.length; i++) {
         index = this.listaProcessos.procs.findIndex(
-          p => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
+          (p) => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
         );
         if (index != -1) {
           this.listaProcessos.procs[
@@ -256,7 +256,7 @@ export default {
 
           if (
             this.tabelaSelecao.listaProcessos.procs[i].entidades.filter(
-              e => e.dono || e.participante != "NP"
+              (e) => e.dono || e.participante != "NP"
             ).length > 0
           )
             this.acrescentaFecho(this.listaProcessos.procs[index]);
@@ -274,29 +274,29 @@ export default {
   },
 
   methods: {
-    debug: function(data) {
+    debug: function (data) {
       alert(JSON.stringify(data));
     },
 
-    validaTSnome: function() {
+    validaTSnome: function () {
       if (this.$refs.nomeTS.validate()) {
         this.stepNo = 3;
       }
     },
 
     // Faz a pré-seleção do fecho transitivo dos processos já selecionados
-    acrescentaFecho: function(processo) {
+    acrescentaFecho: function (processo) {
       var fecho = this.fechoTransitivo[processo.codigo];
       !fecho.includes(processo.codigo) ? fecho.push(processo.codigo) : "";
       for (let i = 0; i < fecho.length; i++) {
         var index = this.listaProcessos.procs.findIndex(
-          p => p.codigo == fecho[i]
+          (p) => p.codigo == fecho[i]
         );
 
         if (
           index != -1 &&
           this.listaProcessos.procs[index].entidades.every(
-            e => !e.dono && e.participante == "NP"
+            (e) => !e.dono && e.participante == "NP"
           ) &&
           !this.listaProcessos.procs[index].descriptionEdited
         ) {
@@ -310,7 +310,7 @@ export default {
       }
     },
 
-    loadFechoTransitivo: async function() {
+    loadFechoTransitivo: async function () {
       try {
         var response = await this.$request("get", "/travessiaV2");
         this.fechoTransitivo = response.data;
@@ -320,7 +320,7 @@ export default {
     },
 
     // Carregamento dos processos
-    loadProcessos: async function() {
+    loadProcessos: async function () {
       try {
         if (!this.listaProcessosReady) {
           this.listaProcessos.numProcessosSelecionados = 0;
@@ -349,7 +349,7 @@ export default {
     },
 
     // Quando se termina a seleção das entidades
-    entidadesSelecionadas: async function() {
+    entidadesSelecionadas: async function () {
       try {
         for (let i = 0; i < this.listaProcessos.procs.length; i++) {
           for (let j = 0; j < this.tabelaSelecao.entidades.length; j++) {
@@ -359,7 +359,7 @@ export default {
               id: this.tabelaSelecao.entidades[j].id,
               label: this.tabelaSelecao.entidades[j].label,
               dono: false,
-              participante: "NP"
+              participante: "NP",
             });
           }
         }
@@ -368,7 +368,7 @@ export default {
       }
     },
 
-    loadProcessosEspecificos: async function(entidades) {
+    loadProcessosEspecificos: async function (entidades) {
       try {
         var url = "/classes?nivel=3&tipo=especifico&ents=";
         for (var i = 0; i < entidades.length - 1; i++) {
@@ -401,7 +401,7 @@ export default {
     },
 
     // Guarda a estrutura criada até ao momento nos Pendentes
-    guardarTrabalho: async function() {
+    guardarTrabalho: async function () {
       try {
         var userBD = this.$verifyTokenUser();
         // Guardam-se apenas os processos que foram alterados
@@ -411,7 +411,7 @@ export default {
           JSON.stringify(this.listaProcessos)
         );
         this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.edited || p.descriptionEdited
+          (p) => p.edited || p.descriptionEdited
         );
 
         var pendenteParams = {
@@ -420,7 +420,7 @@ export default {
           objeto: this.tabelaSelecao,
           criadoPor: userBD.email,
           user: { email: userBD.email },
-          token: this.$store.state.token
+          token: this.$store.state.token,
         };
 
         // É preciso testar se há um Pendente criado para não criar um novo
@@ -449,15 +449,15 @@ export default {
     },
 
     //Verifica a TS antes de submeter
-    verificaTS: async function() {
-      var procs = this.listaProcessos.procs.filter(p => p.edited);
+    verificaTS: async function () {
+      var procs = this.listaProcessos.procs.filter((p) => p.edited);
       if (
         procs
-          .map(p => p.codigo)
+          .map((p) => p.codigo)
           .sort()
           .join(",") !==
           this.listaProcessos.procsAselecionar
-            .map(p => p.codigo)
+            .map((p) => p.codigo)
             .sort()
             .join(",") &&
         this.listaProcessos.numProcessosPreSelecionados -
@@ -470,13 +470,13 @@ export default {
             "Existem " +
             (this.listaProcessos.numProcessosPreSelecionados -
               this.listaProcessos.processosPreSelecionados) +
-            " processos por selecionar, deseja mesmo continuar com a submissão do pedido?"
+            " processos por selecionar, deseja mesmo continuar com a submissão do pedido?",
         };
       } else await this.submeterTS();
     },
 
     // Lança o pedido de submissão de uma TS
-    submeterTS: async function() {
+    submeterTS: async function () {
       // É preciso testar se há um Pendente criado para o apagar
       if (this.pendente._id) {
         try {
@@ -494,12 +494,12 @@ export default {
         // Guardam-se apenas os processos que foram alterados
         this.tabelaSelecao.listaProcessos = this.listaProcessos;
         this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.edited
+          (p) => p.edited
         );
-        this.tabelaSelecao.listaProcessos.procs.map(p =>
+        this.tabelaSelecao.listaProcessos.procs.map((p) =>
           this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
             this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
-              c => c.codigo === p.codigo
+              (c) => c.codigo === p.codigo
             ),
             1
           )
@@ -513,7 +513,7 @@ export default {
           user: { email: userBD.email },
           entidade: userBD.entidade,
           token: this.$store.state.token,
-          historico: await this.criaHistoricoTS(userBD)
+          historico: await this.criaHistoricoTS(userBD),
         };
 
         var response = await this.$request("post", "/pedidos", pedidoParams);
@@ -523,11 +523,11 @@ export default {
       }
     },
 
-    sair: async function() {
+    sair: async function () {
       this.$router.push("/");
     },
 
-    abortar: async function() {
+    abortar: async function () {
       try {
         if (this.pendente._id) {
           var response = await this.$request(
@@ -540,103 +540,106 @@ export default {
         console.log("Erro ao eliminar o pendente: " + e);
       }
     },
-    criaHistoricoTS: async function(userBD) {
+    criaHistoricoTS: async function (userBD) {
       let historico = [
         {
           data: {
             cor: "verde",
             dados: new Date(),
-            nota: null
+            nota: null,
           },
           entProd: {
             cor: "verde",
             dados: userBD.entidade.split("_")[1] + "(" + userBD.email + ")",
-            nota: null
+            nota: null,
           },
           ts: {
             designacao: {
               cor: "verde",
               dados: this.tabelaSelecao.designacao,
-              nota: null
+              nota: null,
             },
             entidades: {
               cor: "verde",
-              dados: this.tabelaSelecao.entidades.map(e => {
+              dados: this.tabelaSelecao.entidades.map((e) => {
                 return JSON.parse(JSON.stringify(e));
               }),
-              nota: null
+              nota: null,
             },
             classes: {
               cor: "verde",
-              dados: this.tabelaSelecao.listaProcessos.procs.map(c => {
+              dados: this.tabelaSelecao.listaProcessos.procs.map((c) => {
                 return {
                   cor: "verde",
                   dados: JSON.parse(JSON.stringify(c)),
-                  nota: null
+                  nota: null,
                 };
               }),
-              nota: null
-            }
-          }
-        }
+              nota: null,
+            },
+          },
+        },
       ];
       // Cria histórico para cada processo
       for (let i = 0; i < historico[0].ts.classes.dados.length; i++) {
-        Object.keys(historico[0].ts.classes.dados[i].dados).map(p => {
+        Object.keys(historico[0].ts.classes.dados[i].dados).map((p) => {
           historico[0].ts.classes.dados[i].dados[p] = {
             cor: "verde",
             dados: historico[0].ts.classes.dados[i].dados[p],
-            nota: null
+            nota: null,
           };
           if (p === "pca" || p === "df") {
             Object.keys(historico[0].ts.classes.dados[i].dados[p].dados).map(
-              d => {
+              (d) => {
                 historico[0].ts.classes.dados[i].dados[p].dados[d] = {
                   cor: "verde",
                   dados: historico[0].ts.classes.dados[i].dados[p].dados[d],
-                  nota: null
+                  nota: null,
                 };
               }
             );
           }
         });
       }
-      var procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
+      var procs = this.tabelaSelecao.listaProcessos.procs.filter(
+        (p) => p.edited
+      );
 
-      procs.map(p =>
+      procs.map((p) =>
         this.listaProcessos.procsAselecionar.splice(
           this.listaProcessos.procsAselecionar.findIndex(
-            c => c.codigo === p.codigo
+            (c) => c.codigo === p.codigo
           ),
           1
         )
       );
 
-      if (this.listaProcessos.procsAselecionar.length > 0){
-
+      if (this.listaProcessos.procsAselecionar.length > 0) {
         historico[0].ts["procsAselecionar"] = {
           cor: "vermelho",
-        dados: this.listaProcessos.procsAselecionar,
-        nota: null
-      };
-        }
+          dados: this.listaProcessos.procsAselecionar,
+          nota: null,
+        };
+      }
 
       return historico;
     },
 
     // Funções de validação --------------------------------------
     // Validação da TS
-    validarTS: async function() {
+    validarTS: async function () {
       //Valida se os processos a selecionar estão todos selecionados
-      var procs = this.tabelaSelecao.listaProcessos.procs.filter(p => p.edited);
+      var procs = this.tabelaSelecao.listaProcessos.procs.filter(
+        (p) => p.edited
+      );
 
       if (
         procs
-          .map(p => p.codigo)
+          .map((p) => p.codigo)
           .sort()
           .join(",") !==
           this.listaProcessos.procsAselecionar
-            .map(p => p.codigo)
+            .map((p) => p.codigo)
             .sort()
             .join(",") &&
         this.listaProcessos.numProcessosPreSelecionados -
@@ -645,15 +648,15 @@ export default {
       ) {
         this.mensagensErro.push({
           sobre: "Escolha de processos",
-          mensagem: `Ainda tem ${this.listaProcessos
-            .numProcessosPreSelecionados -
-            this.listaProcessos
-              .processosPreSelecionados} processos por selecionar`
+          mensagem: `Ainda tem ${
+            this.listaProcessos.numProcessosPreSelecionados -
+            this.listaProcessos.processosPreSelecionados
+          } processos por selecionar`,
         });
         this.numeroErros++;
       }
       var processosSelecionados = this.listaProcessos.procs.filter(
-        p => p.edited
+        (p) => p.edited
       );
       // Criação das estruturas auxiliares para a validação
       for (let i = 0; i < processosSelecionados.length; i++) {
@@ -674,7 +677,7 @@ export default {
       this.validacaoTerminada = true;
     },
 
-    fechoValidacao: function() {
+    fechoValidacao: function () {
       this.numeroErros = 0;
       this.mensagensErro = [];
       this.notasApSet = [];
@@ -683,7 +686,7 @@ export default {
       this.validacaoTerminada = false;
     },
 
-    validaBlocoDescritivo: async function(p) {
+    validaBlocoDescritivo: async function (p) {
       this.validaDescricao(p);
       this.validaNotasAp(p);
       this.validaExemplosNotasAp(p);
@@ -691,21 +694,21 @@ export default {
       this.validaTIs(p);
     },
 
-    validaDescricao: function(p) {
+    validaDescricao: function (p) {
       // Descrição
       if (p.descricao == "") {
         this.mensagensErro.push({
           sobre: "Descrição",
-          mensagem: "A descrição não pode ser vazia."
+          mensagem: "A descrição não pode ser vazia.",
         });
         this.numeroErros++;
       }
     },
 
-    validaNotasAp: async function(p) {
+    validaNotasAp: async function (p) {
       var filtradas;
       for (let i = 0; i < p.notasAp.length; i++) {
-        filtradas = this.notasApSet.filter(n => n.nota == p.notasAp[i].nota);
+        filtradas = this.notasApSet.filter((n) => n.nota == p.notasAp[i].nota);
 
         if (filtradas.length > 1) {
           this.mensagensErro.push({
@@ -713,7 +716,7 @@ export default {
             mensagem:
               "[" +
               p.notasAp[i].nota +
-              "] já existente noutro processo selecionado."
+              "] já existente noutro processo selecionado.",
           });
           this.numeroErros++;
         }
@@ -721,16 +724,16 @@ export default {
       if (this.notaDuplicada(p.notasAp)) {
         this.mensagensErro.push({
           sobre: "Nota de Aplicação(" + (i + 1) + ")",
-          mensagem: "A última nota encontra-se duplicada."
+          mensagem: "A última nota encontra-se duplicada.",
         });
         this.numeroErros++;
       }
     },
 
-    notaDuplicada: function(notas) {
+    notaDuplicada: function (notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
-        var duplicados = notas.filter(n => n.nota == lastNota);
+        var duplicados = notas.filter((n) => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -739,10 +742,10 @@ export default {
       }
     },
 
-    exemploDuplicado: function(exemplos) {
+    exemploDuplicado: function (exemplos) {
       if (exemplos.length > 1) {
         var lastExemplo = exemplos[exemplos.length - 1].exemplo;
-        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
+        var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -751,10 +754,10 @@ export default {
       }
     },
 
-    tiDuplicado: function(termos) {
+    tiDuplicado: function (termos) {
       if (termos.length > 1) {
         var lastTermo = termos[termos.length - 1].termo;
-        var duplicados = termos.filter(t => t.termo == lastTermo);
+        var duplicados = termos.filter((t) => t.termo == lastTermo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -763,11 +766,11 @@ export default {
       }
     },
 
-    validaExemplosNotasAp: async function(p) {
+    validaExemplosNotasAp: async function (p) {
       var filtrados;
       for (let i = 0; i < p.exemplosNotasAp.length; i++) {
         filtrados = this.exemplosNotasApSet.filter(
-          e => e.exemplo == p.exemplosNotasAp[i].exemplo
+          (e) => e.exemplo == p.exemplosNotasAp[i].exemplo
         );
         if (filtrados.length > 1) {
           this.mensagensErro.push({
@@ -775,7 +778,7 @@ export default {
             mensagem:
               "[" +
               p.exemplosNotasAp[i].exemplo +
-              "] noutro processo selecionado."
+              "] noutro processo selecionado.",
           });
           this.numeroErros++;
         }
@@ -783,35 +786,35 @@ export default {
       if (this.exemploDuplicado(p.exemplosNotasAp)) {
         this.mensagensErro.push({
           sobre: "Exemplo de nota de Aplicação(" + (i + 1) + ")",
-          mensagem: "O último exemplo encontra-se duplicado."
+          mensagem: "O último exemplo encontra-se duplicado.",
         });
         this.numeroErros++;
       }
     },
 
-    validaNotasEx: async function(p) {
+    validaNotasEx: async function (p) {
       // Notas de Exclusão
       if (this.notaDuplicada(p.notasEx)) {
         this.mensagensErro.push({
           sobre: "Nota de Exclusão(" + p.notasEx.length + ")",
-          mensagem: "A última nota encontra-se duplicada."
+          mensagem: "A última nota encontra-se duplicada.",
         });
         this.numeroErros++;
       }
     },
 
-    validaTIs: async function(p) {
+    validaTIs: async function (p) {
       // Termos de Índice
       var filtrados;
       for (let i = 0; i < p.termosInd.length; i++) {
         filtrados = this.termosIndSet.filter(
-          t => t.termo == p.termosInd[i].termo
+          (t) => t.termo == p.termosInd[i].termo
         );
         if (filtrados.length > 1) {
           this.mensagensErro.push({
             sobre: "Termo de Índice(" + (i + 1) + ")",
             mensagem:
-              "[" + p.termosInd[i].termo + "] noutro processo selecionado."
+              "[" + p.termosInd[i].termo + "] noutro processo selecionado.",
           });
           this.numeroErros++;
         }
@@ -820,12 +823,12 @@ export default {
         this.numeroErros++;
         this.mensagensErro.push({
           sobre: "Termo de Índice(" + (i + 1) + ")",
-          mensagem: "O último ti encontra-se duplicado."
+          mensagem: "O último ti encontra-se duplicado.",
         });
       }
-    }
+    },
     // ----------Fim da validação ----------------------------
-  }
+  },
 };
 </script>
 

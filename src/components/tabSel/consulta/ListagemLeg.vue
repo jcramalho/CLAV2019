@@ -1,5 +1,5 @@
 <template>
-  <div class="clav-info-content">
+  <v-card flat class="clav-info-content">
     <v-tooltip top color="info" open-delay="500">
       <template v-slot:activator="{ on }">
         <v-text-field
@@ -41,7 +41,13 @@
       <template v-slot:[`item.link`]="{ item }">
         <v-tooltip top color="info" open-delay="500">
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" small text rounded @click="$router.push('/ts/' + item.id)">
+            <v-btn
+              v-on="on"
+              small
+              text
+              rounded
+              @click="$router.push('/ts/' + item.id)"
+            >
               <unicon
                 name="look-icon"
                 width="25"
@@ -55,7 +61,9 @@
         </v-tooltip>
       </template>
       <template v-slot:[`item.entidades`]="{ item }">
-        <span v-for="(ent, index) in item.entidades" :key="index">{{ ent }}</span>
+        <span v-for="(ent, index) in item.entidades" :key="index">{{
+          ent
+        }}</span>
       </template>
 
       <template v-slot:pageText="props">
@@ -209,7 +217,7 @@
         {{ props.itemsLength }}
       </template>
     </v-data-table>
-  </div>
+  </v-card>
 </template>
 
 <script>

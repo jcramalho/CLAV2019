@@ -1,17 +1,338 @@
 <template>
-  <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
-    <v-row>
-      <!-- HEADER -->
-      <v-col class="py-0 my-0">
-        <v-btn
-          @click="goBack"
-          rounded
-          class="white--text mb-6"
+  <v-card flat class="pa-3">
+    <!-- HEADER -->
+    <v-row align="center" justify="center">
+      <v-col cols="12" md="3" align="center"> <Voltar /> </v-col>
+      <v-col cols="12" md="6" align="center">
+        <p class="clav-content-title-1">Nova Tabela de Seleção</p>
+      </v-col>
+      <v-col cols="0" md="3"> </v-col>
+    </v-row>
+    <!-- CONTENT -->
+    <v-stepper
+      style="background-color: #f3f7fc"
+      v-model="stepNo"
+      class="mt-n3 pa-4"
+    >
+      <v-stepper-step :complete="stepNo > 1" step="1">
+        <font size="3" class="font-weight-medium">
+          Identificação da entidade ou tipologia da tabela de seleção
+        </font>
+        <span v-if="stepNo > 1 && tipoTS != 'tipologia'" class="mt-1">
+          <div
+            class="rounded-pill pa-2 my-2 mx-4 clav-linear-background white--text"
+          >
+            <unicon
+              name="entidade-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.711 21.105"
+              fill="#ffffff"
+              class="mr-3"
+            />
+            {{
+              tabelaSelecao.idEntidade.split("_")[1] +
+              ": " +
+              tabelaSelecao.designacaoEntidade
+            }}
+          </div>
+        </span>
+        <span v-else-if="stepNo > 1 && tipoTS == 'tipologia'" class="mt-1">
+          <div
+            class="rounded-pill pa-2 my-2 mx-4 my-2 mx-4 clav-linear-background white--text"
+          >
+            <unicon
+              name="tipologia-ent-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.711 22.48"
+              fill="#ffffff"
+              class="mr-3"
+            />
+            {{
+              tabelaSelecao.idTipologia.split("_")[1] +
+              ": " +
+              tabelaSelecao.designacaoTipologia
+            }}
+          </div>
+        </span>
+      </v-stepper-step>
+      <v-stepper-content
+        step="1"
+        class="pt-0"
+        :class="{
+          'mx-8': $vuetify.breakpoint.lgAndUp,
+          'mx-0': $vuetify.breakpoint.mdAndDown,
+        }"
+      >
+        <div v-if="entidadeDGLAB">
+          <v-col>
+            <span class="subtitle-2">Pretende:</span>
+            <v-radio-group v-model="tipoTS" column class="mt-3">
+              <v-radio
+                label="Criar uma Tabela de Seleção para uma entidade"
+                color="primary"
+                value="entidade"
+              ></v-radio>
+              <v-radio
+                label="Criar uma Tabela de Seleção para uma tipologia"
+                color="primary"
+                value="tipologia"
+              ></v-radio>
+            </v-radio-group>
+
+            <div v-if="tipoTS == 'entidade' && entidadesReady">
+              <v-col>
+                <v-form ref="entidade" :lazy-validation="false">
+                  <div class="py-2 pl-6 pr-3" style="min-height: 50px">
+                    <v-tooltip top color="info" open-delay="500">
+                      <template v-slot:activator="{ on }">
+                        <v-autocomplete
+                          :items="entidades"
+                          label="Selecione a entidade"
+                          item-text="label"
+                          return-object
+                          v-model="ent"
+                          v-on="on"
+                          color="blue darken-3"
+                          :rules="[
+                            (v) => !!v || 'Tem de escolher uma entidade!',
+                          ]"
+                          clearable
+                        ></v-autocomplete>
+                      </template>
+
+                      <span> Entidade da Tabela de Seleção</span>
+                    </v-tooltip>
+                  </div>
+                </v-form>
+              </v-col>
+              <v-btn
+                @click="guardaEntidade"
+                rounded
+                class="white--text mt-5 ml-4"
+                :class="{
+                  'px-6': $vuetify.breakpoint.lgAndUp,
+                  'px-2': $vuetify.breakpoint.mdAndDown,
+                }"
+                color="success darken-1"
+              >
+                <unicon
+                  name="continuar-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 37.261"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Continuar</p>
+              </v-btn>
+            </div>
+            <div v-if="tipoTS == 'tipologia' && tipologiasReady">
+              <v-col>
+                <v-form ref="tipologia" :lazy-validation="false">
+                  <div class="py-2 pl-6 pr-3" style="min-height: 50px">
+                    <v-tooltip top color="info" open-delay="500">
+                      <template v-slot:activator="{ on }">
+                        <v-autocomplete
+                          :items="tipologias"
+                          item-text="label"
+                          return-object
+                          label="Selecione a tipologia"
+                          v-model="tipSel"
+                          color="blue darken-3"
+                          clearable
+                          v-on="on"
+                          :rules="[
+                            (v) => !!v || 'Tem de escolher uma tipologia',
+                          ]"
+                        ></v-autocomplete>
+                      </template>
+                      <span v-if="tipSel.label">{{ tipSel.label }}</span>
+                      <span v-else> Tipologia da Tabela de Seleção</span>
+                    </v-tooltip>
+                  </div>
+                </v-form>
+              </v-col>
+              <v-btn
+                @click="guardaTipologia"
+                rounded
+                class="white--text mt-5 ml-4"
+                :class="{
+                  'px-6': $vuetify.breakpoint.lgAndUp,
+                  'px-2': $vuetify.breakpoint.mdAndDown,
+                }"
+                color="success darken-1"
+              >
+                <unicon
+                  name="continuar-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 37.261"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Continuar</p>
+              </v-btn>
+            </div>
+          </v-col>
+        </div>
+        <div v-else>
+          <v-col>
+            <span class="subtitle-2">Pretende:</span>
+            <v-radio-group v-model="tipoTS" column class="mt-3">
+              <v-radio
+                label="Criar uma Tabela de Seleção para a minha organização"
+                color="primary"
+                value="utilizador"
+              ></v-radio>
+              <v-radio
+                label="Criar uma Tabela de Seleção para uma tipologia"
+                color="primary"
+                value="tipologia"
+              ></v-radio>
+            </v-radio-group>
+            <div v-if="tipoTS == 'utilizador'">
+              <v-btn
+                @click="guardaEntidadeUtilizador"
+                rounded
+                class="white--text mt-5"
+                :class="{
+                  'px-6': $vuetify.breakpoint.lgAndUp,
+                  'px-2': $vuetify.breakpoint.mdAndDown,
+                }"
+                color="success darken-1"
+              >
+                <unicon
+                  name="continuar-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 37.261"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Continuar</p>
+              </v-btn>
+            </div>
+            <div v-if="tipoTS == 'tipologia' && tipologiasReady">
+              <v-col>
+                <v-form ref="tipologia" :lazy-validation="false">
+                  <div class="py-2 pl-6 pr-3" style="min-height: 50px">
+                    <v-tooltip top color="info" open-delay="500">
+                      <template v-slot:activator="{ on }">
+                        <v-autocomplete
+                          :items="tipologias"
+                          item-text="label"
+                          label="Selecione a tipologia"
+                          v-model="tipSel"
+                          v-on="on"
+                          :rules="[
+                            (v) => !!v || 'Tem de escolher uma tipologia',
+                          ]"
+                          color="blue darken-3"
+                          clearable
+                          return-object
+                        ></v-autocomplete>
+                      </template>
+
+                      <span> Tipologia da Tabela de Seleção</span>
+                    </v-tooltip>
+                  </div>
+                </v-form>
+              </v-col>
+              <v-btn
+                @click="guardaTipologia"
+                rounded
+                class="white--text mt-5 ml-4"
+                color="success darken-1"
+              >
+                <unicon
+                  name="continuar-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 37.261"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Continuar</p>
+              </v-btn>
+            </div>
+          </v-col>
+        </div>
+      </v-stepper-content>
+      <v-divider></v-divider>
+      <v-stepper-step
+        :complete="stepNo > 2"
+        step="2"
+        :class="{
+          'mt-n12': stepNo > 1,
+        }"
+      >
+        <font
+          size="3"
           :class="{
-            'px-8': $vuetify.breakpoint.lgAndUp,
+            'mt-12': stepNo > 1,
+          }"
+          class="font-weight-medium"
+        >
+          Designação da Tabela de Seleção</font
+        >
+        <span v-if="stepNo > 1" class="mt-1">
+          <div
+            class="rounded-pill pa-2 my-2 mx-4 clav-linear-background white--text"
+          >
+            <unicon
+              class="mr-3"
+              name="ts-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.71 23.668"
+              fill="#ffffff"
+            />
+            {{ tabelaSelecao.designacao }}
+          </div>
+        </span>
+      </v-stepper-step>
+      <v-stepper-content
+        step="2"
+        class="pt-0"
+        :class="{
+          'mx-8': $vuetify.breakpoint.lgAndUp,
+          'mx-0': $vuetify.breakpoint.mdAndDown,
+        }"
+      >
+        <v-col
+          :class="{
+            'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
+          }"
+        >
+          <v-form ref="nomeTS" :lazy-validation="false" class="px-4">
+            <span class="subtitle-2 pb-3"
+              >Insira a designação para a tabela:</span
+            >
+            <div class="py-2 pl-6 pr-3 mt-2" style="min-height: 50px">
+              <v-tooltip top color="info" open-delay="1000">
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-on="on"
+                    class="mt-n3"
+                    :rules="[(v) => !!v || 'A designação não pode ser vazia']"
+                    :placeholder="tabelaSelecao.designacao"
+                    v-model="tabelaSelecao.designacao"
+                    color="blue darken-3"
+                    clearable
+                  ></v-text-field>
+                </template>
+                <span> Designação para a Tabela de Seleção</span>
+              </v-tooltip>
+            </div>
+          </v-form>
+        </v-col>
+        <v-btn
+          @click="stepNo = 1"
+          rounded
+          class="white--text mt-5 ml-8"
+          :class="{
+            'px-6': $vuetify.breakpoint.lgAndUp,
             'px-2': $vuetify.breakpoint.mdAndDown,
           }"
-          id="default-button"
+          style="background-color: rgb(153, 17, 17)"
         >
           <unicon
             name="arrow-back-icon"
@@ -20,689 +341,231 @@
             viewBox="0 0 20.71 37.261"
             fill="#ffffff"
           />
-          <p class="ml-2">Voltar</p>
+          <p class="ml-2">Retroceder</p>
         </v-btn>
-        <v-card flat style="border-radius: 10px !important">
-          <p
-            class="content-title-1 pt-5"
-            style="
-              color: #4da0d0 !important;
-              text-align: center;
-              padding-bottom: 0.7rem !important;
-            "
-          >
-            Nova Tabela de Seleção
-          </p>
-          <!-- CONTENT -->
-          <v-card-text class="mt-0">
-            <v-stepper
-              v-model="stepNo"
-              id="stepper-card"
-              :class="{
-                'mx-8': $vuetify.breakpoint.lgAndUp,
-                'mx-0': $vuetify.breakpoint.mdAndDown,
-              }"
-              class="mt-n3 pa-4"
-            >
-              <v-stepper-step
-                :complete="stepNo > 1"
-                step="1"
-                :class="{
-                  'mt-n12': stepNo > 1,
-                }"
-              >
-                <font
-                  size="3"
-                  :class="{
-                    'mt-12': stepNo > 1,
-                  }"
-                  class="font-weight-medium"
-                >
-                  Identificação da entidade ou tipologia da tabela de seleção
-                </font>
-                <span v-if="stepNo > 1 && tipoTS != 'tipologia'" class="mt-1">
-                  <v-chip
-                    class="my-2 mx-4 clav-linear-background"
-                    text-color="white"
-                  >
-                    <unicon
-                      name="entidade-icon"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20.711 21.105"
-                      fill="#ffffff"
-                      class="mr-3"
-                    />
-                    {{
-                      tabelaSelecao.idEntidade.split("_")[1] +
-                      ": " +
-                      tabelaSelecao.designacaoEntidade
-                    }}
-                  </v-chip>
-                </span>
-                <span
-                  v-else-if="stepNo > 1 && tipoTS == 'tipologia'"
-                  class="mt-1"
-                >
-                  <v-chip
-                    class="my-2 mx-4 clav-linear-background"
-                    text-color="white"
-                  >
-                    <unicon
-                      name="tipologia-ent-icon"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20.711 22.48"
-                      fill="#ffffff"
-                      class="mr-3"
-                    />
-                    {{
-                      tabelaSelecao.idTipologia.split("_")[1] +
-                      ": " +
-                      tabelaSelecao.designacaoTipologia
-                    }}
-                  </v-chip>
-                </span>
-              </v-stepper-step>
-              <v-stepper-content
-                step="1"
-                class="pt-0"
-                :class="{
-                  'mx-8': $vuetify.breakpoint.lgAndUp,
-                  'mx-0': $vuetify.breakpoint.mdAndDown,
-                }"
-              >
-                <div v-if="entidadeDGLAB">
-                  <v-col>
-                    <span class="subtitle-2">Pretende:</span>
-                    <v-radio-group v-model="tipoTS" column class="mt-3">
-                      <v-radio
-                        label="Criar uma Tabela de Seleção para uma entidade"
-                        color="primary"
-                        value="entidade"
-                      ></v-radio>
-                      <v-radio
-                        label="Criar uma Tabela de Seleção para uma tipologia"
-                        color="primary"
-                        value="tipologia"
-                      ></v-radio>
-                    </v-radio-group>
 
-                    <div v-if="tipoTS == 'entidade' && entidadesReady">
-                      <v-col>
-                        <v-form ref="entidade" :lazy-validation="false">
-                          <div
-                            class="info-content py-2 pl-6 pr-3"
-                            style="min-height: 50px"
-                          >
-                            <v-tooltip top color="info" open-delay="500">
-                              <template v-slot:activator="{ on }">
-                                <v-autocomplete
-                                  :items="entidades"
-                                  label="Selecione a entidade"
-                                  item-text="label"
-                                  return-object
-                                  v-model="ent"
-                                  v-on="on"
-                                  color="blue darken-3"
-                                  :rules="[
-                                    (v) =>
-                                      !!v || 'Tem de escolher uma entidade!',
-                                  ]"
-                                  clearable
-                                ></v-autocomplete>
-                              </template>
-
-                              <span> Entidade da Tabela de Seleção</span>
-                            </v-tooltip>
-                          </div>
-                        </v-form>
-                      </v-col>
-                      <v-btn
-                        @click="guardaEntidade"
-                        rounded
-                        class="white--text mt-5 ml-4"
-                        :class="{
-                          'px-6': $vuetify.breakpoint.lgAndUp,
-                          'px-2': $vuetify.breakpoint.mdAndDown,
-                        }"
-                        color="success darken-1"
-                        id="botao-shadow"
-                      >
-                        <unicon
-                          name="continuar-icon"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20.71 37.261"
-                          fill="#ffffff"
-                        />
-                        <p class="ml-2">Continuar</p>
-                      </v-btn>
-                    </div>
-                    <div v-if="tipoTS == 'tipologia' && tipologiasReady">
-                      <v-col>
-                        <v-form ref="tipologia" :lazy-validation="false">
-                          <div
-                            class="info-content py-2 pl-6 pr-3"
-                            style="min-height: 50px"
-                          >
-                            <v-tooltip top color="info" open-delay="500">
-                              <template v-slot:activator="{ on }">
-                                <v-autocomplete
-                                  :items="tipologias"
-                                  item-text="label"
-                                  return-object
-                                  label="Selecione a tipologia"
-                                  v-model="tipSel"
-                                  color="blue darken-3"
-                                  clearable
-                                  v-on="on"
-                                  :rules="[
-                                    (v) =>
-                                      !!v || 'Tem de escolher uma tipologia',
-                                  ]"
-                                ></v-autocomplete>
-                              </template>
-                              <span v-if="tipSel.label">{{
-                                tipSel.label
-                              }}</span>
-                              <span v-else>
-                                Tipologia da Tabela de Seleção</span
-                              >
-                            </v-tooltip>
-                          </div>
-                        </v-form>
-                      </v-col>
-                      <v-btn
-                        @click="guardaTipologia"
-                        rounded
-                        class="white--text mt-5 ml-4"
-                        :class="{
-                          'px-6': $vuetify.breakpoint.lgAndUp,
-                          'px-2': $vuetify.breakpoint.mdAndDown,
-                        }"
-                        color="success darken-1"
-                        id="botao-shadow"
-                      >
-                        <unicon
-                          name="continuar-icon"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20.71 37.261"
-                          fill="#ffffff"
-                        />
-                        <p class="ml-2">Continuar</p>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                </div>
-                <div v-else>
-                  <v-col
-                    :class="{
-                      'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
-                    }"
-                  >
-                    <span class="subtitle-2">Pretende:</span>
-                    <v-radio-group v-model="tipoTS" column class="mt-3">
-                      <v-radio
-                        label="Criar uma Tabela de Seleção para a minha organização"
-                        color="primary"
-                        value="utilizador"
-                      ></v-radio>
-                      <v-radio
-                        label="Criar uma Tabela de Seleção para uma tipologia"
-                        color="primary"
-                        value="tipologia"
-                      ></v-radio>
-                    </v-radio-group>
-                    <div v-if="tipoTS == 'utilizador'">
-                      <v-btn
-                        @click="guardaEntidadeUtilizador"
-                        rounded
-                        class="white--text mt-5"
-                        :class="{
-                          'px-6': $vuetify.breakpoint.lgAndUp,
-                          'px-2': $vuetify.breakpoint.mdAndDown,
-                        }"
-                        color="success darken-1"
-                        id="botao-shadow"
-                      >
-                        <unicon
-                          name="continuar-icon"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20.71 37.261"
-                          fill="#ffffff"
-                        />
-                        <p class="ml-2">Continuar</p>
-                      </v-btn>
-                    </div>
-                    <div v-if="tipoTS == 'tipologia' && tipologiasReady">
-                      <v-col>
-                        <v-form ref="tipologia" :lazy-validation="false">
-                          <div
-                            class="info-content py-2 pl-6 pr-3"
-                            style="min-height: 50px"
-                          >
-                            <v-tooltip top color="info" open-delay="500">
-                              <template v-slot:activator="{ on }">
-                                <v-autocomplete
-                                  :items="tipologias"
-                                  item-text="label"
-                                  label="Selecione a tipologia"
-                                  v-model="tipSel"
-                                  v-on="on"
-                                  :rules="[
-                                    (v) =>
-                                      !!v || 'Tem de escolher uma tipologia',
-                                  ]"
-                                  color="blue darken-3"
-                                  clearable
-                                  return-object
-                                ></v-autocomplete>
-                              </template>
-
-                              <span> Tipologia da Tabela de Seleção</span>
-                            </v-tooltip>
-                          </div>
-                        </v-form>
-                      </v-col>
-                      <v-btn
-                        @click="guardaTipologia"
-                        rounded
-                        class="white--text mt-5 ml-4"
-                        :class="{
-                          'px-6': $vuetify.breakpoint.lgAndUp,
-                          'px-2': $vuetify.breakpoint.mdAndDown,
-                        }"
-                        color="success darken-1"
-                        id="botao-shadow"
-                      >
-                        <unicon
-                          name="continuar-icon"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20.71 37.261"
-                          fill="#ffffff"
-                        />
-                        <p class="ml-2">Continuar</p>
-                      </v-btn>
-                    </div>
-                  </v-col>
-                </div>
-              </v-stepper-content>
-              <v-divider></v-divider>
-              <v-stepper-step
-                :complete="stepNo > 2"
-                step="2"
-                :class="{
-                  'mt-n12': stepNo > 1,
-                }"
-              >
-                <font
-                  size="3"
-                  :class="{
-                    'mt-12': stepNo > 1,
-                  }"
-                  class="font-weight-medium"
-                >
-                  Designação da Tabela de Seleção</font
-                >
-                <span v-if="stepNo > 1" class="mt-1">
-                  <v-chip
-                    class="my-2 mx-4 clav-linear-background"
-                    text-color="white"
-                  >
-                    <unicon
-                      class="mr-3"
-                      name="ts-icon"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20.71 23.668"
-                      fill="#ffffff"
-                    />
-                    {{ tabelaSelecao.designacao }}
-                  </v-chip>
-                </span>
-              </v-stepper-step>
-              <v-stepper-content
-                step="2"
-                class="pt-0"
-                :class="{
-                  'mx-8': $vuetify.breakpoint.lgAndUp,
-                  'mx-0': $vuetify.breakpoint.mdAndDown,
-                }"
-              >
-                <v-col
-                  :class="{
-                    'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
-                  }"
-                >
-                  <v-form ref="nomeTS" :lazy-validation="false" class="px-4">
-                    <span class="subtitle-2 pb-3"
-                      >Insira a designação para a tabela:</span
-                    >
-                    <div
-                      class="info-content py-2 pl-6 pr-3 mt-2"
-                      style="min-height: 50px"
-                    >
-                      <v-tooltip top color="info" open-delay="1000">
-                        <template v-slot:activator="{ on }">
-                          <v-text-field
-                            v-on="on"
-                            class="mt-n3"
-                            :rules="[
-                              (v) => !!v || 'A designação não pode ser vazia',
-                            ]"
-                            :placeholder="tabelaSelecao.designacao"
-                            v-model="tabelaSelecao.designacao"
-                            color="blue darken-3"
-                            clearable
-                          ></v-text-field>
-                        </template>
-                        <span> Designação para a Tabela de Seleção</span>
-                      </v-tooltip>
-                    </div>
-                  </v-form>
-                </v-col>
-                <v-btn
-                  @click="stepNo = 1"
-                  rounded
-                  class="white--text mt-5 ml-8"
-                  :class="{
-                    'px-6': $vuetify.breakpoint.lgAndUp,
-                    'px-2': $vuetify.breakpoint.mdAndDown,
-                  }"
-                  style="background-color: rgb(153, 17, 17)"
-                  id="botao-shadow"
-                >
-                  <unicon
-                    name="arrow-back-icon"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20.71 37.261"
-                    fill="#ffffff"
-                  />
-                  <p class="ml-2">Retroceder</p>
-                </v-btn>
-
-                <v-btn
-                  @click="
-                    loadProcEspecificos();
-                    validaTSnome();
-                  "
-                  rounded
-                  class="white--text mt-5 ml-4"
-                  :class="{
-                    'px-6': $vuetify.breakpoint.lgAndUp,
-                    'px-2': $vuetify.breakpoint.mdAndDown,
-                  }"
-                  color="success darken-1"
-                  id="botao-shadow"
-                >
-                  <unicon
-                    name="continuar-icon"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20.71 37.261"
-                    fill="#ffffff"
-                  />
-                  <p class="ml-2">Continuar</p>
-                </v-btn>
-              </v-stepper-content>
-              <v-divider></v-divider>
-              <v-stepper-step :complete="stepNo > 3" step="3">
-                <font size="3">Seleção dos Processos</font>
-              </v-stepper-step>
-              <v-stepper-content step="3">
-                <v-col
-                  cols="12"
-                  v-if="listaProcessosReady"
-                  :class="{
-                    'px-4': $vuetify.breakpoint.lgAndUp,
-                    'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
-                  }"
-                >
-                  <div
-                    class="info-content"
-                    style="
-                      padding-left: 0 !important;
-                      padding-right: 0 !important;
-                      min-height: 50px;
-                    "
-                  >
-                    <ListaProcessos
-                      v-if="!importadoFlag"
-                      :listaProcs="listaProcessos"
-                      :listaCodigosEsp="listaCodigosEsp"
-                      :participante="participante"
-                      @importar="enviarFicheiro($event)"
-                    />
-                    <ListaProcessosImportados
-                      v-else
-                      :procs="listaProcessos.procs"
-                    />
-                  </div>
-                </v-col>
-                <v-col v-else
-                  >Ainda não foi possível carregar a informação dos
-                  Processos...</v-col
-                >
-                <v-row class="align-center" style="text-align: center">
-                  <!-- Voltar ao passo anterior ............................................-->
-                  <v-col cols="12" md="4" lg="2">
-                    <v-btn
-                      v-if="stepNo > 2"
-                      @click="stepNo--"
-                      rounded
-                      class="white--text"
-                      :class="{
-                        'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown,
-                      }"
-                      style="width: 100%; background-color: rgb(153, 17, 17)"
-                      id="botao-shadow"
-                    >
-                      <unicon
-                        name="arrow-back-icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20.71 37.261"
-                        fill="#ffffff"
-                      />
-                      <p class="ml-2">Retroceder</p>
-                    </v-btn>
-                  </v-col>
-
-                  <!-- Guardar o trabalho para continuar depois ..........................-->
-                  <v-col cols="12" md="4" lg="2">
-                    <v-btn
-                      v-if="stepNo > 2"
-                      @click="guardarTrabalho"
-                      rounded
-                      class="white--text"
-                      :class="{
-                        'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown,
-                      }"
-                      style="width: 100%"
-                      id="default-button"
-                    >
-                      <unicon
-                        name="guardar-icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20.71 20.71"
-                        fill="#ffffff"
-                      />
-                      <DialogPendenteGuardado
-                        v-if="pendenteGuardado"
-                        :pendente="pendente"
-                        @continuar="pendenteGuardado = false"
-                      />
-                      <p class="ml-2">Guardar Trabalho</p>
-                    </v-btn>
-                  </v-col>
-
-                  <!-- Sair da criação da TS sem abortar o processo .........................-->
-                  <v-col cols="12" md="4" lg="2">
-                    <v-btn
-                      v-if="stepNo > 2"
-                      @click="sairOperacao = true"
-                      rounded
-                      class="white--text"
-                      :class="{
-                        'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown,
-                      }"
-                      style="width: 100%"
-                      id="default-button"
-                    >
-                      <unicon
-                        name="relogio-icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20.71 20.71"
-                        fill="#ffffff"
-                      />
-                      <DialogSair
-                        v-if="sairOperacao"
-                        @continuar="sairOperacao = false"
-                        @sair="sair"
-                      />
-                      <p class="ml-2">Continuar Depois</p>
-                    </v-btn>
-                  </v-col>
-
-                  <!-- Validar a TS ........................................................-->
-                  <v-col cols="12" md="4" lg="2">
-                    <v-btn
-                      v-if="stepNo > 2"
-                      @click="validarTS"
-                      rounded
-                      class="white--text"
-                      :class="{
-                        'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown,
-                      }"
-                      style="width: 100%"
-                      id="default-button"
-                    >
-                      <unicon
-                        name="validar-icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20.709 20.696"
-                        fill="#ffffff"
-                      />
-                      <DialogValidacaoOK
-                        v-if="validacaoTerminada && numeroErros == 0"
-                        @continuar="fechoValidacao"
-                      />
-                      <DialogValidacaoErros
-                        v-if="validacaoTerminada && numeroErros > 0"
-                        :erros="mensagensErro"
-                        @continuar="fechoValidacao"
-                      />
-                      <p class="ml-2">Validar</p>
-                    </v-btn>
-                  </v-col>
-
-                  <!-- Submeter e criar o pedido ............................................-->
-                  <v-col cols="12" md="4" lg="2">
-                    <v-btn
-                      v-if="stepNo > 2"
-                      @click="verificaTS"
-                      color="success darken-1"
-                      rounded
-                      class="white--text"
-                      :class="{
-                        'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown,
-                      }"
-                      style="width: 100%"
-                      id="botao-shadow"
-                    >
-                      <unicon
-                        name="adicionar-icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20.71 20.71"
-                        fill="#ffffff"
-                      />
-                      <p class="ml-2">Submeter</p>
-                    </v-btn>
-                  </v-col>
-
-                  <!-- Abortar a criação da TS ..........................................-->
-                  <v-col cols="12" md="4" lg="2">
-                    <v-btn
-                      @click="eliminarTabela = true"
-                      color="red darken-4"
-                      rounded
-                      class="white--text"
-                      :class="{
-                        'px-8': $vuetify.breakpoint.lgAndUp,
-                        'px-2': $vuetify.breakpoint.mdAndDown,
-                      }"
-                      style="width: 100%"
-                      id="botao-shadow"
-                    >
-                      <unicon
-                        name="eliminar-icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20.71 20.71"
-                        fill="#ffffff"
-                      />
-                      <DialogCancelar
-                        v-if="eliminarTabela"
-                        @continuar="eliminarTabela = false"
-                        @sair="abortar"
-                      />
-                      <p class="ml-2">Eliminar</p>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-stepper-content>
-            </v-stepper>
-          </v-card-text>
-          <!-- Dialog de confirmação de operação -->
-          <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
-            <ConfirmacaoOperacao
-              :mensagem="dialogConfirmacao.mensagem"
-              @fechar="dialogConfirmacao.visivel = false"
-              @confirma="submeterTS()"
+        <v-btn
+          @click="
+            loadProcEspecificos();
+            validaTSnome();
+          "
+          rounded
+          class="white--text mt-5 ml-4"
+          :class="{
+            'px-6': $vuetify.breakpoint.lgAndUp,
+            'px-2': $vuetify.breakpoint.mdAndDown,
+          }"
+          color="success darken-1"
+        >
+          <unicon
+            name="continuar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 37.261"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Continuar</p>
+        </v-btn>
+      </v-stepper-content>
+      <v-divider></v-divider>
+      <v-stepper-step :complete="stepNo > 3" step="3">
+        <font size="3">Seleção dos Processos</font>
+      </v-stepper-step>
+      <v-stepper-content step="3">
+        <v-col
+          cols="12"
+          v-if="listaProcessosReady"
+          :class="{
+            'px-4': $vuetify.breakpoint.lgAndUp,
+            'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
+          }"
+        >
+          <div>
+            <ListaProcessos
+              v-if="!importadoFlag"
+              :listaProcs="listaProcessos"
+              :listaCodigosEsp="listaCodigosEsp"
+              :participante="participante"
+              @importar="enviarFicheiro($event)"
             />
-          </v-dialog>
-          <v-dialog v-model="erroDialog" width="700" persistent>
-            <v-card outlined>
-              <v-card-title class="red darken-4 title white--text" dark>
-                Não foi possível importar os processos
-              </v-card-title>
+            <ListaProcessosImportados v-else :procs="listaProcessos.procs" />
+          </div>
+        </v-col>
+        <v-col v-else
+          >Ainda não foi possível carregar a informação dos Processos...</v-col
+        >
+        <v-row class="align-center" style="text-align: center">
+          <!-- Voltar ao passo anterior ............................................-->
+          <v-col cols="14" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="stepNo--"
+              rounded
+              class="white--text"
+              style="width: 100%; background-color: rgb(153, 17, 17)"
+            >
+              <unicon
+                name="arrow-back-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 37.261"
+                fill="#ffffff"
+              />
+              <p>Retroceder</p>
+            </v-btn>
+          </v-col>
 
-              <v-card-text>
-                <span
-                  class="subtitle-1"
-                  style="white-space: pre-wrap"
-                  v-html="erro"
-                >
-                </span>
-              </v-card-text>
+          <!-- Sair da criação da TS sem abortar o processo .........................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="sairOperacao = true"
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="relogio-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <DialogSair
+                v-if="sairOperacao"
+                @continuar="sairOperacao = false"
+                @sair="sair"
+              />
+              <p class="ml-2">Sair</p>
+            </v-btn>
+          </v-col>
 
-              <v-divider></v-divider>
+          <!-- Guardar o trabalho para continuar depois ..........................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="guardarTrabalho"
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon name="guardar-icon" fill="#ffffff" />
+              <DialogPendenteGuardado
+                v-if="pendenteGuardado"
+                :pendente="pendente"
+                @continuar="pendenteGuardado = false"
+              />
+              <p class="ml-2">Guardar</p>
+            </v-btn>
+          </v-col>
 
-              <v-card-actions>
-                <v-btn color="red darken-4" text @click="erroDialog = false">
-                  Fechar
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          <!-- Validar a TS ........................................................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="validarTS"
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="validar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.709 20.696"
+                fill="#ffffff"
+              />
+              <DialogValidacaoOK
+                v-if="validacaoTerminada && numeroErros == 0"
+                @continuar="fechoValidacao"
+              />
+              <DialogValidacaoErros
+                v-if="validacaoTerminada && numeroErros > 0"
+                :erros="mensagensErro"
+                @continuar="fechoValidacao"
+              />
+              <p class="ml-2">Validar</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Submeter e criar o pedido ............................................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="verificaTS"
+              color="success darken-1"
+              rounded
+              class="white--text"
+              :class="{
+                'px-8': $vuetify.breakpoint.lgAndUp,
+                'px-2': $vuetify.breakpoint.mdAndDown,
+              }"
+              style="width: 100%"
+            >
+              <unicon
+                name="adicionar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <p class="ml-2">Submeter</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Abortar a criação da TS ..........................................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              @click="eliminarTabela = true"
+              color="red darken-4"
+              rounded
+              class="white--text"
+            >
+              <unicon
+                name="eliminar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <DialogCancelar
+                v-if="eliminarTabela"
+                @continuar="eliminarTabela = false"
+                @sair="abortar"
+              />
+              <p class="ml-2">Eliminar</p>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-stepper-content>
+    </v-stepper>
+
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="dialogConfirmacao.visivel = false"
+        @confirma="submeterTS()"
+      />
+    </v-dialog>
+    <v-dialog v-model="erroDialog" width="700" persistent>
+      <v-card outlined>
+        <v-card-title class="red darken-4 title white--text" dark>
+          Não foi possível importar os processos
+        </v-card-title>
+
+        <v-card-text>
+          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro">
+          </span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="red darken-4" text @click="erroDialog = false">
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-card>
 </template>
 
 <script>
@@ -1326,10 +1189,6 @@ export default {
 </script>
 
 <style scoped>
-#stepper-card {
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22);
-}
-
 .info-label {
   color: #1a237e !important;
   padding: 8px;
