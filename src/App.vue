@@ -4,7 +4,6 @@
     <MainPageHeader
       :n="notificacoes ? notificacoes.length : 0"
       @drawerDefinicoes="drawerDefinicoes()"
-      @drawerNotificacoes="drawerNotificacoes()"
     />
 
     <!-- Drawers -->
