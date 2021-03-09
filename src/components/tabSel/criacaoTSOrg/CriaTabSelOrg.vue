@@ -2,69 +2,22 @@
   <v-card flat class="pa-3">
     <!-- HEADER -->
     <v-row align="center" justify="center">
-      <v-col cols="12" md="3" align="center"> <Voltar /> </v-col>
+      <v-col cols="12" md="3" align="center"><Voltar /> </v-col>
       <v-col cols="12" md="6" align="center">
-        <p class="clav-content-title-1">Nova Tabela de Seleção</p>
+        <p class="clav-content-title-1">
+          Nova Tabela de Seleção Organizacional
+        </p>
       </v-col>
       <v-col cols="0" md="3"> </v-col>
     </v-row>
     <!-- CONTENT -->
-    <v-stepper
-      style="background-color: #f3f7fc"
-      v-model="stepNo"
-      class="mt-n3 pa-4"
-    >
+
+    <v-stepper v-model="stepNo" vertical style="background-color: #f3f7fc">
       <v-stepper-step :complete="stepNo > 1" step="1">
-        <font size="3" class="font-weight-medium">
-          Identificação da entidade ou tipologia da tabela de seleção
-        </font>
-        <span v-if="stepNo > 1 && tipoTS != 'tipologia'" class="mt-1">
-          <div
-            class="rounded-pill pa-2 my-2 mx-4 clav-linear-background white--text"
-          >
-            <unicon
-              name="entidade-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 20.711 21.105"
-              fill="#ffffff"
-              class="mr-3"
-            />
-            {{
-              tabelaSelecao.idEntidade.split("_")[1] +
-              ": " +
-              tabelaSelecao.designacaoEntidade
-            }}
-          </div>
-        </span>
-        <span v-else-if="stepNo > 1 && tipoTS == 'tipologia'" class="mt-1">
-          <div
-            class="rounded-pill pa-2 my-2 mx-4 my-2 mx-4 clav-linear-background white--text"
-          >
-            <unicon
-              name="tipologia-ent-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 20.711 22.48"
-              fill="#ffffff"
-              class="mr-3"
-            />
-            {{
-              tabelaSelecao.idTipologia.split("_")[1] +
-              ": " +
-              tabelaSelecao.designacaoTipologia
-            }}
-          </div>
-        </span>
+        <b>Identificação da entidade ou tipologia da Tabela de Seleção</b>
       </v-stepper-step>
-      <v-stepper-content
-        step="1"
-        class="pt-0"
-        :class="{
-          'mx-8': $vuetify.breakpoint.lgAndUp,
-          'mx-0': $vuetify.breakpoint.mdAndDown,
-        }"
-      >
+
+      <v-stepper-content step="1">
         <div v-if="entidadeDGLAB">
           <v-col>
             <span class="subtitle-2">Pretende:</span>
@@ -107,25 +60,6 @@
                   </div>
                 </v-form>
               </v-col>
-              <v-btn
-                @click="guardaEntidade"
-                rounded
-                class="white--text mt-5 ml-4"
-                :class="{
-                  'px-6': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown,
-                }"
-                color="success darken-1"
-              >
-                <unicon
-                  name="continuar-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.71 37.261"
-                  fill="#ffffff"
-                />
-                <p class="ml-2">Continuar</p>
-              </v-btn>
             </div>
             <div v-if="tipoTS == 'tipologia' && tipologiasReady">
               <v-col>
@@ -153,25 +87,6 @@
                   </div>
                 </v-form>
               </v-col>
-              <v-btn
-                @click="guardaTipologia"
-                rounded
-                class="white--text mt-5 ml-4"
-                :class="{
-                  'px-6': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown,
-                }"
-                color="success darken-1"
-              >
-                <unicon
-                  name="continuar-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.71 37.261"
-                  fill="#ffffff"
-                />
-                <p class="ml-2">Continuar</p>
-              </v-btn>
             </div>
           </v-col>
         </div>
@@ -190,27 +105,7 @@
                 value="tipologia"
               ></v-radio>
             </v-radio-group>
-            <div v-if="tipoTS == 'utilizador'">
-              <v-btn
-                @click="guardaEntidadeUtilizador"
-                rounded
-                class="white--text mt-5"
-                :class="{
-                  'px-6': $vuetify.breakpoint.lgAndUp,
-                  'px-2': $vuetify.breakpoint.mdAndDown,
-                }"
-                color="success darken-1"
-              >
-                <unicon
-                  name="continuar-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.71 37.261"
-                  fill="#ffffff"
-                />
-                <p class="ml-2">Continuar</p>
-              </v-btn>
-            </div>
+
             <div v-if="tipoTS == 'tipologia' && tipologiasReady">
               <v-col>
                 <v-form ref="tipologia" :lazy-validation="false">
@@ -237,102 +132,132 @@
                   </div>
                 </v-form>
               </v-col>
-              <v-btn
-                @click="guardaTipologia"
-                rounded
-                class="white--text mt-5 ml-4"
-                color="success darken-1"
-              >
-                <unicon
-                  name="continuar-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.71 37.261"
-                  fill="#ffffff"
-                />
-                <p class="ml-2">Continuar</p>
-              </v-btn>
             </div>
           </v-col>
         </div>
-      </v-stepper-content>
-      <v-divider></v-divider>
-      <v-stepper-step
-        :complete="stepNo > 2"
-        step="2"
-        :class="{
-          'mt-n12': stepNo > 1,
-        }"
-      >
-        <font
-          size="3"
-          :class="{
-            'mt-12': stepNo > 1,
-          }"
-          class="font-weight-medium"
-        >
-          Designação da Tabela de Seleção</font
-        >
-        <span v-if="stepNo > 1" class="mt-1">
-          <div
-            class="rounded-pill pa-2 my-2 mx-4 clav-linear-background white--text"
-          >
-            <unicon
-              class="mr-3"
-              name="ts-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 20.71 23.668"
-              fill="#ffffff"
-            />
-            {{ tabelaSelecao.designacao }}
-          </div>
-        </span>
-      </v-stepper-step>
-      <v-stepper-content
-        step="2"
-        class="pt-0"
-        :class="{
-          'mx-8': $vuetify.breakpoint.lgAndUp,
-          'mx-0': $vuetify.breakpoint.mdAndDown,
-        }"
-      >
-        <v-col
-          :class="{
-            'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
-          }"
-        >
-          <v-form ref="nomeTS" :lazy-validation="false" class="px-4">
-            <span class="subtitle-2 pb-3"
-              >Insira a designação para a tabela:</span
-            >
-            <div class="py-2 pl-6 pr-3 mt-2" style="min-height: 50px">
-              <v-tooltip top color="info" open-delay="1000">
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-on="on"
-                    class="mt-n3"
-                    :rules="[(v) => !!v || 'A designação não pode ser vazia']"
-                    :placeholder="tabelaSelecao.designacao"
-                    v-model="tabelaSelecao.designacao"
-                    color="blue darken-3"
-                    clearable
-                  ></v-text-field>
-                </template>
-                <span> Designação para a Tabela de Seleção</span>
-              </v-tooltip>
-            </div>
-          </v-form>
-        </v-col>
         <v-btn
-          @click="stepNo = 1"
+          v-if="
+            tipoTS == 'tipologia' ||
+            tipoTS == 'utilizador' ||
+            tipoTS == 'entidade'
+          "
+          @click="
+            tipoTS == 'utilizador'
+              ? guardaEntidadeUtilizador()
+              : tipoTS == 'entidade'
+              ? guardaEntidade()
+              : guardaTipologia()
+          "
           rounded
-          class="white--text mt-5 ml-8"
-          :class="{
-            'px-6': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown,
-          }"
-          style="background-color: rgb(153, 17, 17)"
+          class="white--text mb-2"
+          color="success darken-1"
+        >
+          <unicon
+            name="continuar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 37.261"
+            fill="#ffffff"
+          />
+          <p class="ml-2">Continuar</p>
+        </v-btn>
+      </v-stepper-content>
+      <span v-if="tabelaSelecao.idEntidade || tabelaSelecao.idTipologia">
+        <v-row class="ml-11">
+          <v-col cols="auto">
+            <div
+              v-if="tabelaSelecao.idEntidade != ''"
+              class="rounded-pill px-3 py-1 my-2 mx-4 clav-linear-background white--text"
+            >
+              <unicon
+                name="entidade-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.711 21.105"
+                fill="#ffffff"
+                class="mr-3"
+              />
+              {{ tabelaSelecao.idEntidade.split("_")[1] }} -
+              {{ tabelaSelecao.designacaoEntidade }}
+            </div>
+            <div
+              v-else-if="tabelaSelecao.idTipologia"
+              class="rounded-pill px-3 py-1 my-2 mx-4 clav-linear-background white--text"
+            >
+              <unicon
+                name="entidade-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.711 21.105"
+                fill="#ffffff"
+                class="mr-3"
+              />
+              {{ tabelaSelecao.idTipologia.split("_")[1] }} -
+              {{ tabelaSelecao.designacaoTipologia }}
+            </div>
+          </v-col>
+          <v-col></v-col>
+        </v-row>
+      </span>
+
+      <v-stepper-step :complete="stepNo > 2" step="2">
+        <b>Designação da Tabela de Seleção</b>
+      </v-stepper-step>
+      <span v-if="stepNo > 1">
+        <v-row class="ml-12">
+          <v-col cols="auto">
+            <div
+              class="rounded-pill px-3 py-1 my-2 mx-4 clav-linear-background white--text"
+            >
+              <unicon
+                class="mr-3"
+                name="ts-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 23.668"
+                fill="#ffffff"
+              />
+              {{ designacao }}
+            </div>
+          </v-col>
+          <v-col></v-col>
+        </v-row>
+      </span>
+
+      <v-stepper-content step="2" class="pt-0">
+        <v-form ref="nomeTS" :lazy-validation="false" class="px-4">
+          <span class="subtitle-2 pb-3"
+            >Insira a designação para a tabela:</span
+          >
+          <div class="py-2 pl-6 pr-3 mt-2" style="min-height: 50px">
+            <v-tooltip top color="info" open-delay="1000">
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-on="on"
+                  class="mt-n3"
+                  :rules="[(v) => !!v || 'A designação não pode ser vazia']"
+                  :placeholder="designacao"
+                  v-model="designacao"
+                  color="blue darken-3"
+                  clearable
+                ></v-text-field>
+              </template>
+              <span> Designação para a Tabela de Seleção</span>
+            </v-tooltip>
+          </div>
+        </v-form>
+
+        <v-btn
+          @click="
+            tabelaSelecao.idEntidade = '';
+            tabelaSelecao.idTipologia = '';
+            tabelaSelecao.designacaoEntidade = '';
+            tabelaSelecao.designacaoTipologia = '';
+            stepNo = 1;
+          "
+          rounded
+          class="white--text my-5 ml-8"
+          color="error darken-1"
         >
           <unicon
             name="arrow-back-icon"
@@ -350,11 +275,7 @@
             validaTSnome();
           "
           rounded
-          class="white--text mt-5 ml-4"
-          :class="{
-            'px-6': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown,
-          }"
+          class="white--text my-5 ml-4"
           color="success darken-1"
         >
           <unicon
@@ -367,19 +288,12 @@
           <p class="ml-2">Continuar</p>
         </v-btn>
       </v-stepper-content>
-      <v-divider></v-divider>
+
       <v-stepper-step :complete="stepNo > 3" step="3">
-        <font size="3">Seleção dos Processos</font>
+        <b>Seleção dos Processos</b>
       </v-stepper-step>
       <v-stepper-content step="3">
-        <v-col
-          cols="12"
-          v-if="listaProcessosReady"
-          :class="{
-            'px-4': $vuetify.breakpoint.lgAndUp,
-            'ma-0 pa-0': $vuetify.breakpoint.mdAndDown,
-          }"
-        >
+        <v-col cols="12" v-if="listaProcessosReady">
           <div>
             <ListaProcessos
               v-if="!importadoFlag"
@@ -394,15 +308,16 @@
         <v-col v-else
           >Ainda não foi possível carregar a informação dos Processos...</v-col
         >
-        <v-row class="align-center" style="text-align: center">
+        <v-row class="align-center mb-1 mt-2" style="text-align: center">
           <!-- Voltar ao passo anterior ............................................-->
           <v-col cols="14" md="4" lg="2">
             <v-btn
               v-if="stepNo > 2"
+              block
               @click="stepNo--"
               rounded
               class="white--text"
-              style="width: 100%; background-color: rgb(153, 17, 17)"
+              color="error darken-1"
             >
               <unicon
                 name="arrow-back-icon"
@@ -420,6 +335,7 @@
             <v-btn
               v-if="stepNo > 2"
               @click="sairOperacao = true"
+              block
               rounded
               class="clav-linear-background white--text"
             >
@@ -444,6 +360,7 @@
             <v-btn
               v-if="stepNo > 2"
               @click="guardarTrabalho"
+              block
               rounded
               class="clav-linear-background white--text"
             >
@@ -462,6 +379,7 @@
             <v-btn
               v-if="stepNo > 2"
               @click="validarTS"
+              block
               rounded
               class="clav-linear-background white--text"
             >
@@ -490,13 +408,10 @@
             <v-btn
               v-if="stepNo > 2"
               @click="verificaTS"
+              block
               color="success darken-1"
               rounded
               class="white--text"
-              :class="{
-                'px-8': $vuetify.breakpoint.lgAndUp,
-                'px-2': $vuetify.breakpoint.mdAndDown,
-              }"
               style="width: 100%"
             >
               <unicon
@@ -514,8 +429,9 @@
           <v-col cols="12" md="4" lg="2">
             <v-btn
               @click="eliminarTabela = true"
-              color="red darken-4"
+              color="error"
               rounded
+              block
               class="white--text"
             >
               <unicon
@@ -577,6 +493,7 @@ import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidaca
 import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValidacaoErros.vue";
 import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   components: {
@@ -588,6 +505,7 @@ export default {
     DialogValidacaoErros,
     DialogSair,
     ConfirmacaoOperacao,
+    Voltar,
   },
   data() {
     return {
@@ -611,6 +529,7 @@ export default {
       entidades: [],
       entidadesReady: false,
       ent: "",
+      designacao: "",
       // Estrutura onde se guarda a entidade do utilizador
       entidadeUtilizador: {},
       // Flag de controlo: indica que a TS é para a entidade do utilizador
@@ -664,6 +583,7 @@ export default {
     },
     validaTSnome: function () {
       if (this.$refs.nomeTS.validate()) {
+        this.tabelaSelecao.designacao = this.designacao;
         this.stepNo = 3;
       }
     },
@@ -702,8 +622,8 @@ export default {
     },
     guardaEntidade: async function () {
       if (this.$refs.entidade.validate()) {
-        this.tabelaSelecao.designacao =
-          "Tabela de Seleção de " + this.ent.designacao;
+        this.designacao = "Tabela de Seleção de " + this.ent.designacao;
+        this.tabelaSelecao.designacao = this.designacao;
         this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
         this.tabelaSelecao.idEntidade = "ent_" + this.ent.sigla;
         try {
@@ -717,8 +637,8 @@ export default {
     guardaTipologia: function () {
       if (this.$refs.tipologia.validate()) {
         // id e designação
-        this.tabelaSelecao.designacao =
-          "Tabela de seleção de " + this.tipSel.designacao;
+        this.designacao = "Tabela de seleção de " + this.tipSel.designacao;
+        this.tabelaSelecao.designacao = this.designacao;
         this.tabelaSelecao.designacaoTipologia = this.tipSel.designacao;
         this.tabelaSelecao.idTipologia = this.tipSel.id;
         this.stepNo = this.stepNo + 1;
@@ -726,8 +646,9 @@ export default {
     },
     guardaEntidadeUtilizador: function () {
       // id e designação
-      this.tabelaSelecao.designacao =
+      this.designacao =
         "Tabela de seleção de " + this.entidadeUtilizador.designacao;
+      this.tabelaSelecao.designacao = this.designacao;
       this.tabelaSelecao.designacaoEntidade = this.entidadeUtilizador.designacao;
       this.tabelaSelecao.idEntidade = this.entidadeUtilizador.id;
       this.stepNo = this.stepNo + 1;

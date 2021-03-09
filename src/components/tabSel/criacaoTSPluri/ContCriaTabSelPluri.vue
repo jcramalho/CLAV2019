@@ -1,163 +1,274 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-app-bar color="indigo darken-4" dark>
-        <v-toolbar-title class="card-heading"
-          >Nova Tabela de Seleção Pluriorganizacional</v-toolbar-title
+  <v-card flat class="pa-3">
+    <!-- HEADER -->
+    <v-row align="center" justify="center">
+      <v-col cols="12" md="3" align="center"> <Voltar /> </v-col>
+      <v-col cols="12" md="6" align="center">
+        <p class="clav-content-title-1">
+          Nova Tabela de Seleção Pluriorganizacional (Continuação)
+        </p>
+      </v-col>
+      <v-col cols="0" md="3"> </v-col>
+    </v-row>
+
+    <v-stepper v-model="stepNo" vertical style="background-color: #f3f7fc">
+      <v-stepper-step :complete="stepNo > 1" step="1"
+        ><b> Identificação das entidades ou tipologias da Tabela de Seleção</b>
+      </v-stepper-step>
+      <span v-if="stepNo > 1">
+        <v-row
+          v-for="(e, i) in tabelaSelecao.entidades"
+          :key="i"
+          class="mx-16 mb-n10"
         >
-      </v-app-bar>
-      <v-stepper v-model="stepNo" vertical style="background-color: #fafafa">
-        <v-stepper-step color="amber accent-3" :complete="stepNo > 1" step="1"
-          ><font size="4"><b> Entidades abrangidas pela TS</b></font>
-          <span v-if="stepNo > 1">
-            <v-chip
-              v-for="(e, i) in tabelaSelecao.entidades"
-              :key="i"
-              class="ma-2"
-              color="indigo darken-4"
-              text-color="white"
+          <v-col cols="auto">
+            <div
+              class="rounded-pill px-3 py-1 my-2 mx-4 clav-linear-background white--text"
               label
             >
-              <v-icon left>account_balance</v-icon>
+              <unicon
+                name="entidade-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.711 21.105"
+                fill="#ffffff"
+                class="mr-3"
+              />
               {{ e.label }}
-            </v-chip>
-          </span>
-        </v-stepper-step>
-
-        <v-stepper-step color="amber accent-3" :complete="stepNo > 2" step="2"
-          ><font size="4"><b> Designação da Tabela de Seleção</b></font>
-          <span v-if="stepNo > 2">
-            <v-chip
-              class="ma-2"
-              color="indigo darken-4"
-              text-color="white"
-              label
-            >
-              {{ tabelaSelecao.designacao }}
-            </v-chip>
-          </span>
-        </v-stepper-step>
-        <v-stepper-content step="2">
-          <v-col xs12 sm6 md10>
-            <v-form ref="nomeTS" :lazy-validation="false">
-              <v-text-field
-                placeholder="Designação da Nova Tabela de Seleção"
-                v-model="tabelaSelecao.designacao"
-                :rules="[(v) => !!v || 'A designação não pode ser vazia']"
-              ></v-text-field>
-            </v-form>
-            <v-btn
-              color="indigo darken-4"
-              class="white--text"
-              @click="validaTSnome"
-              >Continuar</v-btn
-            >
+            </div>
           </v-col>
-        </v-stepper-content>
+        </v-row>
+      </span>
 
-        <v-stepper-step color="amber accent-3" :complete="stepNo > 3" step="3"
-          ><font size="4"><b> Seleção dos Processos</b></font>
-        </v-stepper-step>
-        <v-stepper-content step="3">
-          <v-col v-if="listaProcessosReady">
-            <v-card>
-              <v-card-text>
-                <ListaProcessos
-                  :listaProcs="listaProcessos"
-                  :listaCodigosEsp="listaCodigosEsp"
-                />
-              </v-card-text>
-            </v-card>
-          </v-col>
-
-          <v-col v-else
-            >Ainda não foi possível carregar a informação dos
-            Processos...</v-col
+      <v-stepper-step :complete="stepNo > 2" step="2" class="mt-5"
+        ><b> Designação da Tabela de Seleção</b>
+      </v-stepper-step>
+      <v-row class="ml-16">
+        <v-col cols="auto">
+          <div
+            class="rounded-pill px-3 py-1 my-2 mx-4 clav-linear-background white--text"
           >
+            <unicon
+              class="mr-3"
+              name="ts-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.71 23.668"
+              fill="#ffffff"
+            />
+            {{ tabelaSelecao.designacao }}
+          </div>
+        </v-col>
+      </v-row>
+      <v-stepper-content step="2">
+        <v-col xs12 sm6 md10>
+          <v-form ref="nomeTS" :lazy-validation="false">
+            <span class="subtitle-2 ml-16 pb-3"
+              >Insira a designação para a tabela:</span
+            >
+            <div class="py-2 pl-6 pr-3 ml-16 mt-2" style="min-height: 50px">
+              <v-tooltip top color="info" open-delay="1000">
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-on="on"
+                    class="mt-n3"
+                    :rules="[(v) => !!v || 'A designação não pode ser vazia']"
+                    :placeholder="tabelaSelecao.designacao"
+                    v-model="tabelaSelecao.designacao"
+                    color="blue darken-3"
+                    clearable
+                  ></v-text-field>
+                </template>
+                <span> Designação para a Tabela de Seleção</span>
+              </v-tooltip>
+            </div>
+          </v-form>
+          <v-btn
+            @click="validaTSnome"
+            rounded
+            class="white--text mt-5 mb-2"
+            color="success darken-1"
+          >
+            <unicon
+              name="continuar-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.71 37.261"
+              fill="#ffffff"
+            />
+            <p class="ml-2">Continuar</p>
+          </v-btn>
+        </v-col>
+      </v-stepper-content>
 
-          <v-card-actions style="margin-left: 5px">
+      <v-stepper-step :complete="stepNo > 3" step="3"
+        ><font size="4"><b> Seleção dos Processos</b></font>
+      </v-stepper-step>
+      <v-stepper-content step="3">
+        <v-col v-if="listaProcessosReady">
+          <ListaProcessos
+            :listaProcs="listaProcessos"
+            :listaCodigosEsp="listaCodigosEsp"
+          />
+        </v-col>
+
+        <v-col v-else
+          >Ainda não foi possível carregar a informação dos Processos...</v-col
+        >
+
+        <v-row class="align-center mb-1 mt-2" style="text-align: center">
+          <!-- Voltar ao passo anterior ............................................-->
+          <v-col cols="14" md="4" lg="2">
             <v-btn
               v-if="stepNo > 2"
-              color="indigo darken-4"
-              class="white--text"
+              block
               @click="stepNo = 2"
-              >Voltar</v-btn
-            >
-
-            <v-btn
-              v-if="stepNo > 2"
-              color="indigo darken-4"
+              rounded
               class="white--text"
-              @click="validarTS"
+              color="error darken-1"
             >
-              Validar TS
-              <DialogValidacaoOK
-                v-if="validacaoTerminada && numeroErros == 0"
-                @continuar="fechoValidacao"
+              <unicon
+                name="arrow-back-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 37.261"
+                fill="#ffffff"
               />
-
-              <DialogValidacaoErros
-                v-if="validacaoTerminada && numeroErros > 0"
-                :erros="mensagensErro"
-                @continuar="fechoValidacao"
-              />
+              <p>Retroceder</p>
             </v-btn>
+          </v-col>
 
+          <!-- Sair da criação da TS sem abortar o processo .........................-->
+          <v-col cols="12" md="4" lg="2">
             <v-btn
               v-if="stepNo > 2"
-              color="indigo darken-4"
-              class="white--text"
-              @click="guardarTrabalho()"
-              >Guardar trabalho
-              <DialogPendenteGuardado
-                v-if="pendenteGuardado"
-                :pendente="pendente"
-                @continuar="pendenteGuardado = false"
-              />
-            </v-btn>
-
-            <v-btn
-              v-if="stepNo > 2"
-              color="indigo darken-4"
-              class="white--text"
-              @click="verificaTS"
-              >Submeter</v-btn
-            >
-
-            <v-btn
-              v-if="stepNo > 2"
-              color="indigo darken-4"
-              class="white--text"
               @click="sairOperacao = true"
-              >Sair
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="relogio-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
               <DialogSair
                 v-if="sairOperacao"
                 @continuar="sairOperacao = false"
                 @sair="sair"
               />
+              <p class="ml-2">Sair</p>
             </v-btn>
+          </v-col>
 
-            <v-btn dark color="red darken-4" @click="eliminarTabela = true"
-              >Cancelar
+          <!-- Guardar o trabalho para continuar depois ..........................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="guardarTrabalho()"
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon name="guardar-icon" fill="#ffffff" />
+              <DialogPendenteGuardado
+                v-if="pendenteGuardado"
+                :pendente="pendente"
+                @continuar="pendenteGuardado = false"
+              />
+              <p class="ml-2">Guardar</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Validar a TS ........................................................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="validarTS"
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="validar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.709 20.696"
+                fill="#ffffff"
+              />
+              <DialogValidacaoOK
+                v-if="validacaoTerminada && numeroErros == 0"
+                @continuar="fechoValidacao"
+              />
+              <DialogValidacaoErros
+                v-if="validacaoTerminada && numeroErros > 0"
+                :erros="mensagensErro"
+                @continuar="fechoValidacao"
+              />
+              <p class="ml-2">Validar</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Submeter e criar o pedido ............................................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="verificaTS"
+              block
+              color="success darken-1"
+              rounded
+              class="white--text"
+              style="width: 100%"
+            >
+              <unicon
+                name="adicionar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <p class="ml-2">Submeter</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Abortar a criação da TS ..........................................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              @click="eliminarTabela = true"
+              color="error"
+              rounded
+              block
+              class="white--text"
+            >
+              <unicon
+                name="eliminar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
               <DialogCancelar
                 v-if="eliminarTabela"
                 @continuar="eliminarTabela = false"
                 @sair="abortar"
               />
+              <p class="ml-2">Eliminar</p>
             </v-btn>
-          </v-card-actions>
-        </v-stepper-content>
-      </v-stepper>
-      <!-- Dialog de confirmação de operação -->
-      <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
-        <ConfirmacaoOperacao
-          :mensagem="dialogConfirmacao.mensagem"
-          @fechar="dialogConfirmacao.visivel = false"
-          @confirma="submeterTS()"
-        />
-      </v-dialog>
-    </v-col>
-  </v-row>
+          </v-col>
+        </v-row>
+      </v-stepper-content>
+    </v-stepper>
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="dialogConfirmacao.visivel = false"
+        @confirma="submeterTS()"
+      />
+    </v-dialog>
+  </v-card>
 </template>
 
 <script>
@@ -168,6 +279,7 @@ import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidaca
 import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValidacaoErros.vue";
 import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   props: ["obj"],
@@ -180,6 +292,7 @@ export default {
     DialogValidacaoErros,
     DialogSair,
     ConfirmacaoOperacao,
+    Voltar,
   },
   data() {
     return {
