@@ -79,6 +79,7 @@ export default {
     inserirSI(allSI) {
       for(let i = 0; i< allSI.length; i++){
         var index = this.ppd.sistemasInfo.findIndex(l => l.numeroSI == allSI[i].numeroSI);
+        this.ppd.listaSistemasInfoAuxiliar.push(allSI[i])
         if(index != -1 ){
           //this.ppd.sistemasInfo[index] = Object.assign(this.ppd.sistemasInfo[index], allSI[i])
           if(allSI[i].identificacao.adminSistema){

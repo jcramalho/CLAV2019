@@ -145,6 +145,9 @@
                 Guardar Trabalho
                 <v-icon right>save</v-icon>
               </v-btn>
+              <v-btn color="indigo darken-2" dark class="ma-2" @click="criarPPD">
+                Criar PPD
+              </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
                 Finalizar
               </v-btn>
@@ -433,6 +436,12 @@ export default {
       critGestionarioAdicionado: false
     },
 
+    codigoPedido: "",
+    classeCriada: false,
+    errosValidacao: false,
+    pendenteGuardado: false,
+    pendenteGuardadoInfo: "",
+
 
 
   }),
@@ -447,34 +456,28 @@ export default {
   },
 
   methods: {
-    guardarPPD: function(){
-      if (this.idPendente != null) {
-        let updatePendente = {
-          _id: this.idPendente,
-          objeto: {
-            ppd: this.ppd
-          },
-        };
-        let response = this.$request("put", "/pendentes", updatePendente);
-        response.then((resp) => {
-            this.ppdGuardado = true;
-        });
-      } else {
-        let pendenteParams = {
-          numInterv: 1,
-          acao: "Criação",
-          tipo: "PPD",
-          objeto: {
-            ppd: this.ppd,
-          },
-          criadoPor: this.userEmail,
-          user: { email: this.userEmail },
-          token: this.$store.state.token,
-        };
-        let response = this.$request("post", "/pendentes", pendenteParams);
-        response.then((resp) => {
-            this.ppdGuardado = true;
-        });
+
+    guardarPPD: async function() {
+      try {
+        if (this.$store.state.name === "") {
+          this.loginErrorSnackbar = true;
+        } else {
+          var userBD = this.$verifyTokenUser();
+          var pendenteParams = {
+            numInterv: 1,
+            acao: "Criação",
+            tipo: "PPD",
+            objeto: this.ppd,
+            criadoPor: userBD.email,
+            user: { email: userBD.email },
+            token: this.$store.state.token
+          };
+          var response = this.$request("post", "/pendentes", pendenteParams);
+          this.pendenteGuardado = true;
+          this.pendenteGuardadoInfo = JSON.stringify(response.data);
+        }
+      } catch (error) {
+        return error;
       }
     },
 
@@ -664,6 +667,7 @@ export default {
         this.$refs.form.reset();//   ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.panels = [];
         this.addSI = false;
+        this.ppd.si.avaliacao.sistemasRelacionados = []
         await this.loadConsultaPGD();
       } else {
         this.dialog= true;
@@ -846,6 +850,45 @@ export default {
       this.ppd.sistemasInfo.splice(index, 1);
       this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
       this.ppd.arvore.splice(index,1);
+    },
+
+    validarPPD: function(){
+      //funçao para confirmar se o ppd esta bem construido
+      return 0;
+    },
+
+    criarPPD: async function() {
+      try {
+        if (this.$store.state.name === "") {
+          this.loginErrorSnackbar = true;
+        } else {
+          var erros = await this.validarPPD();
+          if (erros == 0) {
+            var userBD = this.$verifyTokenUser();
+            var pedidoParams = {
+              tipoPedido: "Criação",
+              tipoObjeto: "PPD",
+              novoObjeto: this.ppd,
+              user: { email: userBD.email },
+              entidade: userBD.entidade,
+              token: this.$store.state.token,
+              historico: []
+            };
+
+            var response = await this.$request(
+              "post",
+              "/pedidos",
+              pedidoParams
+            );
+            this.codigoPedido = JSON.stringify(response.data);
+            this.classeCriada = true;
+          } else {
+            this.errosValidacao = true;
+          }
+        }
+      } catch (error) {
+        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
+      }
     },
 
 
