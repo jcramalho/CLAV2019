@@ -396,12 +396,14 @@
           <v-spacer />
           <v-btn
             class="white--text ma-2"
+            rounded
             color="red darken-4"
             @click="cancelar()"
             >Cancelar</v-btn
           >
           <v-btn
             class="white--text ma-2"
+            rounded
             color="success darken-1"
             @click="confirmaProcs()"
             >Confirmar</v-btn

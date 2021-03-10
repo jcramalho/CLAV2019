@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card-text class="ma-1">
+    <v-card flat class="ma-1">
       <ValidaCampo
         :dadosOriginais="p.objeto.dados.ts"
         :novoHistorico="novoHistorico"
@@ -125,14 +125,13 @@
                 v-slot:expanded-item="{ headers, item }"
               >
                 <td :colspan="headers.length">
-                  <v-card class="ma-1 elevation-0">
+                  <v-card flat class="ma-1 elevation-0">
                     <v-card-text>
                       <v-expansion-panels>
                         <v-expansion-panel popout>
                           <!-- DESCRITIVO DA CLASSE -->
                           <v-expansion-panel-header
-                            class="white--text"
-                            color="indigo darken-4"
+                            class="clav-linear-background white--text"
                           >
                             <div class="separador">
                               <font size="4"><b> Descritivo da Classe</b></font>
@@ -144,44 +143,6 @@
                             </div>
                           </v-expansion-panel-header>
                           <v-expansion-panel-content>
-                            <!-- ESTADO -->
-                            <ValidaCampo
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
-                              campoValue="status"
-                              campoText="Estado"
-                              :permitirEditar="false"
-                              tipo="estado"
-                              :info="{
-                                header: 'Estado',
-                                text: myhelp.Classe.Campos.Estado,
-                              }"
-                            />
-
-                            <ValidaCampo
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
-                              campoValue="descricao"
-                              campoText="Descrição"
-                              :permitirEditar="false"
-                              tipo="string"
-                              :info="{
-                                text: myhelp.Classe.Campos.Descricao,
-                                header: 'Descrição',
-                              }"
-                            />
                             <ValidaCampo
                               v-if="item.notasAp.length > 0"
                               :dadosOriginais="item"
@@ -267,366 +228,6 @@
                             />
                           </v-expansion-panel-content>
                         </v-expansion-panel>
-
-                        <v-expansion-panel popout v-if="item.nivel == 3">
-                          <!-- CONTEXTO DA CLASSE -->
-                          <v-expansion-panel-header
-                            class="white--text"
-                            color="indigo darken-4"
-                          >
-                            <div class="separador">
-                              <font size="4"
-                                ><b> Contexto de Avaliação</b></font
-                              >
-                              <InfoBox
-                                header="Contexto de Avaliação"
-                                :text="myhelp.Classe.BlocoContexto"
-                                helpColor="white"
-                              />
-                            </div>
-                          </v-expansion-panel-header>
-                          <v-expansion-panel-content>
-                            <!-- TIPO DE PROCESSO -->
-
-                            <ValidaCampo
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
-                              campoValue="tipoProc"
-                              campoText="Tipo de Processo"
-                              :permitirEditar="false"
-                              tipo="string"
-                              :info="{
-                                header: 'Tipo de Processo',
-                                text: myhelp.Classe.Campos.TipoProcesso,
-                              }"
-                            />
-
-                            <!-- TRANSVERSALIDADE -->
-
-                            <ValidaCampo
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
-                              campoValue="procTrans"
-                              campoText="Processo Transversal"
-                              :permitirEditar="false"
-                              tipo="procTrans"
-                              :info="{
-                                header: 'Processo Transversal',
-                                text: myhelp.Classe.Campos.ProcessoTransversal,
-                              }"
-                            />
-                            <ValidaCampo
-                              v-if="item.donos.length > 0"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
-                              campoValue="donos"
-                              campoText="Donos do processo"
-                              :permitirEditar="false"
-                              tipo="donos"
-                              :info="{
-                                header: 'Donos do processo',
-                                text: myhelp.Classe.Campos.Donos,
-                              }"
-                            />
-                            <ValidaCampo
-                              v-if="item.participantes.length > 0"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
-                              campoValue="participantes"
-                              campoText="Participantes no processo"
-                              :permitirEditar="false"
-                              tipo="participantes"
-                              :info="{
-                                header: 'Participantes no processo',
-                                text: myhelp.Classe.Campos.Participantes,
-                              }"
-                            />
-                            <ValidaCampo
-                              v-if="item.processosRelacionados.length > 0"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
-                              campoValue="processosRelacionados"
-                              campoText="Processos Relacionados"
-                              :permitirEditar="false"
-                              tipo="procRel"
-                              :info="{
-                                header: 'Processos Relacionados',
-                                text:
-                                  myhelp.Classe.Campos.ProcessosRelacionados,
-                              }"
-                            />
-                            <ValidaCampo
-                              v-if="item.legislacao.length > 0"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
-                              campoValue="legislacao"
-                              campoText="Legislação"
-                              :permitirEditar="false"
-                              tipo="legs"
-                              :info="{
-                                header: 'Legislação',
-                                text: myhelp.Classe.Campos.Legislacao,
-                              }"
-                            />
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                        <v-expansion-panel
-                          v-if="
-                            (item.nivel == 3 && !item.temSubclasses4Nivel) ||
-                            item.nivel == 4
-                          "
-                        >
-                          <v-expansion-panel-header
-                            class="white--text"
-                            color="indigo darken-4"
-                          >
-                            <div class="separador">
-                              <font size="4">
-                                <b>Decisões de Avaliação</b></font
-                              >
-                              <InfoBox
-                                header="Decisões de Avaliação"
-                                :text="myhelp.Classe.BlocoDecisoes"
-                                helpColor="white"
-                              />
-                            </div>
-                          </v-expansion-panel-header>
-                          <v-expansion-panel-content>
-                            <v-row>
-                              <v-col xs="12" sm="12">
-                                <v-toolbar
-                                  color="indigo darken-4"
-                                  class="caption font-weight-regular"
-                                  dark
-                                  height="25"
-                                >
-                                  <v-toolbar-title
-                                    >Prazo de Conservação
-                                    Administrativa</v-toolbar-title
-                                  >
-                                </v-toolbar>
-                              </v-col>
-                            </v-row>
-                            <!-- PRAZO -->
-
-                            <ValidaCampo
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados.pca.dados
-                              "
-                              campoValue="valores"
-                              campoText="Prazo"
-                              :permitirEditar="false"
-                              tipo="prazo"
-                              :info="{
-                                header: 'Prazo',
-                                text: myhelp.Classe.Campos.Prazo,
-                              }"
-                            />
-                            <!-- NOTAS -->
-                            <ValidaCampo
-                              v-if="item.pca.notas != ''"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados.pca.dados
-                              "
-                              campoValue="notas"
-                              campoText="Notas"
-                              :permitirEditar="false"
-                              tipo="string"
-                              :info="{
-                                header: 'Notas ao PCA',
-                                text: myhelp.Classe.Campos.Notas,
-                              }"
-                            />
-
-                            <!-- FORMA DE CONTAGEM -->
-                            <ValidaCampo
-                              v-if="item.pca.formaContagem != ''"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados.pca.dados
-                              "
-                              campoValue="formaContagem"
-                              campoText="Forma de Contagem"
-                              :permitirEditar="false"
-                              tipo="string"
-                              :info="{
-                                header: 'Forma de Contagem',
-                                text: myhelp.Classe.Campos.FormaContagem,
-                              }"
-                            />
-
-                            <!-- SUBFORMA DE CONTAGEM -->
-                            <ValidaCampo
-                              v-if="item.pca.subFormaContagem"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados.pca.dados
-                              "
-                              campoValue="subFormaContagem"
-                              campoText="Subforma de Contagem"
-                              :permitirEditar="false"
-                              tipo="string"
-                              :info="{
-                                header: 'Subforma de Contagem',
-                                text: myhelp.Classe.Campos.SubformaContagem,
-                              }"
-                            />
-                            <!-- JUSTIFICAÇÂO -->
-                            <ValidaCampo
-                              v-if="item.pca.justificacao"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados.pca.dados
-                              "
-                              campoValue="justificacao"
-                              campoText="Justificação"
-                              :permitirEditar="false"
-                              tipo="justPCA"
-                              :info="{
-                                header: 'Justificação do PCA',
-                                text: myhelp.Classe.Campos.JustificacaoPCA,
-                              }"
-                            />
-
-                            <!-- DESTINO FINAL ................................................... -->
-
-                            <v-row>
-                              <v-col xs="12" sm="12">
-                                <v-toolbar
-                                  color="indigo darken-4"
-                                  class="caption font-weight-regular"
-                                  dark
-                                  height="25"
-                                >
-                                  <v-toolbar-title
-                                    >Destino Final</v-toolbar-title
-                                  >
-                                </v-toolbar>
-                              </v-col>
-                            </v-row>
-
-                            <!-- VALOR -->
-                            <ValidaCampo
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados.df.dados
-                              "
-                              campoValue="valor"
-                              campoText="Destino Final"
-                              :permitirEditar="false"
-                              tipo="df"
-                              :info="{
-                                header: 'Destino Final',
-                                text: myhelp.Classe.Campos.DF,
-                              }"
-                            />
-
-                            <!-- NOTA ao DF -->
-
-                            <ValidaCampo
-                              v-if="item.df.nota"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados.df.dados
-                              "
-                              campoValue="nota"
-                              campoText="Nota ao DF"
-                              :permitirEditar="false"
-                              tipo="string"
-                              :info="{
-                                header: 'Nota ao DF',
-                                text: myhelp.Classe.Campos.NotasDF,
-                              }"
-                            />
-
-                            <!-- JUSTIFICAÇÂO -->
-                            <ValidaCampo
-                              v-if="item.df.justificacao"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados.df.dados
-                              "
-                              campoValue="justificacao"
-                              campoText="Justificação"
-                              :permitirEditar="false"
-                              tipo="justDF"
-                              :info="{
-                                header: 'Justificação do DF',
-                                text: myhelp.Classe.Campos.JustificacaoDF,
-                              }"
-                            />
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
                       </v-expansion-panels>
                     </v-card-text>
                   </v-card>
@@ -660,7 +261,7 @@
           @confirma="finalizarPedido(dialogConfirmacao.dados)"
         />
       </v-dialog>
-    </v-card-text>
+    </v-card>
   </div>
 </template>
 
@@ -696,10 +297,15 @@ export default {
       },
       listaProcs: false,
       tsHeaders: [
-        { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" },
-        { text: "Dono", value: "dono", class: "subtitle-1" },
-        { text: "Participante", value: "participante", class: "subtitle-1" },
+        { text: "Código", width: "15%", value: "codigo", class: "subtitle-1" },
+        { text: "Título", width: "35%", value: "titulo", class: "subtitle-1" },
+        { text: "Dono", width: "15%", value: "dono", class: "subtitle-1" },
+        {
+          text: "Participante",
+          width: "20%",
+          value: "participante",
+          class: "subtitle-1",
+        },
 
         {
           text: "",
