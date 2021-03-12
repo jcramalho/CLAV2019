@@ -173,15 +173,6 @@ export default {
               delete this.pedido.objeto.dados[key];
             }
           }
-          let response = await this.$request("post", "/tabelasSelecao", {
-            tabela: this.pedido
-          });
-          this.pedido.objeto.dados.id = response.data.id;
-
-          res = await this.$request("get", "/contador/despacho");
-
-          this.numeroDespacho =
-            res.data.valor.toString() + "/" + new Date().getFullYear();
 
           despachoAprovacao = {
             id: "leg_" + nanoid(),
@@ -189,7 +180,7 @@ export default {
             sumario: despacho.sumario,
             tipo: "Despacho",
             data: despacho.data,
-            link: "/tabelasSelecao/" + this.pedido.objeto.dados.id,
+            link: "/ts/",
             diplomaFonte: "TS/LC",
             dataRevogacao: "",
             estado: "Ativo",
@@ -203,6 +194,19 @@ export default {
             ],
             processosSel: []
           };
+
+          let response = await this.$request("post", "/tabelasSelecao", {
+            tabela: this.pedido,
+            leg:despachoAprovacao.id
+          });
+          despachoAprovacao.link = despachoAprovacao.link.concat(response.data.id);
+          this.pedido.objeto.dados.id = response.data.id
+          res = await this.$request("get", "/contador/despacho");
+
+          this.numeroDespacho =
+            res.data.valor.toString() + "/" + new Date().getFullYear();
+
+          
         }
 
         await this.$request("post", "/legislacao", despachoAprovacao);

@@ -24,12 +24,14 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Decomposição do SI</div>
+              <div class="info-label">Decomposição do SI
+                <InfoBox header="Decomposição do SI" :text="myhelp.Ppd.Avaliacao.decomposicao"/>
+              </div>
           </v-col>
-          <v-col v-if="tabelaDecomposicao.length > 0">
+          <v-col v-if="ppd.si.avaliacao.tabelaDecomposicao.length > 0">
             <v-data-table
             :headers="headersDecomp"
-            :items="tabelaDecomposicao"
+            :items="ppd.si.avaliacao.tabelaDecomposicao"
             class="elevation-1"
             :footer-props="footer_Classes"
             :page.sync="paginaSelectDecomp"
@@ -63,7 +65,6 @@
         </v-row>
         <v-dialog v-model="addDecomposicao">
           <AddDecomposicao
-            v-bind:tabelaDecomposicao="tabelaDecomposicao"
             hide-overlay
             v-bind:numeroSI=ppd.si.numeroSI
             @guardarDecomp="guardarDecomp($event)"
@@ -77,13 +78,34 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" xs="12" sm="3">
-              <div class="info-label">Classes</div>
+          <v-col>
+            <div class="info-label">PCA do sistema de informação
+              <InfoBox header="PCA do sistema de informação" :text="myhelp.Ppd.Avaliacao.pcaDoSI"/>
+            </div>
           </v-col>
-          <v-col v-if="selecionadosTabelaFL.length > 0">
+          <v-col>
+            <v-text-field solo dense >
+            </v-text-field>
+          </v-col>
+          <v-col :md="2">
+            <div class="info-label">Destino final do sistema de informação
+              <InfoBox header="Destino final do sistema de informação" :text="myhelp.Ppd.Avaliacao.destinoSI"/>
+            </div>
+          </v-col>
+          <v-col>
+            <v-text-field solo dense >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" xs="12" sm="3">
+              <div class="info-label">Classes
+              </div>
+          </v-col>
+          <v-col v-if="ppd.si.avaliacao.selecionadosTabelaFL.length > 0">
             <v-data-table
             :headers="headersSelecionados"
-            :items="selecionadosTabelaFL"
+            :items="ppd.si.avaliacao.selecionadosTabelaFL"
             class="elevation-1"
             :footer-props="footer_Classes"
             :page.sync="paginaSelect"
@@ -96,7 +118,9 @@
 
               <template v-slot:item="props">
                 <tr>
-                <td>{{ props.item.info }}</td>
+                <td>{{ props.item.codigo}}</td>
+                <td>{{ props.item.referencia}}</td>
+                <td>{{ props.item.titulo}}</td>
                 <td>
                   <v-btn small color="red darken-2" dark rounded @click="unselectClasse(props.item)">
                   <v-icon dark>remove_circle_outline</v-icon>
@@ -117,6 +141,7 @@
         </v-row>
         <v-dialog v-model="addClasse">
           <AddClasse
+            :myhelp="myhelp"
             v-bind:classesSI="classesSI"
             v-bind:classesDaFonteL="classesDaFonteL"
             hide-overlay
@@ -124,15 +149,11 @@
           />
         </v-dialog>
 
-
         <v-row>
           <v-col>
             <hr style="border: 3px solid indigo; border-radius: 2px;" />
           </v-col>
         </v-row>
-
-
-
 
         <v-row>
           <v-col cols="12" xs="12" sm="3">
@@ -165,7 +186,9 @@
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Selecione o(s) sistema(s) informação relacionado(s)</div>
+            <div class="info-label">Selecione o(s) sistema(s) informação relacionado(s)
+              <InfoBox header="Sistema de Informação Relacionado" :text="myhelp.Ppd.Avaliacao.siRelacionado"/>
+            </div>
           </v-col>
           <v-col>
             <v-card>
@@ -196,14 +219,12 @@
                         item-text="label"
                         item-value="value"
                         label="Indique a relação"
-                        v-model="props.item.idRel"
                         :items="tipoRelacao"
                         solo
                         @change="selectSistema(props.item.numeroSI, $event)"
                       />
                     </td>
                     <td>{{ props.item.numeroSI }}</td>
-                    <td>{{ props.item.relacao }}</td>
                   </tr>
                 </template>
 
@@ -255,11 +276,7 @@
                 <InfoBox header="Criticidade do SI" :text="myhelp.Ppd.Avaliacao.criticidadeSI" />
               </div>
           </v-col>
-          <v-col
-            class="d-flex"
-            cols="12"
-            sm="9"
-          >
+          <v-col class="d-flex" cols="12" sm="9">
             <v-select
               :items="checkedCriticidade"
               label="Indique a criticidade do SI (1-4)"
@@ -283,28 +300,6 @@
                 color="indigo darken-3"
               ></v-radio>
             </v-radio-group>
-          </v-col>
-          <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Legislação / Diplomas jurídico-administrativos</div>
-          </v-col>
-          <v-col cols="12" xs="12" sm="9" v-if="semaforos.legislacaoReady">
-            <v-autocomplete
-              v-model="ppd.si.avaliacao.legislacao"
-              :items="listaLegislacao"
-              item-text="numero"
-              item-value="numero"
-              placeholder="Selecione as legislações/diplomas jurídico-administrativos"
-              multiple
-              chips
-              deletable-chips
-              return-object
-            >
-            </v-autocomplete>
-          </v-col>
-          <v-col v-else>
-            <v-alert dense type="info">
-              Ainda não foi possível carregar as legislações/diplomas jurídico-administrativos...
-            </v-alert>
           </v-col>
         </v-row>
         <v-row>
@@ -339,9 +334,7 @@ export default {
       siTipoRelacao: [],
       loadCheck: "",
       addDecomposicao: false,
-      tabelaDecomposicao: [],
       addClasse: false,
-      selecionadosTabelaFL: [],
 
       siRelacionadosHeaders: [
         { text: "Relação", align: "left", value: "relacao" },
@@ -353,7 +346,9 @@ export default {
         { text: "Remover", align: "left", sortable: false, value: "" },
       ],
       headersSelecionados:[
-        {text: "Info", sortable: false, value: "info"},
+        {text: "Código", sortable: false, value: "codigo"},
+        {text: "Referência", sortable: false, value: "referencia"},
+        {text: "Título", sortable: false, value: "titulo"},
         {text: "Remover", align: "left", sortable: false, value: "" },
       ],
       headersDecomp:[
@@ -397,7 +392,7 @@ export default {
       checkedCriticidade: ["Muito crítico", "Crítico", "Pouco crítico", "Não crítico"],
       simNao: ["Sim", "Não"],
 
-
+      tabelaDecomposicao:[]
 
     };
   },
@@ -408,24 +403,29 @@ export default {
 
     //-----------
     guardarClasse(item) {
-      this.selecionadosTabelaFL.push(item);
+      this.ppd.si.avaliacao.selecionadosTabelaFL.push(item);
       this.addClasse= false;
     },
 
     unselectClasse: function(item) {
-      this.classesSI.push(item);
-      var index = this.selecionadosTabelaFL.findIndex(e => e.id === item.id);
-      this.selecionadosTabelaFL.splice(index, 1);
+      if(item.codigo){
+        this.classesSI.push({info:"Cod: " + item.codigo + " - " + item.titulo , classe:item.classe});
+      }
+      else{
+        this.classesSI.push({info:"Ref: " + item.referencia + " - " + item.titulo , classe:item.classe})
+      }
+      var index = this.ppd.si.avaliacao.selecionadosTabelaFL.findIndex(e => e.classe === item.classe);
+      this.ppd.si.avaliacao.selecionadosTabelaFL.splice(index, 1);
     },
 
     guardarDecomp(item) {
-      this.tabelaDecomposicao.push(item);
+      this.ppd.si.avaliacao.tabelaDecomposicao.push(item);
       this.addDecomposicao= false;
     },
 
     unselectDecomp: function(item) {
-      var index = this.tabelaDecomposicao.findIndex(e => e.numeroSub === item.numeroSub);
-      this.tabelaDecomposicao.splice(index, 1);
+      var index = this.ppd.si.avaliacao.tabelaDecomposicao.findIndex(e => e.numeroSub === item.numeroSub);
+      this.ppd.si.avaliacao.tabelaDecomposicao.splice(index, 1);
     },
 
     selectSistema: function(numeroSI, relacao) {

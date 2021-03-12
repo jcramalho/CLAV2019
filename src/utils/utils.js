@@ -121,8 +121,32 @@ export function mapKeys(key) {
       descricao = "Notas de Exclusão";
       break;
 
+    case "exemplosNotasAp":
+      descricao = "Exemplo Notas de Aplicação";
+      break;
+
+    case "termosInd":
+      descricao = "Termos de Índice";
+      break;
+
     case "entProd":
       descricao = "Entidade Produtora";
+      break;
+
+    case "tipoProc":
+      descricao = "Tipo de Processo";
+      break;
+
+    case "procTrans":
+      descricao = "Processo Transversal";
+      break;
+
+    case "donos":
+      descricao = "Donos do processo";
+      break;
+
+    case "processosRelacionados":
+      descricao = "Processos Relacionados";
       break;
 
     default:
@@ -162,7 +186,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null
+            nota: null,
           };
         }
       } else if (objSubmetido[key] instanceof Array) {
@@ -170,13 +194,13 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: notasComRemovidos(objOriginal[key], objSubmetido[key])
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
           };
         } else if (!comparaArraySel(objSubmetido[key], objOriginal[key])) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: notasComRemovidos(objOriginal[key], objSubmetido[key])
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
           };
         }
       }
@@ -187,7 +211,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
         historico[key] = {
           cor: "verde",
           dados: objSubmetido[key],
-          nota: null
+          nota: null,
         };
       }
     }
@@ -203,7 +227,7 @@ export function converterDadosOriginais(dados) {
     dadosConvertidos[key] = {
       cor: null,
       dados: dados[key],
-      nota: null
+      nota: null,
     };
   }
 
@@ -245,7 +269,15 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
       siglaOuCodigo = "codigo";
       designacaoOuTitulo = "titulo";
     }
+    if (listaAnterior[0].nota !== undefined) {
+      siglaOuCodigo = "nota";
+      designacaoOuTitulo = null;
+    }
   } else if (listaAtual[0] !== undefined) {
+    if (listaAtual[0].nota !== undefined) {
+      siglaOuCodigo = "nota";
+      designacaoOuTitulo = null;
+    }
     if (listaAtual[0].sigla === undefined) {
       siglaOuCodigo = "codigo";
       designacaoOuTitulo = "titulo";
@@ -260,7 +292,11 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
         itemAtual => itemAtual[siglaOuCodigo] === itemAnterior[siglaOuCodigo]
       )
     )
-      notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
+      if (designacaoOuTitulo === null) {
+        notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]};`;
+      } else {
+        notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
+      }
   });
 
   if (notaComRemovidos === "\nItens removidos:") return null;
@@ -318,7 +354,7 @@ export function gerarDadosRelatorio(pedido) {
     tipoPedido: "",
     numeroPedido: "",
     alteracaoInfo: "",
-    estadoPedido: ""
+    estadoPedido: "",
   };
 
   Object.keys(pedidoSubmetido).forEach(item => {
@@ -378,7 +414,7 @@ export function gerarDadosRelatorio(pedido) {
     relatorio.comparacao.push({
       campo: mapKeys(campo),
       submetido: pedidoSubmetido[campo],
-      finalizado: pedidoFinalizado[campo]
+      finalizado: pedidoFinalizado[campo],
     });
   });
 
@@ -536,5 +572,5 @@ export default {
   identificaItemAdicionado,
   identificaItemEmTabela,
   adicionarNotaComRemovidos,
-  mapKeysRADA
+  mapKeysRADA,
 };

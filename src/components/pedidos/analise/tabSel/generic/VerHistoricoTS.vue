@@ -48,7 +48,7 @@
     <v-expansion-panels class="ma-1">
       <v-expansion-panel class="ma-1" popout focusable>
         <v-expansion-panel-header
-          class="pa-2 indigo darken-4 title white--text"
+          class="clav-linear-background pa-2 title white--text"
         >
           <b>Tabela de Seleção</b>
         </v-expansion-panel-header>
@@ -69,7 +69,7 @@ export default {
   props: ["historico", "tipo"],
   components: {
     VerHistoricoCampo,
-    VerHistoricoTabela
-  }
+    VerHistoricoTabela,
+  },
 };
 </script>

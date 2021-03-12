@@ -13,7 +13,15 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Nome da Tipologia</div>
+              <div class="info-label">
+                Nome da Tipologia
+                <InfoBox
+                  header="Nome da tipologia"
+                  :text="myhelp.Tipologias.Campos.Nome"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <v-text-field
@@ -29,7 +37,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sigla</div>
+              <div class="info-label">
+                Sigla
+                <InfoBox
+                  header="Sigla"
+                  :text="myhelp.Tipologias.Campos.Sigla"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <v-text-field
@@ -47,7 +63,15 @@
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
-                <div>Entidades</div>
+                <div>
+                  Entidades
+                  <InfoBox
+                    header="Selecionar entidades"
+                    :text="myhelp.Tipologias.Campos.Entidades"
+                    helpColor="indigo lighten-5"
+                    dialogColor="#E0F2F1"
+                  />
+                </div>
 
                 <template v-slot:actions>
                   <v-icon color="white">expand_more</v-icon>
@@ -92,9 +116,13 @@
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 import PainelOpsTip from "@/components/tipologias/PainelOperacoesTipologias";
+import InfoBox from "@/components/generic/infoBox.vue";
+
+const help = require("@/config/help").help;
 
 export default {
   data: () => ({
+    myhelp: help,
     tipologia: {
       designacao: "",
       sigla: "",
@@ -115,6 +143,7 @@ export default {
     DesSelEnt,
     SelEnt,
     PainelOpsTip,
+    InfoBox
   },
 
   methods: {

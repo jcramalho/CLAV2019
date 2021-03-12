@@ -1,138 +1,174 @@
 <template>
-  <v-expansion-panel popout focusable>
-    <v-expansion-panel-header class="indigo darken-3 white--text">
-      <div>
-        <b>Pedidos Novos</b>
-        <sup class="ml-1">
-          <v-badge color="red">
-            <template v-slot:badge>
-              {{ pedidos.length }}
-            </template>
-          </v-badge>
-        </sup>
-      </div>
-
-      <template v-slot:actions>
-        <v-icon color="white">expand_more</v-icon>
-      </template>
-    </v-expansion-panel-header>
-
-    <v-expansion-panel-content>
-      <v-card>
-        <v-card-title>
-          <v-text-field
-            v-model="procurar"
-            append-icon="search"
-            label="Procurar pedido"
-            single-line
-            hide-details
-            filled
-          />
-        </v-card-title>
-        <v-data-table
-          :headers="headers"
-          :items="dadosTabela"
-          :search.sync="procurar"
-          class="elevation-1"
-          :custom-sort="ordenaTabela"
-          :footer-props="footer_props"
-          :page.sync="paginaTabela"
-        >
-          <template v-slot:no-data>
-            <v-alert type="error" width="50%" class="m-auto mb-2 mt-2" outlined>
-              Não existem pedidos neste estado...
-            </v-alert>
-          </template>
-
-          <template v-slot:no-results>
-            <v-alert type="info" width="50%" class="m-auto mb-2 mt-2" outlined>
-              Sem resultados para "<strong>{{ procurar }}</strong
-              >".
-            </v-alert>
-          </template>
-
-          <template v-slot:footer.page-text="props">
-            {{ props.pageStart }} - {{ props.pageStop }} de
-            {{ props.itemsLength }}
-          </template>
-
-          <template slot="headerCell" slot-scope="props">
-            <span style="color: blue;">
-              {{ props.header.text }}
-            </span>
-          </template>
-
-          <template v-slot:item.tarefa="{ item }">
-            <v-tooltip bottom>
+  <PainelCLAV titulo="Pedidos Novos" infoHeader="Pedidos Novos">
+    <template v-slot:icon>
+      <v-badge color="red" overlap offset-x="9" offset-y="20">
+        <unicon
+          class="mt-3"
+          name="pedido-novo-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 20.71 20.709"
+          fill="#ffffff"
+        />
+        <template v-slot:badge>
+          {{ pedidos.length }}
+        </template>
+      </v-badge>
+    </template>
+    <template v-slot:conteudo>
+      <v-row>
+        <v-col>
+          <div class="info-content pa-4">
+            <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
-                <v-icon
-                  @click="showPedido(item)"
-                  color="indigo darken-2"
+                <v-text-field
                   v-on="on"
-                >
-                  visibility
-                </v-icon>
+                  v-model="procurar"
+                  append-icon="search"
+                  label="Procurar pedido"
+                  text
+                  single-line
+                  hide-details
+                  clearable
+                  color="blue darken-3"
+                  class="mt-n2 mb-3 mx-6 font-weight-medium"
+                ></v-text-field>
               </template>
-              <span>Ver pedido...</span>
+
+              <span> Procurar pedido</span>
             </v-tooltip>
 
-            <v-tooltip v-if="temPermissaoDistribuir()" bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon
-                  @click="distribuiPedido(item)"
-                  color="indigo darken-2"
-                  v-on="on"
-                >
-                  person
-                </v-icon>
+            <v-data-table
+              class="content-table"
+              :headers="headers"
+              :items="dadosTabela"
+              :search.sync="procurar"
+              sortDesc
+              sort-by="data"
+              :custom-sort="ordenaTabela"
+              :footer-props="footer_props"
+              :page.sync="paginaTabela"
+            >
+              <template v-slot:no-data>
+                <v-alert
+                  :value="true"
+                  color="error"
+                  icon="warning"
+                  class="font-weight-medium my-3"
+                  id="alerta-erro"
+                  >Não existem pedidos neste estado.
+                </v-alert>
               </template>
-              <span>Distribuir pedido...</span>
-            </v-tooltip>
 
-            <v-tooltip v-if="temPermissaoDevolver()" bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon
-                  @click="devolverPedido(item)"
-                  color="indigo darken-2"
-                  v-on="on"
+              <template v-slot:no-results>
+                <v-alert
+                  :value="true"
+                  color="error"
+                  icon="warning"
+                  class="font-weight-medium my-3"
+                  id="alerta-erro"
+                  >Não foram encontrados resultados para "{{ procurar }}".</v-alert
                 >
-                  assignment_return
-                </v-icon>
               </template>
-              <span>Devolver pedido...</span>
-            </v-tooltip>
-          </template>
 
-          <template v-slot:pageText="props">
-            Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
-            {{ props.itemsLength }}
-          </template>
-        </v-data-table>
-      </v-card>
-    </v-expansion-panel-content>
+              <template v-slot:[`footer.page-text`]="props">
+                {{ props.pageStart }} - {{ props.pageStop }} de
+                {{ props.itemsLength }}
+              </template>
 
-    <!-- Campo despacho -->
-    <v-dialog v-model="devolverPedidoDialog" width="60%">
-      <DevolverPedido
-        @fecharDialog="fecharDialog()"
-        @devolverPedido="despacharPedido($event)"
-      />
-    </v-dialog>
+              <template slot="headerCell" slot-scope="props">
+                <span style="color: blue">
+                  {{ props.header.text }}
+                </span>
+              </template>
 
-    <!-- Dialog de erros -->
-    <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
-      <ErroDialog :erros="erroDialog.mensagem" uri="/" />
-    </v-dialog>
-  </v-expansion-panel>
+              <template v-slot:[`item.tarefa`]="{ item }">
+                <v-tooltip top color="info" open-delay="500">
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" small text rounded @click="showPedido(item)">
+                      <unicon
+                        name="look-icon"
+                        width="25"
+                        height="25"
+                        viewBox="0 0 20.71 15.574"
+                        fill="#0D47A1"
+                      />
+                    </v-btn>
+                  </template>
+                  <span>Ver Pedido</span>
+                </v-tooltip>
+
+                <v-tooltip
+                  top
+                  color="info"
+                  open-delay="500"
+                  v-if="temPermissaoDistribuir()"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" small text rounded @click="distribuiPedido(item)">
+                      <unicon
+                        name="participacao-icon"
+                        width="25"
+                        height="25"
+                        viewBox="0 0 20.71 17.678"
+                        fill="#0D47A1"
+                      />
+                    </v-btn>
+                  </template>
+                  <span>Distribuir Pedido</span>
+                </v-tooltip>
+
+                <v-tooltip
+                  top
+                  color="info"
+                  open-delay="500"
+                  v-if="temPermissaoDevolver()"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" small text rounded @click="devolverPedido(item)">
+                      <unicon
+                        name="devolver-icon"
+                        width="25"
+                        height="25"
+                        viewBox="0 0 20.71 12.943"
+                        fill="#0D47A1"
+                      />
+                    </v-btn>
+                  </template>
+                  <span>Devolver Pedido</span>
+                </v-tooltip>
+              </template>
+
+              <template v-slot:pageText="props">
+                Pedidos {{ props.pageStart }} - {{ props.pageStop }} de
+                {{ props.itemsLength }}
+              </template>
+            </v-data-table>
+          </div>
+        </v-col>
+      </v-row>
+
+      <!-- Campo despacho -->
+      <v-dialog v-model="devolverPedidoDialog" width="60%" persistent>
+        <DevolverPedido
+          @fecharDialog="fecharDialog()"
+          @devolverPedido="despacharPedido($event)"
+        />
+      </v-dialog>
+
+      <!-- Dialog de erros -->
+      <v-dialog v-model="erroDialog.visivel" width="60%" persistent>
+        <ErroDialog :erros="erroDialog.mensagem" uri="/" />
+      </v-dialog>
+    </template>
+  </PainelCLAV>
 </template>
 
 <script>
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 import ErroDialog from "@/components/generic/ErroDialog";
-import {
-  NIVEIS_DISTRIBUIR_PEDIDO,
-  NIVEIS_DEVOLVER_PEDIDO,
-} from "@/utils/consts";
+import { NIVEIS_DISTRIBUIR_PEDIDO, NIVEIS_DEVOLVER_PEDIDO } from "@/utils/consts";
+import PainelCLAV from "@/components/generic/PainelCLAV";
 
 export default {
   props: ["pedidos", "pesquisaPedidos"],
@@ -140,6 +176,7 @@ export default {
   components: {
     DevolverPedido,
     ErroDialog,
+    PainelCLAV,
   },
 
   data: () => {
@@ -194,6 +231,7 @@ export default {
           value: "tarefa",
           sortable: false,
           class: "title",
+          align: "center",
           filterable: false,
         },
       ],
@@ -234,24 +272,12 @@ export default {
         const dados = {};
         dados.codigo = pedido.codigo;
         dados.tipo = `${pedido.objeto.tipo} - ${pedido.objeto.acao}`;
-        if (pedido.entidade !== undefined)
-          dados.entidade = pedido.entidade.split("_")[1];
+        if (pedido.entidade !== undefined) dados.entidade = pedido.entidade.split("_")[1];
         dados.responsavel = pedido.criadoPor;
         dados.data = this.converteData(pedido.data);
 
         return dados;
       });
-    },
-
-    ordenaTabela2(items, index, isDesc){
-      items.sort((a, b) => {
-        if (isDesc != "false") {
-          return a[index] < b[index] ? -1 : 1
-        } else {
-          return b[index] < a[index] ? -1 : 1
-        }
-      })
-      return items
     },
 
     ordenaTabela(items, index, isDesc) {
@@ -270,43 +296,24 @@ export default {
           }
         } else if (index[0] === "data") {
           if (!isDesc[0]) {
-            const dataA = a[index]
-              .split("-")
-              .reverse()
-              .join("");
+            const dataA = a[index].split("-").reverse().join("");
 
-            const dataB = b[index]
-              .split("-")
-              .reverse()
-              .join("");
+            const dataB = b[index].split("-").reverse().join("");
 
             return dataB.localeCompare(dataA);
           } else {
-            const dataA = a[index]
-              .split("-")
-              .reverse()
-              .join("");
+            const dataA = a[index].split("-").reverse().join("");
 
-            const dataB = b[index]
-              .split("-")
-              .reverse()
-              .join("");
+            const dataB = b[index].split("-").reverse().join("");
 
             return dataA.localeCompare(dataB);
           }
         } else {
-          if (
-            typeof a[index] !== "undefined" &&
-            typeof b[index] !== "undefined"
-          ) {
+          if (typeof a[index] !== "undefined" && typeof b[index] !== "undefined") {
             if (!isDesc[0]) {
-              return a[index]
-                .toLowerCase()
-                .localeCompare(b[index].toLowerCase());
+              return a[index].toLowerCase().localeCompare(b[index].toLowerCase());
             } else {
-              return b[index]
-                .toLowerCase()
-                .localeCompare(a[index].toLowerCase());
+              return b[index].toLowerCase().localeCompare(a[index].toLowerCase());
             }
           }
         }
@@ -342,9 +349,7 @@ export default {
     },
 
     devolverPedido(pedido) {
-      const pedidoEncontrado = this.pedidos.find(
-        (p) => p.codigo === pedido.codigo
-      );
+      const pedidoEncontrado = this.pedidos.find((p) => p.codigo === pedido.codigo);
 
       this.pedidoADevolver = pedidoEncontrado;
       this.devolverPedidoDialog = true;
@@ -376,8 +381,7 @@ export default {
         location.reload();
       } catch (e) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao devolver o pedido, por favor tente novamente";
+        this.erroDialog.mensagem = "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 
@@ -397,3 +401,36 @@ export default {
   },
 };
 </script>
+<style scoped>
+.separador {
+  color: white;
+  padding: 5px;
+  margin: 5px;
+  font-weight: 400;
+  width: 100%;
+  min-height: 50px;
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
+  font-size: 14pt;
+  font-weight: bold;
+  border-radius: 10px 10px 0 0;
+}
+#expanded-content {
+  margin-right: 12px !important;
+  margin-left: 17px !important;
+  margin-top: -1.1rem;
+  border: 1px solid #dee2f8;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
+}
+.content-table {
+  background-color: #f1f6f8 !important;
+  border-radius: 10px;
+}
+.info-content {
+  padding: 5px;
+  width: 100%;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px 10px 0 0;
+}
+</style>

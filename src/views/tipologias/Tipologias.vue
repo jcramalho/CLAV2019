@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-main class="px-12">
     <Loading v-if="!tipologiaReady" :message="'tipologias'" />
     <Listagem
       v-else
@@ -8,7 +8,7 @@
       :cabecalho="cabecalhos"
       :campos="campos"
     />
-  </div>
+  </v-main>
 </template>
 
 <script>
@@ -100,3 +100,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.content-table {
+  background-color: #f1f6f8 !important;
+  border-radius: 10px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px 10px 0 0;
+}
+</style>

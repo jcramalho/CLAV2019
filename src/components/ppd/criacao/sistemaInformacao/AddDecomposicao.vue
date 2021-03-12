@@ -59,7 +59,7 @@
 <script>
 
 export default {
-  props: ["tabelaDecomposicao", "numeroSI"],
+  props: ["numeroSI"],
 
   components: {},
 

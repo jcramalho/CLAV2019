@@ -12,13 +12,13 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     EditaLegislacao,
-    Loading,
+    Loading
   },
 
   data: () => ({
     legislacao: {},
     dadosReady: false,
-    entidades: null,
+    entidades: null
   }),
 
   methods: {
@@ -29,7 +29,7 @@ export default {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id,
+            id: item.id
           };
         });
       } catch (error) {
@@ -49,13 +49,13 @@ export default {
           diplomaFonte: leg.fonte,
           entidadesSel: JSON.parse(JSON.stringify(leg.entidades)),
           processosSel: proReg,
-          estado: leg.estado,
+          estado: leg.estado
         };
         return myLegislacao;
       } catch (e) {
         return {};
       }
-    },
+    }
   },
 
   created: async function() {
@@ -81,8 +81,8 @@ export default {
 
       let newEnts = [];
 
-      this.legislacao.entidadesSel.forEach((ent) => {
-        let index = this.entidades.findIndex((e) => e.sigla === ent.sigla);
+      this.legislacao.entidadesSel.forEach(ent => {
+        let index = this.entidades.findIndex(e => e.sigla === ent.sigla);
         newEnts.push(this.entidades[index]);
       });
 
@@ -92,6 +92,6 @@ export default {
     } catch (e) {
       return e;
     }
-  },
+  }
 };
 </script>

@@ -144,7 +144,7 @@ export default {
 
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
-    validaCodigo: async function(){
+    validaCodigo: async function() {
       // Codigo
       if (this.c.codigo) {
         if (this.c.nivel > 1) {
@@ -165,6 +165,17 @@ export default {
               this.numeroErros++;
             }
           }
+          // if (!this.codeFormats[this.c.nivel].test(this.c.codigo)) {
+          //   this.mensagensErro.push({
+          //     sobre: "Código",
+          //     mensagem:
+          //       "Formato de código inválido! Deve ser: " +
+          //       this.formatoCodigo[this.c.nivel]
+          //   });
+          //   this.numeroErros++;
+          // }
+        }
+        try {
           if (!this.codeFormats[this.c.nivel].test(this.c.codigo)) {
             this.mensagensErro.push({
               sobre: "Código",
@@ -174,8 +185,6 @@ export default {
             });
             this.numeroErros++;
           }
-        }
-        try {
           var existe = await this.verificaExistenciaCodigo(this.c.codigo);
           if (existe) {
             this.mensagensErro.push({
@@ -200,7 +209,7 @@ export default {
       }
     },
 
-    validaTitulo: async function(){
+    validaTitulo: async function() {
       // Título
       if (this.c.titulo == "") {
         this.mensagensErro.push({
@@ -231,12 +240,12 @@ export default {
       }
     },
 
-    validaMeta: async function(){
-      this.validaCodigo();
-      this.validaTitulo();
+    validaMeta: async function() {
+      await this.validaCodigo();
+      await this.validaTitulo();
     },
 
-    validaDescricao: function(){
+    validaDescricao: function() {
       // Descrição
       if (this.c.descricao == "") {
         this.mensagensErro.push({
@@ -247,8 +256,30 @@ export default {
       }
     },
 
-    validaNotasAp: async function(){
+    validaNotasAp: async function() {
       // Notas de Aplicação
+      for (var i = 0; i < this.c.notasAp.length; i++) {
+        try {
+          var existeNotaAp = await this.$request(
+            "get",
+            "/notasAp/notaAp?valor=" +
+              encodeURIComponent(this.c.notasAp[i].nota)
+          );
+          if (existeNotaAp.data) {
+            this.mensagensErro.push({
+              sobre: "Nota de Aplicação(" + (i + 1) + ")",
+              mensagem: "[" + this.c.notasAp[i].nota + "] já existente na BD."
+            });
+            this.numeroErros++;
+          }
+        } catch (e) {
+          this.numeroErros++;
+          this.mensagensErro.push({
+            sobre: "Acesso à Ontologia",
+            mensagem: "Não consegui verificar a existência da NotaAp."
+          });
+        }
+      }
       if (this.notaDuplicada(this.c.notasAp)) {
         this.mensagensErro.push({
           sobre: "Nota de Aplicação(" + this.c.notasAp.length + ")",
@@ -283,9 +314,9 @@ export default {
       
     },
 
-    validaExemplosNotasAp: async function(){
+    validaExemplosNotasAp: async function() {
       // Exemplos de notas de Aplicação
-      for (let i = 0; i < this.c.exemplosNotasAp.length; i++) {
+      for (var i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
           var existeExemploNotaAp = await this.$request(
             "get",
@@ -319,7 +350,7 @@ export default {
       }
     },
 
-    validaNotasEx: async function(){
+    validaNotasEx: async function() {
       // Notas de Exclusão
       if (this.notaDuplicada(this.c.notasEx)) {
         this.mensagensErro.push({
@@ -330,9 +361,9 @@ export default {
       }
     },
 
-    validaTIs: async function(){
+    validaTIs: async function() {
       // Termos de Índice
-      for (let i = 0; i < this.c.termosInd.length; i++) {
+      for (var i = 0; i < this.c.termosInd.length; i++) {
         try {
           var existeTI = await this.$request(
             "get",
@@ -364,26 +395,31 @@ export default {
       }
     },
 
-    validaBlocoDescritivo: async function(){
-      this.validaDescricao();
-      this.validaNotasAp();
-      this.validaExemplosNotasAp();
-      this.validaNotasEx();
-      this.validaTIs();
+    validaBlocoDescritivo: async function() {
+      await this.validaDescricao();
+      await this.validaNotasAp();
+      await this.validaExemplosNotasAp();
+      await this.validaNotasEx();
+      await this.validaTIs();
     },
 
-    validaBlocoContexto: function(){
+    validaBlocoContexto: function() {
       // Um PN Transversal tem de ter 1 dono ou 1 participante
-      if((this.c.procTrans == "S")&&(this.c.donos.length==0)&&(this.c.participantes.length==0)){
+      if (
+        this.c.procTrans == "S" &&
+        this.c.donos.length == 0 &&
+        this.c.participantes.length == 0
+      ) {
         this.mensagensErro.push({
-            sobre: "Invariante da Transversalidade",
-            mensagem: "Um processo Transversal deve ter um dono ou um participante."
-          });
-          this.numeroErros++;
+          sobre: "Invariante da Transversalidade",
+          mensagem:
+            "Um processo Transversal deve ter um dono ou um participante."
+        });
+        this.numeroErros++;
       }
     },
 
-    validaDecisoesSemSub: async function(){
+    validaDecisoesSemSub: async function() {
       // Decisões
       // Sem subdivisão
       if (this.c.nivel == 3 && !this.c.temSubclasses4Nivel) {
@@ -433,14 +469,18 @@ export default {
       }
     },
 
-    validaDecisoesComSub: function(){
+    validaDecisoesComSub: function() {
       // Com subdivisão
       if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
-        
-        for (let i = 0; i < this.c.subclasses.length; i++) {
+
+        for (var i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
-          if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
+          if (
+            this.c.subclasses.filter(
+              s => s.titulo == this.c.subclasses[i].titulo
+            ).length > 1
+          ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
               mensagem: "Está repetido noutra subclasse."
@@ -501,13 +541,13 @@ export default {
 
     validarClasse: async function() {
       var i = 0;
-    
-      this.validaMeta();
-      this.validaBlocoDescritivo();
-      this.validaBlocoContexto();
-      this.validaDecisoesSemSub();
-      this.validaDecisoesComSub();
-      
+
+      await this.validaMeta();
+      await this.validaBlocoDescritivo();
+      await this.validaBlocoContexto();
+      await this.validaDecisoesSemSub();
+      await this.validaDecisoesComSub();
+
       if (this.numeroErros > 0) {
         this.dialog = true;
       } else {

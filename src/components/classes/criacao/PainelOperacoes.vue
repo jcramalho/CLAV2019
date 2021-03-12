@@ -129,7 +129,7 @@ export default {
   props: ["c", "pendenteId"],
   components: {
     ValidaClasseInfoBox,
-    DialogClasseCriada,
+    DialogClasseCriada
   },
   data() {
     return {
@@ -150,15 +150,15 @@ export default {
         1: /^[0-9]{3}$/,
         2: /^[0-9]{3}\.[0-9]{2}$/,
         3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
-      },
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
+      }
     };
   },
 
   watch: {
     dialog: function(val) {
       if (!val) this.limpaErros();
-    },
+    }
   },
 
   methods: {
@@ -176,7 +176,7 @@ export default {
             objeto: this.c,
             criadoPor: userBD.email,
             user: { email: userBD.email },
-            token: this.$store.state.token,
+            token: this.$store.state.token
           };
 
           // É preciso testar se há um Pendente criado para não criar um novo
@@ -569,7 +569,7 @@ export default {
           ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
-              mensagem: "Está repetido noutra subclasse.",
+              mensagem: "Está repetido noutra subclasse."
             });
           }
           // PCA: prazo
@@ -618,7 +618,7 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: [criarHistorico(this.c)],
+              historico: [criarHistorico(this.c)]
             };
 
             const codigoPedido = await this.$request(
@@ -659,8 +659,8 @@ export default {
         }
       }
       this.$router.push("/");
-    },
-  },
+    }
+  }
 };
 </script>
 <style>

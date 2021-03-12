@@ -2,8 +2,8 @@
   <div>
     <v-expansion-panels flat focusable v-model="panel">
       <v-expansion-panel>
-        <v-expansion-panel-header disable-icon-rotate color="#dee2f8" ripple>
-          <b style="color:#1a237e">Criar Nova Entidade</b>
+        <v-expansion-panel-header disable-icon-rotate color="#dee2f8">
+          <b style="color: #1a237e">Criar Nova Entidade</b>
 
           <template v-slot:actions>
             <v-icon color="sucess" rounded>add</v-icon>
@@ -15,18 +15,31 @@
               <v-form ref="form" :lazy-validation="false">
                 <v-row cols="12">
                   <v-col md="3" sm="3">
-                    <v-text-field :rules="siglaRules" v-model="sigla" label="Sigla"></v-text-field>
+                    <v-text-field
+                      :rules="siglaRules"
+                      v-model="sigla"
+                      label="Sigla"
+                    ></v-text-field>
                   </v-col>
 
                   <v-col md="3" sm="3">
                     <v-text-field
-                      :rules="[v => /^[0-9]*$/.test(v) || v == null || 'Apenas são aceites caracteres numéricos.']"
+                      :rules="[
+                        (v) =>
+                          /^[0-9]*$/.test(v) ||
+                          v == null ||
+                          'Apenas são aceites caracteres numéricos.',
+                      ]"
                       v-model="sioe"
                       label="SIOE"
                     ></v-text-field>
                   </v-col>
                   <v-col md="6" sm="6">
-                    <v-text-field :rules="designacaoRules" v-model="designacao" label="Designação"></v-text-field>
+                    <v-text-field
+                      :rules="designacaoRules"
+                      v-model="designacao"
+                      label="Designação"
+                    ></v-text-field>
                   </v-col>
                 </v-row>
                 <v-row>
@@ -38,7 +51,7 @@
                     >
                       <template v-slot:default="slotProps">
                         <v-text-field
-                          :rules="[v => !!v || 'Campo obrigatório!']"
+                          :rules="[(v) => !!v || 'Campo obrigatório!']"
                           v-model="slotProps.item.dataValor"
                           :label="slotProps.item.label"
                           prepend-icon="event"
@@ -57,7 +70,7 @@
                     >
                       <template v-slot:default="slotProps">
                         <v-text-field
-                          :rules="[v => !!data_criacao ? data_final_valida(v) : true]"
+                          :rules="[(v) => (!!data_criacao ? data_final_valida(v) : true)]"
                           v-model="slotProps.item.dataValor"
                           :label="slotProps.item.label"
                           prepend-icon="event"
@@ -70,7 +83,7 @@
                   </v-col>
                   <v-col sm="4" md="4">
                     <v-select
-                      :rules="[v => !!v || 'Campo obrigatório!']"
+                      :rules="[(v) => !!v || 'Campo obrigatório!']"
                       item-text="label"
                       item-value="value"
                       v-model="internacional"
@@ -104,19 +117,31 @@
                 </v-row>
                 <v-row v-if="!!alertOn">
                   <v-col>
-                    <v-alert dismissible dense text type="error">Entidade já existe!</v-alert>
+                    <v-alert dismissible dense text type="error"
+                      >Entidade já existe!</v-alert
+                    >
                   </v-col>
                 </v-row>
                 <v-row v-if="sucessOn">
                   <v-col>
-                    <v-alert dismissible dense text type="success">Entidade adicionada com sucesso!</v-alert>
+                    <v-alert dismissible dense text type="success"
+                      >Entidade adicionada com sucesso!</v-alert
+                    >
                   </v-col>
                 </v-row>
               </v-form>
             </v-card-text>
             <v-card-text style="position: relative">
               <v-fab-transition>
-                <v-btn @click="newEntidade" color="indigo darken-2" dark absolute right bottom fab>
+                <v-btn
+                  @click="newEntidade"
+                  color="indigo darken-2"
+                  dark
+                  absolute
+                  right
+                  bottom
+                  fab
+                >
                   <v-icon>add</v-icon>
                 </v-btn>
               </v-fab-transition>
@@ -135,9 +160,9 @@ import SelecionarData from "@/components/generic/SelecionarData";
 export default {
   props: ["entidades", "produtoras", "tipologias", "entidadesProcessadas"],
   components: {
-    SelecionarData
+    SelecionarData,
   },
-  data: function() {
+  data: function () {
     return {
       panel: [0],
       data_menu_1: false,
@@ -149,20 +174,20 @@ export default {
       sigla: "",
       sioe: "",
       tipologiasSel: [],
-      siglaRules: [v => !!v || "A Sigla é um campo obrigatório."],
+      siglaRules: [(v) => !!v || "A Sigla é um campo obrigatório."],
       designacao: "",
-      designacaoRules: [v => !!v || "A Designação é obrigatória."],
+      designacaoRules: [(v) => !!v || "A Designação é obrigatória."],
       internacional: "",
       simNao: [
         {
           label: "Sim",
-          value: "Sim"
+          value: "Sim",
         },
         {
           label: "Não",
-          value: "Não"
-        }
-      ]
+          value: "Não",
+        },
+      ],
     };
   },
 
@@ -198,7 +223,7 @@ export default {
             internacional: this.internacional,
             dataCriacao: this.data_criacao,
             dataExtincao: !!this.data_extincao ? this.data_extincao : "",
-            tipologiasSel: this.tipologiasSel
+            tipologiasSel: this.tipologiasSel,
           };
 
           // PUSH PARA ARRAY DE ENTIDADES SELECIONADAS
@@ -207,7 +232,7 @@ export default {
           // PUSH PARA ARRAY DE ENTIDADES DOS ITEMS
           this.entidadesProcessadas.push({
             entidade: entidade.sigla + " - " + entidade.designacao,
-            disabled: false
+            disabled: false,
           });
 
           // PUSH DA ENTIDADE COMPLETA PARA O ARRAY ENTIDADES
@@ -230,14 +255,14 @@ export default {
     },
     // Provavelmente vai ter que se alterar
     async validaEntidade() {
-      return this.entidades.some(el => {
+      return this.entidades.some((el) => {
         return (
           el.sigla.toLowerCase() == this.sigla.toLowerCase() ||
           el.designacao.toLowerCase() == this.designacao.toLowerCase()
         );
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

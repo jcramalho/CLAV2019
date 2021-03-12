@@ -7,7 +7,7 @@ import CriaTabSelPluri from "@/components/tabSel/criacaoTSPluri/CriaTabSelPluri.
 
 export default {
   components: {
-    CriaTabSelPluri
-  }
+    CriaTabSelPluri,
+  },
 };
 </script>

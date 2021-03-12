@@ -21,7 +21,9 @@
             <td style="width:20%;">
               <div class="info-label">Fonte de Legitimação</div>
             </td>
-            <td style="width:80%;">{{ p.objeto.dados.legislacao }}</td>
+            <td style="width:80%;">
+              <a :href="'/legislacao/' + p.objeto.dados.refLegislacao">{{ p.objeto.dados.legislacao }}</a>
+            </td>
           </tr>
           <tr v-else>
             <td style="width:20%;">
@@ -38,7 +40,14 @@
             <td style="width:20%;">
               <div class="info-label">Fundo</div>
             </td>
-            <td style="width:80%;"><div v-for="(f,i) in p.objeto.dados.fundo" :key="i">{{f}}</div></td>
+            <td style="width:80%;">
+              <ul>
+                <li v-for="(f,i) in p.objeto.dados.fundo" :key="i">
+                  <a :href="'/entidades/' + f.fundo">{{f.fundo.substring(4)}}</a>
+                   - {{f.nome}}
+                </li>
+              </ul>
+            </td>
           </tr>
         </table>
 
@@ -62,19 +71,17 @@
                         v-text="
                           item.codigo +
                             ', ' +
-                          item.referencia +
-                            ' - ' +
-                          item.titulo                           
+                          item.referencia                       
                         "
-                      ></v-list-item-title>
+                      ><span if="item.titulo"> - {{item.titulo}}</span></v-list-item-title>
                       <v-list-item-title
                         v-else-if="item.codigo"
-                        v-text="item.codigo + ' - ' + item.titulo"
-                      ></v-list-item-title>
+                        v-text="item.codigo"
+                      ><span if="item.titulo"> - {{item.titulo}}</span></v-list-item-title>
                       <v-list-item-title
                         v-else
-                        v-text="item.referencia + ' - ' + item.titulo"
-                      ></v-list-item-title>
+                        v-text="item.referencia"
+                      ><span if="item.titulo"> - {{item.titulo}}</span></v-list-item-title>
                     </v-list-item-content>
                   </template>
                   <v-list-item-content>
@@ -104,23 +111,23 @@
                             {{ item.titulo }}
                           </td>
                         </tr>
-                        <tr v-if="item.prazoConservacao">
+                        <!--tr v-if="item.prazoConservacao">
                           <td style="width:20%;">
                             <div class="info-label">Prazo de Conservação Administrativa</div>
                           </td>
                           <td style="width:80%;">
                             {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
                           </td>
-                        </tr>
-                        <tr v-if="item.notasPCA">
+                        </tr-->
+                        <!--tr v-if="item.notasPCA">
                           <td style="width:20%;">
                             <div class="info-label">
                               Notas do PCA
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.notasPCA }}</td>
-                        </tr>
-                        <tr v-if="item.destino">
+                        </tr-->
+                        <!--tr v-if="item.destino">
                           <td style="width:20%;">
                             <div class="info-label">Destino Final</div>
                           </td>
@@ -136,38 +143,38 @@
                           <td v-else style="width:80%;">
                             {{ item.destino }}
                           </td>
-                        </tr>
-                        <tr v-if="item.notaDF">
+                        </tr-->
+                        <!--tr v-if="item.notaDF">
                           <td style="width:20%;">
                             <div class="info-label">
                               Nota do DF
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.notaDF }}</td>
-                        </tr>
+                        </tr-->
                         
-                        <tr v-if="item.destino=='CP' && item.justificaDF">
+                        <!--tr v-if="item.destino=='CP' && item.justificaDF">
                           <td style="width:20%;">
                             <div class="info-label">
                               Justificação do DF
                             </div>
                           </td>
                           <td style="width:80%;"><span v-for="(just,index) in item.justificaDF" :key="index">{{ just }}</span></td>
-                        </tr>
-                        <tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
+                        </tr-->
+                        <!--tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
                           <td style="width:20%;">
                             <div class="info-label">
                               Natureza de intervenção
                             </div>
                           </td>
                           <td style="width:80%;">{{ item.ni }}</td>
-                        </tr>
-                        <tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
+                        </tr-->
+                        <!--tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
                           <td style="width:20%;">
                             <div class="info-label">Donos do PN</div>
                           </td>
                           <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
-                        </tr>
+                        </tr-->
                         <tr>
                           <td style="width:20%;">
                             <div class="info-label">Data de Início</div>
@@ -188,8 +195,7 @@
                               N.º de agregações
                             </div>
                           </td>
-                          <td v-if="item.agregacoes.length==0" style="width:80%;">{{ item.nrAgregacoes }}</td>
-                          <td v-else style="width:80%;">{{ item.agregacoes.length }}</td>
+                          <td style="width:80%;">{{ item.nrAgregacoes }}</td>
                         </tr>
                         <tr v-if="item.uiPapel">
                           <td style="width:20%;">
@@ -216,7 +222,7 @@
                           <td style="width:80%;">{{ item.uiOutros }}</td>
                         </tr>
                       </table>
-                      <div class="ma-1" v-if="item.agregacoes.length >0">
+                      <div class="ma-1" v-if="item.agregacoes && (item.agregacoes.length >0)">
                         <v-row justify="space-between" class="info-label">
                           <v-col>Lista de Agregações</v-col>
                           <v-col>

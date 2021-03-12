@@ -4,16 +4,20 @@
     <v-expansion-panel-header class="expansion-panel-heading">
       <div>
         3.  Caracterização tecnológica do sistema de informação
-        <InfoBox header="Caracterização SI" :text="myhelp.Ppd.Caracterizacao.geral"  helpColor="white"/>
+        <InfoBox header="Caracterização SI" :text="myhelp.Ppd.Caracterizacao.geral" helpColor="white"/>
       </div>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
       <v-row>
          <v-col cols="12" xs="12" sm="12">
-            <div class="separador">Dependência tecnológica</div>
+            <div class="separador">Dependência tecnológica
+              <InfoBox header="Nível de dependência do Software" :text="myhelp.Ppd.Caracterizacao.dependenciaTecnologica" helpColor="white"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Nível de dependência do Software</div>
+            <div class="info-label">Nível de dependência do Software
+              <InfoBox header="Nível de dependência do Software" :text="myhelp.Ppd.Caracterizacao.dependenciaSoft"/>
+            </div>
         </v-col>
         <v-col
           class="d-flex"
@@ -30,7 +34,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Categoria dos dados</div>
+            <div class="info-label">Categoria dos dados
+              <InfoBox header="Categoria dos dados" :text="myhelp.Ppd.Caracterizacao.categoriaDados"/>
+            </div>
         </v-col>
         <v-col
           class="d-flex"
@@ -47,7 +53,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Formatos</div>
+          <div class="info-label">Formatos
+              <InfoBox header="Formatos" :text="myhelp.Ppd.Caracterizacao.formatos"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
@@ -59,10 +67,14 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="12">
-            <div class="separador">Crescimento do sistema</div>
+            <div class="separador">Crescimento do sistema
+              <InfoBox header="Crescimento do sistema" :text="myhelp.Ppd.Caracterizacao.crescimentoSisma" helpColor="white"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Modelo de crescimento</div>
+            <div class="info-label">Modelo de crescimento
+              <InfoBox header="Modelo de crescimento" :text="myhelp.Ppd.Caracterizacao.modeloCres"/>
+            </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -81,7 +93,9 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Dimensão atual</div>
+          <div class="info-label">Dimensão atual
+            <InfoBox header="Dimensão atual" :text="myhelp.Ppd.Caracterizacao.dimensao"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
@@ -93,7 +107,9 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Crescimento anual</div>
+          <div class="info-label">Crescimento anual
+            <InfoBox header="Crescimento anual" :text="myhelp.Ppd.Caracterizacao.crescimento"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
@@ -105,10 +121,14 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" xs="12" sm="12">
-            <div class="separador">Segurança geral da plataforma tecnológica</div>
+            <div class="separador">Segurança geral da plataforma tecnológica
+              <InfoBox header="Segurança geral da plataforma tecnológica" :text="myhelp.Ppd.Caracterizacao.segurancaGeral" helpColor="white"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Localização de Sistema</div>
+            <div class="info-label">Localização de Sistema
+              <InfoBox header="Localização de Sistema" :text="myhelp.Ppd.Caracterizacao.localSistema"/>
+            </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -121,7 +141,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Sala técnica</div>
+            <div class="info-label">Sala técnica
+              <InfoBox header="Sala técnica" :text="myhelp.Ppd.Caracterizacao.salaTec"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-radio-group v-model="ppd.si.caracterizacao.salaTec" row>
@@ -136,7 +158,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Acesso reservado a sala técnica</div>
+            <div class="info-label">Acesso reservado a sala técnica
+              <InfoBox header="Acesso reservado a sala técnica" :text="myhelp.Ppd.Caracterizacao.acessoSalaTec"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-radio-group v-model="ppd.si.caracterizacao.acessoSalaTec" row>
@@ -151,7 +175,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Sistemas de energia redundantes</div>
+            <div class="info-label">Sistemas de energia redundantes
+              <InfoBox header="Sistemas de energia redundantes" :text="myhelp.Ppd.Caracterizacao.energiaRed"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-radio-group v-model="ppd.si.caracterizacao.energiaRed" row>
@@ -166,7 +192,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Energia socorrida</div>
+            <div class="info-label">Energia socorrida
+              <InfoBox header="Energia socorrida" :text="myhelp.Ppd.Caracterizacao.energiaSoc"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
            <v-radio-group v-model="ppd.si.caracterizacao.energiaSoc" row>
@@ -181,7 +209,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Sistema de alarme e extinção de incêndio</div>
+          <div class="info-label">Sistema de alarme e extinção de incêndio
+            <InfoBox header="Sistema de alarme e extinção de incêndio" :text="myhelp.Ppd.Caracterizacao.alarme"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -194,7 +224,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Climatização dedicada</div>
+          <div class="info-label">Climatização dedicada
+            <InfoBox header="Climatização dedicada" :text="myhelp.Ppd.Caracterizacao.climatizacao"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
             <v-radio-group v-model="ppd.si.caracterizacao.climatizacao" row>
@@ -209,7 +241,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Utilização de métodos de prevenção ou mitigação de malware e outras ciberameaças</div>
+          <div class="info-label">Utilização de métodos de prevenção ou mitigação de malware e outras ciberameaças
+            <InfoBox header="Utilização de métodos de prevenção ou mitigação de malware e outras ciberameaças" :text="myhelp.Ppd.Caracterizacao.seguranca"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -222,7 +256,9 @@
         </v-col>
 
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Comunicação externa segura</div>
+          <div class="info-label">Comunicação externa segura
+            <InfoBox header="Comunicação externa segura" :text="myhelp.Ppd.Caracterizacao.comunicacaoEx"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
             <v-radio-group v-model="ppd.si.caracterizacao.comunicacaoEx" row>
@@ -236,7 +272,9 @@
           </v-radio-group>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Plano contingência</div>
+          <div class="info-label">Plano contingência
+            <InfoBox header="Plano contingência" :text="myhelp.Ppd.Caracterizacao.planoContingencia"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -248,7 +286,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Plano para gerir mudança e evolução da plataforma tecnológica</div>
+          <div class="info-label">Plano para gerir mudança e evolução da plataforma tecnológica
+            <InfoBox header="Plano para gerir mudança e evolução da plataforma tecnológica" :text="myhelp.Ppd.Caracterizacao.planoMudEvolucao"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -260,10 +300,14 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="12">
-            <div class="separador">Segurança específica dos sistemas</div>
+            <div class="separador">Segurança específica dos sistemas
+              <InfoBox header="Segurança específica dos sistemas" :text="myhelp.Ppd.Caracterizacao.segurancaEspecifica" helpColor="white"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Privilégios de acesso</div>
+          <div class="info-label">Privilégios de acesso
+            <InfoBox header="Privilégios de acesso" :text="myhelp.Ppd.Caracterizacao.privAcesso"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
             <v-radio-group v-model="ppd.si.caracterizacao.privAcesso" row>
@@ -277,7 +321,9 @@
           </v-radio-group>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Categorias de segurança dos dados</div>
+          <div class="info-label">Categorias de segurança dos dados
+            <InfoBox header="Categorias de segurança dos dados" :text="myhelp.Ppd.Caracterizacao.catSegDados"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -289,7 +335,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Rotinas de auditoria configuradas</div>
+          <div class="info-label">Rotinas de auditoria configuradas
+            <InfoBox header="Rotinas de auditoria configuradas" :text="myhelp.Ppd.Caracterizacao.rotinaAuditoria"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
             <v-radio-group v-model="ppd.si.caracterizacao.rotinaAuditoria" row>
@@ -303,7 +351,9 @@
           </v-radio-group>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Logs das rotinas periodicamente analisados</div>
+          <div class="info-label">Logs das rotinas periodicamente analisados
+            <InfoBox header="Logs das rotinas periodicamente analisados" :text="myhelp.Ppd.Caracterizacao.logsRotinas"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
             <v-radio-group v-model="ppd.si.caracterizacao.logsRotinas" row>
@@ -317,7 +367,9 @@
           </v-radio-group>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Integridade da informação do sistema</div>
+          <div class="info-label">Integridade da informação do sistema
+            <InfoBox header="Integridade da informação do sistema" :text="myhelp.Ppd.Caracterizacao.integridadeInfo"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -329,10 +381,14 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="12">
-            <div class="separador">Armazenamento</div>
+            <div class="separador">Armazenamento
+              <InfoBox header="Armazenamento" :text="myhelp.Ppd.Caracterizacao.armazenamentoGeral" helpColor="white"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Armazenamento dedicado</div>
+          <div class="info-label">Armazenamento dedicado
+            <InfoBox header="Armazenamento dedicado" :text="myhelp.Ppd.Caracterizacao.armazenamento"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -344,7 +400,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Replicação de dados</div>
+          <div class="info-label">Replicação de dados
+            <InfoBox header="Replicação de dados" :text="myhelp.Ppd.Caracterizacao.replicacaoDados"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
             <v-radio-group v-model="ppd.si.caracterizacao.replicacaoDados" row>
@@ -358,7 +416,9 @@
           </v-radio-group>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Backups regulares</div>
+          <div class="info-label">Backups regulares
+            <InfoBox header="Backups regulares" :text="myhelp.Ppd.Caracterizacao.backupsRegular"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -370,7 +430,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Modelo do backup</div>
+          <div class="info-label">Modelo do backup
+            <InfoBox header="Modelo do backup" :text="myhelp.Ppd.Caracterizacao.modeloBackup"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -382,7 +444,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Qualidade do backup</div>
+          <div class="info-label">Qualidade do backup
+            <InfoBox header="Qualidade do backup" :text="myhelp.Ppd.Caracterizacao.qualidadeBackup"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -394,10 +458,14 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="12">
-            <div class="separador">Documentação</div>
+            <div class="separador">Documentação
+              <InfoBox header="Documentação" :text="myhelp.Ppd.Caracterizacao.documentacao" helpColor="white"/>
+            </div>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Inventário de Software</div>
+          <div class="info-label">Inventário de Software
+            <InfoBox header="Inventário de Software" :text="myhelp.Ppd.Caracterizacao.inventarioSoft"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -409,7 +477,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Inventário de Hardware</div>
+          <div class="info-label">Inventário de Hardware
+            <InfoBox header="Inventário de Hardware" :text="myhelp.Ppd.Caracterizacao.inventarioHard"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -421,7 +491,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Documentação dos sistemas</div>
+          <div class="info-label">Documentação dos sistemas
+            <InfoBox header="Documentação dos sistemas" :text="myhelp.Ppd.Caracterizacao.documentacaoSis"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -433,7 +505,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Documentação de procedimentos</div>
+          <div class="info-label">Documentação de procedimentos
+            <InfoBox header="Documentação de procedimentos" :text="myhelp.Ppd.Caracterizacao.documentacaoProc"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -445,7 +519,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Controlo de versões</div>
+          <div class="info-label">Controlo de versões
+            <InfoBox header="Controlo de versões" :text="myhelp.Ppd.Caracterizacao.controlVersaoDProc"/>
+          </div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
             <v-radio-group v-model="ppd.si.caracterizacao.controlVersaoDProc" row>
@@ -459,7 +535,9 @@
           </v-radio-group>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Contratos de manutenção</div>
+          <div class="info-label">Contratos de manutenção
+            <InfoBox header="Contratos de manutenção" :text="myhelp.Ppd.Caracterizacao.contratoAtivos"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -471,7 +549,9 @@
           ></v-select>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Plano recuperação de dados</div>
+          <div class="info-label">Plano recuperação de dados
+            <InfoBox header="Plano recuperação de dados" :text="myhelp.Ppd.Caracterizacao.planoRecuperacao"/>
+          </div>
         </v-col>
         <v-col class="d-flex" cols="12" sm="9">
           <v-select
@@ -555,6 +635,17 @@ export default {
 
   methods: {
 
+  },
+  watch:{
+    "metodoCheck": function() {
+
+      if(this.modeloCresCheck !='Outra situação'){
+        this.ppd.si.caracterizacao.modeloCres = this.modeloCresCheck;
+      }
+      else{
+        this.ppd.si.caracterizacao.modeloCres = "";
+      }
+    },
   }
 };
 </script>

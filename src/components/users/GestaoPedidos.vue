@@ -1,5 +1,5 @@
 <template>
-  <v-card shaped class="ma-8">
+  <v-card flat class="ma-3">
     <v-card-title class="indigo darken-4 white--text" dark>
       Lista de pedidos submetidos
       <v-spacer />
@@ -50,20 +50,12 @@
               <v-icon right>assignment_turned_in</v-icon>
             </v-chip>
 
-            <v-chip
-              v-else-if="item.estado === 'Devolvido'"
-              outlined
-              color="red"
-            >
+            <v-chip v-else-if="item.estado === 'Devolvido'" outlined color="red">
               {{ item.estado }}
               <v-icon right>assignment_late</v-icon>
             </v-chip>
 
-            <v-chip
-              v-else-if="item.estado === 'Submetido'"
-              outlined
-              color="blue"
-            >
+            <v-chip v-else-if="item.estado === 'Submetido'" outlined color="blue">
               {{ item.estado }}
               <v-icon right>send</v-icon>
             </v-chip>
@@ -146,43 +138,24 @@ export default {
           }
         } else if (index[0] === "data") {
           if (!isDesc[0]) {
-            const dataA = a[index]
-              .split("-")
-              .reverse()
-              .join("");
+            const dataA = a[index].split("-").reverse().join("");
 
-            const dataB = b[index]
-              .split("-")
-              .reverse()
-              .join("");
+            const dataB = b[index].split("-").reverse().join("");
 
             return dataB.localeCompare(dataA);
           } else {
-            const dataA = a[index]
-              .split("-")
-              .reverse()
-              .join("");
+            const dataA = a[index].split("-").reverse().join("");
 
-            const dataB = b[index]
-              .split("-")
-              .reverse()
-              .join("");
+            const dataB = b[index].split("-").reverse().join("");
 
             return dataA.localeCompare(dataB);
           }
         } else {
-          if (
-            typeof a[index] !== "undefined" &&
-            typeof b[index] !== "undefined"
-          ) {
+          if (typeof a[index] !== "undefined" && typeof b[index] !== "undefined") {
             if (!isDesc[0]) {
-              return a[index]
-                .toLowerCase()
-                .localeCompare(b[index].toLowerCase());
+              return a[index].toLowerCase().localeCompare(b[index].toLowerCase());
             } else {
-              return b[index]
-                .toLowerCase()
-                .localeCompare(a[index].toLowerCase());
+              return b[index].toLowerCase().localeCompare(a[index].toLowerCase());
             }
           }
         }

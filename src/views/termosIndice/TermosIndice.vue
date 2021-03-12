@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-main class="px-12">
     <Loading v-if="!termosReady" :message="'os termos de índice'" />
     <Listagem
       v-else
@@ -8,7 +8,7 @@
       v-bind:cabecalho="['Termo', 'Classe', 'Título da Classe']"
       v-bind:campos="['termo', 'idClasse', 'tituloClasse']"
     />
-  </div>
+  </v-main>
 </template>
 
 <script>
@@ -19,14 +19,14 @@ export default {
   data: () => ({
     termosIndice: [],
     campos: [],
-    termosReady: false
+    termosReady: false,
   }),
   components: {
     Listagem,
-    Loading
+    Loading,
   },
 
-  mounted: async function() {
+  mounted: async function () {
     try {
       var response = await this.$request("get", "/termosIndice");
       this.termosIndice = await this.preparaLista(response.data);
@@ -36,14 +36,14 @@ export default {
   },
 
   methods: {
-    preparaLista: async function(listaTermos) {
+    preparaLista: async function (listaTermos) {
       try {
         var myTree = [];
         for (var i = 0; i < listaTermos.length; i++) {
           myTree.push({
             termo: listaTermos[i].termo,
             idClasse: listaTermos[i].idClasse,
-            tituloClasse: listaTermos[i].tituloClasse
+            tituloClasse: listaTermos[i].tituloClasse,
           });
         }
         this.termosReady = true;
@@ -51,7 +51,7 @@ export default {
       } catch (error) {
         return [];
       }
-    }
-  }
+    },
+  },
 };
 </script>

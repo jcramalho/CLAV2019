@@ -119,10 +119,6 @@ export default {
     verHistorico() {
       this.$emit("verHistorico");
     },
-    testlog(i) {
-      console.log(i);
-      return true;
-    },
   },
 };
 </script>

@@ -74,10 +74,14 @@
 
             <AnalisaClasseN1
               v-else-if="
-                pedido.objeto.tipo === 'Classe_N3' ||
-                  pedido.objeto.tipo === 'Classe_N1' ||
+                pedido.objeto.tipo === 'Classe_N1' ||
                   pedido.objeto.tipo === 'Classe_N2'
               "
+              :p="pedido"
+            />
+
+            <AnalisaClasseN3
+              v-else-if="pedido.objeto.tipo === 'Classe_N3'"
               :p="pedido"
             />
 
@@ -202,6 +206,7 @@ import AnalisaAE from "@/components/pedidos/analise/AnalisaAE";
 import AnalisaTSPluri from "@/components/pedidos/analise/AnalisaTSPluri";
 import AnalisaTSOrg from "@/components/pedidos/analise/AnalisaTSOrg";
 import AnalisaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
+import AnalisaClasseN3 from "@/components/pedidos/analise/AnalisaClasseN3";
 
 import AnalisaEditaEntidade from "@/components/pedidos/analise/AnalisaEditaEntidade";
 import AnalisaEditaLegislacao from "@/components/pedidos/analise/AnalisaEditaLegislacao";
@@ -232,6 +237,7 @@ export default {
     AnalisaTSPluri,
     AnalisaTSOrg,
     AnalisaClasseN1,
+    AnalisaClasseN3,
     AnalisaDefault,
     VerDespachos,
     ErroDialog,

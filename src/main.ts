@@ -10,6 +10,7 @@ import request from "./plugins/request";
 import userLevel from "./plugins/userLevel";
 import { VueMaskDirective } from "v-mask";
 import JsonCSV from "vue-json-csv";
+import './mainjs';
 //import BootstrapVue from "bootstrap-vue";
 
 //Vue.use(BootstrapVue);
@@ -24,6 +25,8 @@ Vue.directive("mask", VueMaskDirective);
 Vue.component("downloadCsv", JsonCSV);
 
 Vue.config.productionTip = false;
+
+export const bus = new Vue();
 
 new Vue({
   vuetify,

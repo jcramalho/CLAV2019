@@ -1,223 +1,341 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading"
-            >Nova Tabela de Seleção (continuação do trabalho
-            guardado)</v-toolbar-title
+  <v-card flat class="pa-3">
+    <!-- HEADER -->
+    <v-row align="center" justify="center">
+      <v-col cols="12" md="3" align="center"> <Voltar /></v-col>
+      <v-col cols="12" md="6" align="center">
+        <p class="clav-content-title-1">
+          Nova Tabela de Seleção Organizacional (Continuação)
+        </p>
+      </v-col>
+      <v-col cols="0" md="3"> </v-col>
+    </v-row>
+    <!-- CONTENT -->
+
+    <v-stepper v-model="stepNo" vertical style="background-color: #f3f7fc">
+      <v-stepper-step :complete="stepNo > 1" step="1">
+        <b>Identificação da entidade ou tipologia da Tabela de Seleção</b>
+      </v-stepper-step>
+      <v-row class="ml-12">
+        <v-col cols="auto">
+          <div
+            v-if="tabelaSelecao.idEntidade != ''"
+            class="rounded-pill px-3 py-1 my-2 mx-4 clav-linear-background white--text"
           >
-        </v-app-bar>
-        <v-stepper v-model="stepNo" vertical style="background-color:#fafafa">
-          <v-stepper-step color="amber accent-3" :complete="stepNo > 1" step="1"
-            ><font size="4"
-              ><b>
-                Identificação da entidade ou tipologia da tabela de seleção:</b
-              ></font
-            >
-            <span v-if="stepNo > 1 && tipoTS != 'tipologia'">
-              <v-chip
-                class="ma-2"
-                color="indigo darken-4"
-                text-color="white"
-                label
-              >
-                <v-icon left>account_balance</v-icon>
-                {{
-                  tabelaSelecao.idEntidade.split("_")[1] +
-                    ": " +
-                    tabelaSelecao.designacaoEntidade
-                }}
-              </v-chip>
-            </span>
-            <span v-else-if="stepNo > 1 && tipoTS == 'tipologia'">
-              <v-chip
-                class="ma-2"
-                color="indigo darken-4"
-                text-color="white"
-                label
-              >
-                <v-icon left>account_balance</v-icon>
-                {{
-                  tabelaSelecao.idTipologia.split("_")[1] +
-                    ": " +
-                    tabelaSelecao.designacaoTipologia
-                }}
-              </v-chip>
-            </span>
-          </v-stepper-step>
+            <unicon
+              name="entidade-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.711 21.105"
+              fill="#ffffff"
+              class="mr-3"
+            />
+            {{ tabelaSelecao.idEntidade.split("_")[1] }} -
+            {{ tabelaSelecao.designacaoEntidade }}
+          </div>
+          <div
+            v-else-if="tabelaSelecao.idTipologia != ''"
+            class="rounded-pill px-3 py-1 my-2 mx-4 clav-linear-background white--text"
+          >
+            <unicon
+              name="entidade-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.711 21.105"
+              fill="#ffffff"
+              class="mr-3"
+            />
+            {{ tabelaSelecao.idTipologia.split("_")[1] }} -
+            {{ tabelaSelecao.designacaoTipologia }}
+          </div>
+        </v-col>
+        <v-col></v-col>
+      </v-row>
 
-          <v-stepper-step color="amber accent-3" :complete="stepNo > 2" step="2"
-            ><font size="4"><b> Designação da Tabela de Seleção</b></font>
-            <span v-if="stepNo > 1">
-              <v-chip
-                class="ma-2"
-                color="indigo darken-4"
-                text-color="white"
-                label
-              >
-                {{ tabelaSelecao.designacao }}
-              </v-chip>
-            </span>
-          </v-stepper-step>
-          <v-stepper-content step="2">
-            <v-flex xs12 sm6 md10>
-              <v-form ref="nomeTS">
+      <v-stepper-step :complete="stepNo > 2" step="2">
+        <b>Designação da Tabela de Seleção</b>
+      </v-stepper-step>
+      <span v-if="stepNo > 1" class="mt-1">
+        <v-row class="ml-12">
+          <v-col cols="auto">
+            <div
+              class="rounded-pill px-3 py-1 my-2 mx-4 clav-linear-background white--text"
+            >
+              <unicon
+                class="mr-3"
+                name="ts-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 23.668"
+                fill="#ffffff"
+              />
+              {{ designacao }}
+            </div>
+          </v-col>
+          <v-col></v-col>
+        </v-row>
+      </span>
+
+      <v-stepper-content step="2" class="pt-0">
+        <v-form ref="nomeTS" :lazy-validation="false" class="px-4">
+          <span class="subtitle-2 pb-3"
+            >Insira a designação para a tabela:</span
+          >
+          <div class="py-2 pl-6 pr-3 mt-2" style="min-height: 50px">
+            <v-tooltip top color="info" open-delay="1000">
+              <template v-slot:activator="{ on }">
                 <v-text-field
-                  :placeholder="tabelaSelecao.designacao"
-                  v-model="tabelaSelecao.designacao"
-                  :rules="[v => !!v || 'A designação não pode ser vazia']"
+                  v-on="on"
+                  class="mt-n3"
+                  :rules="[(v) => !!v || 'A designação não pode ser vazia']"
+                  :placeholder="designacao"
+                  v-model="designacao"
+                  color="blue darken-3"
+                  clearable
                 ></v-text-field>
-              </v-form>
-            </v-flex>
-            <v-btn
-              color="indigo darken-4"
-              class="white--text"
-              @click="
-                loadProcEspecificos();
-                validaTSnome();
-              "
-              >Continuar</v-btn
-            >
-          </v-stepper-content>
+              </template>
+              <span> Designação para a Tabela de Seleção</span>
+            </v-tooltip>
+          </div>
+        </v-form>
 
-          <v-stepper-step color="amber accent-3" :complete="stepNo > 3" step="3"
-            ><font size="4"><b> Seleção dos Processos</b></font>
-          </v-stepper-step>
-          <v-stepper-content step="3">
-            <v-col v-if="listaProcessosReady">
-              <v-card>
-                <v-card-text>
-                  <ListaProcessos
-                    :listaProcs="listaProcessos"
-                    :listaCodigosEsp="listaCodigosEsp"
-                    :participante="participante"
-                  />
-                </v-card-text>
-              </v-card>
-            </v-col>
-
-            <v-col v-else
-              >Ainda não foi possível carregar a informação dos
-              Processos...</v-col
-            >
-
-            <v-card-actions style="margin: 5px">
-              <!-- Voltar ao passo anterior ............................................-->
-              <v-btn
-                v-if="stepNo > 2"
-                color="indigo darken-4"
-                class="white--text"
-                @click="stepNo--"
-                >Voltar</v-btn
-              >
-
-              <!-- Validar a TS ........................................................-->
-              <v-btn
-                v-if="stepNo > 2"
-                color="indigo darken-4"
-                class="white--text"
-                @click="validarTS"
-              >
-                Validar TS
-
-                <DialogValidacaoOK
-                  v-if="validacaoTerminada && numeroErros == 0"
-                  @continuar="fechoValidacao"
-                />
-
-                <DialogValidacaoErros
-                  v-if="validacaoTerminada && numeroErros > 0"
-                  :erros="mensagensErro"
-                  @continuar="fechoValidacao"
-                />
-              </v-btn>
-
-              <!-- Guardar o trabalho para continuar depois ..........................-->
-              <v-btn
-                v-if="stepNo > 2"
-                color="indigo darken-4"
-                class="white--text"
-                @click="guardarTrabalho"
-                >Guardar trabalho<v-icon right>save</v-icon>
-
-                <DialogPendenteGuardado
-                  v-if="pendenteGuardado"
-                  :pendente="pendente"
-                  @continuar="pendenteGuardado = false"
-                />
-              </v-btn>
-
-              <!-- Submeter e criar o pedido ............................................-->
-              <v-btn
-                v-if="stepNo > 2"
-                color="indigo darken-4"
-                class="white--text"
-                @click="verificaTS"
-                >Submeter</v-btn
-              >
-
-              <!-- Sair da criação da TS sem abortar o processo .........................-->
-              <v-btn
-                v-if="stepNo > 2"
-                color="indigo darken-4"
-                class="white--text"
-                @click="sairOperacao = true"
-                >Sair
-
-                <DialogSair
-                  v-if="sairOperacao"
-                  @continuar="sairOperacao = false"
-                  @sair="sair"
-                />
-              </v-btn>
-
-              <!-- Abortar a criação da TS ..........................................-->
-              <v-btn dark color="red darken-4" @click="eliminarTabela = true"
-                >Cancelar
-
-                <DialogCancelar
-                  v-if="eliminarTabela"
-                  @continuar="eliminarTabela = false"
-                  @sair="abortar"
-                />
-              </v-btn>
-            </v-card-actions>
-          </v-stepper-content>
-        </v-stepper>
-        <!-- Dialog de confirmação de operação -->
-        <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
-          <ConfirmacaoOperacao
-            :mensagem="dialogConfirmacao.mensagem"
-            @fechar="dialogConfirmacao.visivel = false"
-            @confirma="submeterTS()"
+        <v-btn
+          @click="
+            loadProcEspecificos();
+            validaTSnome();
+          "
+          rounded
+          class="white--text my-5 ml-4"
+          color="success darken-1"
+        >
+          <unicon
+            name="continuar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 37.261"
+            fill="#ffffff"
           />
-        </v-dialog>
+          <p class="ml-2">Continuar</p>
+        </v-btn>
+      </v-stepper-content>
+
+      <v-stepper-step :complete="stepNo > 3" step="3">
+        <b>Seleção dos Processos</b>
+      </v-stepper-step>
+      <v-stepper-content step="3">
+        <v-col cols="12" v-if="listaProcessosReady">
+          <div>
+            <ListaProcessos
+              v-if="!importadoFlag"
+              :listaProcs="listaProcessos"
+              :listaCodigosEsp="listaCodigosEsp"
+              :participante="participante"
+              @importar="enviarFicheiro($event)"
+            />
+            <ListaProcessosImportados v-else :procs="listaProcessos.procs" />
+          </div>
+        </v-col>
+        <v-col v-else
+          >Ainda não foi possível carregar a informação dos Processos...</v-col
+        >
+        <v-row class="align-center mb-1 mt-2" style="text-align: center">
+          <!-- Voltar ao passo anterior ............................................-->
+          <v-col cols="14" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              block
+              @click="stepNo--"
+              rounded
+              class="white--text"
+              color="error darken-1"
+            >
+              <unicon
+                name="arrow-back-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 37.261"
+                fill="#ffffff"
+              />
+              <p>Retroceder</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Sair da criação da TS sem abortar o processo .........................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="sairOperacao = true"
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="relogio-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <DialogSair
+                v-if="sairOperacao"
+                @continuar="sairOperacao = false"
+                @sair="sair"
+              />
+              <p class="ml-2">Sair</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Guardar o trabalho para continuar depois ..........................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="guardarTrabalho"
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon name="guardar-icon" fill="#ffffff" />
+              <DialogPendenteGuardado
+                v-if="pendenteGuardado"
+                :pendente="pendente"
+                @continuar="pendenteGuardado = false"
+              />
+              <p class="ml-2">Guardar</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Validar a TS ........................................................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="validarTS"
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="validar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.709 20.696"
+                fill="#ffffff"
+              />
+              <DialogValidacaoOK
+                v-if="validacaoTerminada && numeroErros == 0"
+                @continuar="fechoValidacao"
+              />
+              <DialogValidacaoErros
+                v-if="validacaoTerminada && numeroErros > 0"
+                :erros="mensagensErro"
+                @continuar="fechoValidacao"
+              />
+              <p class="ml-2">Validar</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Submeter e criar o pedido ............................................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="verificaTS"
+              block
+              color="success darken-1"
+              rounded
+              class="white--text"
+              style="width: 100%"
+            >
+              <unicon
+                name="adicionar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <p class="ml-2">Submeter</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Abortar a criação da TS ..........................................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              @click="eliminarTabela = true"
+              color="error"
+              rounded
+              block
+              class="white--text"
+            >
+              <unicon
+                name="eliminar-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <DialogCancelar
+                v-if="eliminarTabela"
+                @continuar="eliminarTabela = false"
+                @sair="abortar"
+              />
+              <p class="ml-2">Eliminar</p>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-stepper-content>
+    </v-stepper>
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="dialogConfirmacao.visivel = false"
+        @confirma="submeterTS()"
+      />
+    </v-dialog>
+    <v-dialog v-model="erroDialog" width="700" persistent>
+      <v-card outlined>
+        <v-card-title class="red darken-4 title white--text" dark>
+          Não foi possível importar os processos
+        </v-card-title>
+
+        <v-card-text>
+          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro">
+          </span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn color="red darken-4" text @click="erroDialog = false">
+            Fechar
+          </v-btn>
+        </v-card-actions>
       </v-card>
-    </v-col>
-  </v-row>
+    </v-dialog>
+  </v-card>
 </template>
 
 <script>
 import ListaProcessos from "@/components/tabSel/criacaoTSOrg/ListaProcessos.vue";
+import ListaProcessosImportados from "@/components/tabSel/criacaoTSOrg/ListaProcessosImportados.vue";
 import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPendenteGuardado.vue";
 import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vue";
 import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue";
 import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValidacaoErros.vue";
 import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
-
+import Voltar from "@/components/generic/Voltar";
 export default {
   props: ["obj"],
 
   components: {
     ListaProcessos,
+    ListaProcessosImportados,
     DialogPendenteGuardado,
     DialogCancelar,
     DialogValidacaoOK,
     DialogValidacaoErros,
     DialogSair,
-    ConfirmacaoOperacao
+    ConfirmacaoOperacao,
+    Voltar,
   },
   data() {
     return {
@@ -229,14 +347,14 @@ export default {
         designacaoTipologia: "",
         designacaoTS: "",
         tipologias: [],
-        listaProcessos: {}
+        listaProcessos: {},
       },
-
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
-        dados: null
+        dados: null,
       },
+
       // Fecho Transitivo dos processos
       fechoTransitivo: {},
 
@@ -248,6 +366,7 @@ export default {
       entidades: [],
       entidadesReady: false,
       ent: "",
+      designacao: "",
       // Estrutura onde se guarda a entidade do utilizador
       entidadeUtilizador: {},
       // Flag de controlo: indica que a TS é para a entidade do utilizador
@@ -276,6 +395,10 @@ export default {
       notasApSet: [],
       exemplosNotasApSet: [],
       termosIndSet: [],
+      erro: "",
+      erroDialog: false,
+      success: "",
+      successDialog: false,
 
       // Se houver gravações intermédias, há um pendente
       pendente: {},
@@ -285,28 +408,34 @@ export default {
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
       // Dialog de confirmação de abandonar a operação
-      sairOperacao: false
+      sairOperacao: false,
+      //Verificação de ficheiro importado
+      importadoFlag: false,
     };
   },
   methods: {
-    debug: function(obj) {
+    goBack() {
+      this.$router.push("/ts/criar");
+    },
+    debug: function (obj) {
       alert(JSON.stringify(obj));
     },
-    validaTSnome: function() {
+    validaTSnome: function () {
       if (this.$refs.nomeTS.validate()) {
+        this.tabelaSelecao.designacao = this.designacao;
         this.stepNo = 3;
       }
     },
     // Vai à API buscar todas as entidades
-    loadEntidades: async function() {
+    loadEntidades: async function () {
       try {
         var response = await this.$request("get", "/entidades");
-        this.entidades = response.data.map(function(item) {
+        this.entidades = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
             id: item.id,
-            label: item.sigla + " - " + item.designacao
+            label: item.sigla + " - " + item.designacao,
           };
         });
         this.entidadesReady = true;
@@ -314,8 +443,7 @@ export default {
         console.log("Erro ao recuperar a lista de entidades: " + err);
       }
     },
-
-    guardaEntidade: async function() {
+    guardaEntidade: async function () {
       this.tabelaSelecao.designacao =
         "Tabela de Seleção de " + this.ent.designacao;
       this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
@@ -327,8 +455,7 @@ export default {
       }
       this.stepNo = this.stepNo + 1;
     },
-
-    guardaTipologia: function() {
+    guardaTipologia: function () {
       // id e designação
       this.tabelaSelecao.designacao =
         "Tabela de seleção de " + this.tipSel.designacao;
@@ -336,8 +463,7 @@ export default {
       this.tabelaSelecao.idTipologia = this.tipSel.id;
       this.stepNo = this.stepNo + 1;
     },
-
-    guardaEntidadeUtilizador: function() {
+    guardaEntidadeUtilizador: function () {
       // id e designação
       this.tabelaSelecao.designacao =
         "Tabela de seleção de " + this.entidadeUtilizador.designacao;
@@ -345,21 +471,20 @@ export default {
       this.tabelaSelecao.idEntidade = this.entidadeUtilizador.id;
       this.stepNo = this.stepNo + 1;
     },
-
     // Vai à API buscar todas as tipologias a que pertence a entidade do utilizador
-    loadTipologiasUtilizador: async function() {
+    loadTipologiasUtilizador: async function () {
       try {
         // Tipologias onde a entidade se encontra
         var tipologias = await this.$request(
           "get",
           "/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
-        this.tipSel = tipologias.data.map(function(item) {
+        this.tipSel = tipologias.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
             id: item.id,
-            label: item.sigla + " - " + item.designacao
+            label: item.sigla + " - " + item.designacao,
           };
         });
       } catch (e) {
@@ -368,17 +493,16 @@ export default {
         );
       }
     },
-
     // Vai à API buscar todas as tipologias
-    loadTipologias: async function() {
+    loadTipologias: async function () {
       try {
         var response = await this.$request("get", "/tipologias/");
-        this.tipologias = response.data.map(function(item) {
+        this.tipologias = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
             id: item.id,
-            label: item.sigla + " - " + item.designacao
+            label: item.sigla + " - " + item.designacao,
           };
         });
         this.tipologiasReady = true;
@@ -386,27 +510,26 @@ export default {
         console.log("Erro ao carregar as tipologias: " + e);
       }
     },
-
     // Carrega apenas as tipologias da entidade selecionada
-    loadTipologiasDaEntidade: async function() {
+    loadTipologiasDaEntidade: async function () {
       try {
         // Tipologias onde a entidade se encontra
         var tipologias = await this.$request(
           "get",
           "/entidades/" + this.tabelaSelecao.idEntidade + "/tipologias"
         );
-        this.tipSel = tipologias.data.map(function(item) {
+        this.tipSel = tipologias.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
             id: item.id,
-            label: item.sigla + " - " + item.designacao
+            label: item.sigla + " - " + item.designacao,
           };
         });
         // Retira da lista de todas as tipologias as que já pertencem à entidade selecionada
         for (var i = 0; i < this.tipSel.length; i++) {
           var index = this.tipologias.findIndex(
-            e => e.id === this.tipSel[i].id
+            (e) => e.id === this.tipSel[i].id
           );
           this.tipologias.splice(index, 1);
         }
@@ -414,9 +537,8 @@ export default {
         return error;
       }
     },
-
     // Carregamento dos processos
-    loadProcessos: async function() {
+    loadProcessos: async function () {
       try {
         if (!this.listaProcessosReady) {
           this.listaProcessos.numProcessosSelecionados = 0;
@@ -446,12 +568,10 @@ export default {
         console.log("Erro ao carregar os processos: " + err);
       }
     },
-
-    loadProcessosEspecificos: async function(entidade) {
+    loadProcessosEspecificos: async function (entidade) {
       try {
         var url = "/classes?nivel=3&tipo=especifico&ents=" + entidade.id;
         var response = await this.$request("get", url);
-
         for (let j = 0; j < response.data.length; j++) {
           this.listaCodigosEsp.push(response.data[j].codigo);
         }
@@ -472,9 +592,8 @@ export default {
         );
       }
     },
-
     // Carrega os processos específicos da entidade e das tipologias em causa
-    loadProcEspecificos: async function() {
+    loadProcEspecificos: async function () {
       try {
         if (!this.listaProcEspReady) {
           var url =
@@ -496,13 +615,13 @@ export default {
                 classe: response.data[x].codigo,
                 designacao: response.data[x].titulo,
                 dono: false,
-                participante: false
+                participante: false,
               });
             } else {
               this.listaProcEsp.push({
                 classe: response.data[x].codigo,
                 designacao: response.data[x].titulo,
-                dono: true
+                dono: true,
               });
             }
           }
@@ -513,64 +632,64 @@ export default {
         return error;
       }
     },
-    criaHistoricoTS: async function(userBD) {
+    criaHistoricoTS: async function (userBD) {
       let historico = [
         {
           designacao: {
             cor: "verde",
             dados: this.tabelaSelecao.designacao,
-            nota: null
+            nota: null,
           },
           data: {
             cor: "verde",
             dados: new Date(),
-            nota: null
+            nota: null,
           },
           entProd: {
             cor: "verde",
-            dados: userBD.entidade.split("_")[1] + "(" + userBD.email + ")",
-            nota: null
+            dados: userBD.entidade.split("_")[1],
+            nota: null,
           },
           ts: {
             entidade: {
               cor: "verde",
               dados: this.tabelaSelecao.designacaoEntidade,
-              nota: null
+              nota: null,
             },
             tipologia: {
               cor: "verde",
               dados: this.tabelaSelecao.designacaoTipologia,
-              nota: null
+              nota: null,
             },
             classes: {
               cor: "verde",
-              dados: this.tabelaSelecao.listaProcessos.procs.map(c => {
+              dados: this.tabelaSelecao.listaProcessos.procs.map((c) => {
                 return {
                   cor: "verde",
                   dados: JSON.parse(JSON.stringify(c)),
-                  nota: null
+                  nota: null,
                 };
               }),
-              nota: null
-            }
-          }
-        }
+              nota: null,
+            },
+          },
+        },
       ];
       // Cria histórico para cada processo
       for (let i = 0; i < historico[0].ts.classes.dados.length; i++) {
-        Object.keys(historico[0].ts.classes.dados[i].dados).map(p => {
+        Object.keys(historico[0].ts.classes.dados[i].dados).map((p) => {
           historico[0].ts.classes.dados[i].dados[p] = {
             cor: "verde",
             dados: historico[0].ts.classes.dados[i].dados[p],
-            nota: null
+            nota: null,
           };
           if (p === "pca" || p === "df") {
             Object.keys(historico[0].ts.classes.dados[i].dados[p].dados).map(
-              d => {
+              (d) => {
                 historico[0].ts.classes.dados[i].dados[p].dados[d] = {
                   cor: "verde",
                   dados: historico[0].ts.classes.dados[i].dados[p].dados[d],
-                  nota: null
+                  nota: null,
                 };
               }
             );
@@ -578,38 +697,37 @@ export default {
         });
       }
       var procs = this.listaProcessos.procs.filter(
-        p => p.dono || p.participante != "NP"
+        (p) => p.dono || p.participante != "NP"
       );
-
-      procs.map(p =>
+      procs.map((p) =>
         this.listaProcessos.procsAselecionar.splice(
           this.listaProcessos.procsAselecionar.findIndex(
-            c => c.codigo === p.codigo
+            (c) => c.codigo === p.codigo
           ),
           1
         )
       );
-      historico[0].ts["procsAselecionar"] = {
-        cor: "vermelho",
-        dados: this.listaProcessos.procsAselecionar,
-        nota: null
-      };
-
+      if (this.listaProcessos.procsAselecionar > 0) {
+        historico[0].ts["procsAselecionar"] = {
+          cor: "vermelho",
+          dados: this.listaProcessos.procsAselecionar,
+          nota: null,
+        };
+      }
       return historico;
     },
-
     //Verifica a TS antes de submeter
-    verificaTS: async function() {
+    verificaTS: async function () {
       var procs = this.listaProcessos.procs.filter(
-        p => p.dono || p.participante != "NP"
+        (p) => p.dono || p.participante != "NP"
       );
       if (
         procs
-          .map(p => p.codigo)
+          .map((p) => p.codigo)
           .sort()
           .join(",") !==
           this.listaProcessos.procsAselecionar
-            .map(p => p.codigo)
+            .map((p) => p.codigo)
             .sort()
             .join(",") &&
         this.listaProcessos.numProcessosPreSelecionados -
@@ -622,13 +740,12 @@ export default {
             "Existem " +
             (this.listaProcessos.numProcessosPreSelecionados -
               this.listaProcessos.processosPreSelecionados) +
-            " processos por selecionar, deseja mesmo continuar com a submissão do pedido?"
+            " processos por selecionar, deseja mesmo continuar com a submissão do pedido?",
         };
       } else await this.submeterTS();
     },
-
     // Lança o pedido de submissão de uma TS
-    submeterTS: async function() {
+    submeterTS: async function () {
       // É preciso testar se há um Pendente criado para o apagar
       if (this.pendente._id) {
         try {
@@ -648,28 +765,28 @@ export default {
         this.tabelaSelecao.listaProcessos = JSON.parse(
           JSON.stringify(this.listaProcessos)
         );
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.dono || p.participante != "NP"
-        );
-
-        this.tabelaSelecao.listaProcessos.procs.map(p =>
-          this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
-            this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
-              c => c.codigo === p.codigo
-            ),
-            1
-          )
-        );
-
+        if (!this.importadoFlag) {
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            (p) => p.dono || p.participante != "NP"
+          );
+          this.tabelaSelecao.listaProcessos.procs.map((p) =>
+            this.tabelaSelecao.listaProcessos.procsAselecionar.splice(
+              this.tabelaSelecao.listaProcessos.procsAselecionar.findIndex(
+                (c) => c.codigo === p.codigo
+              ),
+              1
+            )
+          );
+        }
+        this.tabelaSelecao.listaProcessos["importadoFlag"] = this.importadoFlag;
         var tsObj = {
           idEntidade: this.tabelaSelecao.idEntidade,
           designacaoEntidade: this.tabelaSelecao.designacaoEntidade,
           designacao: this.tabelaSelecao.designacao,
           idTipologia: this.tabelaSelecao.idTipologia,
           designacaoTipologia: this.tabelaSelecao.designacaoTipologia,
-          listaProcessos: this.tabelaSelecao.listaProcessos
+          listaProcessos: this.tabelaSelecao.listaProcessos,
         };
-
         var pedidoParams = {
           tipoPedido: "Criação",
           tipoObjeto: "TS Organizacional",
@@ -677,9 +794,8 @@ export default {
           user: { email: userBD.email },
           entidade: userBD.entidade,
           token: this.$store.state.token,
-          historico: await this.criaHistoricoTS(userBD)
+          historico: await this.criaHistoricoTS(userBD),
         };
-
         var codigoPedido = await this.$request(
           "post",
           "/pedidos",
@@ -691,8 +807,9 @@ export default {
       }
     },
     // Guarda o trabalho de criação de uma TS
-    guardarTrabalho: async function() {
+    guardarTrabalho: async function () {
       try {
+        var response;
         var userBD = this.$verifyTokenUser();
         // Guardam-se apenas os processos que foram alterados
         // Ao carregar será preciso fazer Merge com a LC
@@ -700,10 +817,13 @@ export default {
         this.tabelaSelecao.listaProcessos = JSON.parse(
           JSON.stringify(this.listaProcessos)
         );
-        this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
-          p => p.dono || p.participante != "NP"
-        );
-
+        if (!this.importadoFlag) {
+          this.tabelaSelecao.listaProcessos.procs = this.tabelaSelecao.listaProcessos.procs.filter(
+            (p) => p.dono || p.participante != "NP" || p.descriptionEdited
+          );
+          this.tabelaSelecao.participante = this.participante;
+        }
+        this.tabelaSelecao.listaProcessos["importadoFlag"] = this.importadoFlag;
         var pendenteParams = {
           numInterv: 1,
           acao: "Criação",
@@ -711,13 +831,12 @@ export default {
           objeto: this.tabelaSelecao,
           criadoPor: userBD.email,
           user: { email: userBD.email },
-          token: this.$store.state.token
+          token: this.$store.state.token,
         };
-
         // É preciso testar se há um Pendente criado para não criar um novo
         if (this.pendente._id) {
           pendenteParams._id = this.pendente._id;
-          pendenteParams.numInterv = this.pendente.numInterv++;
+          pendenteParams.numInterv = ++this.pendente.numInterv;
           var response = await this.$request(
             "put",
             "/pendentes",
@@ -731,7 +850,6 @@ export default {
             pendenteParams
           );
         }
-
         this.pendente = response.data;
         this.pendenteGuardado = true;
       } catch (e) {
@@ -739,23 +857,21 @@ export default {
       }
     },
     // Elimina todo o trabalho feito até esse momento
-    eliminarTS: async function() {
+    eliminarTS: async function () {
       this.$router.push("/");
     },
-
     // Valida a TS construída até ao momento
-    validarTS: async function() {
+    validarTS: async function () {
       var procs = this.listaProcessos.procs.filter(
-        p => p.dono || p.participante != "NP"
+        (p) => p.dono || p.participante != "NP"
       );
-
       if (
         procs
-          .map(p => p.codigo)
+          .map((p) => p.codigo)
           .sort()
           .join(",") !==
           this.listaProcessos.procsAselecionar
-            .map(p => p.codigo)
+            .map((p) => p.codigo)
             .sort()
             .join(",") &&
         this.listaProcessos.numProcessosPreSelecionados -
@@ -764,18 +880,17 @@ export default {
       ) {
         this.mensagensErro.push({
           sobre: "Escolha de processos",
-          mensagem: `Ainda tem ${this.listaProcessos
-            .numProcessosPreSelecionados -
-            this.listaProcessos
-              .processosPreSelecionados} processos por selecionar`
+          mensagem: `Ainda tem ${
+            this.listaProcessos.numProcessosPreSelecionados -
+            this.listaProcessos.processosPreSelecionados
+          } processos por selecionar`,
         });
         this.numeroErros++;
       }
       this.validacaoTerminada = true;
     },
-
     // Quando a validação termina chama-se esta rotina para fazer reset ao estado da Validação
-    fechoValidacao: async function() {
+    fechoValidacao: async function () {
       this.numeroErros = 0;
       this.mensagensErro = [];
       //this.notasApSet = [];
@@ -783,14 +898,12 @@ export default {
       //this.termosIndSet = [];
       this.validacaoTerminada = false;
     },
-
     // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
-    sair: async function() {
+    sair: async function () {
       this.$router.push("/");
     },
-
     // Abortar a operação apagando o pendente se existir
-    abortar: async function() {
+    abortar: async function () {
       if (this.pendente && this.pendente._id) {
         try {
           var response = await this.$request(
@@ -803,9 +916,8 @@ export default {
       }
       this.$router.push("/");
     },
-
     // Carrega os fechos transitivos necessários para os que já estão selecionados
-    loadFechoTransitivo: async function() {
+    loadFechoTransitivo: async function () {
       try {
         var response = await this.$request("get", "/travessiaV2");
         this.fechoTransitivo = response.data;
@@ -813,23 +925,22 @@ export default {
         console.log("Erro ao carregar o fecho transitivo: " + e);
       }
     },
-
     // Faz a pré-seleção do fecho transitivo dos processos já selecionados
-    acrescentaFecho: function(processo) {
+    acrescentaFecho: function (processo) {
       var fecho = this.fechoTransitivo[processo.codigo];
       !fecho.includes(processo.codigo) ? fecho.push(processo.codigo) : "";
       for (let i = 0; i < fecho.length; i++) {
         var index = this.listaProcessos.procs.findIndex(
-          p => p.codigo == fecho[i]
+          (p) => p.codigo == fecho[i]
         );
         //Só acrescenta processos a selecionar que não tenham sido selecionados antes de guardar o trabalho
         if (
           index != -1 &&
           !this.listaProcessos.procs[index].dono &&
-          this.listaProcessos.procs[index].participante == "NP"
+          this.listaProcessos.procs[index].participante == "NP" &&
+          !this.listaProcessos.procs[index].descriptionEdited
         ) {
           this.listaProcessos.procs[index].preSelected++;
-
           if (this.listaProcessos.procs[index].preSelected == 1) {
             this.listaProcessos.numProcessosPreSelecionados++;
             this.listaProcessos.procs[index].preSelectedLabel =
@@ -838,20 +949,23 @@ export default {
         }
       }
     },
-
     // Merge do estado antigo dos processos com os que foram carregados da BD
-    mergeProcs: async function() {
+    mergeProcs: async function () {
       // Merge com os processos que já estavam selecionados
       var index;
       for (let i = 0; i < this.tabelaSelecao.listaProcessos.procs.length; i++) {
         index = this.listaProcessos.procs.findIndex(
-          p => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
+          (p) => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
         );
         if (index != -1) {
           this.listaProcessos.procs[
             index
           ] = this.tabelaSelecao.listaProcessos.procs[i];
-          this.acrescentaFecho(this.listaProcessos.procs[index]);
+          if (
+            this.tabelaSelecao.listaProcessos.procs[i].dono ||
+            this.tabelaSelecao.listaProcessos.procs[i].participante != "NP"
+          )
+            this.acrescentaFecho(this.listaProcessos.procs[index]);
         }
       }
       this.listaProcessos.numProcessosSelecionados = this.tabelaSelecao.listaProcessos.numProcessosSelecionados;
@@ -859,33 +973,77 @@ export default {
       this.listaProcessos.processosPreSelecionados = this.tabelaSelecao.listaProcessos.processosPreSelecionados;
       this.listaProcessos.procsAselecionar = this.tabelaSelecao.listaProcessos.procsAselecionar;
       this.listaProcessosReady = true;
-    }
+    },
+    //Importação de processos
+    enviarFicheiro: async function (file) {
+      try {
+        var formData = new FormData();
+        formData.append("file", file);
+        formData.append("designacao", this.tabelaSelecao.designacao);
+        if (this.tipoTS != "tipologia")
+          formData.append("entidade_ts", this.tabelaSelecao.designacaoEntidade);
+        else
+          formData.append(
+            "entidade_ts",
+            this.tabelaSelecao.designacaoTipologia
+          );
+        formData.append("tipo_ts", "TS Organizacional");
+        formData.append("fonteL", "TS/LC");
+        var response = await this.$request(
+          "post",
+          "/tabelasSelecao/importar",
+          formData
+        );
+        this.listaProcessos.procs = response.data.ts.processos;
+        this.importadoFlag = true;
+      } catch (e) {
+        this.erro = e.response.data[0].msg || e.response.data;
+        this.erroDialog = true;
+      }
+    },
   },
-  created: async function() {
+  created: async function () {
     this.pendente = this.obj;
     this.participante = this.obj.objeto.participante;
     delete this.obj.objeto.participante;
     this.tabelaSelecao = this.obj.objeto;
+    this.designacao = this.tabelaSelecao.designacao;
 
-    try {
-      await this.loadProcessos();
-      await this.loadFechoTransitivo();
-      await this.mergeProcs();
-    } catch (e) {
-      console.log("Erro no carregamento dinicial: " + e);
+    if (this.tabelaSelecao.listaProcessos.importadoFlag) {
+      this.importadoFlag = true;
+      this.listaProcessos = this.tabelaSelecao.listaProcessos;
+      this.listaProcessosReady = true;
+    } else {
+      try {
+        await this.loadProcessos();
+        await this.loadFechoTransitivo();
+        await this.mergeProcs();
+      } catch (e) {
+        console.log("Erro no carregamento dinicial: " + e);
+      }
     }
-  }
+  },
 };
 </script>
 
-<style>
-.expansion-panel-heading {
+<style scoped>
+.info-label {
   color: #1a237e !important;
-  background-image: linear-gradient(to bottom, #bac1eb 0, #8c9eff 100%);
+  padding: 8px;
+  width: 100%;
+  background-color: #dee2f8;
+  font-weight: bold;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
 
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
+.info-content {
+  padding: 5px;
+  width: 100%;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

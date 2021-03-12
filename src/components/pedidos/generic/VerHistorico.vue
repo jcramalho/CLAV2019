@@ -28,13 +28,20 @@
         <v-window v-model="onboarding" class="mt-2">
           <v-window-item v-for="(h, i) in dados" :key="i">
             <v-card shaped class="rounded-card pa-4" :color="corFundo[i]">
-              <v-card-text v-if="tipoPedido()">
+              <v-card-text
+                v-if="
+                  tipoPedido() &&
+                    pedido.objeto.tipo != 'Classe_N1' &&
+                    pedido.objeto.tipo != 'Classe_N2'
+                "
+              >
                 <div v-for="(info, campo) in h" :key="campo">
                   <v-row
                     v-if="
                       info.dados !== '' &&
                         info.dados !== null &&
                         campo !== 'estado' &&
+                        campo !== 'codigo' &&
                         campo !== 'id'
                     "
                   >
@@ -173,6 +180,89 @@
                   </v-row>
                 </div>
               </v-card-text>
+              <!-- Classes -->
+              <v-card-text
+                v-else-if="
+                  pedido.objeto.tipo === 'Classe_N1' ||
+                    pedido.objeto.tipo === 'Classe_N2'
+                "
+              >
+                <div v-for="(info, campo) in h" :key="campo">
+                  <v-row v-if="classesAllowedInfo.includes(campo)">
+                    <v-col cols="2">
+                      <div
+                        class="info-descricao"
+                        :class="`info-descricao-${info.cor}`"
+                      >
+                        {{ transformaKeys(campo) }}
+                      </div>
+                    </v-col>
+
+                    <v-col>
+                      <div
+                        v-if="!(info.dados instanceof Array)"
+                        class="info-conteudo"
+                      >
+                        {{ info.dados }}
+                      </div>
+
+                      <div v-else>
+                        <v-data-table
+                          v-if="campo === 'notasAp' || 'notasEx'"
+                          :headers="notasHeaders"
+                          :items="info.dados"
+                          class="elevation-1"
+                        >
+                          <template v-slot:no-data>
+                            <v-alert
+                              type="error"
+                              width="100%"
+                              class="m-auto mb-2 mt-2"
+                              outlined
+                              >Nenhuma Nota selecionada...</v-alert
+                            >
+                          </template>
+
+                          <template v-slot:[`item.sigla`]="{ item }">
+                            <v-badge
+                              v-if="novoItemAdicionado(item, campo)"
+                              right
+                              dot
+                              inline
+                              >{{ item.sigla }}</v-badge
+                            >
+
+                            <span v-else>{{ item.sigla }}</span>
+                          </template>
+                        </v-data-table>
+
+                        <div
+                          class="info-conteudo"
+                          v-else-if="campo === 'zonaControlo'"
+                        >
+                          <ZonaControlo :info="info" />
+                        </div>
+
+                        <div class="info-conteudo" v-else>
+                          <span v-for="i in info" :key="i">{{ i }}</span>
+                        </div>
+                      </div>
+                    </v-col>
+
+                    <!-- Operação -->
+                    <v-col cols="1">
+                      <v-tooltip v-if="info.nota" bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on" @click="verNota(info.nota)"
+                            >message</v-icon
+                          >
+                        </template>
+                        <span>Ver nota relativa ao campo...</span>
+                      </v-tooltip>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-card-text>
               <v-card-text v-else-if="pedido.objeto.tipo === 'RADA'">
                 <VerHistoricoRADA :historico="h" />
               </v-card-text>
@@ -232,6 +322,7 @@
         v-if="tipoPedido()"
         :historico="dados"
         :distribuicao="distribuicaoFormatada"
+        :tipoPedido="pedido.objeto.tipo"
         @fecharDialog="dialogVerHistoricoEmTabela = false"
       />
       <VerHistoricoRADATabela
@@ -351,7 +442,14 @@ export default {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
         "items-per-page-all-text": "Todos"
-      }
+      },
+      notasHeaders: [{ text: "Nota", value: "nota", class: "subtitle-1" }],
+      footerPropsnotas: {
+        "items-per-page-text": "Notas por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todas"
+      },
+      classesAllowedInfo: ["descricao", "titulo", "notasAp", "notasEx"]
     };
   },
 

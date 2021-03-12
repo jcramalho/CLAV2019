@@ -1,9 +1,9 @@
 #!/bin/bash
 docker build . -t clav2020
 echo 'Tagging'
-docker tag clav2020:latest zzglider/clav2020:Nov14
+docker tag clav2020:latest zzglider/clav2020:Jan07
 echo 'Pushing'
-docker push zzglider/clav2020:Nov14
+docker push zzglider/clav2020:Jan07
 echo 'Terminado'
-echo 'Id da imagem no DHub: zzglider/clav2020:Nov14'
+echo 'Id da imagem no DHub: zzglider/clav2020:Jan07'
 

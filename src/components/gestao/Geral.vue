@@ -1,7 +1,8 @@
 <template>
-  <v-container grid-list-lg>
-    <v-layout row wrap>
-      <v-flex md3 sm6 xs12 v-for="(stat, index) in stats" v-bind:key="index">
+  <v-card flat class="pa-3">
+    <p class="clav-content-title-1">Métricas Gerais</p>
+    <v-row>
+      <v-col cols="12" sm="6" md="3" v-for="(stat, index) in stats" :key="index">
         <v-card :class="stat.bgColor" dark>
           <v-container fluid grid-list-sm dark>
             <v-layout class="mt-0 mb-0 pa-0" row>
@@ -30,21 +31,21 @@
             </v-layout>
           </v-container>
         </v-card>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap>
-      <v-flex md6 xs12>
-        <v-card light>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" sm="6" md="3">
+        <v-card flat>
           <DoughnutEntidades />
         </v-card>
-      </v-flex>
-      <v-flex md6 xs12>
-        <v-card light>
+      </v-col>
+      <v-col cols="12" sm="6" md="3">
+        <v-card flat>
           <DoughnutDocs />
         </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
@@ -54,11 +55,11 @@ export default {
   name: "Dashboard",
   components: {
     DoughnutEntidades,
-    DoughnutDocs
+    DoughnutDocs,
   },
   data() {
     return {
-      stats: []
+      stats: [],
     };
   },
   async mounted() {
@@ -69,7 +70,7 @@ export default {
   methods: {
     async getNumeroTipologias() {
       await this.$request("get", "/indicadores/tipologias")
-        .then(res => {
+        .then((res) => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "class",
@@ -77,15 +78,15 @@ export default {
             data: res.data.valor,
             action: {
               label: "Mais info",
-              link: "/tipologias"
-            }
+              link: "/tipologias",
+            },
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     async getNumeroEntidades() {
       await this.$request("get", "/indicadores/entidades")
-        .then(res => {
+        .then((res) => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "class",
@@ -93,15 +94,15 @@ export default {
             data: res.data.valor,
             action: {
               label: "Mais info",
-              link: "/entidades"
-            }
+              link: "/entidades",
+            },
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     async getNumeroDocsLegislativos() {
       await this.$request("get", "/indicadores/leg")
-        .then(res => {
+        .then((res) => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "work",
@@ -109,15 +110,15 @@ export default {
             data: res.data.valor,
             action: {
               label: "Mais info",
-              link: "/legislacao"
-            }
+              link: "/legislacao",
+            },
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     irPara(path) {
       this.$router.push(path);
-    }
-  }
+    },
+  },
 };
 </script>
