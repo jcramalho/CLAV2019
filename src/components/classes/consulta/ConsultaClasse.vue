@@ -744,27 +744,12 @@ export default {
 };
 </script>
 
-<<<<<<< HEAD
-<style>
-.myPanelHeader {
-  color: #304ffe;
-}
-
-.separador {
-  color: white;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #1a237e;
-  font-size: 14pt;
-=======
 <style scoped>
 .info-label {
   color: var(--v-primary-base) !important;
   padding: 8px;
   width: 100%;
   background-color: #dee2f8;
->>>>>>> master
   font-weight: bold;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
