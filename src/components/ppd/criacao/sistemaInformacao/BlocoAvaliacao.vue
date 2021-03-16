@@ -84,8 +84,12 @@
             </div>
           </v-col>
           <v-col>
-            <v-text-field solo dense >
-            </v-text-field>
+            <v-text-field
+              :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+              v-model="ppd.si.avaliacao.pcaSI"
+              solo
+              clearable
+            ></v-text-field>
           </v-col>
           <v-col :md="2">
             <div class="info-label">Destino final do sistema de informação
@@ -398,12 +402,26 @@ export default {
   },
 
 
+  /*watch:{
+    "ppd.si.avaliacao.selecionadosTabelaFL": function() {
+      this.ppd.si.avaliacao.selecionadosTabelaFL.forEach(element => {
+        if(element.pca > this.ppd.si.avaliacao.pcaSI){
+          this.ppd.si.avaliacao.pcaSI = element.pca
+        }
+      });
+    }
+
+
+  },*/
 
   methods: {
 
     //-----------
     guardarClasse(item) {
       this.ppd.si.avaliacao.selecionadosTabelaFL.push(item);
+      if(parseInt(item.pca) > parseInt(this.ppd.si.avaliacao.pcaSI)){
+        this.ppd.si.avaliacao.pcaSI = parseInt(item.pca);
+      }
       this.addClasse= false;
     },
 
@@ -416,6 +434,13 @@ export default {
       }
       var index = this.ppd.si.avaliacao.selecionadosTabelaFL.findIndex(e => e.classe === item.classe);
       this.ppd.si.avaliacao.selecionadosTabelaFL.splice(index, 1);
+      var auxPCA = 0;
+      this.ppd.si.avaliacao.selecionadosTabelaFL.forEach(element => {
+        if(parseInt(element.pca) > auxPCA){
+          auxPCA = parseInt(element.pca)
+        }
+      });
+      this.ppd.si.avaliacao.pcaSI = auxPCA;
     },
 
     guardarDecomp(item) {
