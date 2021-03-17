@@ -146,7 +146,7 @@
                 <v-icon right>save</v-icon>
               </v-btn>
               <v-btn color="indigo darken-2" dark class="ma-2" @click="criarPPD">
-                Criar PPD
+                Submeter
               </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
                 Finalizar
@@ -318,6 +318,8 @@ export default {
         },
         avaliacao: {
           descricao: "",
+          pcaSI: 0,
+          destinoSI: "",
           tabelaDecomposicao: [],
           selecionadosTabelaFL: [],
           sistemasRelacionados: [],
@@ -420,7 +422,7 @@ export default {
 
     loginErrorSnackbar: false,
 
-    loginErrorMessage: "Precisa de fazer login para criar um PLano de preservação digital!",
+    loginErrorMessage: "Precisa de fazer login para criar um Plano de preservação digital!",
     mensValCodigo: "",
 
 
@@ -664,10 +666,10 @@ export default {
         this.dialog= false;
         this.newSistema(sistema,this.ppd.sistemasInfo);
         this.ppd.si.avaliacao.tabelaDecomposicao = []
+        this.ppd.si.avaliacao.sistemasRelacionados = []
         this.$refs.form.reset();//   ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.panels = [];
         this.addSI = false;
-        this.ppd.si.avaliacao.sistemasRelacionados = []
         await this.loadConsultaPGD();
       } else {
         this.dialog= true;
