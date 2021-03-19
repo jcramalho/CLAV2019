@@ -61,9 +61,10 @@
         </v-tooltip>
       </template>
       <template v-slot:[`item.entidades`]="{ item }">
-        <span v-for="(ent, index) in item.entidades" :key="index">{{
-          ent
-        }}</span>
+        <span v-for="(ent, index) in item.entidades" :key="index"
+          ><a :href="link(ent)">{{ ent }}</a
+          >{{ item.entidades.length > 1 ? " " : "" }}</span
+        >
       </template>
 
       <template v-slot:pageText="props">
@@ -208,8 +209,15 @@
               />
             </v-btn>
           </template>
+
           <span>Ver Portaria</span>
         </v-tooltip>
+      </template>
+      <template v-slot:[`item.entidades`]="{ item }">
+        <span v-for="(ent, index) in item.entidades" :key="index"
+          ><a :href="link(ent)">{{ ent }}</a
+          >{{ item.entidades.length > 1 ? " " : "" }}</span
+        >
       </template>
 
       <template v-slot:pageText="props">
@@ -224,7 +232,7 @@
 const lhost = require("@/config/global").host;
 
 export default {
-  props: ["lista", "tipo"],
+  props: ["lista", "tipo", "entidades"],
   data: () => ({
     pathAPI: "",
     authToken: "",
@@ -234,32 +242,38 @@ export default {
         text: "Data",
         value: "data",
         width: "10%",
+        sortable: false,
       },
       {
         text: "Tipo",
         value: "tipo",
         width: "10%",
+        sortable: false,
       },
       {
         text: "Número",
         value: "numero",
         width: "10%",
+        sortable: false,
       },
-      { text: "Entidade", value: "entidades", width: "10%" },
+      { text: "Entidade", value: "entidades", width: "15%", sortable: false },
       {
         text: "Sumário",
         value: "sumario",
-        width: "40%",
+        width: "35%",
+        sortable: false,
       },
       {
         text: "Estado",
         value: "estado",
         width: "10%",
+        sortable: false,
       },
       {
         text: "Acesso",
         value: "link",
         width: "10%",
+        sortable: false,
       },
     ],
 
@@ -276,6 +290,13 @@ export default {
     this.authToken = this.authToken.replace(" ", "=");
 
     this.pathAPI = lhost;
+  },
+  methods: {
+    link: function (ent) {
+      return this.entidades.some((e) => e == ent)
+        ? "/entidades/ent_" + ent
+        : "/tipologias/tip_" + ent;
+    },
   },
 };
 </script>

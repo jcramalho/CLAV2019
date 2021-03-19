@@ -81,6 +81,7 @@
                 <ListagemLeg
                   :lista="fontesTS"
                   tipo="TABELAS DE SELEÇÃO INSERIDAS NA CLAV"
+                  :entidades="entidades"
                 />
               </template>
             </PainelCLAV>
@@ -111,6 +112,7 @@
                 <ListagemLeg
                   :lista="fontesPGDLC"
                   tipo="TABELAS DE SELEÇÃO (DERIVADAS DA LC) INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS"
+                  :entidades="entidades"
                 />
               </template>
             </PainelCLAV>
@@ -141,6 +143,7 @@
                 <ListagemLeg
                   :lista="fontesPGDTS"
                   tipo="TABELAS DE SELEÇÃO INSERIDAS EM PORTARIA DE GESTÃO DE DOCUMENTOS"
+                  :entidades="entidades"
                 />
               </template>
             </PainelCLAV>
@@ -169,6 +172,7 @@ export default {
     fontesPGDTSReady: false,
     fontesTS: [],
     fontesTSReady: false,
+    entidades: [],
     // Array para poder expandir/fechar todos os panels
     tabsSel: [],
     tabsSelItems: 3,
@@ -178,7 +182,7 @@ export default {
   components: {
     ListagemLeg,
     Loading,
-    InfoBox,
+    //InfoBox,
     Voltar,
     PainelCLAV,
   },
@@ -204,7 +208,11 @@ export default {
             data: f.data,
             tipo: f.tipo,
             numero: f.numero,
-            entidades: f.entidades ? f.entidades : [],
+            entidades: f.entidades.map((e) => {
+              return e.includes("ent_")
+                ? e.split("ent_")[1]
+                : e.split("tip_")[1];
+            }),
             sumario: f.sumario,
             estado: f.estado,
             link: f.link,
@@ -247,7 +255,11 @@ export default {
               data: obj.data,
               tipo: obj.tipo,
               numero: obj.numero,
-              entidades: obj.entidades ? obj.entidades : [],
+              entidades: obj.entidades.map((e) => {
+                return e.includes("ent_")
+                  ? e.split("ent_")[1]
+                  : e.split("tip_")[1];
+              }),
               sumario: obj.sumario,
               estado: obj.estado,
               link: obj.link,
@@ -280,7 +292,9 @@ export default {
             numero: f.numLeg,
             sumario: f.designacao,
             entidades: f.entidades.map((e) => {
-              return e.split("ent_")[1] + " ";
+              return e.includes("ent_")
+                ? e.split("ent_")[1]
+                : e.split("tip_")[1];
             }),
             estado: f.estado ? f.estado : "Ativo",
             link: "",
@@ -290,6 +304,18 @@ export default {
       })
       .catch((e) => {
         return e;
+      });
+
+    // Faz load de todas as entidades
+
+    await this.$request("get", "/entidades")
+      .then((response) => {
+        this.entidades = response.data.map(function (item) {
+          return item.sigla;
+        });
+      })
+      .catch((err) => {
+        return err;
       });
   },
 };

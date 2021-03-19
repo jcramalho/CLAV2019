@@ -36,7 +36,18 @@
               <div v-if="item.campo === 'Entidades'" class="info-content">
                 <ol>
                   <li v-for="(ent, i) in item.text" :key="i">
-                    <a :href="'/entidades/' + ent.id">{{ ent.sigla }}</a>
+                    <a
+                      :href="
+                        ent.includes('ent_')
+                          ? '/entidades/' + ent
+                          : '/tipologias/' + ent
+                      "
+                      >{{
+                        ent.includes("ent_")
+                          ? ent.split("ent_")[1]
+                          : ent.split("tip_")[1]
+                      }}</a
+                    >
                   </li>
                 </ol>
               </div>
@@ -46,9 +57,7 @@
         </v-row>
         <v-row>
           <v-col xs="2" sm="2" class="mt-3">
-            <div class="info-label">
-              Tabela de Seleção
-            </div>
+            <div class="info-label">Tabela de Seleção</div>
           </v-col>
           <v-col xs="3" sm="3" />
           <v-col xs="5" sm="5">
@@ -200,16 +209,25 @@
                         </v-col>
                       </v-row>
 
-                      <v-row v-if="item.donos">
+                      <v-row v-if="item.donos != undefined">
                         <v-col cols="2">
                           <div class="info-label">Dono</div>
                         </v-col>
                         <v-col>
                           <ol class="info-content">
                             <li v-for="(d, index) in item.donos" :key="index">
-                              <a :href="'/entidades/ent_' + d.entDono">{{
-                                d.entDono
-                              }}</a>
+                              <a
+                                :href="
+                                  d.entDono.includes('ent_')
+                                    ? '/entidades/' + d.entDono
+                                    : '/tipologias/' + d.entDonocd
+                                "
+                                >{{
+                                  d.entDono.includes("ent_")
+                                    ? d.entDono.split("ent_")[1]
+                                    : d.entDono.split("tip_")[1]
+                                }}</a
+                              >
                             </li>
                           </ol>
                         </v-col>
@@ -225,8 +243,18 @@
                               :key="index"
                             >
                               <a
-                                :href="'/entidades/ent_' + p.entParticipante"
-                                >{{ p.entParticipante }}</a
+                                :href="
+                                  p.entParticipante.includes('ent_')
+                                    ? '/entidades/ent_' +
+                                      p.entParticipante.split('ent_')[1]
+                                    : '/tipologias/tip_' +
+                                      p.entParticipante.split('tip_')[1]
+                                "
+                                >{{
+                                  p.entParticipante.includes("ent_")
+                                    ? p.entParticipante.split("ent_")[1]
+                                    : p.entParticipante.split("tip_")[1]
+                                }}</a
                               >
                             </li>
                           </ol>
@@ -248,7 +276,7 @@ import ShowPGD from "@/components/pgd/ShowPGD.vue";
 export default {
   props: ["classes", "classesTree", "objeto", "titulo"],
   components: {
-    ShowPGD
+    ShowPGD,
   },
   data: () => ({
     search: "",
@@ -261,19 +289,19 @@ export default {
       { text: "Referência", sortable: false, value: "referencia" },
       { text: "Título", sortable: false, value: "titulo" },
       { text: "PCA", sortable: false, value: "pca" },
-      { text: "Destino Final", sortable: false, value: "df" }
+      { text: "Destino Final", sortable: false, value: "df" },
     ],
     headersLC: [
       { text: "Código", sortable: false, value: "codigo" },
       { text: "Título", sortable: false, value: "titulo" },
       { text: "PCA", sortable: false, value: "pca" },
-      { text: "Destino Final", sortable: false, value: "df" }
+      { text: "Destino Final", sortable: false, value: "df" },
     ],
     footer_props: {
       "items-per-page-options": [10, 25, -1],
       "items-per-page-text": "Mostrar",
-      "items-per-page-all-text": "Todos"
-    }
+      "items-per-page-all-text": "Todos",
+    },
   }),
   methods: {
     csvExport() {
@@ -286,7 +314,7 @@ export default {
           "Código,Nº de Referência,Título,Descrição,PCA,Nota PCA,Forma de contagem do PCA,DF,Nota ao DF";
         csvContent = [
           headers,
-          ...this.classes.map(item => {
+          ...this.classes.map((item) => {
             return (
               '"' +
               (item.codigo || "") +
@@ -316,7 +344,7 @@ export default {
               (item.notaDF || "") +
               '",'
             );
-          })
+          }),
         ]
           .join("\n")
           .replace(/(^\[)|(\]$)/gm, "");
@@ -329,7 +357,7 @@ export default {
 
         csvContent = [
           headers,
-          ...this.classes.map(item => {
+          ...this.classes.map((item) => {
             var str =
               '"' +
               (item.codigo || "") +
@@ -380,7 +408,7 @@ export default {
             str +=
               '","' + (item.df || "") + '",' + '"' + (item.notaDF || "") + '"';
             return str;
-          })
+          }),
         ]
           .join("\n")
           .replace(/(^\[)|(\]$)/gm, "");
@@ -389,7 +417,7 @@ export default {
           "Código,N.º Referência,Título,Descrição,PCA,Nota PCA,DF,Nota DF";
         csvContent = [
           headers,
-          ...this.classes.map(item => {
+          ...this.classes.map((item) => {
             return (
               '"' +
               (item.codigo || "") +
@@ -416,7 +444,7 @@ export default {
               (item.notaDF || "") +
               '"'
             );
-          })
+          }),
         ]
           .join("\n")
           .replace(/(^\[)|(\]$)/gm, "");
@@ -439,8 +467,8 @@ export default {
       )
         if (this.expanded[0] == value) this.expanded.pop();
         else this.expanded = [value];
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

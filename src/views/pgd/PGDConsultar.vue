@@ -20,7 +20,7 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     ConsultarPGD,
-    Loading
+    Loading,
   },
   data: () => ({
     classes: [],
@@ -29,40 +29,40 @@ export default {
     message: "Portaria de Gestão Documental",
     titulo: "",
     idLegislacao: "",
-    id: ""
+    id: "",
   }),
   methods: {
-    preparaLegislacao: async function(leg) {
+    preparaLegislacao: async function (leg) {
       try {
         var myLegislacao = {
           data: {
             campo: "Data do diploma",
-            text: leg.data
+            text: leg.data,
           },
           sumario: {
             campo: "Sumário",
-            text: leg.sumario
+            text: leg.sumario,
           },
           fonte: {
             campo: "Fonte de legitimação",
-            text: leg.fonte
+            text: leg.fonte,
           },
           link: {
             campo: "Link",
-            text: leg.link
+            text: leg.link,
           },
           entidades: {
             campo: "Entidades",
-            text: leg.entidades
-          }
+            text: leg.entidades,
+          },
         };
         return myLegislacao;
       } catch (e) {
         return {};
       }
     },
-    procuraClasse: function(classe, myClasses, classePai) {
-      var index = myClasses.map(cl => cl.classe).indexOf(classePai);
+    procuraClasse: function (classe, myClasses, classePai) {
+      var index = myClasses.map((cl) => cl.classe).indexOf(classePai);
       if (index >= 0) myClasses[index].filhos.push(classe);
       else
         for (var c of myClasses) {
@@ -70,7 +70,7 @@ export default {
         }
       return myClasses;
     },
-    prepararClasses: async function(classes) {
+    prepararClasses: async function (classes) {
       var myClasses = [];
       for (var c of classes) {
         c.filhos = [];
@@ -82,9 +82,9 @@ export default {
         }
       }
       return myClasses;
-    }
+    },
   },
-  created: async function() {
+  created: async function () {
     try {
       this.id = window.location.pathname.split("/")[2];
       if (this.id.split("_")[0] == "tsRada") {
@@ -93,7 +93,7 @@ export default {
         this.message = "Relatório de Avaliação de Documentação Acumulada";
         var response = await this.$request("get", "/rada/old/" + this.id);
         this.classesTree = await this.prepararClasses(response.data);
-        this.classes = response.data.map(c => {
+        this.classes = response.data.map((c) => {
           return {
             idClasse: c.classe,
             codigo: c.codigo,
@@ -114,7 +114,7 @@ export default {
             pca: c.pca,
             notaPCA: c.notaPCA,
             formaContagem: c.formaContagem,
-            justificacaoPCA: c.justificacaoPCA
+            justificacaoPCA: c.justificacaoPCA,
           };
         });
 
@@ -123,6 +123,9 @@ export default {
           "/legislacao/" + this.idLegislacao
         );
         this.legislacao = await this.preparaLegislacao(response2.data);
+        this.legislacao.entidades.text = this.legislacao.entidades.text.map(
+          (e) => e.id
+        );
         this.titulo = `RADA de ${response2.data.tipo} ${response2.data.numero}`;
       } else {
         this.idLegislacao = this.id.split("pgd_")[1];
@@ -130,8 +133,9 @@ export default {
           this.idLegislacao = this.idLegislacao.split("lc_")[1];
 
         var response = await this.$request("get", "/pgd/" + this.id);
-        this.classesTree = await this.prepararClasses(response.data);
-        this.classes = response.data.map(c => {
+        this.classesTree = await this.prepararClasses(response.data[0]);
+
+        this.classes = response.data[0].map((c) => {
           return {
             idClasse: c.classe,
             codigo: c.codigo,
@@ -152,7 +156,7 @@ export default {
             formaContagem: c.formaContagem,
             subFormaContagem: c.subFormaContagem,
             participantes: c.participantes,
-            donos: c.donos
+            donos: c.donos,
           };
         });
 
@@ -160,13 +164,15 @@ export default {
           "get",
           "/legislacao/" + this.idLegislacao
         );
+
         this.legislacao = await this.preparaLegislacao(response2.data);
+        this.legislacao.entidades.text = response.data[1];
         this.titulo = `Tabela de Seleção da ${response2.data.tipo} ${response2.data.numero}`;
       }
     } catch (e) {
       this.classes = [];
       this.legislacao = null;
     }
-  }
+  },
 };
 </script>
