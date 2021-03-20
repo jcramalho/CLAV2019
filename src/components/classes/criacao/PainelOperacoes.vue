@@ -26,12 +26,13 @@
           @click="criarClasse"
         >
           Criar classe
-          <DialogClasseCriada 
-            v-if="classeCriada" 
+          <DialogClasseCriada
+            v-if="classeCriada"
             :c="c"
             :codigoPedido="codigoPedido"
             acao="criação"
-            @sair="classeCriada = false"/>
+            @sair="classeCriada = false"
+          />
         </v-btn>
       </v-col>
 
@@ -65,7 +66,7 @@
           <v-card-actions>
             <v-btn
               color="red darken-4"
-              round
+              rounded
               dark
               @click="errosValidacao = false"
             >
@@ -148,11 +149,13 @@
 <script>
 import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
 import DialogClasseCriada from "@/components/classes/criacao/DialogClasseCriada.vue";
+import { criarHistorico } from "@/utils/utils";
 
 export default {
   props: ["c", "pendenteId"],
   components: {
-    ValidaClasseInfoBox, DialogClasseCriada
+    ValidaClasseInfoBox,
+    DialogClasseCriada
   },
   data() {
     return {
@@ -569,10 +572,14 @@ export default {
       // Com subdivisão
       else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
-        
+
         for (i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
-          if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
+          if (
+            this.c.subclasses.filter(
+              s => s.titulo == this.c.subclasses[i].titulo
+            ).length > 1
+          ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
               mensagem: "Está repetido noutra subclasse."
@@ -624,22 +631,24 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: []
+              historico: [criarHistorico(this.c)]
             };
 
-            var response = await this.$request(
+            const codigoPedido = await this.$request(
               "post",
               "/pedidos",
               pedidoParams
             );
-            this.codigoPedido = JSON.stringify(response.data);
-            this.classeCriada = true;
+
+            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
             this.errosValidacao = true;
           }
         }
       } catch (error) {
-        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
+        console.log(
+          "Erro na criação do pedido: " + JSON.stringify(error.response.data)
+        );
       }
     },
 

@@ -25,18 +25,18 @@ export default {
     cabecalhos: [],
     operacoes: [],
     ids: [],
-    legislacaoReady: false,
+    legislacaoReady: false
   }),
   components: {
     Listagem,
-    Loading,
+    Loading
   },
 
   methods: {
     preparaOperacoes(level) {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
-          { icon: "edit", descricao: "Alteração" },
+          { icon: "edit", descricao: "Alteração" }
           // { icon: "delete_outline", descricao: "Remoção" }
         ];
       }
@@ -51,7 +51,7 @@ export default {
           "Número",
           "Sumário",
           "Estado",
-          "Operações",
+          "Operações"
         ];
         this.campos = [
           "data",
@@ -60,7 +60,7 @@ export default {
           "numero",
           "sumario",
           "estado",
-          "operacoes",
+          "operacoes"
         ];
       } else {
         this.cabecalhos = [
@@ -68,8 +68,8 @@ export default {
           "Tipo",
           "Entidade(s)",
           "Número",
-          "Estado",
           "Sumário",
+          "Estado"
         ];
         this.campos = [
           "data",
@@ -77,7 +77,7 @@ export default {
           "entidades",
           "numero",
           "sumario",
-          "estado",
+          "estado"
         ];
       }
     },
@@ -105,9 +105,10 @@ export default {
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
             sumario: listaLegislacao[i].sumario,
-            estado: listaLegislacao[i].estado,
+            estado:
+              listaLegislacao[i].estado == "Ativo" ? "Em vigor" : "Revogado",
             operacoes: this.operacoes,
-            id: listaLegislacao[i].id,
+            id: listaLegislacao[i].id
           });
         }
       } else {
@@ -130,8 +131,9 @@ export default {
             entidades: listaLegislacao[i].entidades,
             numero: listaLegislacao[i].numero,
             sumario: listaLegislacao[i].sumario,
-            estado: listaLegislacao[i].estado,
-            id: listaLegislacao[i].id,
+            estado:
+              listaLegislacao[i].estado == "Ativo" ? "Em vigor" : "Revogado",
+            id: listaLegislacao[i].id
           });
         }
       }
@@ -145,12 +147,12 @@ export default {
       for (let i = 0; i < listaLegislacao.length; i++) {
         ids.push({
           numero: listaLegislacao[i].numero,
-          id: listaLegislacao[i].id,
+          id: listaLegislacao[i].id
         });
       }
 
       return ids;
-    },
+    }
   },
 
   created: async function() {
@@ -171,6 +173,6 @@ export default {
     } catch (e) {
       return e;
     }
-  },
+  }
 };
 </script>

@@ -31,8 +31,8 @@
       </v-col>
       <v-col cols="auto" v-if="editaCampo != campoValue">
         <span v-if="!foiEditado">
-          <v-icon class="mr-1" color="green" @click="verifica(campoValue)">check</v-icon>
-          <v-icon class="mr-1" color="red" @click="anula(campoValue)">clear</v-icon>
+          <v-icon class="mr-1" color="green" v-if="novoHistorico[campoValue].cor != 'verde'" @click="verifica(campoValue)">check</v-icon>
+          <v-icon class="mr-1" color="red" v-if="novoHistorico[campoValue].cor != 'vermelho'" @click="anula(campoValue)">clear</v-icon>
         </span>
         <!-- Ver como vai ser a edição. -->
         <v-icon
@@ -45,7 +45,6 @@
 
         <v-badge
           color="indigo darken-4"
-          content="1"
           :value="!!novoHistorico[campoValue].nota"
           overlap
         >

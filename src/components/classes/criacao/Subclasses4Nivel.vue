@@ -1,76 +1,86 @@
 <template>
   <v-expansion-panel v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF">
     <!-- SUBCLASSES 4º NÍVEL -->
-    <v-expansion-panel-header  class="expansion-panel-heading">
+    <v-expansion-panel-header class="expansion-panel-heading">
       <div>Subclasses de nível 4</div>
       <template v-slot:actions>
         <v-icon color="white">expand_more</v-icon>
       </template>
     </v-expansion-panel-header>
     <v-expansion-panel-content>
-
       <v-row>
         <v-col cols="2">
-        <v-tabs vertical outlined v-model="active" >
-          <v-tab
-            v-for="subClasse in c.subclasses"
-            :key="subClasse.codigo"
-            ripple
-          >{{ subClasse.codigo }}</v-tab>
-        </v-tabs>
-        
-        <v-btn depressed x-small color="primary" @click="addSubclasse">
-          Adicionar subclasse
-          <v-icon dark right>add_circle_outline</v-icon>
-        </v-btn>
-         
+          <v-tabs vertical outlined v-model="active">
+            <v-tab v-for="subClasse in c.subclasses" :key="subClasse.codigo">{{
+              subClasse.codigo
+            }}</v-tab>
+          </v-tabs>
+
+          <v-btn depressed x-small color="primary" @click="addSubclasse">
+            Adicionar subclasse
+            <v-icon dark right>add_circle_outline</v-icon>
+          </v-btn>
         </v-col>
         <v-col>
-        <v-tabs-items v-model="active">
-          <v-tab-item v-for="subClasse in c.subclasses" :key="subClasse.codigo" class="ma-2 pa-2">
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Código:</div>
-              </v-col>
-              <v-col>{{ subClasse.codigo }}</v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Código do pai:</div>
-              </v-col>
-              <v-col>{{ c.codigo }}</v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Título:</div>
-              </v-col>
-              <v-col>
-                <v-text-field v-model="subClasse.titulo" label="Título" solo clearable></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="2">
-                <div class="info-label">Descrição:</div>
-              </v-col>
-              <v-col>
-                <v-text-field v-model="subClasse.descricao" label="Descrição" solo clearable></v-text-field>
-              </v-col>
-            </v-row>
+          <v-tabs-items v-model="active">
+            <v-tab-item
+              v-for="subClasse in c.subclasses"
+              :key="subClasse.codigo"
+              class="ma-2 pa-2"
+            >
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Código:</div>
+                </v-col>
+                <v-col>{{ subClasse.codigo }}</v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Código do pai:</div>
+                </v-col>
+                <v-col>{{ c.codigo }}</v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Título:</div>
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    v-model="subClasse.titulo"
+                    label="Título"
+                    solo
+                    clearable
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="2">
+                  <div class="info-label">Descrição:</div>
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    v-model="subClasse.descricao"
+                    label="Descrição"
+                    solo
+                    clearable
+                  ></v-text-field>
+                </v-col>
+              </v-row>
 
-            <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+              <hr style="border-top: 3px dashed green; border-radius: 2px" />
 
-            <TermosIndiceOps :c="subClasse" />
+              <TermosIndiceOps :c="subClasse" />
 
-            <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+              <hr style="border-top: 3px dashed green; border-radius: 2px" />
 
-            <BlocoDecisoes4Nivel
-              :c="subClasse"
-              :semaforos="semaforos"
-              :pcaFormasContagem="pcaFormasContagem"
-              :pcaSubFormasContagem="pcaSubFormasContagem"
-            />
-          </v-tab-item>
-        </v-tabs-items>
+              <BlocoDecisoes4Nivel
+                :c="subClasse"
+                :semaforos="semaforos"
+                :pcaFormasContagem="pcaFormasContagem"
+                :pcaSubFormasContagem="pcaSubFormasContagem"
+              />
+            </v-tab-item>
+          </v-tabs-items>
         </v-col>
       </v-row>
     </v-expansion-panel-content>
@@ -86,10 +96,10 @@ export default {
 
   components: {
     TermosIndiceOps,
-    BlocoDecisoes4Nivel
+    BlocoDecisoes4Nivel,
   },
 
-  data: function() {
+  data: function () {
     return {
       active: null,
 
@@ -97,51 +107,40 @@ export default {
         { label: "Não Especificado (NE)", value: "NE" },
         { label: "Conservação (C)", value: "C" },
         { label: "Conservação Parcial (CP)", value: "CP" },
-        { label: "Eliminação (E)", value: "E" }
+        { label: "Eliminação (E)", value: "E" },
       ],
 
       destinoFinalLabels: {
         NE: "Não Especificado (NE)",
         C: "Conservação (C)",
         CP: "Conservação Parcial (CP)",
-        E: "Eliminação (E)"
-      }
+        E: "Eliminação (E)",
+      },
     };
   },
 
   methods: {
     // Adiciona um critério à lista de critérios do PCA ou do DF....................
-    adicionarCriterio: function(
-      justificacao,
-      tipo,
-      label,
-      notas,
-      procRel,
-      legislacao
-    ) {
+    adicionarCriterio: function (justificacao, tipo, label, notas, procRel, legislacao) {
       let myProcRel = JSON.parse(JSON.stringify(procRel));
       let myLeg = JSON.parse(JSON.stringify(legislacao));
 
-      var indice = justificacao.findIndex(crit => crit.tipo === tipo);
+      var indice = justificacao.findIndex((crit) => crit.tipo === tipo);
       if (indice == -1) {
         justificacao.push({
           tipo: tipo,
           label: label,
           notas: notas,
           procRel: myProcRel,
-          legislacao: myLeg
+          legislacao: myLeg,
         });
       } else {
-        justificacao[indice].procRel = justificacao[indice].procRel.concat(
-          myProcRel
-        );
-        justificacao[indice].legislacao = justificacao[
-          indice
-        ].legislacao.concat(myLeg);
+        justificacao[indice].procRel = justificacao[indice].procRel.concat(myProcRel);
+        justificacao[indice].legislacao = justificacao[indice].legislacao.concat(myLeg);
       }
     },
 
-    adicionarCriterioLegalPCA: function(
+    adicionarCriterioLegalPCA: function (
       justificacao,
       tipo,
       label,
@@ -149,18 +148,11 @@ export default {
       procRel,
       legislacao
     ) {
-      this.adicionarCriterio(
-        justificacao,
-        tipo,
-        label,
-        notas,
-        procRel,
-        legislacao
-      );
+      this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
       this.semaforos.critLegalAdicionadoPCA = true;
     },
 
-    adicionarCriterioGestionario: function(
+    adicionarCriterioGestionario: function (
       justificacao,
       tipo,
       label,
@@ -168,19 +160,12 @@ export default {
       procRel,
       legislacao
     ) {
-      this.adicionarCriterio(
-        justificacao,
-        tipo,
-        label,
-        notas,
-        procRel,
-        legislacao
-      );
+      this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
       this.semaforos.critGestionarioAdicionado = true;
     },
 
     // Remove um critério completo duma vez
-    removerCriterioTodo: function(justificacao, i, PCAouDF) {
+    removerCriterioTodo: function (justificacao, i, PCAouDF) {
       this.atualizaFlagsCriterios(justificacao[i].tipo, PCAouDF);
       justificacao.splice(i, 1);
     },
@@ -195,29 +180,25 @@ export default {
       }
     },
 
-    unselectProcesso: function(proc, listaProc) {
-      var index = listaProc.findIndex(p => p.id === proc.id);
+    unselectProcesso: function (proc, listaProc) {
+      var index = listaProc.findIndex((p) => p.id === proc.id);
       listaProc.splice(index, 1);
     },
 
     // Calcula o destino final para o contexto do momento
-    calcDF: function(listaProc) {
+    calcDF: function (listaProc) {
       var res = "NE";
 
       if (!this.c.temSubclasses4NivelDF) {
-        var complementar = listaProc.findIndex(
-          p => p.relacao == "eComplementarDe"
-        );
+        var complementar = listaProc.findIndex((p) => p.relacao == "eComplementarDe");
         if (complementar != -1) {
           res = "C";
         } else {
-          var sinteseDe = listaProc.findIndex(p => p.relacao == "eSinteseDe");
+          var sinteseDe = listaProc.findIndex((p) => p.relacao == "eSinteseDe");
           if (sinteseDe != -1) {
             res = "C";
           } else {
-            var sintetizado = listaProc.findIndex(
-              p => p.relacao == "eSintetizadoPor"
-            );
+            var sintetizado = listaProc.findIndex((p) => p.relacao == "eSintetizadoPor");
             if (sintetizado != -1) {
               res = "E";
             } else {
@@ -229,7 +210,7 @@ export default {
       return res;
     },
 
-    procHeranca: function(procRel, novaClasse) {
+    procHeranca: function (procRel, novaClasse) {
       for (var i = 0; i < procRel.length; i++) {
         // Tratamento do invariante: se é Suplemento Para então cria-se um critério de Utilidade Administrativa
         if (procRel[i].relacao == "eSuplementoPara") {
@@ -294,16 +275,16 @@ export default {
     },
 
     pad: function (num, size) {
-      var s = num+"";
+      var s = num + "";
       while (s.length < size) s = "0" + s;
       return s;
     },
 
-    showSubs: function(){
-      alert(JSON.stringify(this.c.subclasses))
+    showSubs: function () {
+      alert(JSON.stringify(this.c.subclasses));
     },
 
-    addSubclasse: function() {
+    addSubclasse: function () {
       var novaSubclasse = {
         nivel: 4,
         pai: this.c.codigo,
@@ -314,9 +295,7 @@ export default {
 
         // Bloco de contexto de avaliação
 
-        processosRelacionados: JSON.parse(
-          JSON.stringify(this.c.processosRelacionados)
-        ),
+        processosRelacionados: JSON.parse(JSON.stringify(this.c.processosRelacionados)),
         legislacao: JSON.parse(JSON.stringify(this.c.legislacao)),
 
         // Bloco de decisão de avaliação: PCA e DF
@@ -325,35 +304,35 @@ export default {
           valor: null,
           formaContagem: "",
           subFormaContagem: "",
-          justificacao: []
+          justificacao: [],
         },
 
         df: {
           valor: "NE",
           notas: null,
-          justificacao: []
+          justificacao: [],
         },
         // Contexto para controlar a interface de cada subclasse
         semaforos: {
-            critLegalAdicionadoPCA: false,
-            critLegalAdicionadoDF: false,
-            critGestionarioAdicionado: false
-          }
+          critLegalAdicionadoPCA: false,
+          critLegalAdicionadoDF: false,
+          critGestionarioAdicionado: false,
+        },
       };
 
       this.procHeranca(this.c.processosRelacionados, novaSubclasse);
       this.c.subclasses.push(novaSubclasse);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
 .separador {
-  color: white; 
+  color: white;
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #1A237E; 
+  background-color: #1a237e;
   font-size: 14pt;
   font-weight: bold;
   margin: 5px;

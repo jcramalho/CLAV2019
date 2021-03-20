@@ -167,6 +167,7 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
     var series = enc.decode(fileSerie).replace(/['"]/g,'').split("\n")
     if(!fileAgreg) var agregacoes = [];
     else var agregacoes = enc.decode(fileAgreg).replace(/['"]/g,'').split("\n")
+    
     if(!verificarSerie(series[0]))
       reject({msg: "Verifique se inseriu o ficheiro de classe / série correto", numErros: 1})
     if(fileAgreg && !verificarAgregacoes(agregacoes[0]))
@@ -174,6 +175,10 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
     
     series.shift()
     agregacoes.shift()
+    if(fileAgreg && (agregacoes.length==0 || agregacoes[0]=="")) {
+      reject({msg: "Verificar se preencheu o ficheiro das agregações / unidades de instalação.", numErros: 1})
+    }
+
     var errosSerie = {
       codigosRepetidos: [],
       referenciasRepetidas: [],
@@ -187,6 +192,9 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
       dataFimValidacao: [],
       agregacoes: [],
       medicoes: [],
+      medicoesPapel: [],
+      medicoesDigital: [],
+      medicoesOutros: [],
       numeroErros: 0
     }
     var errosAgregacoes = {
@@ -219,9 +227,14 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         //if(!serie[5].match(/[0-9]+/) || parseInt(serie[5])<1) {errosSerie.agregacoes.push(index+2); errosSerie.numeroErros++;}
         if(dataInicio < (currentTime.getFullYear() - 100)) {errosSerie.dataInicioMenorAtual.push(index+2); errosSerie.numeroErros++;}
         else if(dataInicio > dataFim) {errosSerie.dataFimValidacao.push(index+2); errosSerie.numeroErros++;}
-        var uiPapel = parseFloat(serie[6]) || 0;
-        var uiDigital = parseFloat(serie[7]) || 0;
-        var uiOutros = parseFloat(serie[8]) || 0;
+        var uiPapel = parseFloat(serie[6].replace(/,/g, '.')) || 0;
+        var uiDigital = parseFloat(serie[7].replace(/,/g, '.')) || 0;
+        var uiOutros = parseFloat(serie[8].replace(/,/g, '.')) || 0;
+        
+        const reUI = /^-?\d*(,\d\d?)?$/;
+        if(serie[6] && !reUI.test(serie[6])) {errosSerie.medicoesPapel.push(index+2); errosSerie.numeroErros++;}
+        if(serie[7] && !reUI.test(serie[7])) {errosSerie.medicoesDigital.push(index+2); errosSerie.numeroErros++;}
+        if(serie[8] && !reUI.test(serie[8])) {errosSerie.medicoesOutros.push(index+2); errosSerie.numeroErros++;}
         if(uiPapel+uiDigital+uiOutros<=0) {errosSerie.medicoes.push(index+2); errosSerie.numeroErros++;}
         var numero = 0;
         agregacoes.forEach((a,ind) => {
@@ -310,6 +323,21 @@ var validarCSVs = function(fileSerie, fileAgreg, tipo) {
         sobre: "Medição das agregações",
         mensagem: "Pelo menos um dos campos deve estar preenchido.",
         linhasSerie: errosSerie.medicoes
+      })
+      if(errosSerie.medicoesPapel.length>0) errosVal.erros.push({
+        sobre: "Medição papel das agregações",
+        mensagem: "Verifique se o campo medição de UI papel se econtra devidamente preenchido",
+        linhasSerie: errosSerie.medicoesPapel
+      })
+      if(errosSerie.medicoesDigital.length>0) errosVal.erros.push({
+        sobre: "Medição digital das agregações",
+        mensagem: "Verifique se o campo medição de UI digital se econtra devidamente preenchido",
+        linhasSerie: errosSerie.medicoesDigital
+      })
+      if(errosSerie.medicoesOutros.length>0) errosVal.erros.push({
+        sobre: "Medição noutro suporte das agregações",
+        mensagem: "Verifique se o campo medição de UI noutro suporte se econtra devidamente preenchido",
+        linhasSerie: errosSerie.medicoesOutros
       })
       if(errosAgregacoes.codigoAg.length>0) errosVal.erros.push({
         sobre: "Código da agregação simples / UI - unidade de instalação",

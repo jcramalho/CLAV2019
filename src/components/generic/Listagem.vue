@@ -1,96 +1,102 @@
 <template>
   <v-card class="ma-8">
-    <v-card-title class="indigo darken-4 white--text" dark>
-      {{ tipo }}
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Filtrar"
-        single-line
-        hide-details
-        dark
-      ></v-text-field>
-    </v-card-title>
-
+    <p class="content-title-1 mt-3">{{ tipo }}</p>
     <v-card-text>
-      <v-data-table
-        v-if="this.headers[this.cabecalho.length - 1]"
-        class="elevation-1"
-        :headers="headers"
-        :items="lista"
-        :search="search"
-        :footer-props="footer_props"
-      >
-        <template v-slot:no-results>
-          <v-alert :value="true" color="error" icon="warning"
-            >Não foram encontrados resultados para "{{ search }}".</v-alert
-          >
-        </template>
+      <div class="info-content pa-4">
+        <v-tooltip top color="info" open-delay="500">
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-on="on"
+              v-model="search"
+              append-icon="search"
+              label="Procurar / filtrar"
+              text
+              single-line
+              hide-details
+              clearable
+              color="blue darken-3"
+              class="mt-n2 mb-3 mx-6 font-weight-medium"
+            ></v-text-field>
+          </template>
 
-        <template v-slot:item="props">
-          <ListagemTI
-            v-if="tipo === 'Termos de Índice'"
-            :item="props.item"
-            @rowClicked="go($event.idClasse)"
-          />
+          <span> Filtrar </span>
+        </v-tooltip>
 
-          <ListagemTE
-            v-else-if="tipo == 'Tipologias de Entidade'"
-            :item="props.item"
-            @rowClicked="go($event.id)"
-            @iconClicked="
-              switchOperacao($event.operacao.descricao, $event.item.id)
-            "
-          />
+        <v-data-table
+          v-if="this.headers[this.cabecalho.length - 1]"
+          class="content-table"
+          :headers="headers"
+          :items="lista"
+          :search="search"
+          :footer-props="footer_props"
+        >
+          <template v-slot:no-results>
+            <v-alert
+              :value="true"
+              color="error"
+              icon="warning"
+              class="font-weight-medium my-3"
+              id="alerta-erro"
+              >Não foram encontrados resultados para "{{ search }}".</v-alert
+            >
+          </template>
 
-          <ListagemE
-            v-else-if="tipo == 'Entidades'"
-            :item="props.item"
-            @rowClicked="go($event.id)"
-            @iconClicked="
-              switchOperacao($event.operacao.descricao, $event.item.id)
-            "
-          />
+          <template v-slot:item="props">
+            <ListagemTI
+              v-if="tipo === 'Termos de Índice'"
+              :item="props.item"
+              @rowClicked="go($event.idClasse)"
+            />
 
-          <ListagemLegislacao
-            v-else-if="tipo == 'Legislação'"
-            :item="props.item"
-            @rowClicked="go($event.numero)"
-            @iconClicked="
-              switchOperacao($event.operacao.descricao, $event.item.id)
-            "
-          />
+            <ListagemTE
+              v-else-if="tipo == 'Tipologias de Entidade'"
+              :item="props.item"
+              @rowClicked="go($event.id)"
+              @iconClicked="switchOperacao($event.operacao.descricao, $event.item.id)"
+            />
 
-          <ListagemNot
-            v-else-if="tipo == 'Notícias'"
-            :item="props.item"
-            @rowClicked="go($event.id)"
-            @iconClicked="
-              switchOperacao($event.operacao.descricao, props.item.id)
-            "
-          />
-          <tr v-else-if="tipo == 'RADA/CLAV'">
-            <td>{{ props.item.dataAprovacao }}</td>
-            <td>{{ props.item.titulo }}</td>
-            <td>
-              <ul>
-                <li v-for="(entidade, i) in props.item.entResp" :key="i">
-                  <a :href="'/entidades/ent_' + entidade.sigla">{{
-                    entidade.sigla + " - " + entidade.designacao
-                  }}</a>
-                </li>
-              </ul>
-            </td>
-            <td>
-              <v-btn text @click="$emit('ver', props.item.codigo)"
-                ><v-icon>remove_red_eye</v-icon></v-btn
-              >
-              <v-btn text @click="$emit('download', props.item.codigo)"
-                ><v-icon color="#c62828">picture_as_pdf</v-icon></v-btn
-              >
-            </td>
-            <!-- <td v-for="(campo, index) in props.item" v-bind:key="index">
+            <ListagemE
+              v-else-if="tipo == 'Entidades'"
+              :item="props.item"
+              @rowClicked="go($event.id)"
+              @iconClicked="switchOperacao($event.operacao.descricao, $event.item.id)"
+            />
+
+            <ListagemLegislacao
+              v-else-if="tipo == 'Legislação'"
+              :item="props.item"
+              @rowClicked="go($event.numero)"
+              @iconClicked="switchOperacao($event.operacao.descricao, $event.item.id)"
+            />
+
+            <ListagemNot
+              v-else-if="tipo == 'Notícias'"
+              :item="props.item"
+              @rowClicked="go($event.id)"
+              @iconClicked="switchOperacao($event.operacao.descricao, props.item.id)"
+            />
+            <tr v-else-if="tipo == 'RADA/CLAV'">
+              <td>{{ props.item.dataAprovacao }}</td>
+              <td>{{ props.item.titulo }}</td>
+              <td>
+                <ul>
+                  <li v-for="(entidade, i) in props.item.entResp" :key="i">
+                    <a :href="'/entidades/ent_' + entidade.sigla">{{
+                      entidade.sigla + " - " + entidade.designacao
+                    }}</a>
+                  </li>
+                </ul>
+              </td>
+              <td>{{ props.item.estado }}</td>
+              <td>
+                <v-btn text @click="$emit('ver', props.item.codigo)"
+                  ><v-icon>remove_red_eye</v-icon></v-btn
+                >
+                <v-btn text @click="$emit('download', props.item.codigo)"
+                  ><v-icon color="#c62828">picture_as_pdf</v-icon></v-btn
+                >
+              </td>
+              <!-- <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="props.item">
                 <div v-if="index === 'entidade'">
                   <a :href="'/entidades/ent_' + campo">{{ campo }}</a>
@@ -98,34 +104,39 @@
                 <div v-else>{{ campo }}</div>
               </div>
             </td> -->
-          </tr>
+            </tr>
 
-          <tr
-            v-else-if="tipo == 'Autos de Eliminação'"
-            @click="go(props.item.id.replace(/\//g, '_'))"
-          >
-            <td v-for="(campo, index) in props.item" v-bind:key="index">
-              <div v-if="props.item">
-                <div v-if="index === 'entidade'">
-                  <a :href="'/entidades/ent_' + campo">{{ campo }}</a>
+            <tr
+              v-else-if="tipo == 'Autos de Eliminação'"
+              @click="go(props.item.id.replace(/\//g, '_'))"
+            >
+              <td v-for="(campo, index) in props.item" v-bind:key="index">
+                <div v-if="props.item">
+                  <div v-if="index === 'entidade'">
+                    <a :href="'/entidades/ent_' + campo">{{ campo }}</a>
+                  </div>
+                  <div v-else>{{ campo }}</div>
                 </div>
-                <div v-else>{{ campo }}</div>
-              </div>
-            </td>
-          </tr>
+              </td>
+            </tr>
 
-          <tr v-else @click="go(props.item.id)">
-            <td v-for="(campo, index) in props.item" v-bind:key="index">
-              <div>{{ campo }}</div>
-            </td>
-          </tr>
-        </template>
+            <tr v-else @click="go(props.item.id)">
+              <td v-for="(campo, index) in props.item" v-bind:key="index">
+                <div>{{ campo }}</div>
+              </td>
+            </tr>
+          </template>
+          <template v-slot:[`item.entidades`]="{ item }">
+            <span v-for="(ent, index) in item.entidades" :key="index">{{ ent }}</span>
+          </template>
 
-        <template v-slot:pageText="props">
-          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
-        </template>
-      </v-data-table>
+          <template v-slot:pageText="props">
+            Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+            {{ props.itemsLength }}
+          </template>
+        </v-data-table>
+      </div>
+      <slot name="radatemp"></slot>
     </v-card-text>
   </v-card>
 </template>
@@ -282,16 +293,16 @@ export default {
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
+            align: "center",
             sortable: true,
-            width: "35%",
+            width: "50%",
             class: "subtitle-3",
           };
         else
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
+            align: "center",
             sortable: true,
             class: "subtitle-3",
           };
@@ -302,3 +313,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.content-table {
+  background-color: #f1f6f8 !important;
+  border-radius: 10px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px 10px 0 0;
+}
+</style>

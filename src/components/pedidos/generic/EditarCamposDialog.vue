@@ -246,6 +246,116 @@
       </v-row>
     </v-card-text>
 
+    <v-card-text
+      v-if="tipoPedido === 'Classe_N1' || 'Classe_N2' || 'Classe_N3'"
+    >
+      <v-row v-if="campo.key === 'nivel'">
+        <v-col cols="2">
+          <div class="info-label">
+            Nivel
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            label="Nivel"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="campo.key === 'codigo'">
+        <v-col cols="2">
+          <div class="info-label">
+            Codigo
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            label="codigo"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row v-if="campo.key === 'titulo'">
+        <v-col cols="2">
+          <div class="info-label">
+            Título
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            label="titulo"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row v-if="campo.key === 'descricao'">
+        <v-col cols="2">
+          <div class="info-label">
+            Descrição
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            label="titulo"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row v-if="campo.key === 'tipoProc'">
+        <v-col cols="2">
+          <div class="info-label">
+            Tipo de Processo
+          </div>
+        </v-col>
+        <v-col>
+          <v-radio-group v-model="valorEditado" row>
+            <v-radio
+              v-for="(p, i) in tipoProc"
+              :key="i"
+              :label="p.label"
+              :value="p.value"
+              color="indigo darken-3"
+            ></v-radio>
+          </v-radio-group>
+        </v-col>
+      </v-row>
+      <v-row v-if="campo.key === 'procTrans'">
+        <v-col cols="2">
+          <div class="info-label">
+            Processo Transversal
+          </div>
+        </v-col>
+        <v-col>
+          <v-radio-group v-model="valorEditado" row>
+            <v-radio
+              v-for="(p, i) in procTrans"
+              :key="i"
+              :label="p.label"
+              :value="p.value"
+              color="indigo darken-3"
+            ></v-radio>
+          </v-radio-group>
+        </v-col>
+      </v-row>
+    </v-card-text>
+
     <v-card-actions>
       <v-spacer />
       <v-btn color="red darken-4" text rounded dark @click="fechar()">
@@ -292,7 +402,7 @@ export default {
   props: ["campo", "tipoPedido"],
 
   components: {
-    SelecionarData,
+    SelecionarData
   },
 
   data() {
@@ -300,8 +410,16 @@ export default {
       tiposDiploma: [],
       internacionalItems: ["Sim", "Não"],
       diplomaFonteItems: ["Não especificada", "PGD", "PGD/LC", "RADA"],
+      tipoProc: [
+        { label: "Processo Comum", value: "PC" },
+        { label: "Processo Específico", value: "PE" }
+      ],
+      procTrans: [
+        { label: "Sim", value: "S" },
+        { label: "Não", value: "N" }
+      ],
       valorEditado: "",
-      erroDialog: false,
+      erroDialog: false
     };
   },
 
@@ -312,7 +430,7 @@ export default {
   computed: {
     valorAtual() {
       return this.campo.valorAtual;
-    },
+    }
   },
 
   watch: {
@@ -320,7 +438,7 @@ export default {
       if (novoValor !== null && novoValor !== undefined)
         this.valorEditado = novoValor;
       else this.valorEditado = "";
-    },
+    }
   },
 
   mounted() {
@@ -355,7 +473,7 @@ export default {
       } else if (this.valorAtual !== this.valorEditado) {
         this.$emit("editarCampo", {
           dados: this.valorEditado,
-          campo: this.campo,
+          campo: this.campo
         });
       } else {
         this.fechar();
@@ -367,8 +485,8 @@ export default {
         this.valorEditado = this.valorAtual;
 
       this.erroDialog = false;
-    },
-  },
+    }
+  }
 };
 </script>
 

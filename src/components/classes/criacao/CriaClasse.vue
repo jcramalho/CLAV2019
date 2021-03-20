@@ -1,167 +1,276 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <!-- HEADER -->
-      <v-card>
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Criar Classe</v-toolbar-title>
-        </v-app-bar>
-
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nível</div>
-            </v-col>
-            <v-col>
-              <v-radio-group v-model="classe.nivel" row>
-                <v-radio
-                  v-for="(n, i) in classeNiveis"
-                  :key="i"
-                  :label="n.label"
-                  :value="n.value"
-                  color="indigo darken-3"
-                ></v-radio>
-              </v-radio-group>
-            </v-col>
-          </v-row>
-
-          <!-- CLASSE PAI -->
-          <v-row v-if="classe.nivel > 1">
-            <v-col cols="2">
-              <div class="info-label">
-                Classe Pai
-                <InfoBox header="Classe Pai" :text="myhelp.Classe.Campos.Pai" />
-              </div>
-            </v-col>
-            <v-col>
-              <v-select
-                item-text="label"
-                item-value="value"
-                v-model="classe.pai.codigo"
-                :items="classesPai"
-                label="Selecione uma classe de nível superior"
-                solo
-                dense
-              />
-            </v-col>
-          </v-row>
-
-          <!-- CÓDIGO DA NOVA CLASSE -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
-            <v-col cols="2">
-              <div class="info-label">
-                Código
-                <InfoBox
-                  header="Código da Classe"
-                  :text="myhelp.Classe.Campos.Codigo"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="classe.codigo"
-                label="Código"
-                solo
-                clearable
-              ></v-text-field>
-              <span style="color: red">{{ mensValCodigo }}</span>
-            </v-col>
-          </v-row>
-
-          <!-- TÍTULO -->
-          <v-row v-if="classe.nivel == 1 || classe.pai.codigo">
-            <v-col cols="2">
-              <div class="info-label">
-                Título
-                <InfoBox
-                  header="Título da Classe"
-                  :text="myhelp.Classe.Campos.Titulo"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="classe.titulo"
-                label="Título"
-                solo
-                clearable
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-expansion-panels>
-            <!-- DESCRITIVO DA CLASSE -->
-            <BlocoDescritivo :c="classe" />
-
-            <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-            <BlocoContexto
-              :c="classe"
-              :semaforos="semaforos"
-              :donos="entidadesD"
-              :participantes="entidadesP"
-              :procRel="listaProcessos"
-              :legs="listaLegislacao"
-              v-if="classe.nivel == 3"
+  <v-content
+    :class="{
+      'px-6': $vuetify.breakpoint.smAndDown,
+      'px-12': $vuetify.breakpoint.mdAndUp,
+    }"
+  >
+    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
+      <v-row>
+        <v-col class="py-0 my-0">
+          <v-btn
+            @click="$router.go(-1)"
+            rounded
+            class="white--text clav-linear-background"
+          >
+            <unicon
+              name="arrow-back-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.71 37.261"
+              fill="#ffffff"
             />
+            <p class="ml-2">Voltar</p>
+          </v-btn>
+          <!-- HEADER -->
+          <v-card flat style="border-radius: 10px !important">
+            <p
+              class="content-title-1 py-5"
+              style="color: #4da0d0 !important; text-align: center"
+            >
+              Criar Classe
+            </p>
 
-            <!-- DECISÕES DE AVALIAÇÂO -->
-            <v-expansion-panel popout focusable v-if="classe.nivel == 3">
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Decisões de Avaliação
-                  <InfoBox header="Decisões de Avaliação" :text="myhelp.Classe.BlocoDecisoes"  helpColor="white"/>
-                </div>
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12" lg="2">
+                  <div class="info-label">Nível</div>
+                </v-col>
+                <v-col cols="12" lg="10">
+                  <div class="info-content pa-4 pb-4" style="min-height: 50px">
+                    <v-radio-group
+                      v-model="classe.nivel"
+                      row
+                      hide-details
+                      :class="{
+                        'px-0': $vuetify.breakpoint.smAndDown,
+                        'px-3': $vuetify.breakpoint.mdAndUp,
+                      }"
+                      class="mt-1"
+                    >
+                      <v-radio
+                        v-for="(n, i) in classeNiveis"
+                        :key="i"
+                        :label="n.label"
+                        :value="n.value"
+                        color="blue"
+                        :class="{
+                          'mx-auto': $vuetify.breakpoint.smAndDown,
+                        }"
+                      ></v-radio>
+                    </v-radio-group>
+                  </div>
+                </v-col>
+              </v-row>
 
-              <v-expansion-panel-content>
-                <!-- HÁ SUBDIVISÃO? -->
-                <Subdivisao3Nivel :c="classe" />
+              <!-- CLASSE PAI -->
+              <v-row
+                v-if="classe.nivel > 1"
+                :class="{
+                  'mt-7': $vuetify.breakpoint.smAndDown,
+                  'mt-6': $vuetify.breakpoint.mdAndUp,
+                }"
+              >
+                <v-col cols="12" lg="2">
+                  <div class="info-label">
+                    Classe Pai
+                    <InfoBox
+                      header="Classe Pai"
+                      :text="myhelp.Classe.Campos.Pai"
+                      helpColor="info"
+                    />
+                  </div>
+                </v-col>
+                <v-col cols="12" lg="10">
+                  <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px">
+                    <v-select
+                      class="mt-n5 px-3"
+                      item-text="label"
+                      item-value="value"
+                      v-model="classe.pai.codigo"
+                      :items="classesPai"
+                      label="Selecione uma classe de nível superior"
+                      clearable
+                      hide-details
+                      single-line
+                    />
+                  </div>
+                </v-col>
+              </v-row>
 
-                <hr style="border: 3px solid #1A237E; border-radius: 2px;" />
+              <!-- CÓDIGO DA NOVA CLASSE -->
+              <v-row
+                v-if="classe.nivel == 1 || classe.pai.codigo"
+                :class="{
+                  'mt-7': $vuetify.breakpoint.smAndDown,
+                  'mt-6': $vuetify.breakpoint.mdAndUp,
+                }"
+              >
+                <v-col cols="12" lg="2">
+                  <div class="info-label">
+                    Código
+                    <InfoBox
+                      header="Código da Classe"
+                      :text="myhelp.Classe.Campos.Codigo"
+                      helpColor="info"
+                    />
+                  </div>
+                </v-col>
+                <v-col cols="12" lg="10">
+                  <div class="info-content pa-4 px-5 pb-0" style="min-height: 50px">
+                    <v-text-field
+                      class="mt-n3 px-3"
+                      v-model="classe.codigo"
+                      label="Código"
+                      text
+                      hide-details
+                      single-line
+                      clearable
+                      color="blue darken-3"
+                    ></v-text-field>
+                    <span style="color: red" class="px-3">{{ mensValCodigo }}</span>
+                  </div>
+                </v-col>
+              </v-row>
 
-                <!-- DECISÃO SEM SUBDIVISÃO -->
-                <DecisaoSemSubPCA
+              <!-- TÍTULO -->
+              <v-row
+                v-if="classe.nivel == 1 || classe.pai.codigo"
+                :class="{
+                  'mt-7': $vuetify.breakpoint.smAndDown,
+                  'mt-6': $vuetify.breakpoint.mdAndUp,
+                }"
+              >
+                <v-col cols="12" lg="2">
+                  <div class="info-label">
+                    Título
+                    <InfoBox
+                      header="Título da Classe"
+                      :text="myhelp.Classe.Campos.Titulo"
+                      helpColor="info"
+                    />
+                  </div>
+                </v-col>
+                <v-col cols="12" lg="10">
+                  <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px">
+                    <v-text-field
+                      class="mt-n4 px-3"
+                      v-model="classe.titulo"
+                      label="Título"
+                      text
+                      hide-details
+                      single-line
+                      clearable
+                      color="blue darken-3"
+                    ></v-text-field>
+                  </div>
+                </v-col>
+              </v-row>
+
+              <v-expansion-panels flat class="mt-6">
+                <!-- DESCRITIVO DA CLASSE -->
+                <BlocoDescritivo :c="classe" class="mt-6" />
+
+                <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+                <BlocoContexto
+                  class="mt-6"
                   :c="classe"
                   :semaforos="semaforos"
-                  :pcaFormasContagem="pcaFormasContagem"
-                  :pcaSubFormasContagem="pcaSubFormasContagem"
+                  :donos="entidadesD"
+                  :participantes="entidadesP"
+                  :procRel="listaProcessos"
+                  :legs="listaLegislacao"
+                  v-if="classe.nivel == 3"
                 />
 
-                <hr
-                  style="border-top: 3px dashed #1A237E; border-radius: 2px;"
+                <!-- DECISÕES DE AVALIAÇÂO -->
+                <v-expansion-panel v-if="classe.nivel == 3" popout class="mt-6">
+                  <v-expansion-panel-header
+                    style="outline: none"
+                    :class="{
+                      'text-center': $vuetify.breakpoint.smAndDown,
+                      'text-left': $vuetify.breakpoint.mdAndUp,
+                    }"
+                    class="pa-0"
+                  >
+                    <div
+                      :class="{
+                        'px-3': $vuetify.breakpoint.mdAndUp,
+                      }"
+                      class="separador"
+                    >
+                      <unicon
+                        class="mt-3"
+                        name="decisao-icon"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20.71 23.668"
+                        fill="#ffffff"
+                      />
+                      <span class="ml-3 mr-1">Decisões de Avaliação</span>
+
+                      <InfoBox
+                        header="Decisões de Avaliação"
+                        :text="myhelp.Classe.BlocoDecisoes"
+                        helpColor="info"
+                      />
+                    </div>
+                  </v-expansion-panel-header>
+
+                  <v-expansion-panel-content id="expanded-content">
+                    <!-- HÁ SUBDIVISÃO? -->
+                    <Subdivisao3Nivel :c="classe" />
+
+                    <!--<hr style="border: 2px dashed #dee2f8;" /> -->
+
+                    <!-- DECISÃO SEM SUBDIVISÃO -->
+                    <DecisaoSemSubPCA
+                      :c="classe"
+                      :semaforos="semaforos"
+                      :pcaFormasContagem="pcaFormasContagem"
+                      :pcaSubFormasContagem="pcaSubFormasContagem"
+                    />
+
+                    <!--<hr style="border-top: 3px dashed #1A237E; border-radius: 2px;"/> -->
+
+                    <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
+
+                    <!-- DECISÃO COM SUBDIVISÃO -->
+                    <Subclasses4Nivel
+                      :c="classe"
+                      :semaforos="semaforos"
+                      :pcaFormasContagem="pcaFormasContagem"
+                      :pcaSubFormasContagem="pcaSubFormasContagem"
+                    />
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-card-text>
+
+            <v-snackbar
+              v-model="loginErrorSnackbar"
+              :timeout="8000"
+              color="error"
+              :top="true"
+            >
+              {{ loginErrorMessage }}
+              <v-btn icon color="white" @click="loginErrorSnackbar = false">
+                <unicon
+                  name="remove-icon"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 20.71 20.697"
+                  fill="#ffffff"
                 />
+              </v-btn>
+            </v-snackbar>
 
-                <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-
-            <!-- DECISÃO COM SUBDIVISÃO -->
-            <Subclasses4Nivel
-              :c="classe"
-              :semaforos="semaforos"
-              :pcaFormasContagem="pcaFormasContagem"
-              :pcaSubFormasContagem="pcaSubFormasContagem"
-            />
-          </v-expansion-panels>
-        </v-card-text>
-
-        <v-snackbar
-          v-model="loginErrorSnackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
-        >
-          {{ loginErrorMessage }}
-          <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
-      
-      <PainelOperacoes :c="classe" :pendenteId="''" />
-    </v-col>
-  </v-row>
+            <PainelOperacoes :c="classe" :pendenteId="''" />
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
@@ -189,7 +298,7 @@ export default {
     DecisaoSemSubDF,
     Subclasses4Nivel,
     InfoBox,
-    PainelOperacoes
+    PainelOperacoes,
   },
 
   data: () => ({
@@ -201,7 +310,7 @@ export default {
       nivel: 0,
       pai: {
         codigo: "",
-        titulo: ""
+        titulo: "",
       },
       codigo: "",
       titulo: "",
@@ -245,13 +354,13 @@ export default {
         notas: "",
         formaContagem: "",
         subFormaContagem: "",
-        justificacao: [] // j = [criterio]
+        justificacao: [], // j = [criterio]
       }, // criterio = {tipo, notas, [proc], [leg]}
 
       df: {
         valor: "NE",
         notas: "",
-        justificacao: []
+        justificacao: [],
       },
 
       // Bloco de subclasses de nível 4, caso haja desdobramento
@@ -259,8 +368,8 @@ export default {
       subclasses: [],
 
       user: {
-        token: ""
-      }
+        token: "",
+      },
     },
 
     // Estruturas auxiliares
@@ -271,20 +380,20 @@ export default {
       1: /^[0-9]{3}$/,
       2: /^[0-9]{3}\.[0-9]{2}$/,
       3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-      4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
+      4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
     },
 
     formatoCodigo: {
       1: "ddd (d - digito)",
       2: "ddd.dd (d - digito)",
       3: "ddd.dd.ddd (d - digito)",
-      4: "ddd.dd.ddd.dd (d - digito)"
+      4: "ddd.dd.ddd.dd (d - digito)",
     },
 
     classeNiveis: [
       { label: "Nível 1", value: "1" },
       { label: "Nível 2", value: "2" },
-      { label: "Nível 3", value: "3" }
+      { label: "Nível 3", value: "3" },
     ],
 
     classesPai: [],
@@ -305,23 +414,22 @@ export default {
       pcaSubFormasContagemReady: false,
       critLegalAdicionadoPCA: false,
       critLegalAdicionadoDF: false,
-      critGestionarioAdicionado: false
+      critGestionarioAdicionado: false,
     },
 
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
-    mensValCodigo: ""
+    mensValCodigo: "",
   }),
 
   watch: {
-    "classe.pai.codigo": function() {
+    "classe.pai.codigo": function () {
       // O código da classe depende da classe pai
       this.classe.codigo = "";
-      if (this.classe.pai.codigo)
-        this.classe.codigo = this.classe.pai.codigo + ".";
+      if (this.classe.pai.codigo) this.classe.codigo = this.classe.pai.codigo + ".";
     },
-    "classe.nivel": function() {
+    "classe.nivel": function () {
       // A classe pai depende do nível
       this.classe.pai.codigo = "";
 
@@ -342,7 +450,7 @@ export default {
       }
     },
 
-    "classe.codigo": async function() {
+    "classe.codigo": async function () {
       try {
         this.mensValCodigo = "";
         if (!this.codeFormats[this.classe.nivel].test(this.classe.codigo)) {
@@ -350,8 +458,7 @@ export default {
             "Formato de código inválido! Deve ser: " +
             this.formatoCodigo[this.classe.nivel];
         } else if (!this.classe.codigo.includes(this.classe.pai.codigo)) {
-          this.mensValCodigo =
-            "Não pode alterar o código do pai selecionado em cima...";
+          this.mensValCodigo = "Não pode alterar o código do pai selecionado em cima...";
         } else {
           var existe = await this.verificaExistenciaCodigo(this.classe.codigo);
           if (existe) {
@@ -363,7 +470,7 @@ export default {
       }
     },
 
-    "classe.temSubclasses4Nivel": function() {
+    "classe.temSubclasses4Nivel": function () {
       // Se passou a verdade vamos criar um par de subclasses
       // Informação base:
       if (this.classe.temSubclasses4Nivel) {
@@ -389,21 +496,21 @@ export default {
             notas: "",
             formaContagem: "",
             subFormaContagem: "",
-            justificacao: [] // j = [criterio]
+            justificacao: [], // j = [criterio]
           }, // criterio = {tipo, notas, [proc], [leg]}
 
           df: {
             valor: "NE",
             notas: "",
-            justificacao: []
+            justificacao: [],
           },
 
           // Contexto para controlar a interface de cada subclasse
           semaforos: {
             critLegalAdicionadoPCA: false,
             critLegalAdicionadoDF: false,
-            critGestionarioAdicionado: false
-          }
+            critGestionarioAdicionado: false,
+          },
         };
         var novaSubclasse2 = {
           nivel: 4,
@@ -427,21 +534,21 @@ export default {
             notas: "",
             formaContagem: "",
             subFormaContagem: "",
-            justificacao: []
+            justificacao: [],
           },
 
           df: {
             valor: "NE",
             notas: "",
-            justificacao: []
+            justificacao: [],
           },
 
           // Contexto para controlar a interface de cada subclasse
           semaforos: {
             critLegalAdicionadoPCA: false,
             critLegalAdicionadoDF: false,
-            critGestionarioAdicionado: false
-          }
+            critGestionarioAdicionado: false,
+          },
         };
 
         this.procHeranca(this.classe.processosRelacionados, novaSubclasse1);
@@ -466,32 +573,32 @@ export default {
         this.classe.df.valor = this.calcDF(this.classe.processosRelacionados);
       }
     },
-    "classe.temSubclasses4NivelDF": function() {
+    "classe.temSubclasses4NivelDF": function () {
       if (this.classe.temSubclasses4NivelDF) this.calcSinteseDF4Nivel();
     },
-    "classe.subdivisao4Nivel01Sintetiza02": function() {
+    "classe.subdivisao4Nivel01Sintetiza02": function () {
       this.remSintese4Nivel(this.classe.subclasses);
       this.calcSinteseDF4Nivel();
-    }
+    },
   },
 
   methods: {
     // Carrega os potenciais pais da BD, quando alguém muda o nível para >1....................
 
-    loadPais: async function() {
+    loadPais: async function () {
       try {
         var response = await this.$request(
           "get",
           "/classes?nivel=" + (this.classe.nivel - 1)
         );
         this.classesPai = response.data
-          .map(function(item) {
+          .map(function (item) {
             return {
               label: item.codigo + " - " + item.titulo,
-              value: item.id.split("#c")[1]
+              value: item.id.split("#c")[1],
             };
           })
-          .sort(function(a, b) {
+          .sort(function (a, b) {
             return a.label.localeCompare(b.label);
           });
       } catch (erro) {
@@ -501,10 +608,10 @@ export default {
 
     // Carrega as entidades da BD....................
 
-    loadEntidades: async function() {
+    loadEntidades: async function () {
       try {
         var response = await this.$request("get", "/entidades");
-        this.entidadesD = response.data.map(function(item) {
+        this.entidadesD = response.data.map(function (item) {
           return {
             selected: false,
             id: item.id,
@@ -512,23 +619,23 @@ export default {
             designacao: item.designacao,
             tipo: "Entidade",
             intervencao: "Indefinido",
-            estado: item.estado
+            estado: item.estado,
           };
         });
         response = await this.$request("get", "/tipologias");
         this.entidadesD = await this.entidadesD.concat(
-          response.data.map(function(item) {
+          response.data.map(function (item) {
             return {
               selected: false,
               id: item.id,
               sigla: item.sigla,
               designacao: item.designacao,
               tipo: "Tipologia",
-              intervencao: "Indefinido"
+              intervencao: "Indefinido",
             };
           })
         );
-        await this.entidadesD.sort(function(a, b) {
+        await this.entidadesD.sort(function (a, b) {
           return a.sigla.localeCompare(b.sigla);
         });
 
@@ -541,20 +648,20 @@ export default {
 
     // Carrega os Processos da BD....................
 
-    loadProcessos: async function() {
+    loadProcessos: async function () {
       try {
         var response = await this.$request("get", "/classes?nivel=3");
         this.listaProcessos = response.data
-          .map(function(item) {
+          .map(function (item) {
             return {
               selected: false,
               id: item.id.split("#")[1],
               codigo: item.codigo,
               titulo: item.titulo,
-              idRel: "Indefinido"
+              idRel: "Indefinido",
             };
           })
-          .sort(function(a, b) {
+          .sort(function (a, b) {
             return a.codigo.localeCompare(b.codigo);
           });
 
@@ -565,21 +672,21 @@ export default {
     },
 
     // Carrega a legislação da BD....................
-    loadLegislacao: async function() {
+    loadLegislacao: async function () {
       try {
         var response = await this.$request("get", "/legislacao?estado=Ativo");
         this.listaLegislacao = response.data
-          .map(function(item) {
+          .map(function (item) {
             return {
               tipo: item.tipo,
               numero: item.numero,
               sumario: item.sumario,
               data: item.data,
               selected: false,
-              id: item.id
+              id: item.id,
             };
           })
-          .sort(function(a, b) {
+          .sort(function (a, b) {
             return -1 * a.data.localeCompare(b.data);
           });
         this.semaforos.legislacaoReady = true;
@@ -590,28 +697,25 @@ export default {
 
     // Carrega a informação contextual relativa ao PCA: formas de contagem, etc....................
 
-    loadPCA: function() {
+    loadPCA: function () {
       this.loadPCAFormasContagem();
       this.loadPCASubFormasContagem();
     },
 
     // Carrega as possíveis formas de contagem do PCA....................
 
-    loadPCAFormasContagem: async function() {
+    loadPCAFormasContagem: async function () {
       try {
-        var response = await this.$request(
-          "get",
-          "/vocabularios/vc_pcaFormaContagem"
-        );
+        var response = await this.$request("get", "/vocabularios/vc_pcaFormaContagem");
         this.pcaFormasContagem = this.pcaFormasContagem.concat(
           response.data
-            .map(function(item) {
+            .map(function (item) {
               return {
                 label: item.termo,
-                value: item.idtermo.split("#")[1]
+                value: item.idtermo.split("#")[1],
               };
             })
-            .sort(function(a, b) {
+            .sort(function (a, b) {
               return a.label.localeCompare(b.label);
             })
         );
@@ -623,22 +727,19 @@ export default {
 
     // Carrega as possíveis subformas de contagem do PCA....................
 
-    loadPCASubFormasContagem: async function() {
+    loadPCASubFormasContagem: async function () {
       try {
-        var response = await this.$request(
-          "get",
-          "/vocabularios/vc_pcaSubformaContagem"
-        );
+        var response = await this.$request("get", "/vocabularios/vc_pcaSubformaContagem");
         this.pcaSubFormasContagem = this.pcaSubFormasContagem.concat(
           response.data
-            .map(function(item) {
+            .map(function (item) {
               var formaID = item.termo.substring(item.termo.length - 6);
               return {
                 label: formaID + ": " + item.desc,
-                value: item.idtermo.split("#")[1]
+                value: item.idtermo.split("#")[1],
               };
             })
-            .sort(function(a, b) {
+            .sort(function (a, b) {
               return a.label.localeCompare(b.label);
             })
         );
@@ -649,23 +750,19 @@ export default {
     },
 
     // Calcula o destino final para o contexto do momento
-    calcDF: function(listaProc) {
+    calcDF: function (listaProc) {
       var res = "NE";
 
       if (!this.classe.temSubclasses4NivelDF) {
-        var complementar = listaProc.findIndex(
-          p => p.relacao == "eComplementarDe"
-        );
+        var complementar = listaProc.findIndex((p) => p.relacao == "eComplementarDe");
         if (complementar != -1) {
           res = "C";
         } else {
-          var sinteseDe = listaProc.findIndex(p => p.relacao == "eSinteseDe");
+          var sinteseDe = listaProc.findIndex((p) => p.relacao == "eSinteseDe");
           if (sinteseDe != -1) {
             res = "C";
           } else {
-            var sintetizado = listaProc.findIndex(
-              p => p.relacao == "eSintetizadoPor"
-            );
+            var sintetizado = listaProc.findIndex((p) => p.relacao == "eSintetizadoPor");
             if (sintetizado != -1) {
               res = "E";
             } else {
@@ -679,37 +776,26 @@ export default {
 
     // Adiciona um critério à lista de critérios do PCA ou do DF....................
 
-    adicionarCriterio: function(
-      justificacao,
-      tipo,
-      label,
-      notas,
-      procRel,
-      legislacao
-    ) {
+    adicionarCriterio: function (justificacao, tipo, label, notas, procRel, legislacao) {
       let myProcRel = JSON.parse(JSON.stringify(procRel));
       let myLeg = JSON.parse(JSON.stringify(legislacao));
 
-      var indice = justificacao.findIndex(crit => crit.tipo === tipo);
+      var indice = justificacao.findIndex((crit) => crit.tipo === tipo);
       if (indice == -1) {
         justificacao.push({
           tipo: tipo,
           label: label,
           notas: notas,
           procRel: myProcRel,
-          legislacao: myLeg
+          legislacao: myLeg,
         });
       } else {
-        justificacao[indice].procRel = justificacao[indice].procRel.concat(
-          myProcRel
-        );
-        justificacao[indice].legislacao = justificacao[
-          indice
-        ].legislacao.concat(myLeg);
+        justificacao[indice].procRel = justificacao[indice].procRel.concat(myProcRel);
+        justificacao[indice].legislacao = justificacao[indice].legislacao.concat(myLeg);
       }
     },
 
-    adicionarCriterioLegalDF: function(
+    adicionarCriterioLegalDF: function (
       justificacao,
       tipo,
       label,
@@ -717,20 +803,13 @@ export default {
       procRel,
       legislacao
     ) {
-      this.adicionarCriterio(
-        justificacao,
-        tipo,
-        label,
-        notas,
-        procRel,
-        legislacao
-      );
+      this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
       this.semaforos.critLegalAdicionadoDF = true;
     },
 
     // No ato de um desdobramento em 4ºs níveis, trata a herança das relações
 
-    procHeranca: function(procRel, novaClasse) {
+    procHeranca: function (procRel, novaClasse) {
       for (var i = 0; i < procRel.length; i++) {
         // Tratamento do invariante: se é Suplemento Para então cria-se um critério de Utilidade Administrativa
         if (procRel[i].relacao == "eSuplementoPara") {
@@ -795,14 +874,14 @@ export default {
     },
 
     // Quando o desdobramento é por DF distinto cria-se a relação de síntese entre as subclasses
-    calcSinteseDF4Nivel: function() {
+    calcSinteseDF4Nivel: function () {
       if (this.classe.subdivisao4Nivel01Sintetiza02) {
         this.classe.subclasses[0].df.valor = "C";
         this.classe.subclasses[0].processosRelacionados.push({
           codigo: this.classe.subclasses[1].codigo,
           titulo: this.classe.subclasses[1].titulo,
           relacao: "eSinteseDe",
-          relLabel: "é Síntese de"
+          relLabel: "é Síntese de",
         });
         this.adicionarCriterio(
           this.classe.subclasses[0].df.justificacao,
@@ -812,8 +891,8 @@ export default {
           [
             {
               codigo: this.classe.subclasses[1].codigo,
-              titulo: this.classe.subclasses[1].titulo
-            }
+              titulo: this.classe.subclasses[1].titulo,
+            },
           ],
           []
         );
@@ -823,7 +902,7 @@ export default {
           codigo: this.classe.subclasses[0].codigo,
           titulo: this.classe.subclasses[0].titulo,
           relacao: "eSintetizadoPor",
-          relLabel: "é Sintetizado por"
+          relLabel: "é Sintetizado por",
         });
         this.adicionarCriterio(
           this.classe.subclasses[1].df.justificacao,
@@ -833,8 +912,8 @@ export default {
           [
             {
               codigo: this.classe.subclasses[0].codigo,
-              titulo: this.classe.subclasses[0].titulo
-            }
+              titulo: this.classe.subclasses[0].titulo,
+            },
           ],
           []
         );
@@ -844,7 +923,7 @@ export default {
           codigo: this.classe.subclasses[1].codigo,
           titulo: this.classe.subclasses[1].titulo,
           relacao: "eSintetizadoPor",
-          relLabel: "é Sintetizado por"
+          relLabel: "é Sintetizado por",
         });
         this.adicionarCriterio(
           this.classe.subclasses[0].df.justificacao,
@@ -854,8 +933,8 @@ export default {
           [
             {
               codigo: this.classe.subclasses[1].codigo,
-              titulo: this.classe.subclasses[1].titulo
-            }
+              titulo: this.classe.subclasses[1].titulo,
+            },
           ],
           []
         );
@@ -865,7 +944,7 @@ export default {
           codigo: this.classe.subclasses[0].codigo,
           titulo: this.classe.subclasses[0].titulo,
           relacao: "eSinteseDe",
-          relLabel: "é Síntese de"
+          relLabel: "é Síntese de",
         });
         this.adicionarCriterio(
           this.classe.subclasses[1].df.justificacao,
@@ -875,81 +954,74 @@ export default {
           [
             {
               codigo: this.classe.subclasses[0].codigo,
-              titulo: this.classe.subclasses[0].titulo
-            }
+              titulo: this.classe.subclasses[0].titulo,
+            },
           ],
           []
         );
       }
     },
 
-    remSintese4Nivel: function(subclasses) {
+    remSintese4Nivel: function (subclasses) {
       var index = -1;
       var cindex = -1;
       for (var i = 0; i < subclasses.length; i++) {
         if (subclasses[i].processosRelacionados.length > 0) {
           // Remover as relações das subclasses
           index = subclasses[i].processosRelacionados.findIndex(
-            p => p.relacao == "eSintetizadoPor" || p.relacao == "eSinteseDe"
+            (p) => p.relacao == "eSintetizadoPor" || p.relacao == "eSinteseDe"
           );
           if (index != -1) subclasses[i].processosRelacionados.splice(index, 1);
         }
         // Remover o critério de densidade das subclasses
         if (subclasses[i].df.justificacao.length > 0) {
           cindex = subclasses[i].df.justificacao.findIndex(
-            c => c.tipo == "CriterioJustificacaoDensidadeInfo"
+            (c) => c.tipo == "CriterioJustificacaoDensidadeInfo"
           );
           if (cindex != -1) subclasses[i].df.justificacao.splice(cindex, 1);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style>
+<style scoped>
 .separador {
-  color: white; 
-  padding: 5px;
+  color: white;
   font-weight: 400;
+  padding: 5px;
+  margin: 5px;
   width: 100%;
-  background-color: #1A237E; 
+  min-height: 55px;
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
   font-size: 14pt;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  border-radius: 10px 10px 0 0;
 }
-
 .info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
+  color: #1a237e !important;
+  padding: 8px;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #dee2f8;
   font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 6px;
+  text-align: center;
 }
-
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
-}
-
 .info-content {
   padding: 5px;
   width: 100%;
-  border: 1px solid #1a237e;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
+#expanded-content {
+  margin-left: 5px;
+  margin-top: -1.1rem;
+  border: 1px solid #dee2f8;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
 }
 </style>

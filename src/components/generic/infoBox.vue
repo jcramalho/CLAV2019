@@ -1,7 +1,9 @@
 <template>
-  <v-dialog v-model="dialog" width="500">
+  <v-dialog v-model="dialog" :width="widthDialog">
     <template v-slot:activator="{ on }">
-      <v-icon v-on="on" small :color="colorHelp" dark>info_outline</v-icon>
+      <v-icon v-on="on" small :color="helpColor ? helpColor : 'secondary'">
+        info_outline
+      </v-icon>
     </template>
 
     <v-card :color="colorDialog">
@@ -10,8 +12,8 @@
       </v-card-title>
 
       <v-card-text>
-        <!--{{ text }}-->
-        <div v-html="text" />
+        <div v-if="text" v-html="text" />
+        <div v-else>Esta informação ainda não foi adicionada.</div>
       </v-card-text>
 
       <v-divider></v-divider>
@@ -26,15 +28,16 @@
 
 <script>
 export default {
-  props: ["text", "header", "helpColor", "dialogColor"],
+  props: ["text", "header", "helpColor", "dialogColor", "helpWidth"],
   data() {
     return {
       dialog: false,
       colorHelp: "",
-      colorDialog: ""
+      colorDialog: "",
+      widthDialog: "",
     };
   },
-  created: function() {
+  created: function () {
     if (!this.helpColor) {
       this.colorHelp = "#78909C";
     } else this.colorHelp = this.helpColor;
@@ -42,6 +45,10 @@ export default {
     if (!this.dialogColor) {
       this.colorDialog = "#ECEFF1";
     } else this.colorDialog = this.dialogColor;
-  }
+
+    if (!this.helpWidth) {
+      this.widthDialog = "500";
+    } else this.widthDialog = this.helpWidth;
+  },
 };
 </script>

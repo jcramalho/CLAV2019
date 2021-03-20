@@ -1,16 +1,16 @@
 /* eslint-disable prettier/prettier */
 let classes_rada = '';
 
-export async function converterParaTriplosRADA(obj, subformasContagem, dataAprovacao, dataRevogacao, idDespachoAprovacao) {
+export async function converterParaTriplosRADA(obj, subformasContagem, dataAprovacao, idDespachoAprovacao) {
     classes_rada = obj.tsRada.classes;
 
     let triplos = `clav:rada_${obj.id} rdf:type owl:NamedIndividual, clav:RADA;
+                            clav:estado "Em vigor";
                             clav:contemRE clav:rada_${obj.id}_re ;
                             clav:contemTS clav:rada_${obj.id}_ts ;
                             clav:codigo "${obj.id}" ;
                             clav:aprovadoPorLeg clav:${idDespachoAprovacao} ;
                             clav:dataAprovacao "${dataAprovacao}" ;
-                            clav:dataRevogacao "${dataRevogacao}" ;
                             clav:eDaResponsabilidadeDe clav:${obj.entRes
             .map(e => "ent_" + e.split(" - ")[0])
             .join(", clav:")} ;

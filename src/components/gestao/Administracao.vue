@@ -1,11 +1,9 @@
 <template>
-  <v-container>
+  <v-card flat class="pa-3">
     <v-row justify="center">
       <v-col cols="12">
         <v-card class="elevation-12">
-          <v-card-title class="indigo accent-4 text-white">
-            Administração
-          </v-card-title>
+          <v-card-title class="indigo accent-4 text-white"> Administração </v-card-title>
           <v-spacer></v-spacer>
           <v-card-text>
             <v-card>
@@ -14,17 +12,16 @@
               </v-card-title>
               <v-card-text class="pa-5">
                 <p>
-                  Realiza o reload da cache do servidor API. Faz o reset das
-                  travessias especiais, o reload da cache das classes, o reload
-                  da cache do índice de pesquisa, o reload da cache da
-                  legislação, o reload da cache das entidades e gera o ficheiro
-                  com toda a informação das classes.
+                  Realiza o reload da cache do servidor API. Faz o reset das travessias
+                  especiais, o reload da cache das classes, o reload da cache do índice de
+                  pesquisa, o reload da cache da legislação, o reload da cache das
+                  entidades e gera o ficheiro com toda a informação das classes.
                 </p>
                 <p class="font-weight-bold">
-                  <span style="color:red">CUIDADO:</span> Pedido pesado que deve
-                  ser apenas executado se houver alterações nas classes, na
-                  legislação ou nas entidades. Este pedido deve ser executado
-                  fora das 'horas de ponta' do servidor.
+                  <span style="color: red">CUIDADO:</span> Pedido pesado que deve ser
+                  apenas executado se houver alterações nas classes, na legislação ou nas
+                  entidades. Este pedido deve ser executado fora das 'horas de ponta' do
+                  servidor.
                 </p>
                 <v-row>
                   <v-col class="text-center">
@@ -47,24 +44,21 @@
                 <v-row justify="center">
                   <v-col>
                     <p>
-                      Calcula e guarda todas as travessias de todas as classes
-                      (fecho transitivo). Como as relações entre classes
-                      eComplementarDe, eSintetizadoPor e eSuplementoPara não
-                      podem ser quebradas na criação de TS's e sendo este
-                      cálculo pesado e necessário efetuar sempre que se cria uma
-                      TS, pretende-se com esta secção calcular o fecho
-                      transitivo apenas uma única vez e posteriormente colocá-lo
-                      em cache.
+                      Calcula e guarda todas as travessias de todas as classes (fecho
+                      transitivo). Como as relações entre classes eComplementarDe,
+                      eSintetizadoPor e eSuplementoPara não podem ser quebradas na criação
+                      de TS's e sendo este cálculo pesado e necessário efetuar sempre que
+                      se cria uma TS, pretende-se com esta secção calcular o fecho
+                      transitivo apenas uma única vez e posteriormente colocá-lo em cache.
                     </p>
                     <p>
                       Calcula também o fecho transitivo apenas para a relação
                       eSintetizadoPor.
                     </p>
                     <p class="font-weight-bold">
-                      <span style="color:red">CUIDADO:</span> Pedido pesado que
-                      deve ser apenas executado se houver alterações nas
-                      classes. Este pedido deve ser executado fora das 'horas de
-                      ponta' do servidor.
+                      <span style="color: red">CUIDADO:</span> Pedido pesado que deve ser
+                      apenas executado se houver alterações nas classes. Este pedido deve
+                      ser executado fora das 'horas de ponta' do servidor.
                     </p>
                     <v-row>
                       <v-col cols="12" class="text-center">
@@ -75,17 +69,15 @@
                     </v-row>
 
                     <p>
-                      Após calcular os fechos transitivos das classes é
-                      necessário atualizar os fechos transitivos presentes na
-                      cache do servidor. Para atualizar a cache carregue no
-                      seguinte botão.
+                      Após calcular os fechos transitivos das classes é necessário
+                      atualizar os fechos transitivos presentes na cache do servidor. Para
+                      atualizar a cache carregue no seguinte botão.
                     </p>
                     <p class="font-weight-bold">
-                      <span style="color:red">AVISO:</span> Caso este passo não
-                      seja efetuado os novos fechos transitivos calculados não
-                      estarão visíveis/acessíveis para os utilizadores,
-                      continuando a serem apresentados os fechos transitivos
-                      anteriores.
+                      <span style="color: red">AVISO:</span> Caso este passo não seja
+                      efetuado os novos fechos transitivos calculados não estarão
+                      visíveis/acessíveis para os utilizadores, continuando a serem
+                      apresentados os fechos transitivos anteriores.
                     </p>
                     <v-row>
                       <v-col cols="12" class="text-center">
@@ -121,23 +113,18 @@
                               color="warning"
                               class="title text-center text-white"
                             >
-                              A calcular o fecho transitivo {{ fechoTipo }}...
-                              Classe: {{ processo }}
+                              A calcular o fecho transitivo {{ fechoTipo }}... Classe:
+                              {{ processo }}
                             </v-alert>
                             <v-alert
                               :value="fechoTotalCalculado && !calcAlert"
                               color="success"
                               class="title text-center text-white"
                             >
-                              Fechos transitivos calculados e guardados com
-                              sucesso!<br />
+                              Fechos transitivos calculados e guardados com sucesso!<br />
                               Carregue os fechos transitivos para cache!
                             </v-alert>
-                            <v-alert
-                              :type="type"
-                              :value="calcAlert"
-                              dismissible
-                            >
+                            <v-alert :type="type" :value="calcAlert" dismissible>
                               {{ text }}
                             </v-alert>
                           </v-col>
@@ -195,9 +182,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="reloadDialog = false">
-            Cancelar
-          </v-btn>
+          <v-btn color="red" text @click="reloadDialog = false"> Cancelar </v-btn>
           <v-btn
             color="primary"
             text
@@ -219,9 +204,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="calcDialog = false">
-            Cancelar
-          </v-btn>
+          <v-btn color="red" text @click="calcDialog = false"> Cancelar </v-btn>
           <v-btn
             color="primary"
             text
@@ -243,9 +226,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="loadDialog = false">
-            Cancelar
-          </v-btn>
+          <v-btn color="red" text @click="loadDialog = false"> Cancelar </v-btn>
           <v-btn
             color="primary"
             text
@@ -259,7 +240,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -281,7 +262,7 @@ export default {
     fechoTotalCalculado: false,
     resultadosJSON: [],
     aCalcular: false,
-    fechoTipo: ""
+    fechoTipo: "",
   }),
 
   methods: {
@@ -300,10 +281,10 @@ export default {
       this.reloadAlert = true;
     },
 
-    loadProcessos: async function() {
+    loadProcessos: async function () {
       try {
         var response = await this.$request("get", "/classes?nivel=3");
-        this.listaProcessos = response.data.map(e => e.id.split("#c")[1]);
+        this.listaProcessos = response.data.map((e) => e.id.split("#c")[1]);
         //garantir que a lista com os códigos das classes está ordenada
         this.listaProcessos.sort();
       } catch (erro) {
@@ -311,19 +292,19 @@ export default {
       }
     },
 
-    loadRels: async function(p, relacao) {
+    loadRels: async function (p, relacao) {
       try {
         var response = await this.$request(
           "get",
           "/classes/c" + p + "/procRel/" + relacao
         );
-        return response.data.map(e => e.codigo);
+        return response.data.map((e) => e.codigo);
       } catch (erro) {
         throw erro.response.data;
       }
     },
 
-    calcRel: async function(processo, niveis, relacoes) {
+    calcRel: async function (processo, niveis, relacoes) {
       var listaResultados = [];
       var stackProc = [];
       var profundidade = 1;
@@ -341,7 +322,7 @@ export default {
           //verifica se já se possui a travessia de p
           if (p < processo) {
             //caso já se possua a travessia de p apenas é necessário adicionar a travessia aos resultados para o processo (evitando duplicados)
-            var elem = this.resultadosJSON.find(o => {
+            var elem = this.resultadosJSON.find((o) => {
               return o.processo == p;
             });
             listaResultados = this.merge(listaResultados, elem.travessia);
@@ -369,22 +350,22 @@ export default {
       return listaResultados;
     },
 
-    merge: function(i, x) {
+    merge: function (i, x) {
       var h = {};
       var n = [];
       for (var a = 2; a--; i = x)
-        i.map(function(b) {
+        i.map(function (b) {
           h[b] = h[b] || n.push(b);
         });
       return n;
     },
 
-    minus: function(a, b) {
+    minus: function (a, b) {
       var s = new Set(b);
-      return Array.from(new Set(a.filter(x => !s.has(x))));
+      return Array.from(new Set(a.filter((x) => !s.has(x))));
     },
 
-    calcRelTotal: async function(relacoes) {
+    calcRelTotal: async function (relacoes) {
       var niveis = 1000;
 
       for (var i = 0; i < this.listaProcessos.length; i++) {
@@ -393,12 +374,12 @@ export default {
 
         this.resultadosJSON.push({
           processo: this.processo,
-          travessia: lista
+          travessia: lista,
         });
       }
     },
 
-    writeJSON: async function(path) {
+    writeJSON: async function (path) {
       try {
         var response = await this.$request("post", path, this.resultadosJSON);
       } catch (e) {
@@ -406,7 +387,7 @@ export default {
       }
     },
 
-    calcAndWrite: async function() {
+    calcAndWrite: async function () {
       this.calcAlert = false;
 
       try {
@@ -419,7 +400,7 @@ export default {
         await this.calcRelTotal([
           "eComplementarDe",
           "eSintetizadoPor",
-          "eSuplementoPara"
+          "eSuplementoPara",
         ]);
         await this.writeJSON("/travessia");
         this.resultadosJSON = [];
@@ -439,7 +420,7 @@ export default {
       }
     },
 
-    travessiasReset: async function() {
+    travessiasReset: async function () {
       this.loadAlert = false;
 
       try {
@@ -455,9 +436,9 @@ export default {
       this.loadAlert = true;
     },
 
-    cancelar: function() {
+    cancelar: function () {
       window.location.reload();
-    }
-  }
+    },
+  },
 };
 </script>

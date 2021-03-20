@@ -38,8 +38,8 @@ export function comparaArraySel(arrA, arrB) {
     return true;
   }
 
-  const keysA = arrA.map((el) => el[key]).sort();
-  const keysB = arrB.map((el) => el[key]).sort();
+  const keysA = arrA.map(el => el[key]).sort();
+  const keysB = arrB.map(el => el[key]).sort();
 
   arraysIguais = JSON.stringify(keysA) === JSON.stringify(keysB);
 
@@ -111,6 +111,42 @@ export function mapKeys(key) {
 
     case "sioe":
       descricao = "SIOE";
+      break;
+
+    case "notasAp":
+      descricao = "Notas de Aplicação";
+      break;
+
+    case "notasEx":
+      descricao = "Notas de Exclusão";
+      break;
+
+    case "exemplosNotasAp":
+      descricao = "Exemplo Notas de Aplicação";
+      break;
+
+    case "termosInd":
+      descricao = "Termos de Índice";
+      break;
+
+    case "entProd":
+      descricao = "Entidade Produtora";
+      break;
+
+    case "tipoProc":
+      descricao = "Tipo de Processo";
+      break;
+
+    case "procTrans":
+      descricao = "Processo Transversal";
+      break;
+
+    case "donos":
+      descricao = "Donos do processo";
+      break;
+
+    case "processosRelacionados":
+      descricao = "Processos Relacionados";
       break;
 
     default:
@@ -200,15 +236,15 @@ export function converterDadosOriginais(dados) {
 
 export function identificaItemAdicionado(item, lista, historicoAnterior) {
   if (lista === "entidadesSel") {
-    return !historicoAnterior.entidadesSel.dados.some((ent) => {
+    return !historicoAnterior.entidadesSel.dados.some(ent => {
       return ent.sigla === item.sigla;
     });
   } else if (lista === "tipologiasSel") {
-    return !historicoAnterior.tipologiasSel.dados.some((tip) => {
+    return !historicoAnterior.tipologiasSel.dados.some(tip => {
       return tip.sigla === item.sigla;
     });
   } else if (lista === "processosSel") {
-    return !historicoAnterior.processosSel.dados.some((proc) => {
+    return !historicoAnterior.processosSel.dados.some(proc => {
       return proc.codigo === item.codigo;
     });
   }
@@ -217,7 +253,7 @@ export function identificaItemAdicionado(item, lista, historicoAnterior) {
 }
 
 export function identificaItemEmTabela(item, listaA, siglaOuCodigo) {
-  return !listaA.dados.some((dado) => {
+  return !listaA.dados.some(dado => {
     return dado[siglaOuCodigo] === item;
   });
 }
@@ -233,7 +269,15 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
       siglaOuCodigo = "codigo";
       designacaoOuTitulo = "titulo";
     }
+    if (listaAnterior[0].nota !== undefined) {
+      siglaOuCodigo = "nota";
+      designacaoOuTitulo = null;
+    }
   } else if (listaAtual[0] !== undefined) {
+    if (listaAtual[0].nota !== undefined) {
+      siglaOuCodigo = "nota";
+      designacaoOuTitulo = null;
+    }
     if (listaAtual[0].sigla === undefined) {
       siglaOuCodigo = "codigo";
       designacaoOuTitulo = "titulo";
@@ -242,13 +286,17 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
     return null;
   }
 
-  listaAnterior.forEach((itemAnterior) => {
+  listaAnterior.forEach(itemAnterior => {
     if (
       !listaAtual.some(
-        (itemAtual) => itemAtual[siglaOuCodigo] === itemAnterior[siglaOuCodigo]
+        itemAtual => itemAtual[siglaOuCodigo] === itemAnterior[siglaOuCodigo]
       )
     )
-      notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
+      if (designacaoOuTitulo === null) {
+        notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]};`;
+      } else {
+        notaComRemovidos += `\n# ${itemAnterior[siglaOuCodigo]} - ${itemAnterior[designacaoOuTitulo]};`;
+      }
   });
 
   if (notaComRemovidos === "\nItens removidos:") return null;
@@ -309,11 +357,11 @@ export function gerarDadosRelatorio(pedido) {
     estadoPedido: "",
   };
 
-  Object.keys(pedidoSubmetido).forEach((item) => {
+  Object.keys(pedidoSubmetido).forEach(item => {
     if (item !== "estado" && item !== "id") campos.push(item);
   });
 
-  campos.forEach((campo) => {
+  campos.forEach(campo => {
     if (pedidoSubmetido[campo].nota !== null) {
       let formatarNota = "";
       formatarNota = pedidoSubmetido[campo].nota.replace(

@@ -1,83 +1,68 @@
 <template>
   <Loading v-if="!pubsReady" :message="'documentação científica'" />
-  <v-expansion-panel v-else>
+  <v-expansion-panel v-else class="ma-4">
     <v-expansion-panel-header
-      >Produção Técnica e Científica</v-expansion-panel-header
+      :class="{
+        'text-center': $vuetify.breakpoint.smAndDown,
+        'text-left': $vuetify.breakpoint.mdAndUp,
+      }"
+      class="separador pa-3"
     >
-    <v-expansion-panel-content>
-      <v-card>
-        <v-card-text>
-          <div v-for="item in listaPubs" :key="item.classe" class="subtitle">
-            {{ item.classe }}
-            <v-list two-line subheader>
-              <v-list-item
-                v-for="documento in item.documentos"
-                :key="documento.ano"
-              >
-                <v-list-item-content>
-                  <v-list-item-title>{{ documento.ano }}</v-list-item-title>
-                  <ul>
-                    <li
-                      v-for="publicacao in documento.publicacoes"
-                      :key="publicacao._id"
-                    >
-                      <b
-                        ><a
-                          v-if="publicacao.url !== 'FICHEIRO'"
-                          :href="publicacao.url"
-                          >{{ publicacao.titulo }}</a
-                        >
-                        <span 
-                          class="fakea"
-                          v-else
-                          href="#"
-                          @click="downloadFile(publicacao._id)"
-                        >{{ publicacao.titulo }}</span></b
-                      >, {{ publicacao.local }};
-                      <span v-for="(a,index) in publicacao.autores" :key="`${a}${index}`"
-                        >{{ nameWithComma(a, index, publicacao.autores.length) }}&nbsp;</span
-                      >
-                      <v-icon
-                        v-for="(operacao, index) in operacoes"
-                        @click="
-                          switchOperacao(operacao.descricao, publicacao._id)
-                        "
-                        :color="operacao.cor"
-                        :key="index"
-                        >{{ operacao.icon }}</v-icon
-                      >
-                    </li>
-                  </ul>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </div>
-        </v-card-text>
-      </v-card>
+      <div>
+        <v-icon color="white" left>{{ docsicon }}</v-icon>
+        <span class="ml-3 mr-1"> Técnica e Científica</span>
+      </div>
+    </v-expansion-panel-header>
+    <v-expansion-panel-content class="pa-3">
+      <div v-for="item in listaPubs" :key="item.classe" class="subtitle">
+        {{ item.classe }}
+        <v-list two-line subheader>
+          <v-list-item v-for="documento in item.documentos" :key="documento.ano">
+            <v-list-item-content>
+              <v-list-item-title>{{ documento.ano }}</v-list-item-title>
+              <ul>
+                <li v-for="publicacao in documento.publicacoes" :key="publicacao._id">
+                  <b
+                    ><a v-if="publicacao.url !== 'FICHEIRO'" :href="publicacao.url">{{
+                      publicacao.titulo
+                    }}</a>
+                    <span
+                      class="fakea"
+                      v-else
+                      href="#"
+                      @click="downloadFile(publicacao._id)"
+                      >{{ publicacao.titulo }}</span
+                    ></b
+                  >, {{ publicacao.local }};
+                  <span v-for="(a, index) in publicacao.autores" :key="`${a}${index}`"
+                    >{{ nameWithComma(a, index, publicacao.autores.length) }}&nbsp;</span
+                  >
+                  <v-icon
+                    v-for="(operacao, index) in operacoes"
+                    @click="switchOperacao(operacao.descricao, publicacao._id)"
+                    :color="operacao.cor"
+                    :key="index"
+                    >{{ operacao.icon }}</v-icon
+                  >
+                </li>
+              </ul>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </div>
     </v-expansion-panel-content>
     <v-dialog :value="eliminarId != ''" persistent max-width="290px">
       <v-card>
         <v-card-title class="headline">Confirmar ação</v-card-title>
-        <v-card-text>
-          Tem a certeza que pretende eliminar o documento?
-        </v-card-text>
+        <v-card-text> Tem a certeza que pretende eliminar o documento? </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="eliminarId = ''">
-            Cancelar
-          </v-btn>
-          <v-btn color="primary" text @click="remover(eliminarId)">
-            Confirmar
-          </v-btn>
+          <v-btn color="red" text @click="eliminarId = ''"> Cancelar </v-btn>
+          <v-btn color="primary" text @click="remover(eliminarId)"> Confirmar </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar
-      v-model="snackbar"
-      :color="color"
-      :timeout="timeout"
-      :top="true"
-    >
+    <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :top="true">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
@@ -106,6 +91,7 @@
 import Loading from "@/components/generic/Loading";
 const lhost = require("@/config/global").host;
 import { NIVEL_MINIMO_DOC } from "@/utils/consts";
+import { mdiFileDocumentMultipleOutline } from "@mdi/js";
 
 export default {
   props: ["level"],
@@ -122,21 +108,22 @@ export default {
       timeout: 4000,
       eliminarId: "",
       done: false,
-      min: NIVEL_MINIMO_DOC
+      min: NIVEL_MINIMO_DOC,
+      docsicon: mdiFileDocumentMultipleOutline,
     };
   },
   components: {
-    Loading
+    Loading,
   },
   methods: {
-    nameWithComma(a, index, length){
-      if(index !== length-1){
+    nameWithComma(a, index, length) {
+      if (index !== length - 1) {
         return `${a}; `;
-      }else{
+      } else {
         return a;
       }
     },
-    groupBy: function(key, array) {
+    groupBy: function (key, array) {
       var result = [];
       for (var i = 0; i < array.length; i++) {
         var added = false;
@@ -156,26 +143,24 @@ export default {
       }
       return result;
     },
-    preparaConteudo: async function(conteudo) {
+    preparaConteudo: async function (conteudo) {
       try {
         var response = conteudo;
         // Remover da lista entradas nao visiveis consoante o nivel
         if (this.level < NIVEL_MINIMO_DOC) {
-          response = response.filter(item => item.visivel);
+          response = response.filter((item) => item.visivel);
         }
         // Agrupar por classe
         var classes = response.reduce(
-          (p, c) => (
-            p[c.classe] ? p[c.classe].push(c) : (p[c.classe] = [c]), p
-          ),
+          (p, c) => (p[c.classe] ? p[c.classe].push(c) : (p[c.classe] = [c]), p),
           {}
         );
         // Agrupar por ano em cada classe
-        response = Object.keys(classes).map(k => ({
+        response = Object.keys(classes).map((k) => ({
           classe: k,
           documentos: this.groupBy("ano", classes[k]).sort((a, b) =>
             a.ano < b.ano ? 1 : -1
-          )
+          ),
         }));
         return response;
       } catch (e) {
@@ -187,7 +172,7 @@ export default {
     },
     download(path, filename) {
       var element = document.createElement("a");
-      
+
       element.setAttribute("href", path);
       element.setAttribute("download", filename);
       element.style.display = "none";
@@ -214,7 +199,7 @@ export default {
     },
     remover(id) {
       this.$request("delete", "/documentacaoCientifica/" + id)
-        .then(res => {
+        .then((res) => {
           this.text = res.data;
           this.color = "success";
           this.snackbar = true;
@@ -222,7 +207,7 @@ export default {
           this.done = true;
           this.getDocumentacao();
         })
-        .catch(e => {
+        .catch((e) => {
           this.text = e.response.data;
           this.color = "error";
           this.snackbar = true;
@@ -248,7 +233,7 @@ export default {
       this.snackbar = false;
       if (this.done == true) this.getDocumentacao();
     },
-    go: function(url) {
+    go: function (url) {
       if (url.startsWith("http")) {
         window.location.href = url;
       } else {
@@ -272,22 +257,22 @@ export default {
       if (level >= NIVEL_MINIMO_DOC) {
         this.operacoes = [
           { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
-          { icon: "delete", descricao: "Remoção", cor: "red" }
+          { icon: "delete", descricao: "Remoção", cor: "red" },
         ];
       }
-    }
+    },
   },
-  created: async function() {
+  created: async function () {
     let response = await this.$request("get", "/documentacaoCientifica");
 
-    let conteudo = response.data; 
+    let conteudo = response.data;
 
     this.preparaOperacoes(this.level);
 
     this.listaPubs = await this.preparaConteudo(conteudo);
 
     this.pubsReady = true;
-  }
+  },
 };
 </script>
 
@@ -298,6 +283,6 @@ export default {
 }
 
 .fakea {
-  color: #1A76D2;
+  color: #1a76d2;
 }
 </style>

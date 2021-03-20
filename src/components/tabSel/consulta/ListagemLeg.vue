@@ -1,165 +1,313 @@
 <template>
-  <v-card class="ma-8">
-    <v-card-title class="indigo darken-4 white--text" dark>
-      {{ tipo }}
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Filtrar"
-        single-line
-        hide-details
-        dark
-      ></v-text-field>
-    </v-card-title>
+  <v-card flat class="clav-info-content">
+    <v-tooltip top color="info" open-delay="500">
+      <template v-slot:activator="{ on }">
+        <v-text-field
+          v-on="on"
+          v-model="search"
+          append-icon="search"
+          label="Procurar / filtrar tabela"
+          text
+          single-line
+          hide-details
+          clearable
+          color="blue darken-3"
+          class="mt-n2 mb-3 mx-6 font-weight-medium"
+        ></v-text-field>
+      </template>
 
-    <v-card-text>
-      <v-data-table
-        v-if="tipo=='TABELAS DE SELEÇÃO INSERIDAS NA CLAV'"
-        :headers="headersTS"
-        :items="lista"
-        :search="search"
-        class="elevation-1"
-        :footer-props="footer_props"
-      >
-        <template v-slot:no-results>
-          <v-alert :value="true" color="error" icon="warning"
-            >Não foram encontrados resultados para "{{ search }}".</v-alert
-          >
-        </template>
+      <span> Filtrar tabela</span>
+    </v-tooltip>
 
-        <template v-slot:item.link="{ item }">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="indigo darken-3" @click="$router.push('/ts/'+item.id)"
-                  v-on="on">
-                    <v-icon>remove_red_eye</v-icon>
-                  </v-btn>
-                </template>
-                <span>Ver Tabela de Seleção...</span>
-              </v-tooltip>
-        </template>
-        <template v-slot:item.entidades="{ item }">
-              <span v-for="(ent,index) in item.entidades" :key="index">{{ent}}</span>
-        </template>
+    <v-data-table
+      class="content-table"
+      v-if="tipo == 'TABELAS DE SELEÇÃO INSERIDAS NA CLAV'"
+      :headers="headers"
+      :items="lista"
+      :search="search"
+      :footer-props="footer_props"
+    >
+      <template v-slot:no-results>
+        <v-alert
+          :value="true"
+          color="error"
+          icon="warning"
+          class="font-weight-medium my-3"
+          id="alerta-erro"
+          >Não foram encontrados resultados para "{{ search }}".</v-alert
+        >
+      </template>
 
-        <template v-slot:pageText="props">
-          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
-        </template>
+      <template v-slot:[`item.link`]="{ item }">
+        <v-tooltip top color="info" open-delay="500">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              small
+              text
+              rounded
+              @click="$router.push('/ts/' + item.id)"
+            >
+              <unicon
+                name="look-icon"
+                width="25"
+                height="25"
+                viewBox="0 0 20.71 15.574"
+                fill="#0D47A1"
+              />
+            </v-btn>
+          </template>
+          <span>Ver Tabela de Seleção</span>
+        </v-tooltip>
+      </template>
+      <template v-slot:[`item.entidades`]="{ item }">
+        <span v-for="(ent, index) in item.entidades" :key="index"
+          ><a :href="link(ent)">{{ ent }}</a
+          >{{ item.entidades.length > 1 ? " " : "" }}</span
+        >
+      </template>
 
-      </v-data-table>
+      <template v-slot:pageText="props">
+        Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+        {{ props.itemsLength }}
+      </template>
+    </v-data-table>
 
-      <v-data-table
-        v-else-if="tipo=='TABELAS DE SELEÇÃO INSERIDAS EM RELATÓRIO DE AVALIAÇÃO DE DOCUMENTAÇÃO ACUMULADA'"
-        :headers="headers"
-        :items="lista"
-        :search="search"
-        class="elevation-1"
-        :footer-props="footer_props"
-      >
-        <template v-slot:no-results>
-          <v-alert :value="true" color="error" icon="warning"
-            >Não foram encontrados resultados para "{{ search }}".</v-alert
-          >
-        </template>
+    <v-data-table
+      class="content-table"
+      v-else-if="tipo == 'RADA'"
+      :headers="headers"
+      :items="lista"
+      :search="search"
+      :footer-props="footer_props"
+    >
+      <template v-slot:no-results>
+        <v-alert
+          :value="true"
+          color="error"
+          icon="warning"
+          class="font-weight-medium my-3"
+          id="alerta-erro"
+          >Não foram encontrados resultados para "{{ search }}".</v-alert
+        >
+      </template>
 
-        <template v-slot:item.link="{ item }">
-          <v-tooltip bottom v-if="item.link">
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="red darken-3" :href="item.link"
-                  v-on="on">
-                    <v-icon>picture_as_pdf</v-icon>
-                  </v-btn>
-                </template>
-                <span>Aceder à TS do RADA em PDF...</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="indigo darken-3" @click="$router.push('/pgd/'+item.idRADA)"
-                  v-on="on">
-                    <v-icon>remove_red_eye</v-icon>
-                  </v-btn>
-                </template>
-                <span>Ver RADA...</span>
-              </v-tooltip>
-        </template>
+      <template v-slot:[`item.link`]="{ item }">
+        <v-tooltip top color="info" open-delay="500" v-if="item.link">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-if="item.link.startsWith('CLAV')"
+              v-on="on"
+              small
+              text
+              rounded
+              :href="
+                pathAPI +
+                '/ficheirosEstaticos?caminho=documentos%2FRADA%2FDespacho' +
+                item.link.split('Despacho')[1] +
+                '&' +
+                authToken
+              "
+            >
+              <unicon
+                name="pdf-icon"
+                width="25"
+                height="25"
+                viewBox="0 0 20.71 23.668"
+                fill="#C62828"
+              />
+            </v-btn>
+            <v-btn v-else v-on="on" small text rounded :href="item.link">
+              <unicon
+                name="pdf-icon"
+                width="25"
+                height="25"
+                viewBox="0 0 20.71 23.668"
+                fill="#C62828"
+              />
+            </v-btn>
+          </template>
+          <span>Aceder à TS do RADA em PDF</span>
+        </v-tooltip>
+        <v-tooltip top color="info" open-delay="500">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              small
+              text
+              rounded
+              @click="$router.push('/pgd/' + item.idRADA)"
+            >
+              <unicon
+                name="look-icon"
+                width="25"
+                height="25"
+                viewBox="0 0 20.71 15.574"
+                fill="#0D47A1"
+              />
+            </v-btn>
+          </template>
+          <span>Ver RADA</span>
+        </v-tooltip>
+      </template>
 
-        <template v-slot:pageText="props">
-          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
-        </template>
+      <template v-slot:pageText="props">
+        Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+        {{ props.itemsLength }}
+      </template>
+    </v-data-table>
 
-      </v-data-table>
-
-      <v-data-table
+    <v-data-table
+      class="content-table"
       v-else
-        :headers="headers"
-        :items="lista"
-        :search="search"
-        class="elevation-1"
-        :footer-props="footer_props"
-      >
-        <template v-slot:no-results>
-          <v-alert :value="true" color="error" icon="warning"
-            >Não foram encontrados resultados para "{{ search }}".</v-alert
-          >
-        </template>
+      :headers="headers"
+      :items="lista"
+      :search="search"
+      :footer-props="footer_props"
+    >
+      <template v-slot:no-results>
+        <v-alert
+          :value="true"
+          color="error"
+          icon="warning"
+          class="font-weight-medium my-3"
+          id="alerta-erro"
+          >Não foram encontrados resultados para "{{ search }}".</v-alert
+        >
+      </template>
 
-        <template v-slot:item.link="{ item }">
-          <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="red darken-3" :href="item.link"
-                  v-on="on">
-                    <v-icon>picture_as_pdf</v-icon>
-                  </v-btn>
-                </template>
-                <span>Aceder a Diario da Republica...</span>
-              </v-tooltip>
-              <v-tooltip bottom v-if="item.idPGD">
-                <template v-slot:activator="{ on }">
-                  <v-btn icon color="indigo darken-3" @click="$router.push('/pgd/'+item.idPGD)"
-                  v-on="on">
-                    <v-icon>remove_red_eye</v-icon>
-                  </v-btn>
-                </template>
-                <span>Ver Portaria...</span>
-              </v-tooltip>
-        </template>
+      <template v-slot:[`item.link`]="{ item }">
+        <v-tooltip top color="info" open-delay="500">
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" small text rounded :href="item.link">
+              <unicon
+                name="pdf-icon"
+                width="25"
+                height="25"
+                viewBox="0 0 20.71 23.668"
+                fill="#C62828"
+              />
+            </v-btn>
+          </template>
+          <span>Aceder a Diário da República</span>
+        </v-tooltip>
+        <v-tooltip top color="info" open-delay="500" v-if="item.idPGD">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              small
+              text
+              rounded
+              @click="$router.push('/pgd/' + item.idPGD)"
+            >
+              <unicon
+                name="look-icon"
+                width="25"
+                height="25"
+                viewBox="0 0 20.71 15.574"
+                fill="#0D47A1"
+              />
+            </v-btn>
+          </template>
 
-        <template v-slot:pageText="props">
-          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
-        </template>
-      </v-data-table>
-    </v-card-text>
+          <span>Ver Portaria</span>
+        </v-tooltip>
+      </template>
+      <template v-slot:[`item.entidades`]="{ item }">
+        <span v-for="(ent, index) in item.entidades" :key="index"
+          ><a :href="link(ent)">{{ ent }}</a
+          >{{ item.entidades.length > 1 ? " " : "" }}</span
+        >
+      </template>
+
+      <template v-slot:pageText="props">
+        Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+        {{ props.itemsLength }}
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
 <script>
+const lhost = require("@/config/global").host;
+
 export default {
-  props: ["lista", "tipo"],
+  props: ["lista", "tipo", "entidades"],
   data: () => ({
+    pathAPI: "",
+    authToken: "",
     search: "",
     headers: [
-      {text: "Data", value: "data", width: "8%"},
-      {text: "Tipo", value: "tipo", width: "10%"},
-      {text: "Número", value: "numero", width: "10%"},
-      {text: "Sumário", value: "sumario", width: "64%"},
-      {text: "Acesso", value: "link", width: "8%"},
+      {
+        text: "Data",
+        value: "data",
+        width: "10%",
+        sortable: false,
+      },
+      {
+        text: "Tipo",
+        value: "tipo",
+        width: "10%",
+        sortable: false,
+      },
+      {
+        text: "Número",
+        value: "numero",
+        width: "10%",
+        sortable: false,
+      },
+      { text: "Entidade", value: "entidades", width: "15%", sortable: false },
+      {
+        text: "Sumário",
+        value: "sumario",
+        width: "35%",
+        sortable: false,
+      },
+      {
+        text: "Estado",
+        value: "estado",
+        width: "10%",
+        sortable: false,
+      },
+      {
+        text: "Acesso",
+        value: "link",
+        width: "10%",
+        sortable: false,
+      },
     ],
-    headersTS: [
-      {text: "Data", value: "data", width: "8%"},
-      {text: "Entidades", value: "entidades", width: "20%"},
-      {text: "Sumário", value: "designacao", width: "64%"},
-      {text: "Acesso", value: "link", width: "8%"},
-    ],
+
     dialog: false,
     footer_props: {
       "items-per-page-options": [10, 20, -1],
       "items-per-page-text": "Mostrar",
-        "items-per-page-all-text": "Todos"
-    }
-  })
+      "items-per-page-all-text": "Todos",
+    },
+  }),
+
+  created: async function () {
+    this.authToken = await this.$getAuthToken();
+    this.authToken = this.authToken.replace(" ", "=");
+
+    this.pathAPI = lhost;
+  },
+  methods: {
+    link: function (ent) {
+      return this.entidades.some((e) => e == ent)
+        ? "/entidades/ent_" + ent
+        : "/tipologias/tip_" + ent;
+    },
+  },
 };
 </script>
+
+<style scoped>
+/*
+.info-content {
+  padding: 5px;
+  width: 100%;
+  background-color: #f1f6f8 !important;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px 10px 0 0;
+} */
+</style>

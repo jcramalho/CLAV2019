@@ -1,16 +1,11 @@
 <template>
-  <v-card class="ma-4">
-    <v-card-title class="indigo darken-4 white--text">
-      Permissões de Acesso
-    </v-card-title>
+  <v-card flat class="ma-3">
+    <p class="clav-content-title-1">Permissões de Acesso</p>
 
     <v-card-text>
-      <v-expansion-panels class="pa-4" focusable v-model="panel">
-        <v-expansion-panel>
-          <v-expansion-panel-header class="font-weight-bold">
-            Na Interface
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
+      <v-expansion-panels focusable v-model="panel">
+        <PainelCLAV titulo="Na Interface" icon="mdi-television-guide">
+          <template v-slot:conteudo>
             <v-data-table
               :items="acessoInterface"
               item-key="nivel"
@@ -18,7 +13,6 @@
               hide-default-footer
               single-expand
               show-expand
-              class="ma-4 elevation-1"
               :expanded.sync="expandedInt"
             >
               <template v-slot:expanded-item="{ headers, item }">
@@ -27,33 +21,35 @@
                     :items="item.ops"
                     item-key="path"
                     :headers="headersOpsInterface"
-                    class="mt-4 mb-4 elevation-3"
                     :search="search"
+                    class="my-4 elevation-3"
                   >
                     <template v-slot:top>
-                      <v-toolbar flat class="primary" dark>
-                        <v-toolbar-title>Operações</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-text-field
-                          v-model="search"
-                          append-icon="mdi-magnify"
-                          label="Procurar"
-                          single-line
-                          hide-details
-                        ></v-text-field>
-                      </v-toolbar>
+                      <v-row class="ma-2" align="center">
+                        <v-col justify="center">
+                          <p class="clav-content-title-2">Operações</p></v-col
+                        >
+                        <v-col>
+                          <v-text-field
+                            v-model="search"
+                            append-icon="mdi-magnify"
+                            label="Procurar"
+                            single-line
+                            hide-details
+                          ></v-text-field
+                        ></v-col>
+                      </v-row>
+                      <v-spacer></v-spacer>
                     </template>
                   </v-data-table>
                 </td>
               </template>
             </v-data-table>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-expansion-panel>
-          <v-expansion-panel-header class="font-weight-bold">
-            Na API de dados
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
+          </template>
+        </PainelCLAV>
+
+        <PainelCLAV titulo="Na API de dados" icon="mdi-api">
+          <template v-slot:conteudo>
             <v-data-table
               :items="acessoAPI"
               item-key="nivel"
@@ -61,7 +57,6 @@
               hide-default-footer
               single-expand
               show-expand
-              class="ma-4 elevation-1"
               :expanded.sync="expandedAPI"
             >
               <template v-slot:expanded-item="{ headers, item }">
@@ -70,46 +65,48 @@
                     :items="item.ops"
                     item-key="path"
                     :headers="headersOpsAPI"
-                    class="mt-4 mb-4 elevation-3"
+                    class="my-4 elevation-3"
                     :search="search"
                   >
                     <template v-slot:top>
-                      <v-toolbar flat class="primary" dark>
-                        <v-toolbar-title>Operações</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-text-field
-                          v-model="search"
-                          append-icon="search"
-                          label="Procurar"
-                          single-line
-                          hide-details
-                        ></v-text-field>
-                      </v-toolbar>
+                      <v-row class="ma-2" align="center">
+                        <v-col justify="center">
+                          <p class="clav-content-title-2">Operações</p>
+                        </v-col>
+                        <v-col>
+                          <v-text-field
+                            v-model="search"
+                            append-icon="search"
+                            label="Procurar"
+                            single-line
+                            hide-details
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
                     </template>
                   </v-data-table>
                 </td>
               </template>
 
               <template v-slot:no-data>
-                <v-alert
-                  type="error"
-                  width="50%"
-                  class="m-auto mb-2 mt-2"
-                  outlined
-                >
+                <v-alert type="error" width="50%" class="m-auto mb-2 mt-2" outlined>
                   Não foi possível obter as permissões de acesso da API de dados
                 </v-alert>
               </template>
             </v-data-table>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
+          </template>
+        </PainelCLAV>
       </v-expansion-panels>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import PainelCLAV from "@/components/generic/PainelCLAV";
 export default {
+  components: {
+    PainelCLAV,
+  },
   data() {
     return {
       acessoAPI: [],
@@ -122,73 +119,73 @@ export default {
         {
           text: "Nível do Utilizador",
           align: "center",
-          value: "nivel"
+          value: "nivel",
         },
         {
           text: "Descrição",
           align: "center",
-          value: "desc"
+          value: "desc",
         },
         {
           text: "",
-          value: "data-table-expand"
-        }
+          value: "data-table-expand",
+        },
       ],
       headersOpsInterface: [
         {
           text: "Caminho",
           align: "left",
-          value: "path"
+          value: "path",
         },
         {
           text: "Descrição",
           align: "left",
-          value: "desc"
-        }
+          value: "desc",
+        },
       ],
       headersOpsAPI: [
         {
           text: "Verbo",
           align: "left",
-          value: "verbo"
+          value: "verbo",
         },
         {
           text: "Caminho",
           align: "left",
-          value: "path"
+          value: "path",
         },
         {
           text: "Descrição",
           align: "left",
-          value: "desc"
-        }
-      ]
+          value: "desc",
+        },
+      ],
     };
   },
-  mounted: async function() {
+  mounted: async function () {
     //gerar permissoes de acesso para a interface
     let routes = this.$router.options.routes;
     let res = [];
 
     for (var i = 0; i < routes.length; i++) {
       for (var j = 0; j < routes[i].meta.levels.length; j++) {
-        var index = res.findIndex(
-          elem => routes[i].meta.levels[j] == elem.nivel
-        );
+        var index = res.findIndex((elem) => routes[i].meta.levels[j] == elem.nivel);
 
         if (index != -1) {
           res[index].ops.push({
             path: routes[i].path,
-            desc: routes[i].name
+            desc: routes[i].name,
           });
         } else {
           res.push({
             nivel: routes[i].meta.levels[j],
             desc: this.translateNivel(routes[i].meta.levels[j]),
-            ops: [{
-              path: routes[i].path,
-              desc: routes[i].name
-            }]
+            ops: [
+              {
+                path: routes[i].path,
+                desc: routes[i].name,
+              },
+            ],
           });
         }
       }
@@ -244,19 +241,19 @@ export default {
       }
 
       return ret;
-    }
+    },
   },
   watch: {
-    expandedInt: function(val) {
+    expandedInt: function (val) {
       this.search = "";
     },
-    expandedAPI: function(val) {
+    expandedAPI: function (val) {
       this.search = "";
     },
-    panel: function(val) {
+    panel: function (val) {
       this.expandedInt = [];
       this.expandedAPI = [];
-    }
-  }
+    },
+  },
 };
 </script>

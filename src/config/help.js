@@ -237,21 +237,63 @@ module.exports.help = {
         "da existência de diploma(s) legal(ais).</dd></dl></p>"
     }
   },
+  TS:{
+    Consulta: {
+      TS_LC: "<p>São as TS inseridas na CLAV, derivadas da Lista Consolidada (LC), que são produzidas e aprovadas na CLAV, sem publicação em " +
+      "Diário da República. </p>" +
+      "<p>No contexto da CLAV são identificadas com seguinte abreviatura: <b>TS/LC</b>.</p>" +
+      "<p>As Tabelas de Seleção (TS) são instrumentos de gestão da informação utilizados pelas entidades, que permitem organizar, estruturar e agregar a informação " +
+      "desde o momento da sua produção/receção, e que constituem as fontes de legitimação para a avaliação, seleção e eliminação da informação pública.</p>",
+      PGD_LC: "<p>São as TS inseridas em portaria de gestão de documentos, que derivam da LC e estão publicadas em Diário da República.</p>" +
+      "<p>No contexto da CLAV são identificadas com seguinte abreviatura: <b>PGD/LC</b>.</p>" +
+      "<p>As Tabelas de Seleção (TS) são instrumentos de gestão da informação utilizados pelas entidades, que permitem organizar, estruturar e agregar " +
+      "a informação desde o momento da sua produção/receção, e que constituem as fontes de legitimação para a avaliação, seleção e eliminação da " +
+      "informação pública.</p>",
+      PGD: "<p>São as TS não derivadas da Lista Consolidada (LC) que estão inseridas em portarias de gestão de documentos, publicadas em Diário da República.</p>" +
+      "<p>No contexto da CLAV são identificadas com seguinte abreviatura: <b>PGD</b>.</p>" +
+      "<p>A plataforma CLAV inclui o serviço de submissão de autos de eliminação. Para que este serviço possa ser utilizado, beneficiando de mecanismos " +
+      "de criação assistida, de pré-validação e de controlo e validação automática aquando do envio, foi necessário proceder a uma uniformização das " +
+      "tabelas de seleção (TS) publicadas ao longo de 30 anos, nomeadamente:</p>" +
+      "<ul><li>correção interpretativa de um Destino Final (DF), quando formalmente figura um valor que não traduz a situação de aplicação " +
+      "(por ex.: quando o DF é Conservação e a nota ao DF refere “Apenas devem ser conservadas as atas”). Neste caso, o DF original foi substituído pelo " +
+      "valor real, i.e., a conservação parcial, dado que uma parte da documentação é conservada e outra é eliminada. Caso esta correção interpretativa " +
+      "não tivesse sido efetuada, não poderiam ser submetidos autos de eliminação pela plataforma, dado que apenas se podem efetuar autos de eliminação " +
+      "para a documentação que tem como DF a eliminação ou a conservação parcial;</li>" +
+      "<li>concatenação num campo único do Prazo de Conservação Administrativa quando este se decompõe em dois campos (ativo e semi-ativo), " +
+      "tendo-se procedido à soma dos valores constantes. Esta junção permite a conferência automática do cumprimento do PCA.</li>" +
+      "<li>passagem de uma nota no campo Prazo de Conservação Administrativa (PCA) para o campo “Nota ao PCA”, de forma a que no campo PCA apenas " +
+      "figurem valores numéricos. Por exemplo se no campo PCA estiver expresso “Enquanto útil”, esta informação passou para o campo “Nota ao PCA”. " +
+      "Esta passagem permitiu a transformação do campo PCA num campo numérico, condição base para a validação dos dados ali introduzidos.</li></ul>" +
+      "<p>O acesso às tabelas de seleção na sua forma original publicadas no Diário da República pode ser efetuado no ícone PDF.</p>" +
+      "As TS são instrumentos de gestão da informação utilizados pelas entidades, que permitem organizar, estruturar e agregar a informação desde o " +
+      "momento da sua produção/receção, e que constituem as fontes de legitimação para a avaliação, seleção e eliminação da informação pública."
+    }
+  },
   Entidade: {
     Campos: {
-      Sigla: "Sigla da entidade.",
+      Nome: "Indicação do nome da entidade conforme consta no diploma criador/estatutos.",
+      Sigla: "<p>Indicação da sigla/acrónimo da entidade conforme consta no diploma criador/estatutos, ou como é conhecida.</p>" + 
+            "<p>Dado que a aplicação não permite a inserção de siglas repetidas, se sigla ou acrónimo formal já existir, recomenda-se a inserção, " + 
+            "em minúscula, da primeira letra que se seguir à última da sigla ou acrónimo.</p>" +
+            "<p>Para entidades com nome composto, deverá ser usado um hífen. Como por exemplo, " +
+            "Cinemateca Portuguesa – Museu do Cinema, que fica com a sigla CP-MC. O uso de vírgula não é permitido.</p>",
       Estado:
             "Indicação do estado da entidade: em atividade (ativa) ou extinta (inativa).",
-      SIOE: "Registo do código SIOE da entidade. O SIOE, ou o <i>Sistema de Informação e Organização " +
-            "do Estado</i>, é um sistema de informação sobre a caracterização das entidades públicas do" +
-            " universo das contas nacionais, bem como a atividade social dos empregadores públicos. " +
-            "O SIOE atribui um código, composto por uma sequência de dígitos numéricos, a todas as entidades públicas.",
-      Internacional: "Indicação do caráter internacional da entidade.",
-      DataCriacao: "Registo da data de criação da entidade. No caso das entidades públicas esta data consta num " +
-            "diploma legal.",
-      DataExtincao: "Registo da data de extinção da entidade. No caso das entidades públicas esta data consta num " +
-      "diploma legal.",
-      Tipologias: "Indicação das tipologias de entidade a que pertence."
+      SIOE: "<p>Indicação do código da entidade atribuído no Sistema de Informação de Organização do Estado (SIOE).</p>" + 
+          "<p>Procurar o respetivo código SIOE em <a href='https://www.sioe.dgaep.gov.pt/Default.aspx'>https://www.sioe.dgaep.gov.pt/Default.aspx</a></p>" +
+          "<p>Se não existir código SIOE, deixar o campo em branco.</p>",
+      Internacional: "<p>Seleção da origem geográfica da entidade.</p>" +
+            "<p>Ao escolher “SIM” responde que a origem da entidade é internacional, ao escolher “NÃO” responde que a origem não é internacional.</p>",
+      DataCriacao: "<p>Indicação da data de criação da entidade que consta no diploma criador/estatutos. </p>" +
+            "<p>O formato da data é AAAA-MM-DD.</p>",
+      DataExtincao: "<p>Indicação da data de extinção da entidade que consta no diploma de extinção.</p>" +
+            "<p>O formato da data é AAAA-MM-DD.</p>",
+      Tipologias: "<p>Seleção da(s) tipologia(s) de entidade(s) em que se enquadra a entidade que está a ser registada.</p>" +
+            "<p>No contexto da CLAV, uma tipologia é um conceito representativo de um agrupamento de entidades do mesmo tipo, " +
+            "ou seja, entidades que têm uma ou mais características comuns.</p>" +
+            "<p>Por exemplo: a mesma missão, os tribunais; o mesmo âmbito de atuação, as entidades gestoras de apoios; " +
+            "o mesmo tipo de entidade, as Comissões de Coordenação e Desenvolvimento Regional; " +
+            "entre outros).</p>"
     },
     Intervencoes: {
       Dono: "Processos de negócio em que a entidade intervém como dono.",
@@ -287,9 +329,15 @@ module.exports.help = {
   },
   Tipologias: {
     Campos: {
-      Sigla: "Sigla da tipologia de entidade.",
-      Nome: "Designação da tipologia de entidade",
-      Entidades: "Nome das entidades que fazem parte da tipologia de entidade."
+      Sigla: "<p>Indicação de uma sigla para a tipologia de entidade. </p>" +
+          "<p>A sigla pode ser composta por todas as iniciais das palavras que constam no Nome da tipologia.</p>" +
+          "<p>Devem ser inscritas em maiúsculas.</p>",
+      Nome: "<p>Indicação do nome da tipologia da entidade. </p>" +
+          "<p>No contexto da CLAV, uma tipologia é um conceito representativo de um agrupamento de entidades do mesmo tipo, ou seja, " +
+          "entidades que têm uma ou mais características comuns.</p>" +
+          "<p>Por exemplo: a mesma missão, os tribunais; o mesmo âmbito de atuação, as entidades gestoras de apoios; " +
+          "o mesmo tipo de entidade, as Comissões de Coordenação e Desenvolvimento Regional; entre outros).</p>",
+      Entidades: "Seleção da(s) entidade(s) enquadradas na tipologia que está a ser registada."
     },
     Intervencoes: {
       Dono:
@@ -314,13 +362,30 @@ module.exports.help = {
   },
   Legislacao: {
     Campos: {
-      Numero: "Número de diploma.",
-      Tipo: "Tipo de diploma.",
-      Data: "Data de publicação do diploma.",
-      Sumário: "Sumário do diploma.",
-      Entidades: "Entidade(s) responsável pela publicação.",
+      Numero: "Indicação do número do diploma conforme publicação legal.",
+      Tipo: "Identificação do tipo de diploma.",
+      Data: "<p>Indicação da data da publicação do diploma.</p>" +
+            "<p>O formato da data é AAAA-MM-DD.</p>",
+      Sumário: "Registo do sumário do diploma conforme publicação legal.",
+      Link: "Indicação do link da publicação do diploma.",
+      FonteLegitimacao: "<p>Entende-se por fonte de legitimação a portaria ou despacho (no caso dos Relatórios " +
+        "de Avaliação de Documentação Acumulada), que estabelecem as decisões de avaliação que fundamentam a ação de eliminação.</p>" +
+        "<ul>" +
+        "<li>Se o diploma não é uma fonte de legitimação, selecione a opção NÃO ESPECIFICADA;</li>" +
+        "<li>Se estiver a adicionar uma portaria de gestão de documentos derivada da Lista Consolidada, selecione PGD/LC.  " +
+        "Abrange as tabelas de seleção, derivadas da Lista Consolidada, inseridas em portarias de gestão de documentos, " +
+        "publicadas em Diário da República.</li>" +
+        "<li>Se estiver a adicionar uma portaria de gestão de documentos não derivada da Lista Consolidada, selecione PGD.  " +
+        "Abrange as tabelas de seleção, não derivadas da Lista Consolidada, inseridas em portarias de gestão de documentos, " +
+        "publicadas em Diário da República.</li>" +
+        "<li>Se estiver a adicionar um despacho que autoriza um Relatório de Avaliação de Documentação Acumulada, selecione RADA. " +
+        "Abrange as tabelas de seleção, inseridas em Relatórios de Avaliação, que não foram submetidos na CLAV. </li>" +
+        "</ul>",
+      DataRevogacao: "<p>Indicação da data de revogação do diploma.</p>" +
+        "<p>O formato da data é AAAA-MM-DD.</p>",
+      Entidades: "Seleção da(s) entidade(s) responsável pela publicação do diploma. ",
       ProcessosRegulados:
-        "Processos de negócio que são regulados ou enquadrados pelo diploma."
+        "Seleção do(s) processo(s) de negócio de 3º nível enquadrados pelo diploma. "
     },
     Relacoes: {
       Altera: "Referência ao(s) diploma(s) que altera.",

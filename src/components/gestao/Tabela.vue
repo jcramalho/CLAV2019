@@ -1,34 +1,53 @@
 <template>
-  <v-card>
+  <v-card flat class="pa-3">
     <v-card-title>
-      Tabela de indicadores estatisticos
-
-      <download-csv
-        :data="indicadores"
-        name="indicadores.csv"
-        :labels="labels"
-        :fields="fields"
-      >
-        <v-btn class="ml-5" fab small color="indigo darken-4">
-          <v-icon color="white">cloud_download</v-icon>
-        </v-btn>
-      </download-csv>
-
+      <p class="clav-content-title-1">Tabela de indicadores estatisticos</p>
       <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-      ></v-text-field>
+      <v-tooltip top color="info" open-delay="500">
+        <template v-slot:activator="{ on }">
+          <download-csv
+            :data="indicadores"
+            name="indicadores.csv"
+            :labels="labels"
+            :fields="fields"
+          >
+            <v-btn v-on="on" class="ml-5" small color="primary">
+              <v-icon color="white">cloud_download</v-icon>
+            </v-btn>
+          </download-csv>
+        </template>
+
+        <span> Download da tabela de indicadores em CSV</span>
+      </v-tooltip>
     </v-card-title>
-    <v-data-table
-      class="ma-4"
-      :headers="headers"
-      :items="indicadores"
-      :search="search"
-    ></v-data-table>
+
+    <v-card flat class="clav-info-content">
+      <v-tooltip top color="info" open-delay="500">
+        <template v-slot:activator="{ on }">
+          <v-text-field
+            v-on="on"
+            v-model="search"
+            append-icon="search"
+            label="Procurar / filtrar tabela"
+            text
+            single-line
+            hide-details
+            clearable
+            color="blue darken-3"
+            class="mt-n2 mb-3 mx-6 font-weight-medium"
+          ></v-text-field>
+        </template>
+
+        <span> Filtrar tabela</span>
+      </v-tooltip>
+      <v-data-table
+        class="table-content"
+        :headers="headers"
+        :items="indicadores"
+        :search="search"
+        :footer-props="procsFooterProps"
+      ></v-data-table>
+    </v-card>
   </v-card>
 </template>
 
@@ -39,26 +58,31 @@ export default {
       search: "",
       labels: {
         indicador: "Indicador",
-        valor: "Valor"
+        valor: "Valor",
       },
       fields: ["indicador", "valor"],
+      procsFooterProps: {
+        "items-per-page-text": "Indicadores por página",
+        "items-per-page-options": [10, 20, 100, -1],
+        "items-per-page-all-text": "Todos",
+      },
       headers: [
         {
           text: "Indicador",
           sortable: true,
-          value: "indicador"
+          value: "indicador",
         },
         {
           text: "Valor",
-          value: "valor"
-        }
+          value: "valor",
+        },
       ],
       indicadores: [
         {
           indicador: "",
-          valor: ""
-        }
-      ]
+          valor: "",
+        },
+      ],
     };
   },
   created() {
@@ -67,9 +91,9 @@ export default {
   methods: {
     async getIndicadores() {
       await this.$request("get", "/indicadores/tabela")
-        .then(res => {
+        .then((res) => {
           this.indicadores = res.data;
-          this.indicadores.forEach(element => {
+          this.indicadores.forEach((element) => {
             if (element.indicador.includes("#")) {
               element.indicador = element.indicador.split("#")[1];
               element.indicador = element.indicador.replace(
@@ -93,8 +117,8 @@ export default {
             }
           });
         })
-        .catch(error => alert(error));
-    }
-  }
+        .catch((error) => alert(error));
+    },
+  },
 };
 </script>

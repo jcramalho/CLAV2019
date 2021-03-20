@@ -1,102 +1,71 @@
 <template>
-  <v-row class="ma-1" :key="componentKey">
-    <v-col cols="3">
+  <v-row>
+    <!-- Notas de Aplicação -->
+    <v-col cols="2">
       <div class="info-label">
-        Notas de Aplicação (NA):
+        Notas de Aplicação
         <InfoBox
           header="Notas de Aplicação"
           :text="myhelp.Classe.Campos.NotasAp"
+          helpColor="indigo darken-4"
         />
       </div>
-      <hr style="border-top: 0px" />
+
       <v-btn
-        color="primary"
+        color="indigo darken-2"
         dark
         rounded
-        @click="insereNovaNota(lista.notasAp)"
+        @click="insereNovaNota(notas, 'na')"
       >
-        Nova Nota
+        Nota de aplicação
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
     </v-col>
     <v-col>
-      <v-row fluid v-for="(nota, index) in lista.notasAp" :key="index">
-        <v-textarea
-          v-model="nota.nota"
-          v-if="nota.backgroundColor == 'transparent'"
-          auto-grow
-          solo
-          rows="1"
-          readonly
-          :backgroundColor="nota.backgroundColor"
-        >
-        </v-textarea>
-        <v-textarea
-          v-model="nota.nota"
-          v-else
-          auto-grow
-          solo
-          rows="1"
-          :backgroundColor="nota.backgroundColor"
-        >
-        </v-textarea>
-        <v-btn
-          class="ma-1"
-          color="primary"
-          dark
-          fab
-          small
-          @click="
-            forceRerenderEdit(nota.backgroundColor);
-            nota.backgroundColor = 'blue lighten-3';
-          "
-        >
-          <v-icon dark>edit</v-icon>
-        </v-btn>
-        <v-btn
-          class="ma-1"
-          color="red darken-2"
-          dark
-          fab
-          small
-          @click="
-            lista.notasAp.splice(index, 1);
-            forceRerender();
-          "
-        >
-          <v-icon dark>clear</v-icon>
-        </v-btn>
+      <v-row v-for="(nota, index) in notas" :key="index">
+        <v-col cols="10">
+          <v-textarea
+            v-model="nota.nota"
+            auto-grow
+            solo
+            label="Nota de Aplicação"
+            rows="1"
+          ></v-textarea>
+        </v-col>
+        <v-col>
+          <v-btn
+            color="red darken-2"
+            dark
+            rounded
+            @click="notas.splice(index, 1)"
+          >
+            Remover
+            <v-icon dark right>remove_circle_outline</v-icon>
+          </v-btn>
+        </v-col>
       </v-row>
     </v-col>
 
     <v-snackbar v-model="naVaziaFlag" :color="'warning'" :timeout="60000">
-      {{
-        "A nota anterior encontra-se vazia. Por favor preencha antes de criar uma nova."
-      }}
-      <v-btn dark text @click="naVaziaFlag = false">
-        Fechar
-      </v-btn>
+      {{ mensagemNAVazia }}
+      <v-btn dark text @click="naVaziaFlag = false">Fechar</v-btn>
     </v-snackbar>
 
     <v-snackbar v-model="naDuplicadaFlag" :color="'error'" :timeout="60000">
-      {{
-        "A última nota introduzida é um duplicado de outra já introduzida previamente!"
-      }}
-      <v-btn dark text @click="naDuplicadaFlag = false">
-        Fechar
-      </v-btn>
+      {{ mensagemNADuplicada }}
+      <v-btn dark text @click="naDuplicadaFlag = false">Fechar</v-btn>
     </v-snackbar>
   </v-row>
 </template>
 
 <script>
 const nanoid = require("nanoid");
-
-import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
+import InfoBox from "@/components/generic/infoBox.vue";
+
 export default {
-  props: ["lista", "compKeyNA"],
+  props: ["c"],
 
   components: {
     InfoBox
@@ -104,23 +73,20 @@ export default {
 
   data() {
     return {
+      notas: JSON.parse(JSON.stringify(this.c.notasAp)),
       myhelp: help,
       naVaziaFlag: false,
       naDuplicadaFlag: false,
-      componentKey: 0
+      mensagemNAVazia:
+        "A nota anterior encontra-se vazia. Queira preenchê-la antes de criar nova.",
+      mensagemNADuplicada:
+        "A última nota introduzida é um duplicado de outra já introduzida previamente!"
     };
   },
-
-  watch: {
-    compKeyNA: function() {
-      this.componentKey += 1;
-    }
-  },
-
   methods: {
     notaDuplicada: function(notas) {
       if (notas.length > 1) {
-        var lastNota = notas[0].nota;
+        var lastNota = notas[notas.length - 1].nota;
         var duplicados = notas.filter(n => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
@@ -129,24 +95,17 @@ export default {
         return false;
       }
     },
-    insereNovaNota: function(notas) {
-      if (notas.length > 0 && notas[0].nota == "") {
+
+    insereNovaNota: async function(notas, tipo) {
+      if (notas.length > 0 && notas[notas.length - 1].nota == "") {
         this.naVaziaFlag = true;
       } else if (this.notaDuplicada(notas)) {
         this.naDuplicadaFlag = true;
       } else {
-        var n = { idNota: "na" + "_" + nanoid(), nota: "" };
-        notas.unshift(n);
-        this.forceRerender();
+        var n = { id: tipo + "_" + nanoid(), nota: "" };
+        notas.push(n);
       }
-    },
-    forceRerender: function() {
-      this.componentKey += 1;
-    },
-    forceRerenderEdit: async function(color) {
-      if (color == "transparent") {
-        this.componentKey += 1;
-      }
+      this.$emit("notasAp", notas);
     }
   }
 };
@@ -154,11 +113,23 @@ export default {
 
 <style>
 .info-label {
-  color: #1a237e;
-  padding: 4px;
+  color: #283593; /* indigo darken-3 */
+  padding: 5px;
   font-weight: 400;
-  width: 90%;
-  background-color: #dee2f8;
+  width: 100%;
+  background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
 }
 </style>

@@ -1,7 +1,8 @@
 <template>
-  <v-container grid-list-lg>
-    <v-layout row wrap>
-      <v-flex md4 sm6 xs12 v-for="(stat, index) in stats" v-bind:key="index">
+  <v-card flat class="pa-3">
+    <p class="clav-content-title-1">Métricas de Classe</p>
+    <v-row>
+      <v-col cols="12" sm="6" md="3" v-for="(stat, index) in stats" :key="index">
         <v-card :class="stat.bgColor" dark>
           <v-container fluid grid-list-sm dark>
             <v-layout class="mt-0 mb-0 pa-0" row>
@@ -30,33 +31,31 @@
             </v-layout>
           </v-container>
         </v-card>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap>
-      <v-flex md6 xs12>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" sm="6">
         <v-card light>
-          <DoughnutPNS/>
+          <DoughnutPNS />
         </v-card>
-      </v-flex>
-      <v-flex md6 xs12>
+      </v-col>
+      <v-col cols="12" sm="6">
         <v-card light>
-          <DoughnutParticipantes/>
+          <DoughnutParticipantes />
         </v-card>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap>
-      <v-flex md6 xs12>
+      </v-col>
+      <v-col cols="12" sm="6">
         <v-card light>
-          <DoughnutDF/>
+          <DoughnutDF />
         </v-card>
-      </v-flex>
-      <v-flex md6 xs12>
+      </v-col>
+      <v-col cols="12" sm="6">
         <v-card light>
-          <DoughnutCriterio :crit="criterios"/>
+          <DoughnutCriterio :crit="criterios" />
         </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
@@ -71,12 +70,12 @@ export default {
     DoughnutPNS,
     DoughnutParticipantes,
     DoughnutDF,
-    DoughnutCriterio
+    DoughnutCriterio,
   },
   data() {
     return {
       criterios: [],
-      stats: []
+      stats: [],
     };
   },
   async mounted() {
@@ -89,20 +88,20 @@ export default {
   methods: {
     async getCriteriosDeJustificacao() {
       await this.$request("get", "/indicadores/critstats")
-        .then(res => {
+        .then((res) => {
           this.criterios = res.data;
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "gavel",
             title: "Número de Critérios de Justificação",
-            data: res.data[0].valor
+            data: res.data[0].valor,
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     async getNumeroClassesNivelUm() {
       await this.$request("get", "/indicadores/classesN1")
-        .then(res => {
+        .then((res) => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "class",
@@ -110,15 +109,15 @@ export default {
             data: res.data.valor,
             action: {
               label: "Mais info",
-              link: "/classes"
-            }
+              link: "/classes",
+            },
           });
         })
-        .catch(error => alert(error));
-    }
-    ,async getNumeroClassesNivelDois() {
+        .catch((error) => alert(error));
+    },
+    async getNumeroClassesNivelDois() {
       await this.$request("get", "/indicadores/classesN2")
-        .then(res => {
+        .then((res) => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "class",
@@ -126,11 +125,11 @@ export default {
             data: res.data.valor,
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     async getNumeroClassesNivelTres() {
       await this.$request("get", "/indicadores/classesN3")
-        .then(res => {
+        .then((res) => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "work",
@@ -138,11 +137,11 @@ export default {
             data: res.data.valor,
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     async getNumeroClassesNivelQuatro() {
       await this.$request("get", "/indicadores/classesN4")
-        .then(res => {
+        .then((res) => {
           this.stats.push({
             bgColor: "indigo darken-4",
             icon: "work",
@@ -150,11 +149,11 @@ export default {
             data: res.data.valor,
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     irPara(path) {
       this.$router.push(path);
-    }
-  }
+    },
+  },
 };
 </script>

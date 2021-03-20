@@ -183,26 +183,28 @@
           <v-stepper-step step="2">Identificação de classes / séries e agregações / unidades de instalação</v-stepper-step>
 
           <v-stepper-content step="2">
-            <!-- Adicionar Zona Controlo -->
-            <AdicionarZonaControlo
-              v-bind:classes="classes"
-              v-bind:entidades="entidades"
-              v-bind:auto="auto"
-              v-bind:classesCompletas="classesCompletas"
-              v-bind:donos="donos"
-              v-bind:tipo="tipo"
-            />
+            <Loading v-if="classes.length==0" :message="'Fonte de Legitimação'" />
+            <div v-else>
+              <!-- Adicionar Zona Controlo -->
+              <AdicionarZonaControlo
+                v-bind:classes="classes"
+                v-bind:entidades="entidades"
+                v-bind:auto="auto"
+                v-bind:classesCompletas="classesCompletas"
+                v-bind:donos="donos"
+                v-bind:tipo="tipo"
+              />
 
-            <!-- Zonas de Controlo -->
-            <ListaZonasControlo
-              v-bind:auto="auto"
-              v-bind:classes="classes"
-              v-bind:entidades="entidades"
-              v-bind:classesCompletas="classesCompletas"
-              v-bind:donos="donos"
-              v-bind:tipo="tipo"
-            />
-
+              <!-- Zonas de Controlo -->
+              <ListaZonasControlo
+                v-bind:auto="auto"
+                v-bind:classes="classes"
+                v-bind:entidades="entidades"
+                v-bind:classesCompletas="classesCompletas"
+                v-bind:donos="donos"
+                v-bind:tipo="tipo"
+              />
+            </div>
             <div class="mx-2">
               <v-btn
                 medium
@@ -384,13 +386,16 @@ import AdicionarZonaControlo from "@/components/autosEliminacao/criacao/Adiciona
 import ListaZonasControlo from "@/components/autosEliminacao/criacao/ListaZonasControlo.vue";
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
+import Loading from "@/components/generic/Loading";
+import { criarHistorico } from "@/utils/utils";
 
 export default {
   props: ["entidades"],
   components: {
     AdicionarZonaControlo,
     ListaZonasControlo,
-    InfoBox
+    InfoBox,
+    Loading
   },
   data: () => ({
     myhelp: help,
@@ -449,6 +454,9 @@ export default {
       var response4 = await this.$request("get","/rada");
       this.tsRada = response4.data
 
+      var response5 = await this.$request("get","/rada/old");
+      this.tsRada.concat(response5.data);
+
     } catch (e) {
       this.auto.fundo = [];
       this.portariaLC = [];
@@ -464,8 +472,17 @@ export default {
       this.$router.push("/");
     },
     submit: async function() {
+
+      const historico = []
+
+      historico.push(criarHistorico(this.auto))
+
       this.erro = ""
       for(var zc of this.auto.zonaControlo) {
+        if(zc.nrAgregacoes ==0 && zc.agregacoes.length==0) {
+          this.erroDialog = true;
+          this.erro = "O numero de agregações deve ser superior a 0 (zero) em " + zc.codigo +" "+zc.referencia+".\n"
+        }
         if(zc.destino=="C" && zc.dono.length === 0 && this.tipo!='RADA_CLAV' &&  this.tipo!='RADA' && this.tipo!='PGD') {
           this.erroDialog = true;
           this.erro = "Dono do PN não preenchido em " + zc.codigo +" - "+zc.titulo+".\n"
@@ -489,7 +506,7 @@ export default {
           user: { email: user.email },
           entidade: user.entidade,
           token: this.$store.state.token,
-          historico: []
+          historico: historico
         };
         
         pedidoParams.objetoOriginal = this.auto;
@@ -710,8 +727,10 @@ export default {
           "get",
           "/legislacao"
         )
-        if(this.auto.legislacao.split(" ")[0] != "Portaria") var indLeg = 2;
-        else indLeg = 1;
+        var legAux = this.auto.legislacao.split(" - ")
+        legAux = legAux[0].split(" ")
+        var indLeg = legAux.length - 1;
+
         var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[indLeg])
 
         if(this.tipo=="PGD") 
@@ -729,6 +748,7 @@ export default {
             "get",
             "/rada/old/tsRada_"+leg[0].id
           )
+          
         this.classesCompletas = response2.data.filter(c=> c.nivel>2).map(c => {
             return {
               idClasse: c.classe,

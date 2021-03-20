@@ -59,7 +59,7 @@
           <v-card-actions>
             <v-btn
               color="red darken-4"
-              round
+              rounded
               dark
               @click="errosValidacao = false"
             >
@@ -189,8 +189,8 @@ export default {
     };
   },
 
-  created: function(){
-      this.c = this.o.objeto;
+  created: function() {
+    this.c = this.o.objeto;
   },
 
   watch: {
@@ -587,10 +587,14 @@ export default {
       // Com subdivisão
       else if (this.c.nivel == 3 && this.c.temSubclasses4Nivel) {
         var subclasse = {};
-        
+
         for (i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
-          if(this.c.subclasses.filter(s => s.titulo == this.c.subclasses[i].titulo).length > 1){
+          if (
+            this.c.subclasses.filter(
+              s => s.titulo == this.c.subclasses[i].titulo
+            ).length > 1
+          ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
               mensagem: "Está repetido noutra subclasse."
@@ -650,8 +654,9 @@ export default {
               "/pedidos",
               pedidoParams
             );
-            this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-            this.dialogClasseCriada = true;
+            this.$router.push(`/pedidos/submissao/${response.data}`);
+            // this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
+            // this.dialogClasseCriada = true;
           } else {
             this.errosValidacao = true;
           }

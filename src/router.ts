@@ -8,124 +8,151 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: "/oldentry",
-      name: "oldentry",
-      component: () => import("./views/Principal.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
-    },
-    {
       path: "/",
       name: "home",
-      component: () => import("./views/Entidade.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      component: () => import("./views/Home.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "CLAV", ent: true}
+    },
+    {
+      path: "/registo",
+      name: "registarClav",
+      component: () => import("./views/paginasInfo/Registar.vue"),
+      meta: {
+        levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+        tabAtiva: "Registo na CLAV"
+      }
     },
     // Routes das classes
     {
-      path: "/classes",
+      path: "/lcInfo",
+      name: "lcInfo",
+      component: () => import("./views/paginasInfo/ListaConsl.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/classes/consultar",
       name: "classes",
       props: true,
       component: () => import("./views/classes/Classes.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
       path: "/classes/editar",
       name: "classesEditar",
       component: () => import("./views/classes/ClassesEditar.vue"),
-      meta: { levels: [4, 5, 6, 7] }
+      meta: { levels: [4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
       path: "/classes/editar/:idClasse",
       name: "editaClasse",
       component: () => import("./views/classes/ClassesEdita.vue"),
-      meta: { levels: [4, 5, 6, 7] }
+      meta: { levels: [4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
       path: "/classes/consultar/:idClasse",
       name: "consultaClasse",
       props: true,
       component: () => import("./views/classes/ClassesConsulta.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
       path: "/classes/showPedido/:idPedido",
       name: "showPedidoClasse",
       component: () => import("./views/classes/ClassesShowPedido.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
       path: "/classes/criar",
       name: "criaClasse",
       component: () => import("./views/classes/ClassesCria.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     // Routes da documentação de apoio
+    {
+      path: "/documentacaoApoioInfo",
+      name: "docsInfo",
+      component: () => import("./views/paginasInfo/DocumentacaoApoio.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
+    },
+    {
+      path: "/docsporclasse",
+      name: "docsClasse",
+      component: () => import("./views/paginasInfo/DocumentosClasse.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Documentação"}
+    },
     {
       path: "/documentacaoApoio/criar/classe",
       name: "criaClasseApoio",
       component: () => import("./views/documentacaoApoio/ApoioClasseCria.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
       path: "/documentacaoApoio/criar/entrada/:classe",
       name: "criaEntradaApoio",
       component: () => import("./views/documentacaoApoio/ApoioEntradaCria.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
       path: "/documentacaoApoio/criar/elemento/:classe/:entrada",
       name: "criaElementoApoio",
       component: () =>
         import("./views/documentacaoApoio/ApoioElementoCria.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
       path: "/documentacaoApoio/editar/classe/:classe/",
       name: "editarClasseApoio",
       component: () => import("./views/documentacaoApoio/ApoioClasseEdita.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
       path: "/documentacaoApoio/editar/entrada/:classe/:entrada",
       name: "editarEntradaApoio",
       component: () =>
         import("./views/documentacaoApoio/ApoioEntradaEdita.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
       path: "/documentacaoApoio/editar/elemento/:classe/:entrada/:elemento",
       name: "editarElementoApoio",
       component: () =>
         import("./views/documentacaoApoio/ApoioElementoEdita.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
       path: "/documentacaoApoio/criar/tecnico_cientifico",
       name: "criaEntradaCientifico",
       component: () => import("./views/documentacaoApoio/CientificaCria.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
       path: "/documentacaoApoio/importar/tecnico_cientifico",
       name: "importarTecnicoCientifico",
       component: () =>
         import("./views/documentacaoApoio/CientificaImporta.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
       path: "/documentacaoApoio/importar/documentacao_apoio",
       name: "importarApoio",
       component: () => import("./views/documentacaoApoio/ApoioImporta.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     {
       path: "/documentacaoApoio/editar/tecnico_cientifico/:id",
       name: "editaEntradaCientifico",
       component: () => import("./views/documentacaoApoio/CientificaEdita.vue"),
-      meta: { levels: [3.5, 4, 5, 6, 7] }
+      meta: { levels: [3.5, 4, 5, 6, 7], tabAtiva: "Documentação" }
     },
     // Routes das entidades
     {
       path: "/entidades",
+      name: "entInfo",
+      component: () => import("./views/paginasInfo/Entidade.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/entidades/consultar",
       name: "entidades",
       component: () => import("./views/entidades/Entidades.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
@@ -151,6 +178,12 @@ export default new Router({
     // Routes da legislação
     {
       path: "/legislacao",
+      name: "legInfo",
+      component: () => import("./views/paginasInfo/Legislacao.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/legislacao/consultar",
       name: "legislacao",
       component: () => import("./views/legislacao/Legislacao.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
@@ -175,7 +208,13 @@ export default new Router({
     },
     // Routes das tabelas de seleção
     {
-      path: "/ts",
+      path: "/tsInfo",
+      name: "tsInfo",
+      component: () => import("./views/paginasInfo/TabelaSelecao.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/ts/consultar",
       name: "ts",
       component: () => import("./views/tabSel/TabSel.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
@@ -218,6 +257,12 @@ export default new Router({
     },
     // Routes dos termos de indice
     {
+      path: "/termosIndiceInfo",
+      name: "termosIndiceInfo",
+      component: () => import("./views/paginasInfo/TermosIndice.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
       path: "/termosIndice",
       name: "termosIndice",
       component: () => import("./views/termosIndice/TermosIndice.vue"),
@@ -240,7 +285,7 @@ export default new Router({
       path: "/vocabularios",
       name: "vocabulariosControlados",
       component: () => import("./views/vocabularios/Vocabularios.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão da Plataforma"}
     },
     {
       path: "/vocabularios/:idVC",
@@ -250,10 +295,16 @@ export default new Router({
     },
     // Routes dos RADA
     {
-      path: "/rada",
+      path: "/radaInfo",
+      name: "radaInfo",
+      component: () => import("./views/paginasInfo/RADA.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/rada/consultar",
       name: "Rada",
       component: () => import("./views/rada/Radas.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     {
       path: "/rada/criar",
@@ -276,7 +327,13 @@ export default new Router({
     },
     // Routes dos Autos de Eliminação
     {
-      path: "/autosEliminacao",
+      path: "/autosEliminacaoInfo",
+      name: "autosEliminacaoInfo",
+      component: () => import("./views/paginasInfo/AutosEliminacao.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/autosEliminacao/consultar",
       name: "AutosEliminacao",
       component: () => import("./views/autosEliminacao/AutosEliminacao.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
@@ -305,6 +362,12 @@ export default new Router({
     // Routes das tipologias
     {
       path: "/tipologias",
+      name: "tipEntInfo",
+      component: () => import("./views/paginasInfo/TipEntidade.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/tipologias/consultar",
       name: "tipologias",
       component: () => import("./views/tipologias/Tipologias.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
@@ -394,7 +457,13 @@ export default new Router({
       path: "/pedidos",
       name: "pedidos",
       component: () => import("./views/pedidos/Pedidos.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos"  }
+    },
+    {
+      path: "/pedidosnovos",
+      name: "pedidosNovos",
+      component: () => import("./components/pedidos/PedidosNovos.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos"  }
     },
     {
       path: "/pedidos/submissao/:idPedido",
@@ -436,14 +505,14 @@ export default new Router({
       path: "/pedidos/novos/:idPedido",
       name: "pedidoNovo",
       component: () => import("./views/pedidos/PedidosNovos.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos" }
     },
     // Routes dos pendentes (trabalho guardado)
     {
       path: "/pendentes",
       name: "pendentes",
       component: () => import("./views/pendentes/Pendentes.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos" }
     },
     {
       path: "/pendentes/:idPendente",
@@ -501,6 +570,15 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     {
+      path: "/usersInfo",
+      name: "usersInfo",
+      component: () => import("./views/paginasInfo/UsersInfo.vue"),
+      meta: {
+        levels: [5, 6, 7],
+        tabAtiva: "Gestão da Plataforma"
+      }
+    },
+    {
       path: "/users/listagem",
       name: "listagem",
       component: () => import("./views/users/ListagemUsers.vue"),
@@ -522,7 +600,7 @@ export default new Router({
       path: "/users/pedidos",
       name: "pedidosUtilizador",
       component: () => import("./views/users/GestaoPedidos.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos" }
     },
     {
       path: "/users/pedidos/:numeroPedido",
@@ -548,32 +626,38 @@ export default new Router({
       path: "/gestao/metrica",
       name: "metrica",
       component: () => import("./views/gestao/Metrica.vue"),
-      meta: { levels: [3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     {
       path: "/gestao/classes",
       name: "indicadores",
       component: () => import("./views/gestao/Classe.vue"),
-      meta: { levels: [3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     {
       path: "/gestao/gerais",
       name: "gerais",
       component: () => import("./views/gestao/Geral.vue"),
-      meta: { levels: [3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     {
       path: "/gestao/tabela",
       name: "tabela",
       component: () => import("./views/gestao/Tabela.vue"),
-      meta: { levels: [3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [3, 3.5, 4, 5, 6, 7], tabAtiva: "Estatísticas" }
     },
     //Chaves API
+    {
+      path: '/docs',
+      name: "docs",
+      component: () => import("./views/paginasInfo/ApiDados.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
     {
       path: "/gestao/api/listagem",
       name: "listagemApi",
       component: () => import("./views/gestao/api/ListagemChavesApi.vue"),
-      meta: { levels: [7] }
+      meta: { levels: [7], tabAtiva: "Gestão da Plataforma" }
     },
     {
       path: "/gestao/api/registo",
@@ -588,6 +672,15 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     //Administração
+    {
+      path: "/gestaoInfo",
+      name: "gestaoInfo",
+      component: () => import("./views/paginasInfo/AdministracaoInfo.vue"),
+      meta: {
+        levels: [7],
+        tabAtiva: "Gestão da Plataforma"
+      }
+    },
     {
       path: "/gestao/administracao",
       name: "administracao",
@@ -617,7 +710,7 @@ export default new Router({
       path: "/invariantes",
       name: "invariantes",
       component: () => import("./views/invariantes/Invariantes.vue"),
-      meta: { levels: [6, 7] }
+      meta: { levels: [6, 7], tabAtiva: "Gestão da Plataforma" }
     },
     {
       path: "/invariantes/testarTodos",
@@ -627,20 +720,35 @@ export default new Router({
     },
     //exportação
     {
+      path: "/importExportInfo",
+      name: "importExportInfo",
+      component: () => import("./views/paginasInfo/ImportacaoExportacaoInfo.vue"),
+      meta: {
+        levels: [4, 5, 6, 7],
+        tabAtiva: "Gestão da Plataforma"
+      }
+    },
+    {
       path: "/exportar",
       name: "exportação",
-      component: () => import("./views/exportacao/Exportacao.vue"),
+      component: () => import("./views/paginasInfo/Exportacao.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     },
     {
       path: "/permissoesAcesso",
       name: "permissõesDeAcesso",
       component: () => import("./views/PermissoesAcesso.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão da Plataforma" }
     },
     //PPD
     {
-      path: "/ppd",
+      path: "/planosDePreservacaoDigital",
+      name: "planosDePreservacaoDigital",
+      component: () => import("./views/paginasInfo/PlanosDePreserDig.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
+    },
+    {
+      path: "/ppd/consultar",
       name: "ConsultaPPD",
       component: () => import("./views/ppd/ConsultaPPD.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }

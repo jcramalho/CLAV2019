@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row v-if="!valida">
     <!-- DONOS DO PROCESSO -->
     <v-col xs="2" sm="2">
       <div class="info-label">
@@ -16,10 +16,7 @@
       <div class="info-content">
         <ul>
           <li v-for="p in entidades" :key="p.idDono">
-            <a
-              v-if="p.idTipo == 'Entidade'"
-              :href="'/entidades/' + p.idDono"
-            >
+            <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idDono">
               {{ p.sigla }}:
               {{ p.designacao }}
               ({{ p.tipo.split("#")[1] }})
@@ -34,6 +31,22 @@
       </div>
     </v-col>
   </v-row>
+  <div v-else>
+    <ul>
+      <li v-for="p in entidades" :key="p.idDono">
+        <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idDono">
+          {{ p.sigla }}:
+          {{ p.designacao }}
+          ({{ p.tipo.split("#")[1] }})
+        </a>
+        <a v-else :href="'/tipologias/' + p.idDono">
+          {{ p.sigla }}:
+          {{ p.designacao }}
+          ({{ p.tipo.split("#")[1] }})
+        </a>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -41,7 +54,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
 
 export default {
-  props: ["entidades"],
+  props: ["entidades", "valida"],
   components: { InfoBox },
 
   data: function() {
@@ -52,7 +65,7 @@ export default {
         { text: "Tipo", value: "tipo" }
       ],
       myhelp: help
-    }
+    };
   },
 
   methods: {

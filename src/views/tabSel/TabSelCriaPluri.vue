@@ -1,13 +1,13 @@
 <template>
-  <CriaTabSelPluriJcr />
+  <CriaTabSelPluri />
 </template>
 
 <script>
-import CriaTabSelPluriJcr from "@/components/tabSel/criacaoTSPluri/CriaTabSelPluriJcr.vue";
+import CriaTabSelPluri from "@/components/tabSel/criacaoTSPluri/CriaTabSelPluri.vue";
 
 export default {
   components: {
-    CriaTabSelPluriJcr
-  }
+    CriaTabSelPluri,
+  },
 };
 </script>

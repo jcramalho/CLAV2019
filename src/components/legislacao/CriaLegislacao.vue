@@ -11,7 +11,15 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Tipo de diploma</div>
+              <div class="info-label">
+                Tipo de diploma
+                <InfoBox
+                  header="Tipo de diploma"
+                  :text="myhelp.Legislacao.Campos.Tipo"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <v-select
@@ -27,7 +35,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Número de diploma</div>
+              <div class="info-label">
+                Número de diploma
+                <InfoBox
+                  header="Número de diploma"
+                  :text="myhelp.Legislacao.Campos.Numero"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <v-text-field
@@ -43,7 +59,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Data do diploma</div>
+              <div class="info-label">
+                Data do diploma
+                <InfoBox
+                  header="Data do diploma"
+                  :text="myhelp.Legislacao.Campos.Data"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <SelecionarData
@@ -56,7 +80,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Sumário</div>
+              <div class="info-label">
+                Sumário
+                <InfoBox
+                  header="Sumário"
+                  :text="myhelp.Legislacao.Campos.Sumário"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <v-text-field
@@ -72,7 +104,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Link</div>
+              <div class="info-label">
+                Link
+                <InfoBox
+                  header="Link"
+                  :text="myhelp.Legislacao.Campos.Link"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <v-text-field
@@ -88,7 +128,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Tipo de fonte de legitimação</div>
+              <div class="info-label">
+                Tipo de fonte de legitimação
+                <InfoBox
+                  header="Tipo de fonte de legitimação"
+                  :text="myhelp.Legislacao.Campos.FonteLegitimacao"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <v-select
@@ -107,6 +155,12 @@
             <v-col cols="2">
               <div class="info-label">
                 Data de revogação
+                <InfoBox
+                  header="Data de revogação"
+                  :text="myhelp.Legislacao.Campos.DataRevogacao"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
               </div>
             </v-col>
             <v-col>
@@ -124,6 +178,12 @@
               <v-expansion-panel-header class="expansion-panel-heading">
                 <div>
                   Entidade responsável pela publicação
+                  <InfoBox
+                    header="Selecionar entidades"
+                    :text="myhelp.Legislacao.Campos.Entidades"
+                    helpColor="indigo lighten-5"
+                    dialogColor="#E0F2F1"
+                  />
                 </div>
 
                 <template v-slot:actions>
@@ -152,6 +212,12 @@
               <v-expansion-panel-header class="expansion-panel-heading">
                 <div>
                   Processos de negócio que regula ou enquadra
+                  <InfoBox
+                    header="Selecionar processos"
+                    :text="myhelp.Legislacao.Campos.ProcessosRegulados"
+                    helpColor="indigo lighten-5"
+                    dialogColor="#E0F2F1"
+                  />
                 </div>
 
                 <template v-slot:actions>
@@ -202,9 +268,13 @@ import SelProc from "@/components/generic/selecao/SelecionarPNs.vue";
 
 import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
 
+import InfoBox from "@/components/generic/infoBox.vue";
+const help = require("@/config/help").help;
+
 export default {
   data() {
     return {
+      myhelp: help,
       legislacao: {
         numero: "",
         sumario: "",
@@ -252,6 +322,7 @@ export default {
     SelProc,
     PainelOpsLeg,
     SelecionarData,
+    InfoBox
   },
 
   methods: {

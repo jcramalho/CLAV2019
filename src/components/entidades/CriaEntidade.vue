@@ -13,6 +13,12 @@
             <v-col cols="2">
               <div class="info-label">
                 Nome da Entidade
+                <InfoBox
+                  header="Nome da entidade"
+                  :text="myhelp.Entidade.Campos.Nome"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
               </div>
             </v-col>
             <v-col>
@@ -31,6 +37,12 @@
             <v-col cols="2">
               <div class="info-label">
                 Sigla
+                <InfoBox
+                  header="Sigla"
+                  :text="myhelp.Entidade.Campos.Sigla"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
               </div>
             </v-col>
             <v-col>
@@ -47,7 +59,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Internacional</div>
+              <div class="info-label">
+                Internacional
+                <InfoBox
+                  header="Internacional"
+                  :text="myhelp.Entidade.Campos.Internacional"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <v-select
@@ -63,7 +83,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">SIOE</div>
+              <div class="info-label">
+                SIOE
+                <InfoBox
+                  header="Código SIOE"
+                  :text="myhelp.Entidade.Campos.SIOE"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <v-text-field
@@ -80,7 +108,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Data de criação</div>
+              <div class="info-label">
+                Data de criação
+                <InfoBox
+                  header="Data de criação"
+                  :text="myhelp.Entidade.Campos.DataCriacao"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <SelecionarData
@@ -93,7 +129,15 @@
 
           <v-row>
             <v-col cols="2">
-              <div class="info-label">Data de extinção</div>
+              <div class="info-label">
+                Data de extinção
+                <InfoBox
+                  header="Data de extinção"
+                  :text="myhelp.Entidade.Campos.DataExtincao"
+                  helpColor="indigo darken-4"
+                  dialogColor="#E0F2F1"
+                />
+              </div>
             </v-col>
             <v-col>
               <SelecionarData
@@ -108,7 +152,15 @@
           <v-expansion-panels>
             <v-expansion-panel popout focusable>
               <v-expansion-panel-header class="expansion-panel-heading">
-                <div>Tipologias de Entidade</div>
+                <div>
+                  Tipologias de Entidade
+                  <InfoBox
+                    header="Selecionar tipologias de entidades"
+                    :text="myhelp.Entidade.Campos.Tipologias"
+                    helpColor="indigo lighten-5"
+                    dialogColor="#E0F2F1"
+                />
+                </div>
 
                 <template v-slot:actions>
                   <v-icon color="white">expand_more</v-icon>
@@ -152,6 +204,7 @@ import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue"
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
 import SelecionarData from "@/components/generic/SelecionarData";
+import InfoBox from "@/components/generic/infoBox.vue";
 
 const help = require("@/config/help").help;
 
@@ -187,6 +240,7 @@ export default {
     SelTip,
     PainelOpsEnt,
     SelecionarData,
+    InfoBox
   },
 
   methods: {

@@ -630,12 +630,12 @@ export default {
       //let csvContent = "data:text/csv;charset=utf-8,";
       let headers;
       let csvContent;
-      let fileName = this.titulo.replace(/ /g, "_");
+      let fileName = "TS-exportada-" + this.ts.entidades.join('-')
       headers =
         "Código,N.º Referência,Título,Descrição,Dono PN,Participante PN,PCA,Nota PCA,Forma de Contagem PCA,DF,Nota DF";
       csvContent = [
         headers,
-        ...this.ts.classes.map((item) => {
+        ...this.ts.classes.map(item => {
           var str =
             '"' +
             (item.codigo || "") +
@@ -656,37 +656,37 @@ export default {
             (item.designacaoParticipante ? "X" : "") +
             '",' +
             '"' +
-            (item.pca || "") +
+            (item.pca.valores || "") +
             '",' +
             '"' +
-            (item.notaPCA || "") +
+            (item.pca.notas || "") +
             '",' +
             '"';
-          if (item.formaContagem == "Data de conclusão do procedimento")
+          if (item.pca.formaContagem == "Data de conclusão do procedimento")
             str += "F04";
-          else if (item.formaContagem == "Data de cessação da vigência")
+          else if (item.pca.formaContagem == "Data de cessação da vigência")
             str += "F05";
-          else if (item.formaContagem == "Data de início do procedimento")
+          else if (item.pca.formaContagem == "Data de início do procedimento")
             str += "F02";
-          else if (item.formaContagem == "Data de emissão do título")
+          else if (item.pca.formaContagem == "Data de emissão do título")
             str += "F03";
           else if (
-            item.formaContagem ==
+            item.pca.formaContagem ==
             "Data de extinção da entidade sobre a qual recai o procedimento"
           )
             str += "F06";
-          else if (item.formaContagem == "Data de extinção do direito")
+          else if (item.pca.formaContagem == "Data de extinção do direito")
             str += "F07";
-          else if (item.formaContagem == "Conforme disposição legal") {
+          else if (item.pca.formaContagem == "Conforme disposição legal") {
             str += "F01.";
-            if (item.subFormaContagem)
-              str += item.subFormaContagem.split("F01.")[1];
+            if (item.pca.subFormaContagem)
+              str += item.pca.subFormaContagem.split("F01.")[1];
           }
 
           str +=
-            '","' + (item.df || "") + '",' + '"' + (item.notaDF || "") + '"';
+            '","' + (item.df.valor || "") + '",' + '"' + (item.df.nota || "") + '"';
           return str;
-        }),
+        })
       ]
         .join("\n")
         .replace(/(^\[)|(\]$)/gm, "");

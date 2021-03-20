@@ -1,12 +1,50 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <v-card-title class="indigo darken-4 title white--text" dark>
-          Gestão de Pedidos
-        </v-card-title>
-        <v-card-text class="mt-4">
-          <v-expansion-panels :value="pesquisaPedidos.painel">
+  <v-card flat class="ma-3">
+    <v-row>
+      <!-- HEADER -->
+      <v-col>
+        <p class="clav-content-title-1">Gestão de Pedidos</p>
+        <!-- CONTENT -->
+        <v-card-text class="mt-0">
+          <v-row justify="center" class="mt-3">
+            <v-col cols="12" md="3" class="text-center">
+              <v-btn
+                @click="expandAll"
+                rounded
+                class="white--text"
+                color="success darken-1"
+                id="botao-shadow"
+              >
+                <unicon
+                  name="expand-all-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.714 20.71"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Expandir Tudo</p>
+              </v-btn>
+            </v-col>
+            <v-col cols="12" md="3" class="text-center">
+              <v-btn
+                @click="closeAll"
+                rounded
+                class="white--text"
+                color="error"
+                id="botao-shadow"
+              >
+                <unicon
+                  name="close-all-icon"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20.71 20.818"
+                  fill="#ffffff"
+                />
+                <p class="ml-2">Fechar Tudo</p>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-expansion-panels flat multiple v-model="panelsArr" class="mt-4">
             <PedidosNovos
               :pedidos="pedidosSubmetidos"
               :pesquisaPedidos="pesquisaPedidos"
@@ -42,23 +80,23 @@
             />
           </v-expansion-panels>
         </v-card-text>
-      </v-card>
 
-      <v-dialog v-model="distribuir" width="80%" persistent>
-        <AvancarPedido
-          :utilizadores="utilizadoresParaAnalisar"
-          :texto="{
-            textoTitulo: 'Distribuição',
-            textoAlert: 'análise',
-            textoBotao: 'Distribuir',
-          }"
-          :pedido="pedidoParaDistribuir.codigo"
-          @fecharDialog="fecharDialog()"
-          @avancarPedido="atribuirPedido($event)"
-        />
-      </v-dialog>
-    </v-col>
-  </v-row>
+        <v-dialog v-model="distribuir" width="80%" persistent>
+          <AvancarPedido
+            :utilizadores="utilizadoresParaAnalisar"
+            :texto="{
+              textoTitulo: 'Distribuição',
+              textoAlert: 'análise',
+              textoBotao: 'Distribuir',
+            }"
+            :pedido="pedidoParaDistribuir.codigo"
+            @fecharDialog="fecharDialog()"
+            @avancarPedido="atribuirPedido($event)"
+          />
+        </v-dialog>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
@@ -70,10 +108,7 @@ import PedidosEmDespacho from "@/components/pedidos/PedidosEmDespacho";
 import PedidosProcessados from "@/components/pedidos/PedidosProcessados";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
-import {
-  NIVEIS_ANALISAR_PEDIDO,
-  NIVEIS_DISTRIBUIR_PEDIDO,
-} from "@/utils/consts";
+import { NIVEIS_ANALISAR_PEDIDO, NIVEIS_DISTRIBUIR_PEDIDO } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
 export default {
@@ -103,6 +138,9 @@ export default {
         pesquisa: "",
         pagina: 1,
       },
+      // Array para poder expandir/fechar todos os panels
+      panelsArr: [],
+      panelsArrItems: 6,
     };
   },
 
@@ -113,13 +151,28 @@ export default {
 
     if (storage !== null && storage !== undefined) {
       if (storage.limpar) localStorage.removeItem("pesquisa-pedidos");
-      else this.pesquisaPedidos = storage;
+      else {
+        this.pesquisaPedidos = storage;
+        this.panelsArr = [this.pesquisaPedidos.painel];
+      }
 
       localStorage.removeItem("pesquisa-pedidos");
     }
   },
 
   methods: {
+    goBack() {
+      this.$router.push("/tsInfo");
+    },
+    // Abrir todos os v-expansion-panel
+    expandAll() {
+      this.panelsArr = [...Array(this.panelsArrItems).keys()].map((k, i) => i);
+      console.log(this.panelsArr);
+    },
+    // Fechar todos os v-expansion-panel
+    closeAll() {
+      this.panelsArr = [];
+    },
     temPermissaoDistribuir() {
       return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
     },
@@ -129,28 +182,19 @@ export default {
         let pedidos = await this.$request("get", "/pedidos");
         pedidos = pedidos.data;
 
-        this.pedidosSubmetidos = pedidos.filter(
-          (p) => p.estado === "Submetido"
-        );
+        this.pedidosSubmetidos = pedidos.filter((p) => p.estado === "Submetido");
         this.pedidosDistribuidos = pedidos.filter((p) => {
-          if (p.estado === "Distribuído" || p.estado === "Redistribuído")
-            return p;
-        });
-        this.pedidosEmDespacho = pedidos.filter((p) => {
-          if (p.estado === "Em Despacho") return p;
+          if (p.estado === "Distribuído" || p.estado === "Redistribuído") return p;
         });
         this.pedidosValidados = pedidos.filter((p) => {
           if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
         });
-        this.pedidosDevolvidos = pedidos.filter(
-          (p) => p.estado === "Devolvido"
-        );
-        this.pedidosProcessados = pedidos.filter(
-          (p) => p.estado === "Validado"
-        );
+        this.pedidosDevolvidos = pedidos.filter((p) => p.estado === "Devolvido");
+        this.pedidosProcessados = pedidos.filter((p) => p.estado === "Validado");
 
-        if (this.temPermissaoDistribuir())
-          await this.listaUtilizadoresParaAnalisar();
+        this.pedidosEmDespacho = pedidos.filter((p) => p.estado === "Em Despacho");
+
+        if (this.temPermissaoDistribuir()) await this.listaUtilizadoresParaAnalisar();
       } catch (e) {
         console.warn("e", e);
         return e;
@@ -169,10 +213,7 @@ export default {
     async listaUtilizadoresParaAnalisar() {
       const response = await this.$request("get", "/users");
 
-      const utilizadoresFiltrados = filtraNivel(
-        response.data,
-        NIVEIS_ANALISAR_PEDIDO
-      );
+      const utilizadoresFiltrados = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
 
       this.utilizadoresParaAnalisar = utilizadoresFiltrados;
     },
@@ -180,12 +221,13 @@ export default {
     analisaPedido(pedido) {
       this.$router.push("/pedidos/analisar/" + pedido.codigo);
     },
-    despacharPedido(pedido) {
-      this.$router.push("/pedidos/despachar/" + pedido.codigo);
-    },
 
     validaPedido(pedido) {
       this.$router.push("/pedidos/validar/" + pedido.codigo);
+    },
+
+    despacharPedido(pedido) {
+      this.$router.push("/pedidos/despachar/" + pedido.codigo);
     },
 
     async atribuirPedido(dados) {
@@ -227,26 +269,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-</style>
