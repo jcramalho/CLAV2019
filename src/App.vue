@@ -19,7 +19,9 @@
     <v-main>
       <v-row justify="center" class="my-5">
         <v-col cols="12" sm="11" md="10">
-          <router-view />
+          <keep-alive include="pedidos">
+            <router-view />
+          </keep-alive>
         </v-col>
       </v-row>
     </v-main>

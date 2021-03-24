@@ -25,6 +25,7 @@
       :headers="headers"
       :items="pedidos"
       :footer-props="footer_props"
+      :page.sync="paginaTabela"
       sort-by="data"
       sort-desc
     >
@@ -161,9 +162,6 @@ import {
 
 export default {
   props: ["pedidos"],
-  created() {
-    //console.log(this.pedidos);
-  },
   methods: {
     showPedido(pedido) {
       this.$router.push("/pedidos/novos/" + pedido.codigo);
@@ -187,7 +185,8 @@ export default {
   },
   data() {
     return {
-      procurar: null,
+      paginaTabela: 1,
+      procurar: "",
       headers: [
         {
           text: "Código",
