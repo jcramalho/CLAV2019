@@ -160,6 +160,9 @@ export default {
     };
   },
   created() {
+    //this.carregaPedidos();
+  },
+  activated() {
     this.carregaPedidos();
   },
   methods: {

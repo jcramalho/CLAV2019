@@ -127,7 +127,6 @@ export default {
 
   async created() {
     try {
-      console.log(this.historico);
       this.novoHistorico = JSON.parse(
         JSON.stringify(this.historico[this.historico.length - 1])
       );

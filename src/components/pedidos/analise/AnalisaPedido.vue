@@ -1,10 +1,10 @@
 <template>
   <v-row class="ma-1">
     <Loading v-if="loading" :message="'pedido'" />
-    <v-row v-else class="ma-1">
+    <v-row v-else>
       <v-col>
         <v-card>
-          <v-card-title class="indigo darken-4 title white--text" dark>
+          <v-card-title class="clav-linear-background white--text">
             Análise do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
             <v-spacer />
@@ -156,9 +156,9 @@
     </v-dialog>
 
     <!-- Dialog Ver Historico de Alterações-->
-    <!-- <v-dialog v-model="verHistoricoDialog" width="90%">
+    <v-dialog v-model="verHistoricoDialog" width="90%">
       <VerHistorico :pedido="pedido" @fecharDialog="fecharHistorico()" />
-    </v-dialog> -->
+    </v-dialog>
   </v-row>
 </template>
 
@@ -181,7 +181,7 @@ import AnalisaDefault from "@/components/pedidos/analise/AnalisaDefault";
 import ErroDialog from "@/components/generic/ErroDialog";
 
 import VerDespachos from "@/components/pedidos/generic/VerDespachos";
-// import VerHistorico from "@/components/pedidos/generic/VerHistorico";
+import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
 import Loading from "@/components/generic/Loading";
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
@@ -206,7 +206,7 @@ export default {
     AnalisaDefault,
     VerDespachos,
     ErroDialog,
-    // VerHistorico
+    VerHistorico,
   },
 
   data() {

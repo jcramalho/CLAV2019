@@ -89,7 +89,6 @@ export default {
   },
 
   created() {
-    console.log(this.p);
     this.classeInfo = [
       { campo: "Nível", conteudo: this.p.objeto.dados.nivel },
       { campo: "Código", conteudo: this.p.objeto.dados.codigo },
