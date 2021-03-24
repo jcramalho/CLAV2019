@@ -18,7 +18,7 @@
     <!-- Main content -->
     <v-main>
       <v-row justify="center" class="my-5">
-        <v-col cols="12" sm="10" md="9">
+        <v-col cols="12" sm="11" md="10">
           <router-view />
         </v-col>
       </v-row>
@@ -197,7 +197,7 @@ export default {
 
 /* Subtitulo */
 .clav-content-title-2 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 500;
   color: var(--v-h1color-base);
   text-shadow: 0px 1px 2px var(--v-textshadow-base);
