@@ -28,8 +28,7 @@
             </div>
           </v-col>
           <v-col>
-            <v-text-field solo dense >
-
+            <v-text-field solo dense :value="classeShow.referencia">
             </v-text-field>
           </v-col>
           <v-col>
@@ -38,8 +37,7 @@
             </div>
           </v-col>
           <v-col>
-            <v-text-field solo dense >
-
+            <v-text-field solo dense :value="classeShow.df">
             </v-text-field>
           </v-col>
         </v-row>
@@ -91,7 +89,7 @@ export default {
   },
 
   methods: {
-    //funçao para ir bscar a info que falta para mostrar no dialog...
+    //funçao para ir buscar a info que falta para mostrar no dialog...
     consultaClasse:function(id){
       var index = this.classesDaFonteL.findIndex(c => c.classe === id)
       this.classeShow = this.classesDaFonteL[index];
@@ -105,6 +103,7 @@ export default {
       this.classeSelecionada="";
       //this.$refs.formAddClasse.reset();
       this.$emit("guardarClasse", selectedClasse);
+      this.classeShow = ""
     },
   },
 

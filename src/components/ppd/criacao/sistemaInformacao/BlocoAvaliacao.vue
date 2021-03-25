@@ -85,10 +85,11 @@
           </v-col>
           <v-col>
             <v-text-field
-              :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="ppd.si.avaliacao.pcaSI"
+              label="Não possui"
+              :value="ppd.si.avaliacao.pcaSI"
+              readonly
               solo
-              clearable
+              dense
             ></v-text-field>
           </v-col>
           <v-col :md="2">
@@ -97,8 +98,13 @@
             </div>
           </v-col>
           <v-col>
-            <v-text-field solo dense >
-            </v-text-field>
+            <v-text-field
+              label=""
+              :value="ppd.si.avaliacao.destinoSI"
+              readonly
+              solo
+              dense
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
@@ -422,10 +428,15 @@ export default {
       if(parseInt(item.pca) > parseInt(this.ppd.si.avaliacao.pcaSI)){
         this.ppd.si.avaliacao.pcaSI = parseInt(item.pca);
       }
+      if(this.ppd.si.avaliacao.destinoSI != "C"){
+        this.ppd.si.avaliacao.destinoSI = item.df;
+      }
+
       this.addClasse= false;
     },
 
     unselectClasse: function(item) {
+      var auxDF = ""
       if(item.codigo){
         this.classesSI.push({info:"Cod: " + item.codigo + " - " + item.titulo , classe:item.classe});
       }
@@ -439,8 +450,12 @@ export default {
         if(parseInt(element.pca) > auxPCA){
           auxPCA = parseInt(element.pca)
         }
+        if(auxDF != "C"){
+          auxDF = element.df
+        }
       });
       this.ppd.si.avaliacao.pcaSI = auxPCA;
+      this.ppd.si.avaliacao.destinoSI = auxDF;
     },
 
     guardarDecomp(item) {
