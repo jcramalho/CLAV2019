@@ -16,6 +16,7 @@ export default new Vuetify({
         success: "#46c354",
         error: "#b71c1c",
         neutral: "#d8d8d8",
+        neutralpurple: "#dee2f8",
         neutralblue: "#09337f",
         infocontent: "#f1f6f8",
         h1color: "#4da0d0",

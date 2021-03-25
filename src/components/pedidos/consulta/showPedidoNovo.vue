@@ -1,13 +1,19 @@
 <template>
-  <v-card class="ma-8">
+  <v-card flat class="pa-3">
     <div v-if="!erroDialog.visivel">
-      <v-card-title class="pa-2 indigo darken-4 title white--text">
-        Consulta do pedido: {{ p.codigo }} <v-spacer />
-        <v-chip color="indigo accent-4" text-color="white" label>
-          <v-icon class="mr-1">label</v-icon>
-          <b>Pedidos Novos</b>
-        </v-chip>
-      </v-card-title>
+      <v-row align="center" justify="center">
+        <v-col cols="12" sm="8" md="9">
+          <span class="clav-content-title-2">
+            Consulta do pedido: {{ p.codigo }} <v-spacer />
+          </span>
+        </v-col>
+        <v-col cols="12" sm="4" md="3">
+          <v-chip color="primary" text-color="white" label>
+            <v-icon class="mr-1">label</v-icon>
+            <b>Pedidos Novos</b>
+          </v-chip>
+        </v-col>
+      </v-row>
       <v-card-text>
         <v-row class="mt-1">
           <v-col cols="2">
@@ -46,9 +52,7 @@
             <div class="info-label">Tipo</div>
           </v-col>
           <v-col>
-            <div class="info-content">
-              {{ p.objeto.acao }} - {{ p.objeto.tipo }}
-            </div>
+            <div class="info-content">{{ p.objeto.acao }} - {{ p.objeto.tipo }}</div>
           </v-col>
         </v-row>
 
@@ -95,8 +99,7 @@
         <ShowRADA v-else-if="p.objeto.tipo == 'RADA'" :p="p" />
         <ShowAE
           v-else-if="
-            p.objeto.tipo.includes('AE ') ||
-              p.objeto.tipo == 'Auto de Eliminação'
+            p.objeto.tipo.includes('AE ') || p.objeto.tipo == 'Auto de Eliminação'
           "
           :p="p"
         />
@@ -119,13 +122,7 @@
         <v-spacer />
         <span v-if="temPermissaoDistribuir()">
           <!-- TODO: Alterar com as permissões corretas -->
-          <v-btn
-            class="mr-9"
-            text
-            color="red accent-4"
-            dark
-            @click="devolver = true"
-          >
+          <v-btn class="mr-9" text color="red accent-4" dark @click="devolver = true">
             Devolver
           </v-btn>
 
@@ -190,10 +187,7 @@ import ErroDialog from "@/components/generic/ErroDialog";
 
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 
-import {
-  NIVEIS_ANALISAR_PEDIDO,
-  NIVEL_MINIMO_DISTRIBUIR_PEDIDOS,
-} from "@/utils/consts";
+import { NIVEIS_ANALISAR_PEDIDO, NIVEL_MINIMO_DISTRIBUIR_PEDIDOS } from "@/utils/consts";
 import { converteData } from "@/utils/utils";
 import { filtraNivel } from "@/utils/permissoes";
 
@@ -246,7 +240,7 @@ export default {
   },
 
   async created() {
-    console.log(JSON.stringify(this.p))
+    console.log(JSON.stringify(this.p));
     if (this.p.estado !== "Submetido") {
       this.erroDialog.visivel = true;
       this.erroDialog.mensagem = "Este pedido não se encontra neste estado.";
@@ -307,8 +301,7 @@ export default {
         }
       } catch (e) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao devolver o pedido, por favor tente novamente";
+        this.erroDialog.mensagem = "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 

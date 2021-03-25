@@ -6,11 +6,12 @@
 import GestaoPedidos from "@/components/pedidos/GestaoPedidos.vue"; // @ is an alias to /src
 
 export default {
+  name: "pedidos",
   components: {
-    GestaoPedidos
+    GestaoPedidos,
   },
   methods: {
-    consultaPedido: function(item) {
+    consultaPedido: function (item) {
       switch (item.objeto.tipo) {
         case "Classe":
           this.$router.push("/classes/showPedido/" + item.codigo);
@@ -18,7 +19,7 @@ export default {
         default:
           this.$router.push("/pedidos/" + item.codigo);
       }
-    }
-  }
+    },
+  },
 };
 </script>

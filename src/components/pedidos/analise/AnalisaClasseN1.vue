@@ -74,7 +74,7 @@ import { mapKeys } from "@/utils/utils";
 export default {
   props: {
     p: Object,
-    validar: Boolean
+    validar: Boolean,
   },
   components: {
     PainelOperacoesPedido,
@@ -82,7 +82,7 @@ export default {
     AdicionarNota,
     EditarCamposDialog,
     ErroDialog,
-    AdicionarNotaAplicacao
+    AdicionarNotaAplicacao,
   },
 
   data() {
@@ -90,14 +90,7 @@ export default {
       /**
        * Campos que vão aparecer
        */
-      allowedInfo: [
-        "nivel",
-        "codigo",
-        "descricao",
-        "titulo",
-        "notasAp",
-        "notasEx"
-      ],
+      allowedInfo: ["nivel", "codigo", "descricao", "titulo", "notasAp", "notasEx"],
       /**
        * Campos que não é possivel editar
        */
@@ -112,8 +105,8 @@ export default {
           class: "subtitle-1",
           sortable: false,
           width: "10%",
-          align: "center"
-        }
+          align: "center",
+        },
       ],
       /**
        * Estado para os dialogs de erro, nota, campo em String e campo em Array
@@ -127,8 +120,8 @@ export default {
         visivel: false,
         nome: "",
         key: "",
-        valorAtual: ""
-      }
+        valorAtual: "",
+      },
     };
   },
 
@@ -138,13 +131,13 @@ export default {
         JSON.stringify(this.historico[this.historico.length - 1])
       );
       this.novoHistorico.codigo = { cor: "verde" };
-      Object.keys(this.dados).forEach(key => {
+      Object.keys(this.dados).forEach((key) => {
         this.esconderOperacoes[key] = false;
       });
       this.esconderOperacoes = {
         ...this.esconderOperacoes,
         nivel: true,
-        codigo: true
+        codigo: true,
       };
     } catch (e) {
       this.erroDialog = true;
@@ -158,17 +151,17 @@ export default {
 
     historico() {
       return this.p.historico;
-    }
+    },
   },
   methods: {
     transformaKeys(key) {
       return mapKeys(key);
     },
     mudarEstado(estado) {
-      return campo => {
+      return (campo) => {
         this.novoHistorico[campo] = {
           ...this.novoHistorico[campo],
-          cor: estado
+          cor: estado,
         };
       };
     },
@@ -176,7 +169,7 @@ export default {
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
         dados: dados,
-        cor: "amarelo"
+        cor: "amarelo",
       };
       this.esconderOperacoes[campo] = true;
     },
@@ -194,7 +187,7 @@ export default {
       this.notaDialog = false;
       this.novoHistorico[dados.campo] = {
         ...this.novoHistorico[dados.campo],
-        nota: dados.nota
+        nota: dados.nota,
       };
     },
     edita(campo) {
@@ -202,7 +195,7 @@ export default {
         visivel: true,
         nome: this.transformaKeys(campo),
         key: campo,
-        valorAtual: this.dados[campo]
+        valorAtual: this.dados[campo],
       };
     },
     editarCampo(event) {
@@ -217,12 +210,12 @@ export default {
       this.editarDados(campo, this.dados[campo]);
     },
     removeNota(item, campo) {
-      const index = this.dados[campo].findIndex(i => item == i);
+      const index = this.dados[campo].findIndex((i) => item == i);
       if (index !== -1) {
         this.dados[campo].splice(index, 1);
         this.editarDados(campo, this.dados[campo]);
       }
-    }
-  }
+    },
+  },
 };
 </script>

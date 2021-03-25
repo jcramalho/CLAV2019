@@ -4,7 +4,6 @@
     <MainPageHeader
       :n="notificacoes ? notificacoes.length : 0"
       @drawerDefinicoes="drawerDefinicoes()"
-      @drawerNotificacoes="drawerNotificacoes()"
     />
 
     <!-- Drawers -->
@@ -19,8 +18,10 @@
     <!-- Main content -->
     <v-main>
       <v-row justify="center" class="my-5">
-        <v-col cols="12" sm="10" md="9">
-          <router-view />
+        <v-col cols="12" sm="11" md="10">
+          <keep-alive include="pedidos">
+            <router-view />
+          </keep-alive>
         </v-col>
       </v-row>
     </v-main>
@@ -67,9 +68,7 @@ export default {
       if (to.matched.some((record) => !record.meta.levels.includes(0))) {
         if (this.$store.state.token != "" && this.level > 0) {
           //se está autenticado, verifica se tem permissões suficientes para a ceder a página
-          if (
-            to.matched.some((record) => record.meta.levels.includes(this.level))
-          ) {
+          if (to.matched.some((record) => record.meta.levels.includes(this.level))) {
             this.authenticated = true;
           } else {
             this.text = "Não tem permissões para aceder a esta página!";
@@ -200,7 +199,7 @@ export default {
 
 /* Subtitulo */
 .clav-content-title-2 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 500;
   color: var(--v-h1color-base);
   text-shadow: 0px 1px 2px var(--v-textshadow-base);
@@ -212,11 +211,19 @@ export default {
   word-spacing: 2px;
 }
 
+.clav-info-label {
+  color: var(--v-primary-base);
+  font-weight: bold;
+}
+
+.clav-text-shadow {
+  text-shadow: var(--v-textshadow-base);
+}
+
 /* TODO /* TODO /* TODO /* TODO
 /* TODO Para remover depois de remover todas as utilizações */
 #botao-shadow {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
-    0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
   outline: none !important;
 }
 
