@@ -10,9 +10,7 @@
             <v-row>
               <!-- DESCRIÇÂO -->
               <v-col cols="2">
-                <div class="info-label">
-                  Descrição
-                </div>
+                <div class="info-label">Descrição</div>
               </v-col>
               <v-col>
                 <v-textarea
@@ -27,19 +25,19 @@
               </v-col>
             </v-row>
 
-            <hr style="border-top: 1px dashed #dee2f8;" />
+            <hr style="border-top: 1px dashed #dee2f8" />
 
             <BlocoDescritivoNotasAp :c="proc" />
 
-            <hr style="border-top: 1px dashed #dee2f8;" />
+            <hr style="border-top: 1px dashed #dee2f8" />
 
             <BlocoDescritivoExemplosNotasAp :c="proc" />
 
-            <hr style="border-top: 1px dashed #dee2f8;" />
+            <hr style="border-top: 1px dashed #dee2f8" />
 
             <BlocoDescritivoNotasEx :c="proc" />
 
-            <hr style="border-top: 1px dashed #dee2f8;" />
+            <hr style="border-top: 1px dashed #dee2f8" />
 
             <TermosIndiceOps :c="proc" v-if="!p.temSubclasses4Nivel" />
           </v-card-text>
@@ -59,7 +57,7 @@
 </template>
 
 <script>
-import BlocoDescritivoNotasAp from "@/components/classes/criacao/BlocoDescritivoNotasAp.vue";
+import BlocoDescritivoNotasAp from "@/components/tabSel/parteDescritiva/NotasAp.vue";
 import BlocoDescritivoExemplosNotasAp from "@/components/classes/criacao/BlocoDescritivoExemplosNotasAp.vue";
 import BlocoDescritivoNotasEx from "@/components/classes/criacao/BlocoDescritivoNotasEx.vue";
 import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
@@ -71,31 +69,31 @@ export default {
     BlocoDescritivoNotasAp,
     BlocoDescritivoExemplosNotasAp,
     BlocoDescritivoNotasEx,
-    TermosIndiceOps
+    TermosIndiceOps,
   },
 
-  data: function() {
+  data: function () {
     return {
       dialog: false,
-      proc: JSON.parse(JSON.stringify(this.p))
+      proc: JSON.parse(JSON.stringify(this.p)),
     };
   },
 
-  mounted: function() {
+  mounted: function () {
     this.dialog = true;
   },
 
   methods: {
     // Devolve a seleção para cima
-    selecionar: function() {
+    selecionar: function () {
       this.p.descriptionEdited = true;
       this.$emit("editado", this.proc);
     },
     // Cancela a alteração dos campos
-    cancelar: function() {
+    cancelar: function () {
       this.$emit("cancelado", this.p);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

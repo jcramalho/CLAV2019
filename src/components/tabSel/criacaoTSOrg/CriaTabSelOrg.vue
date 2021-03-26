@@ -742,6 +742,20 @@ export default {
             this.listaProcessos.procs[i].preSelectedLabel = "";
             this.listaProcessos.procs[i].dono = false;
             this.listaProcessos.procs[i].participante = "NP";
+            this.listaProcessos.procs[i].notasAp = this.listaProcessos.procs[
+              i
+            ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
+            this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
+              i
+            ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
+            this.listaProcessos.procs[
+              i
+            ].exemplosNotasAp = this.listaProcessos.procs[
+              i
+            ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
+            this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
+              i
+            ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
           }
           this.participante = new Array(this.listaProcessos.procs.length).fill(
             "NP"
@@ -978,6 +992,10 @@ export default {
       this.$router.push("/");
     },
     criaHistoricoTS: async function (userBD) {
+      var response = await this.$request(
+        "get",
+        "/classes?nivel=3&info=completa"
+      );
       let historico = [
         {
           designacao: {
@@ -1022,7 +1040,8 @@ export default {
       ];
       // Cria histórico para cada processo
       for (let i = 0; i < historico[0].ts.classes.dados.length; i++) {
-        Object.keys(historico[0].ts.classes.dados[i].dados).map((p) => {
+        let codigo;
+        Object.keys(historico[0].ts.classes.dados[i].dados).map(async (p) => {
           historico[0].ts.classes.dados[i].dados[p] = {
             cor: "verde",
             dados: historico[0].ts.classes.dados[i].dados[p],
@@ -1038,6 +1057,75 @@ export default {
                 };
               }
             );
+          }
+          if (p == "notasAp") {
+            let index = response.data.findIndex((p) => p.codigo == codigo);
+
+            !(
+              response.data[index].notasAp.length ===
+                historico[0].ts.classes.dados[i].dados[p].dados.length &&
+              response.data[index].notasAp
+                .filter((n) => n.nota.replace(" ", "") != "")
+                .every((n) =>
+                  historico[0].ts.classes.dados[i].dados[p].dados.some(
+                    (n1) => n.nota == n1.nota
+                  )
+                )
+            )
+              ? (historico[0].ts.classes.dados[i].dados[p].cor = "amarelo")
+              : "";
+          }
+          if (p == "exemplosNotasAp") {
+            let index = response.data.findIndex((p) => p.codigo == codigo);
+            !(
+              response.data[index].exemplosNotasAp.length ===
+                historico[0].ts.classes.dados[i].dados[p].dados.length &&
+              response.data[index].exemplosNotasAp
+                .filter((n) => n.exemplo.replace(" ", "") != "")
+                .every((n) =>
+                  historico[0].ts.classes.dados[i].dados[p].dados.some(
+                    (n1) => n.exemplo == n1.exemplo
+                  )
+                )
+            )
+              ? (historico[0].ts.classes.dados[i].dados[p].cor = "amarelo")
+              : "";
+          }
+          if (p == "notasEx") {
+            let index = response.data.findIndex((p) => p.codigo == codigo);
+            !(
+              response.data[index].notasEx.length ===
+                historico[0].ts.classes.dados[i].dados[p].dados.length &&
+              response.data[index].notasEx
+                .filter((n) => n.nota.replace(" ", "") != "")
+                .every((n) =>
+                  historico[0].ts.classes.dados[i].dados[p].dados.some(
+                    (n1) => n.nota == n1.nota
+                  )
+                )
+            )
+              ? (historico[0].ts.classes.dados[i].dados[p].cor = "amarelo")
+              : "";
+          }
+          if (p == "termosInd") {
+            let index = response.data.findIndex((p) => p.codigo == codigo);
+            !(
+              response.data[index].termosInd.length ===
+                historico[0].ts.classes.dados[i].dados[p].dados.length &&
+              response.data[index].termosInd
+                .filter((n) => n.termo.replace(" ", "") != "")
+                .every((n) =>
+                  historico[0].ts.classes.dados[i].dados[p].dados.some(
+                    (n1) => n.termo == n1.termo
+                  )
+                )
+            )
+              ? (historico[0].ts.classes.dados[i].dados[p].cor = "amarelo")
+              : "";
+          }
+
+          if (p == "codigo") {
+            codigo = historico[0].ts.classes.dados[i].dados[p].dados;
           }
         });
       }
@@ -1056,6 +1144,12 @@ export default {
         historico[0].ts["procsAselecionar"] = {
           cor: "vermelho",
           dados: this.listaProcessos.procsAselecionar,
+          nota: null,
+        };
+      } else {
+        historico[0].ts["procsAselecionar"] = {
+          cor: "verde",
+          dados: [],
           nota: null,
         };
       }

@@ -56,15 +56,15 @@
       />
 
       <ValidaCampo
-        v-if="
-          p.objeto.dados.ts.listaProcessos.procsAselecionar.length > 0 ||
-          listaProcs == true
-        "
         :dadosOriginais="p.objeto.dados.ts.listaProcessos"
         :novoHistorico="novoHistorico.ts"
         campoValue="procsAselecionar"
         campoText="Processos por selecionar"
-        :permitirEditar="true"
+        :permitirEditar="
+          p.objeto.dados.ts.listaProcessos.procsAselecionar.length > 0
+            ? true
+            : false
+        "
         tipo="procsAselecionar"
         :tabelaSelecao="p.objeto.dados.ts"
         tipoTS="Organizacional"
@@ -106,10 +106,9 @@
               class="elevation-1"
               :footer-props="tsFooterProps"
               :page.sync="paginaTabela"
-              :expanded="expanded"
               expand-icon="$expand"
-              :single-expand="true"
-              @click:row="clicked"
+              single-expand
+              @item-expanded="clicked"
               show-expand
             >
               <template v-slot:[`item.dono`]="{ item }">
@@ -120,6 +119,7 @@
                   {{ item.participante }}
                 </span>
               </template>
+
               <template
                 v-if="!p.objeto.dados.ts.listaProcessos.importadoFlag"
                 v-slot:expanded-item="{ headers, item }"
@@ -144,7 +144,6 @@
                           </v-expansion-panel-header>
                           <v-expansion-panel-content>
                             <ValidaCampo
-                              v-if="item.notasAp.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -155,17 +154,16 @@
                               "
                               campoValue="notasAp"
                               campoText="Notas de Aplicação"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="notasAp"
                               arrayValue="nota"
+                              :notas="expandedProc.notasAp"
                               :info="{
                                 header: 'Notas de Aplicação',
                                 text: myhelp.Classe.Campos.NotasAp,
                               }"
                             />
-
                             <ValidaCampo
-                              v-if="item.exemplosNotasAp.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -176,9 +174,10 @@
                               "
                               campoValue="exemplosNotasAp"
                               campoText="Exemplos de Notas de Aplicação"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="exemplosNotasAp"
                               arrayValue="exemplo"
+                              :notas="expandedProc.exemplosNotasAp"
                               :info="{
                                 header: 'Exemplos de Notas de Aplicação',
                                 text: myhelp.Classe.Campos.ExemplosNotasAp,
@@ -186,7 +185,6 @@
                             />
 
                             <ValidaCampo
-                              v-if="item.notasEx.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -197,9 +195,10 @@
                               "
                               campoValue="notasEx"
                               campoText="Notas de Exclusão"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="notasEx"
                               arrayValue="nota"
+                              :notas="expandedProc.notasEx"
                               :info="{
                                 header: 'Notas de Exclusão',
                                 text: myhelp.Classe.Campos.NotasEx,
@@ -207,7 +206,6 @@
                             />
 
                             <ValidaCampo
-                              v-if="item.termosInd.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -218,9 +216,10 @@
                               "
                               campoValue="termosInd"
                               campoText="Termos de indice"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="termosInd"
                               arrayValue="termo"
+                              :notas="expandedProc.termosInd"
                               :info="{
                                 header: 'Termos de Indice',
                                 text: myhelp.Classe.Campos.TermosIndice,
@@ -270,6 +269,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ValidaCampo from "@/components/pedidos/analise/tabSel/generic/ValidaCampo";
 import InfoBox from "@/components/generic/infoBox.vue";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
+import { mdiGuyFawkesMask } from "@mdi/js";
 
 export default {
   props: {
@@ -287,9 +287,9 @@ export default {
     return {
       search: "",
       paginaTabela: 1,
-      expanded: [],
       novoHistorico: null,
       json: null,
+      expandedProc: {},
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
@@ -322,18 +322,14 @@ export default {
     };
   },
   methods: {
-    clicked(value) {
+    async clicked({ item }) {
       if (
-        value.descricao ||
-        value.notaDF ||
-        value.notaPCA ||
-        value.formaContagem ||
-        value.subFormaContagem ||
-        value.designacaoParticipante ||
-        value.designacaoDono
-      )
-        if (this.expanded[0] == value) this.expanded.pop();
-        else this.expanded = [value];
+        !this.expandedProc.codigo ||
+        this.expandedProc.codigo != item.codigo
+      ) {
+        let response = await this.$request("get", "/classes/c" + item.codigo);
+        this.expandedProc = response.data;
+      }
     },
     alterarOriginal() {
       let n_vermelhos = 0;
@@ -422,7 +418,6 @@ export default {
           data: new Date(),
           despacho: dados.mensagemDespacho,
         };
-
         await this.$request("put", "/pedidos", {
           pedido: pedido,
           distribuicao: novaDistribuicao,
