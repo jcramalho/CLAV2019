@@ -95,7 +95,13 @@
               <span>Devolver Pedido</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="4" v-if="temPermissaoAnalisar() && item.estado === 'Distribuído'">
+          <v-col
+            cols="4"
+            v-if="
+              temPermissaoAnalisar() &&
+              (item.estado === 'Distribuído' || item.estado === 'Redistribuído')
+            "
+          >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" small icon @click="$emit('analisar', item)">
@@ -111,7 +117,13 @@
               <span>Analisar Pedido</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="4" v-if="temPermissaoValidar() && item.estado === 'Apreciado'">
+          <v-col
+            cols="4"
+            v-if="
+              temPermissaoValidar() &&
+              (item.estado === 'Apreciado' || item.estado === 'Reapreciado')
+            "
+          >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" small text rounded @click="$emit('validar', item)">
@@ -221,7 +233,7 @@ export default {
           class: "title",
           sortable: true,
           filterable: true,
-          width: "25%",
+          width: "30%",
           align: "center",
         },
         {
@@ -241,7 +253,7 @@ export default {
           align: "center",
           sortable: false,
           filterable: false,
-          width: "20%",
+          width: "15%",
           align: "center",
         },
       ],
