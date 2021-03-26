@@ -35,7 +35,7 @@
     </Campo>
     <Campo nome="Tipo" infoHeader="Tipo do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
-        <span>{{ Pedido.objeto.acao }}</span>
+        <span>{{ Pedido.objeto.acao }} - {{ p.objeto.tipo }}</span>
       </template>
     </Campo>
     <v-card>
@@ -105,16 +105,66 @@
     />
     <ShowTI v-else-if="Pedido.objeto.tipo == 'Termo de Indice'" :p="Pedido" />
     <ShowDefault v-else :p="Pedido" />
+
     <v-row>
       <v-col cols="3" align="left">
         <Voltar />
       </v-col>
       <v-spacer></v-spacer>
+      <v-col
+        v-if="
+          (Pedido.estado === 'Distribuído' ||
+            Pedido.estado === 'Apreciado' ||
+            Pedido.estado === 'Redistribuído' ||
+            Pedido.estado === 'Reapreciado') &&
+          temPermissaoSubstituirResponsavel()
+        "
+        cols="3"
+        align="center"
+      >
+        <v-btn color="primary" @click="substituirResponsavelDialog = true" rounded
+          >Substituir Responsável</v-btn
+        >
+      </v-col>
+      <v-col
+        v-if="
+          Pedido.estado === 'Apreciado' ||
+          Pedido.estado === 'Reapreciado' ||
+          Pedido.estado === 'Em Despacho' ||
+          Pedido.estado === 'Devolvido para validação'
+        "
+        cols="3"
+        align="center"
+      >
+        <v-btn color="primary" @click="reapreciarDialog = true" rounded
+          >Reapreciar pedido</v-btn
+        >
+      </v-col>
     </v-row>
 
     <!-- Dialog Ver Historico de Alterações-->
     <v-dialog v-model="verHistoricoDialog" width="70%">
       <VerHistorico :pedido="Pedido" @fecharDialog="fecharHistorico()" />
+    </v-dialog>
+
+    <!-- Substituir responsável dialog -->
+    <v-dialog v-model="substituirResponsavelDialog" width="80%" persistent>
+      <SubstituirResponsavel :pedido="Pedido" @fecharDialog="fecharDialog()" />
+    </v-dialog>
+
+    <!-- Dialog para reapreciar pedidos -->
+    <v-dialog v-model="reapreciarDialog" width="80%" persistent>
+      <AvancarPedido
+        :utilizadores="utilizadores"
+        :texto="{
+          textoTitulo: 'Distribuição',
+          textoAlert: 'reapreciação',
+          textoBotao: 'Reapreciar',
+        }"
+        :pedido="Pedido.codigo"
+        @fecharDialog="reapreciarDialog = false"
+        @avancarPedido="reapreciarPedido($event)"
+      />
     </v-dialog>
   </v-card>
 </template>
@@ -136,13 +186,21 @@ import ShowLegislacao from "@/components/pedidos/consulta/showLegislacao";
 import ShowTI from "@/components/pedidos/consulta/showTI";
 import ShowPGD from "@/components/pedidos/consulta/showPGD";
 
+import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
+import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
+
+import { filtraNivel } from "@/utils/permissoes";
+import { NIVEIS_SUBSTITUIR_RESPONSAVEL, NIVEIS_ANALISAR_PEDIDO } from "@/utils/consts";
 
 export default {
   props: ["idp"],
 
   data: () => ({
+    utilizadores: [],
     verHistoricoDialog: false,
+    substituirResponsavelDialog: false,
+    reapreciarDialog: false,
     Pedido: {
       estado: "a carregar",
       data: "a carregar",
@@ -177,6 +235,8 @@ export default {
     ShowRADA,
 
     VerHistorico,
+    AvancarPedido,
+    SubstituirResponsavel,
   },
 
   computed: {
@@ -186,9 +246,11 @@ export default {
         case "Submetido":
           value = "Pedidos Novos";
           break;
+        case "Redistribuído":
         case "Distribuído":
           value = "Pedidos em Apreciação Técnica";
           break;
+        case "Reapreciado":
         case "Apreciado":
           value = "Pedidos em Validação";
           break;
@@ -207,7 +269,8 @@ export default {
       return value;
     },
   },
-  created() {
+  async created() {
+    await this.listaUtilizadores();
     this.$request("get", "/pedidos/" + this.idp)
       .then((response) => {
         this.Pedido = response.data;
@@ -217,12 +280,61 @@ export default {
       });
   },
   methods: {
+    async listaUtilizadores() {
+      const response = await this.$request("get", "/users");
+
+      const utilizadores = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
+
+      this.utilizadores = utilizadores;
+    },
+
     verHistorico() {
       this.verHistoricoDialog = true;
     },
 
     fecharHistorico() {
       this.verHistoricoDialog = false;
+    },
+
+    temPermissaoSubstituirResponsavel() {
+      return NIVEIS_SUBSTITUIR_RESPONSAVEL.includes(this.$userLevel());
+    },
+
+    async reapreciarPedido(dados) {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.Pedido));
+
+        const estado =
+          this.Pedido.estado == "Em Despacho"
+            ? "Devolvido para validação"
+            : "Redistribuído";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.eapreciarDialog = false;
+        this.$router.push("/pedidos");
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 };
