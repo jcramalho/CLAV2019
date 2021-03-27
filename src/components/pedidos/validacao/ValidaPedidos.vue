@@ -253,6 +253,11 @@ export default {
       )
         throw new URIError("Este pedido não pertence a este estado.");
 
+      data.historico = data.historico.map(hist => ({
+        ...hist,
+        codigo: { dados: data.objeto.codigo }
+      }));
+
       this.pedido = data;
       this.pedidoLoaded = true;
       this.loading = false;

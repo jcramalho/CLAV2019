@@ -449,7 +449,13 @@ export default {
         "items-per-page-options": [5, 10, -1],
         "items-per-page-all-text": "Todas"
       },
-      classesAllowedInfo: ["descricao", "titulo", "notasAp", "notasEx"]
+      classesAllowedInfo: [
+        "codigo",
+        "descricao",
+        "titulo",
+        "notasAp",
+        "notasEx"
+      ]
     };
   },
 

@@ -65,6 +65,7 @@
         <template v-slot:conteudo>
           <EstadoConteudo
             :pedidos="estado.pedidos"
+            :utilizadores="utilizadoresMapped"
             @distribuir="distribuiPedido($event)"
             @devolver="devolverPedido($event)"
             @analisar="analisaPedido($event)"
@@ -82,7 +83,7 @@
         :texto="{
           textoTitulo: 'Distribuição',
           textoAlert: 'análise',
-          textoBotao: 'Distribuir',
+          textoBotao: 'Distribuir'
         }"
         :pedido="pedidoParaDistribuir.codigo"
         @fecharDialog="distribuir = false"
@@ -106,7 +107,10 @@ import EstadoConteudo from "./EstadoConteudo";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 
-import { NIVEIS_ANALISAR_PEDIDO, NIVEIS_DISTRIBUIR_PEDIDO } from "@/utils/consts";
+import {
+  NIVEIS_ANALISAR_PEDIDO,
+  NIVEIS_DISTRIBUIR_PEDIDO
+} from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
 export default {
@@ -114,7 +118,7 @@ export default {
     PainelCLAV,
     EstadoConteudo,
     AvancarPedido,
-    DevolverPedido,
+    DevolverPedido
   },
   data() {
     return {
@@ -123,6 +127,7 @@ export default {
       distribuir: false,
       devolver: false,
       utilizadoresParaAnalisar: [],
+      utilizadoresMapped: {},
       // Array para poder expandir/fechar todos os panels
       panelsArr: [],
       panelsArrItems: 6,
@@ -130,38 +135,43 @@ export default {
         {
           titulo: "Pedidos Novos",
           icon: "pedido-novo-icon",
-          pedidos: [],
+          pedidos: []
         },
         {
           titulo: "Pedidos em Apreciação Técnica",
-          icon: "pedido-apr-tecn-icon",
+          icon: "pedido-apr-tecn-icon"
         },
         {
           titulo: "Pedidos em Validação",
           icon: "pedido-em-validacao-icon",
-          pedidos: [],
+          pedidos: []
         },
         {
           titulo: "Pedidos em Despacho",
           icon: "pedido-despacho-icon",
-          pedidos: [],
+          pedidos: []
         },
         {
           titulo: "Pedidos Devolvidos",
           icon: "pedido-devolvido-icon",
-          pedidos: [],
+          pedidos: []
         },
         {
           titulo: "Pedidos Aprovados",
           icon: "pedido-aprovado-icon",
-          pedidos: [],
-        },
-      ],
+          pedidos: []
+        }
+      ]
     };
   },
-  created() {
-    //this.carregaPedidos();
-  },
+  // async created() {
+  //   const response = await this.$request("get", "/users");
+
+  //   this.utilizadores = response.data.reduce(
+  //     (users, data) => ((users[data["email"]] = { ...data }), users),
+  //     {}
+  //   );
+  // },
   activated() {
     this.carregaPedidos();
   },
@@ -192,23 +202,34 @@ export default {
 
     carregaPedidos() {
       this.$request("get", "/pedidos/meta")
-        .then((data) => {
+        .then(data => {
           var pedidos = data.data;
-          this.estados[0].pedidos = pedidos.filter((p) => p.estado === "Submetido");
-          this.estados[1].pedidos = pedidos.filter((p) => {
-            if (p.estado === "Distribuído" || p.estado === "Redistribuído") return p;
+          this.estados[0].pedidos = pedidos.filter(
+            p => p.estado === "Submetido"
+          );
+          this.estados[1].pedidos = pedidos.filter(p => {
+            if (p.estado === "Distribuído" || p.estado === "Redistribuído")
+              return p;
           });
-          this.estados[2].pedidos = pedidos.filter((p) => {
-            if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
+          this.estados[2].pedidos = pedidos.filter(p => {
+            if (p.estado === "Apreciado" || p.estado === "Reapreciado")
+              return p;
           });
-          this.estados[4].pedidos = pedidos.filter((p) => p.estado === "Devolvido");
-          this.estados[5].pedidos = pedidos.filter((p) => p.estado === "Validado");
+          this.estados[4].pedidos = pedidos.filter(
+            p => p.estado === "Devolvido"
+          );
+          this.estados[5].pedidos = pedidos.filter(
+            p => p.estado === "Validado"
+          );
 
-          this.estados[3].pedidos = pedidos.filter((p) => p.estado === "Em Despacho");
+          this.estados[3].pedidos = pedidos.filter(
+            p => p.estado === "Em Despacho"
+          );
 
-          if (this.temPermissaoDistribuir()) this.listaUtilizadoresParaAnalisar();
+          if (this.temPermissaoDistribuir())
+            this.listaUtilizadoresParaAnalisar();
         })
-        .catch((err) => console.log(err));
+        .catch(err => console.log(err));
     },
     async atribuirPedido(dados) {
       try {
@@ -226,15 +247,15 @@ export default {
           proximoResponsavel: {
             nome: dados.utilizadorSelecionado.name,
             entidade: dados.utilizadorSelecionado.entidade,
-            email: dados.utilizadorSelecionado.email,
+            email: dados.utilizadorSelecionado.email
           },
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.carregaPedidos();
@@ -255,7 +276,7 @@ export default {
           estado: estado,
           responsavel: dadosUtilizador.email,
           data: new Date(),
-          despacho: dados.mensagemDespacho,
+          despacho: dados.mensagemDespacho
         };
 
         let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
@@ -265,7 +286,7 @@ export default {
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
-          distribuicao: novaDistribuicao,
+          distribuicao: novaDistribuicao
         });
 
         this.devolver = false;
@@ -274,15 +295,23 @@ export default {
         // location.reload();
       } catch (e) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem = "Erro ao devolver o pedido, por favor tente novamente";
+        this.erroDialog.mensagem =
+          "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
     async listaUtilizadoresParaAnalisar() {
       const response = await this.$request("get", "/users");
 
-      const utilizadoresFiltrados = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
+      const utilizadoresFiltrados = filtraNivel(
+        response.data,
+        NIVEIS_ANALISAR_PEDIDO
+      );
 
       this.utilizadoresParaAnalisar = utilizadoresFiltrados;
+      this.utilizadoresMapped = response.data.reduce(
+        (users, data) => ((users[data["email"]] = { ...data }), users),
+        {}
+      );
     },
     // Abrir todos os v-expansion-panel
     expandAll() {
@@ -291,7 +320,7 @@ export default {
     // Fechar todos os v-expansion-panel
     closeAll() {
       this.panelsArr = [];
-    },
-  },
+    }
+  }
 };
 </script>

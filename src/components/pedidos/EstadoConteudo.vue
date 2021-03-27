@@ -23,19 +23,28 @@
       loading-text="A carregar... Por favor aguarde"
       :search="procurar"
       :headers="headers"
-      :items="pedidos"
+      :items="pedidosMapped"
       :footer-props="footer_props"
       :page.sync="paginaTabela"
       sort-by="data"
       sort-desc
     >
       <template v-slot:no-data>
-        <v-alert outlined type="warning" icon="warning" class="font-weight-medium ma-2">
+        <v-alert
+          outlined
+          type="warning"
+          icon="warning"
+          class="font-weight-medium ma-2"
+        >
           Não existem pedidos neste estado.
         </v-alert>
       </template>
       <template v-slot:no-results>
-        <v-alert outlined type="warning" icon="warning" class="font-weight-medium ma-2"
+        <v-alert
+          outlined
+          type="warning"
+          icon="warning"
+          class="font-weight-medium ma-2"
           >Não foram encontrados resultados para "{{ procurar }}".</v-alert
         >
       </template>
@@ -63,7 +72,10 @@
               <span>Ver Pedido</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="4" v-if="temPermissaoDistribuir() && item.estado === 'Submetido'">
+          <v-col
+            cols="4"
+            v-if="temPermissaoDistribuir() && item.estado === 'Submetido'"
+          >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" small icon @click="$emit('distribuir', item)">
@@ -79,7 +91,10 @@
               <span>Distribuir Pedido</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="4" v-if="temPermissaoDevolver() && item.estado === 'Submetido'">
+          <v-col
+            cols="4"
+            v-if="temPermissaoDevolver() && item.estado === 'Submetido'"
+          >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" small icon @click="$emit('devolver', item)">
@@ -99,7 +114,8 @@
             cols="4"
             v-if="
               temPermissaoAnalisar() &&
-              (item.estado === 'Distribuído' || item.estado === 'Redistribuído')
+                (item.estado === 'Distribuído' ||
+                  item.estado === 'Redistribuído')
             "
           >
             <v-tooltip top color="info" open-delay="500">
@@ -121,12 +137,18 @@
             cols="4"
             v-if="
               temPermissaoValidar() &&
-              (item.estado === 'Apreciado' || item.estado === 'Reapreciado')
+                (item.estado === 'Apreciado' || item.estado === 'Reapreciado')
             "
           >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" small text rounded @click="$emit('validar', item)">
+                <v-btn
+                  v-on="on"
+                  small
+                  text
+                  rounded
+                  @click="$emit('validar', item)"
+                >
                   <unicon
                     name="accept-icon"
                     width="25"
@@ -139,10 +161,19 @@
               <span>Validar Pedido</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="4" v-if="temPermissaoAnalisar() && item.estado === 'Em Despacho'">
+          <v-col
+            cols="4"
+            v-if="temPermissaoAnalisar() && item.estado === 'Em Despacho'"
+          >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" small text rounded @click="$emit('despachar', item)">
+                <v-btn
+                  v-on="on"
+                  small
+                  text
+                  rounded
+                  @click="$emit('despachar', item)"
+                >
                   <unicon
                     name="pedido-despacho-icon"
                     width="25"
@@ -169,11 +200,12 @@ import {
   NIVEIS_DISTRIBUIR_PEDIDO,
   NIVEIS_DEVOLVER_PEDIDO,
   NIVEIS_ANALISAR_PEDIDO,
-  NIVEIS_VALIDAR_PEDIDO,
+  NIVEIS_VALIDAR_PEDIDO
 } from "@/utils/consts";
+import { log } from "util";
 
 export default {
-  props: ["pedidos"],
+  props: ["pedidos", "utilizadores"],
   methods: {
     showPedido(pedido) {
       this.$router.push("/pedidos/novos/" + pedido.codigo);
@@ -193,7 +225,7 @@ export default {
 
     temPermissaoValidar() {
       return NIVEIS_VALIDAR_PEDIDO.includes(this.$userLevel());
-    },
+    }
   },
   data() {
     return {
@@ -207,7 +239,7 @@ export default {
           sortable: true,
           filterable: true,
           width: "15%",
-          align: "center",
+          align: "center"
         },
         {
           text: "Tipo",
@@ -216,7 +248,7 @@ export default {
           sortable: true,
           filterable: true,
           width: "10%",
-          align: "center",
+          align: "center"
         },
         {
           text: "Entidade",
@@ -225,16 +257,16 @@ export default {
           sortable: false,
           filterable: true,
           width: "15%",
-          align: "center",
+          align: "center"
         },
         {
           text: "Criador",
-          value: "criadoPor",
+          value: "criador",
           class: "title",
           sortable: true,
           filterable: true,
           width: "30%",
-          align: "center",
+          align: "center"
         },
         {
           text: "Data",
@@ -244,7 +276,7 @@ export default {
           sortable: true,
           filterable: true,
           width: "15%",
-          align: "center",
+          align: "center"
         },
         {
           text: "Tarefa",
@@ -254,15 +286,28 @@ export default {
           sortable: false,
           filterable: false,
           width: "15%",
-          align: "center",
-        },
+          align: "center"
+        }
       ],
       footer_props: {
         "items-per-page-text": "Pedidos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos",
-      },
+        "items-per-page-all-text": "Todos"
+      }
     };
   },
+  async created() {
+    this.pedidos.forEach(pedido => {
+      pedido.criador = this.utilizadores[pedido.criadoPor].name;
+    });
+  },
+  computed: {
+    pedidosMapped: function() {
+      this.pedidos.forEach(pedido => {
+        pedido.criador = this.utilizadores[pedido.criadoPor].name;
+      });
+      return this.pedidos;
+    }
+  }
 };
 </script>

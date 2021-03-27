@@ -148,7 +148,12 @@ export function mapKeys(key) {
     case "processosRelacionados":
       descricao = "Processos Relacionados";
       break;
-
+    case "titulo":
+      descricao = "Título";
+      break;
+    case "descricao":
+      descricao = "Descrição";
+      break;
     default:
       descricao = key.charAt(0).toUpperCase() + key.slice(1);
       break;
@@ -186,7 +191,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: null,
+            nota: null
           };
         }
       } else if (objSubmetido[key] instanceof Array) {
@@ -194,13 +199,13 @@ export function criarHistorico(objeto, objetoOriginal = null) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key])
           };
         } else if (!comparaArraySel(objSubmetido[key], objOriginal[key])) {
           historico[key] = {
             cor: "amarelo",
             dados: objSubmetido[key],
-            nota: notasComRemovidos(objOriginal[key], objSubmetido[key]),
+            nota: notasComRemovidos(objOriginal[key], objSubmetido[key])
           };
         }
       }
@@ -211,7 +216,7 @@ export function criarHistorico(objeto, objetoOriginal = null) {
         historico[key] = {
           cor: "verde",
           dados: objSubmetido[key],
-          nota: null,
+          nota: null
         };
       }
     }
@@ -227,7 +232,7 @@ export function converterDadosOriginais(dados) {
     dadosConvertidos[key] = {
       cor: null,
       dados: dados[key],
-      nota: null,
+      nota: null
     };
   }
 
@@ -307,17 +312,17 @@ export function notasComRemovidos(listaAnterior, listaAtual) {
 }
 
 export function adicionarNotaComRemovidos(historicoAnterior, historicoAtual) {
-  for (const key in historicoAnterior) {
-    if (historicoAnterior[key].dados instanceof Array) {
-      const nota = notasComRemovidos(
-        historicoAnterior[key].dados,
-        historicoAtual[key].dados
-      );
+  // for (const key in historicoAnterior) {
+  //   if (historicoAnterior[key].dados instanceof Array) {
+  //     const nota = notasComRemovidos(
+  //       historicoAnterior[key].dados,
+  //       historicoAtual[key].dados
+  //     );
 
-      if (historicoAtual[key].nota === null) historicoAtual[key].nota = nota;
-      else if (nota !== null) historicoAtual[key].nota += nota;
-    }
-  }
+  //     if (historicoAtual[key].nota === null) historicoAtual[key].nota = nota;
+  //     else if (nota !== null) historicoAtual[key].nota += nota;
+  //   }
+  // }
 
   return historicoAtual;
 }
@@ -354,7 +359,7 @@ export function gerarDadosRelatorio(pedido) {
     tipoPedido: "",
     numeroPedido: "",
     alteracaoInfo: "",
-    estadoPedido: "",
+    estadoPedido: ""
   };
 
   Object.keys(pedidoSubmetido).forEach(item => {
@@ -414,7 +419,7 @@ export function gerarDadosRelatorio(pedido) {
     relatorio.comparacao.push({
       campo: mapKeys(campo),
       submetido: pedidoSubmetido[campo],
-      finalizado: pedidoFinalizado[campo],
+      finalizado: pedidoFinalizado[campo]
     });
   });
 
@@ -572,5 +577,5 @@ export default {
   identificaItemAdicionado,
   identificaItemEmTabela,
   adicionarNotaComRemovidos,
-  mapKeysRADA,
+  mapKeysRADA
 };
