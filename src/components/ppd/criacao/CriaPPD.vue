@@ -377,7 +377,8 @@ export default {
       user: {
         token: ""
       },
-      fonteID: ""
+      fonteLegitimacao: "",
+      tipoFonteL: ""
     },
     panels: [],
     //para apagar!!!!!!!
@@ -678,35 +679,11 @@ export default {
     },
 
     //-------Fonte Legitimacao-------
-    //-------GET PGD/LC-------
-    loadConsultaPGDLC: async function() {
-      try {
-        var response = await this.$request("get", "/pgd/"+this.ppd.fonteID);
-        //this.classesSI = await prepararClasses(response.data);
-        this.classesDaFonteL = response.data[0];
-        for (var c of response.data[0]) {
-          if(c.pca){
-            if(c.codigo){
-              this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
-            }
-            else{
-              this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
-            }
-          }
-        }
-      }catch (err) {
-        return err;
-      }
-    },
-    //-------GET PGD-------
     consultaFT: async function() {
       try {
-        var tipo = this.ppd.fonteID.split("_");
+        var tipo = this.ppd.fonteLegitimacao.split("_");
         if(tipo[0] == 'pgd'){
-          alert("A-" , tipo[0])
-          alert("A-" , this.ppd.fonteID)
-          var response = await this.$request("get", "/pgd/"+this.ppd.fonteID);
-          alert("R-" , response.data)
+          var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
           //this.classesSI = await prepararClasses(response.data);
           this.classesDaFonteL = response.data[0];
           for (var c of response.data[0]) {
@@ -830,7 +807,7 @@ export default {
           lista.push(sis);
           //Dar reset as listas usadas....
           this.ppd.listaSistemasInfoAuxiliar = [...lista];
-          this.consultaFT(this.fonteID);
+          this.consultaFT(this.fonteLegitimacao);
           var child = [];
           var index =  this.ppd.arvore.findIndex(l => l.id === sis.numeroSI);
           //ESTE CASO NUNCA ACONTECE PORQUE NAO SE PODE INSERIR OUTRO SI COM O MESMO ID....

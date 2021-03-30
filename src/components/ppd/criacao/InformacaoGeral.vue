@@ -168,9 +168,22 @@ export default {
   computed: {
 
   },
+
+  created: async function() {
+      try{
+        this.fonteLegitimacaoSelected = this.ppd.fonteLegitimacao;
+        this.loadCheck = this.ppd.tipoFonteL;
+        //await this.loadLegislacao();
+      }
+      catch(e){
+        console.log('Erro ao carregar a informação inicial: ' + e);
+      }
+  },
+
   watch:{
     "loadCheck": async function(){
       try{
+        this.ppd.tipoFonteL = this.loadCheck;
         if(this.loadCheck == "TS/LC"){
           var response = await this.$request("get","/tabelasSelecao")
           this.tabelasSelecao = response.data.map(ts=>{return {
@@ -207,9 +220,8 @@ export default {
     },
 
     "fonteLegitimacaoSelected": function() {
-      alert("CARREGUEI FONTE")
       if (this.fonteLegitimacaoSelected) {
-        this.ppd.fonteID = this.fonteLegitimacaoSelected.id
+        this.ppd.fonteLegitimacao = this.fonteLegitimacaoSelected
         this.$emit("consultaFT");
       }
     }

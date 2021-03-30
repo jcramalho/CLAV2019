@@ -22,15 +22,11 @@
             <v-stepper-content step="1">
               <InformacaoGeral
                 @seguinte="changeE1"
-                @loadConsultaPGD="loadConsultaPGD($event)"
+                @consultaFT="consultaFT($event)"
                 :ppd="ppd"
                 :entidades="entidades"
                 :semaforos="semaforos"
                 :myhelp="myhelp"
-                :tsRada="tsRada"
-                :portariaLC="portariaLC"
-                :portaria="portaria"
-                :portariaRada="portariaRada"
                 />
             </v-stepper-content>
             <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
@@ -381,18 +377,14 @@ export default {
       user: {
         token: ""
       },
-      fonteID: ""
+      fonteLegitimacao: "",
+      tipoFonteL: ""
     },
     panels: [],
     //para apagar!!!!!!!
     a: "",
-    //---Fonte de legitimacao---
 
-    portaria: [],
-    portariaLC: [],
-    portariaRada: [],
-    tabelasSelecao: [],
-    tsRada: [],
+
     tree_ou_tabela: false,
     search: "",
     classesTree: [],
@@ -471,7 +463,7 @@ export default {
     apagar: function() {
       this.$refs.form.reset();
       this.panels = [];
-      this.loadConsultaPGD();
+      this.consultaFT();
     },
     newSistemasRelacionados: function(sistema, lista) {
         lista.push(sistema);
@@ -658,7 +650,7 @@ export default {
         this.ppd.si.avaliacao.pcaSI = 0;
         this.ppd.si.avaliacao.destinoSI = "";
         this.ppd.si.avaliacao.selecionadosTabelaFL = [];
-        await this.loadConsultaPGD();
+        await this.consultaFT();
       } else {
         this.dialog= true;
         this.erroValidacao = true;
@@ -666,9 +658,9 @@ export default {
     },
 
   //-------Fonte Legitimacao-------
-    loadConsultaPGD: async function() {
+    consultaFT: async function() {
       try {
-        var response = await this.$request("get", "/pgd/"+this.ppd.fonteID);
+        var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
         //this.classesSI = await prepararClasses(response.data);
         this.classesDaFonteL = response.data;
         for (var c of response.data) {
@@ -801,7 +793,7 @@ export default {
           lista.push(sis);
           //Dar reset as listas usadas....
           this.ppd.listaSistemasInfoAuxiliar = [...lista];
-          this.loadConsultaPGD(this.fonteID);
+          this.consultaFT(this.fonteLegitimacao);
           var child = [];
           var index =  this.ppd.arvore.findIndex(l => l.id === sis.numeroSI);
           //ESTE CASO NUNCA ACONTECE PORQUE NAO SE PODE INSERIR OUTRO SI COM O MESMO ID....
@@ -837,9 +829,12 @@ export default {
       // Recoloca o sistema nos selecionáveis
       //this.listaLegislacao.push(sistema);
       var index = this.ppd.sistemasInfo.findIndex(e => e.numeroSI === sistema.numeroSI);
+      var indexArv = this.ppd.arvore.findIndex(e => e.id === sistema.numeroSI);
+      alert("Si id - ",index);
+      alert(index);
       this.ppd.sistemasInfo.splice(index, 1);
-      this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
-      this.ppd.arvore.splice(index,1);
+      //this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
+      this.ppd.arvore.splice(indexArv,1);
     },
 
     validarPPD: function(){
@@ -890,29 +885,8 @@ export default {
         this.ppd = this.obj.objeto;
         this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
         await this.loadEntidades();
-        await this.loadLegislacao();
-        //var user = this.$verifyTokenUser();
-        //var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
-        //this.portariaLC = await this.prepararLeg(response.data);
-        var response2 = await this.$request("get", "/pgd");
-        this.portaria = await this.prepararLeg(response2.data);
-        //var response3 = await this.$request("get", "/legislacao?fonte=RADA");
-        //this.portariaRada = await this.prepararLeg(response3.data);
-        //var response4 = await this.$request("get","/rada");
-        //this.tsRada = response4.data
-        var response5 = await this.$request("get","/tabelasSelecao")
-        this.tabelasSelecao = response5.data.map(ts=>{return {
-            titulo: ts.designacao,
-            codigo: ts.id.split("clav#")[1]
-          }
-        });
       }
       catch(e){
-        this.portariaLC = [];
-        this.portaria = [];
-        this.portariaRada = [];
-        this.tabelasSelecao = [];
-        this.tsRada = [];
         console.log('Erro ao carregar a informação inicial: ' + e);
       }
   }
