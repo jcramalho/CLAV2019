@@ -74,10 +74,10 @@
           <div v-if="loadCheck === 'TS/LC'">
             <v-autocomplete
               label="Selecione a fonte de legitimação"
-              :items="tabelasSelecao"
+              :items="this.tabelasSelecao"
               item-text="titulo"
               return-object
-              v-model="a"
+              v-model="fonteLegitimacaoSelected"
               solo
               dense
             />
@@ -85,10 +85,10 @@
           <div v-else-if="loadCheck === 'PGD/LC'">
             <v-autocomplete
               label="Selecione a fonte de legitimação"
-              :items="portariaLC"
+              :items="this.portariaLC"
               item-text="titulo"
               return-object
-              v-model="a"
+              v-model="fonteLegitimacaoSelected"
               solo
               dense
             />
@@ -96,7 +96,7 @@
           <div v-else-if="loadCheck === 'PGD'">
             <v-autocomplete
               label="Selecione a fonte de legitimação"
-              :items="portaria"
+              :items="this.portaria"
               item-text="titulo"
               return-object
               v-model="fonteLegitimacaoSelected"
@@ -107,10 +107,10 @@
           <div v-else-if="loadCheck === 'RADA'">
             <v-autocomplete
               label="Selecione a fonte de legitimação"
-              :items="portariaRada"
+              :items="this.portariaRada"
               item-text="titulo"
               return-object
-              v-model="a"
+              v-model="fonteLegitimacaoSelected"
               solo
               dense
             />
@@ -118,10 +118,10 @@
           <div v-else>
                 <v-autocomplete
                   label="Selecione a fonte de legitimação"
-                  :items="tsRada"
+                  :items="this.tsRada"
                   item-text="titulo"
                   return-object
-                  v-model="a"
+                  v-model="fonteLegitimacaoSelected"
                   solo
                   dense
                 ></v-autocomplete>
@@ -144,7 +144,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 
 
 export default {
-  props: ["ppd", "entidades", "semaforos", "portariaLC", "portaria", "portariaRada", "tsRada", "myhelp"],
+  props: ["ppd", "entidades", "semaforos", "myhelp"],
   components: {
     InfoBox
   },
@@ -156,21 +156,77 @@ export default {
     //usado para receber a info selecionada da fonteL.. para trocar!! para ja so tem o PGD a funcionar!!!!
     a: "",
     loadCheck: "",
+    //---Fonte de legitimacao---
+
+    portaria: [],
+    portariaLC: [],
+    portariaRada: [],
+    tabelasSelecao: [],
+    tsRada: [],
+
   }),
   computed: {
 
   },
   watch:{
-    "fonteLegitimacaoSelected": function() {
+    "loadCheck": async function(){
+      try{
+        if(this.loadCheck == "TS/LC"){
+          var response = await this.$request("get","/tabelasSelecao")
+          this.tabelasSelecao = response.data.map(ts=>{return {
+              titulo: ts.designacao,
+              codigo: ts.id.split("clav#")[1]
+            }
+          });
+        }
+        if(this.loadCheck == "PGD/LC"){
+          var response = await this.$request("get", "/pgd/lc");
+          this.portariaLC = await this.prepararLeg(response.data);
+        }
+        if(this.loadCheck == "PGD"){
+          var response = await this.$request("get", "/pgd");
+          this.portaria = await this.prepararLeg(response.data);
+        }
+        if(this.loadCheck == "RADA"){
+          var response = await this.$request("get", "/legislacao?fonte=RADA");
+          this.portariaRada = await this.prepararLeg(response.data);
+        }
+        else{
+          var response = await this.$request("get","/rada");
+          this.tsRada = response.data
+        }
+      }
+       catch(e){
+        this.portariaLC = [];
+        this.portaria = [];
+        this.portariaRada = [];
+        this.tabelasSelecao = [];
+        this.tsRada = [];
+        console.log('Erro ao carregar a informação inicial: ' + e);
+      }
+    },
 
+    "fonteLegitimacaoSelected": function() {
+      alert("CARREGUEI FONTE")
       if (this.fonteLegitimacaoSelected) {
         this.ppd.fonteID = this.fonteLegitimacaoSelected.id
-        this.$emit("loadConsultaPGD");
+        this.$emit("consultaFT");
       }
     }
   },
 
   methods: {
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
     apagar: function() {
       this.$refs.form.reset();
     },

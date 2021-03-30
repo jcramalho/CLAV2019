@@ -28,26 +28,26 @@
             </div>
           </v-col>
           <v-col>
-            <v-text-field solo dense :value="classeShow.referencia">
-            </v-text-field>
-          </v-col>
-          <v-col>
-            <div class="info-label">Destino final
-              <InfoBox header="Destino final" :text="myhelp.Ppd.Avaliacao.destinoClasse"/>
-            </div>
-          </v-col>
-          <v-col>
-            <v-text-field solo dense :value="classeShow.df">
+            <v-text-field solo dense :value="classeShow.formaContagem">
             </v-text-field>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" xs="12" sm="3">
+            <div class="info-label">Destino final
+              <InfoBox header="Destino final" :text="myhelp.Ppd.Avaliacao.destinoClasse"/>
+            </div>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
+            <v-text-field solo dense :value="classeShow.df">
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" xs="12" sm="3">
             <div class="info-label">PCA da classe/série
               <InfoBox header="PCA da classe/série" :text="myhelp.Ppd.Avaliacao.pcaClasse"/>
             </div>
           </v-col>
-          <v-col cols="12" xs="12" sm="9">
+          <v-col cols="12" xs="12" sm="3">
             <v-text-field solo dense :value="classeShow.pca">
 
             </v-text-field>

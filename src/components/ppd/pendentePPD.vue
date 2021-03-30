@@ -22,11 +22,15 @@
             <v-stepper-content step="1">
               <InformacaoGeral
                 @seguinte="changeE1"
-                @consultaFT="consultaFT($event)"
+                @loadConsultaPGD="loadConsultaPGD($event)"
                 :ppd="ppd"
                 :entidades="entidades"
                 :semaforos="semaforos"
                 :myhelp="myhelp"
+                :tsRada="tsRada"
+                :portariaLC="portariaLC"
+                :portaria="portaria"
+                :portariaRada="portariaRada"
                 />
             </v-stepper-content>
             <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
@@ -96,6 +100,7 @@
                     <BlocoAvaliacao
                       :ppd="ppd"
                       :semaforos="semaforos"
+                      :listaLegislacao="listaLegislacao"
                       :classesSI="classesSI"
                       :classesDaFonteL="classesDaFonteL"
                       @newSistemasRelacionados="newSistemasRelacionados($event, ppd.si.avaliacao.sistemasRelacionados)"
@@ -229,7 +234,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 import InformacaoGeral from "@/components/ppd/criacao/InformacaoGeral.vue";
 import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
 import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
-import ArvoreLateralPPD from './ArvoreLateralPPD.vue';
+import ArvoreLateralPPD from "@/components/ppd/criacao/ArvoreLateralPPD.vue";
 import mixinCriacaoPPD from "@/mixins/ppd/mixinCriacaoPPD.js";
 import ImportarSI from "@/components/ppd/criacao/sistemaInformacao/importacao/ImportarSI.vue";
 import BlocoIdentificacao from "@/components/ppd/criacao/sistemaInformacao/BlocoIdentificacao.vue";
@@ -244,7 +249,7 @@ import verBlocoEstrategia from "@/components/ppd/criacao/verSI/verBlocoEstrategi
 
 
 export default {
-  props:[],
+  props:['obj'],
   components: {
     InfoBox,
     InformacaoGeral,
@@ -373,7 +378,6 @@ export default {
           }
         },
       },
-
       user: {
         token: ""
       },
@@ -384,11 +388,11 @@ export default {
     a: "",
     //---Fonte de legitimacao---
 
-    //portaria: [],
-    //portariaLC: [],
-    //portariaRada: [],
-    //tabelasSelecao: [],
-    //tsRada: [],
+    portaria: [],
+    portariaLC: [],
+    portariaRada: [],
+    tabelasSelecao: [],
+    tsRada: [],
     tree_ou_tabela: false,
     search: "",
     classesTree: [],
@@ -454,36 +458,20 @@ export default {
 
   methods: {
 
-    guardarPPD: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          delete this.ppd.listaSistemasInfoAuxiliar;
-          delete this.ppd.si;
-          var userBD = this.$verifyTokenUser();
-          var pendenteParams = {
-            numInterv: 1,
-            acao: "Criação",
-            tipo: "PPD",
-            objeto: this.ppd,
-            criadoPor: userBD.email,
-            user: { email: userBD.email },
-            token: this.$store.state.token
-          };
-          var response = this.$request("post", "/pendentes", pendenteParams);
-          this.pendenteGuardado = true;
-          this.pendenteGuardadoInfo = JSON.stringify(response.data);
-        }
-      } catch (error) {
-        return error;
-      }
+    guardarPPD() {
+      delete this.ppd.listaSistemasInfoAuxiliar;
+      delete this.ppd.si;
+      let updatePendente = {
+        _id: this.obj._id,
+        objeto: this.ppd
+      };
+      this.$request("put", "/pendentes", updatePendente);
     },
 
     apagar: function() {
       this.$refs.form.reset();
       this.panels = [];
-      this.consultaFT();
+      this.loadConsultaPGD();
     },
     newSistemasRelacionados: function(sistema, lista) {
         lista.push(sistema);
@@ -670,53 +658,26 @@ export default {
         this.ppd.si.avaliacao.pcaSI = 0;
         this.ppd.si.avaliacao.destinoSI = "";
         this.ppd.si.avaliacao.selecionadosTabelaFL = [];
-        await this.consultaFT();
+        await this.loadConsultaPGD();
       } else {
         this.dialog= true;
         this.erroValidacao = true;
       }
     },
 
-    //-------Fonte Legitimacao-------
-    //-------GET PGD/LC-------
-    loadConsultaPGDLC: async function() {
+  //-------Fonte Legitimacao-------
+    loadConsultaPGD: async function() {
       try {
         var response = await this.$request("get", "/pgd/"+this.ppd.fonteID);
         //this.classesSI = await prepararClasses(response.data);
-        this.classesDaFonteL = response.data[0];
-        for (var c of response.data[0]) {
+        this.classesDaFonteL = response.data;
+        for (var c of response.data) {
           if(c.pca){
             if(c.codigo){
               this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
             }
             else{
               this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
-            }
-          }
-        }
-      }catch (err) {
-        return err;
-      }
-    },
-    //-------GET PGD-------
-    consultaFT: async function() {
-      try {
-        var tipo = this.ppd.fonteID.split("_");
-        if(tipo[0] == 'pgd'){
-          alert("A-" , tipo[0])
-          alert("A-" , this.ppd.fonteID)
-          var response = await this.$request("get", "/pgd/"+this.ppd.fonteID);
-          alert("R-" , response.data)
-          //this.classesSI = await prepararClasses(response.data);
-          this.classesDaFonteL = response.data[0];
-          for (var c of response.data[0]) {
-            if(c.pca){
-              if(c.codigo){
-                this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
-              }
-              else{
-                this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
-              }
             }
           }
         }
@@ -769,9 +730,20 @@ export default {
 
     //--------------------
     //----------------------------------------------
-    
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
 
 
+  //-------Fonte Legitimacao-------
 
 
     // Faz load de todas as entidades
@@ -793,7 +765,6 @@ export default {
       }
     },
 
-    /*apagar
     loadLegislacao: async function() {
       try {
         var response = await this.$request("get", "/legislacao?estado=Ativo");
@@ -816,7 +787,7 @@ export default {
         return error;
       }
     },
-    */
+
     newSistema: async function(sis, lista) {
         var index = lista.findIndex(e => e.numeroSI === sis.numeroSI);
         if(index != -1){
@@ -830,7 +801,7 @@ export default {
           lista.push(sis);
           //Dar reset as listas usadas....
           this.ppd.listaSistemasInfoAuxiliar = [...lista];
-          this.consultaFT(this.fonteID);
+          this.loadConsultaPGD(this.fonteID);
           var child = [];
           var index =  this.ppd.arvore.findIndex(l => l.id === sis.numeroSI);
           //ESTE CASO NUNCA ACONTECE PORQUE NAO SE PODE INSERIR OUTRO SI COM O MESMO ID....
@@ -855,7 +826,6 @@ export default {
         }
     },
 
-    //apagar
     selectSistema: function(sis) {
       this.ppd.sistemasInfo.push(sis);
       this.ppd.listaSistemasInfoAuxiliar.push(sis);
@@ -882,9 +852,9 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
+          delete this.ppd.listaSistemasInfoAuxiliar
           var erros = await this.validarPPD();
           if (erros == 0) {
-            delete this.ppd.listaSistemasInfoAuxiliar
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",
@@ -917,10 +887,32 @@ export default {
 
   created: async function() {
       try{
+        this.ppd = this.obj.objeto;
+        this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
         await this.loadEntidades();
-        //await this.loadLegislacao();
+        await this.loadLegislacao();
+        //var user = this.$verifyTokenUser();
+        //var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
+        //this.portariaLC = await this.prepararLeg(response.data);
+        var response2 = await this.$request("get", "/pgd");
+        this.portaria = await this.prepararLeg(response2.data);
+        //var response3 = await this.$request("get", "/legislacao?fonte=RADA");
+        //this.portariaRada = await this.prepararLeg(response3.data);
+        //var response4 = await this.$request("get","/rada");
+        //this.tsRada = response4.data
+        var response5 = await this.$request("get","/tabelasSelecao")
+        this.tabelasSelecao = response5.data.map(ts=>{return {
+            titulo: ts.designacao,
+            codigo: ts.id.split("clav#")[1]
+          }
+        });
       }
       catch(e){
+        this.portariaLC = [];
+        this.portaria = [];
+        this.portariaRada = [];
+        this.tabelasSelecao = [];
+        this.tsRada = [];
         console.log('Erro ao carregar a informação inicial: ' + e);
       }
   }
