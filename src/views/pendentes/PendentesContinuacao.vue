@@ -5,6 +5,7 @@
     <ContinuaTSPluri v-else-if="objLoaded && tipoTSPluri" :obj="objeto" />
     <ContinuaAutoEliminacao v-else-if="objLoaded && tipoAE" :obj="objeto" />
     <ContinuaRADA v-else-if="objLoaded && tipoRADA" :obj="objeto" />
+    <ContinuaPPD v-else-if="objLoaded && tipoPPD" :obj="objeto" />
     <ContinuaPendente v-else-if="objLoaded" :obj="objeto" />
     <v-alert v-else type="warning">
       Por algum motivo não foi possível carregar o trabalho pretendido. Contacte
@@ -20,6 +21,7 @@ import ContinuaTSOrg from "@/components/tabSel/criacaoTSOrg/ContCriaTabSelOrg";
 import ContinuaTSPluri from "@/components/tabSel/criacaoTSPluri/ContCriaTabSelPluri";
 import ContinuaAutoEliminacao from "@/components/autosEliminacao/criacao/ContinuarAutoEliminacao";
 import ContinuaRADA from "@/components/rada/pendenteRada";
+import ContinuaPPD from "@/components/ppd/pendentePPD";
 
 export default {
   components: {
@@ -28,7 +30,8 @@ export default {
     ContinuaTSOrg,
     ContinuaTSPluri,
     ContinuaAutoEliminacao,
-    ContinuaRADA
+    ContinuaRADA,
+    ContinuaPPD
   },
 
   data: () => ({
@@ -38,7 +41,8 @@ export default {
     tipoTSOrg: false,
     tipoTSPluri: false,
     tipoAE: false,
-    tipoRADA: false
+    tipoRADA: false,
+    tipoPPD: true
   }),
 
   created: function() {
@@ -63,6 +67,9 @@ export default {
             break;
           case "PGD":
             this.tipoPGD = true;
+            break;
+          case "PPD":
+            this.tipoPPD = true;
             break;
         }
         this.objLoaded = true;

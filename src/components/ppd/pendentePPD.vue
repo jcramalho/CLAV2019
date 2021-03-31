@@ -96,6 +96,7 @@
                     <BlocoAvaliacao
                       :ppd="ppd"
                       :semaforos="semaforos"
+                      :listaLegislacao="listaLegislacao"
                       :classesSI="classesSI"
                       :classesDaFonteL="classesDaFonteL"
                       @newSistemasRelacionados="newSistemasRelacionados($event, ppd.si.avaliacao.sistemasRelacionados)"
@@ -229,7 +230,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 import InformacaoGeral from "@/components/ppd/criacao/InformacaoGeral.vue";
 import SistemaInfo from "@/components/ppd/criacao/sistemaInformacao/SistemaInfo.vue";
 import SistemaOps from "@/components/ppd/criacao/sistemaInformacao/SistemaOps.vue";
-import ArvoreLateralPPD from './ArvoreLateralPPD.vue';
+import ArvoreLateralPPD from "@/components/ppd/criacao/ArvoreLateralPPD.vue";
 import mixinCriacaoPPD from "@/mixins/ppd/mixinCriacaoPPD.js";
 import ImportarSI from "@/components/ppd/criacao/sistemaInformacao/importacao/ImportarSI.vue";
 import BlocoIdentificacao from "@/components/ppd/criacao/sistemaInformacao/BlocoIdentificacao.vue";
@@ -244,7 +245,7 @@ import verBlocoEstrategia from "@/components/ppd/criacao/verSI/verBlocoEstrategi
 
 
 export default {
-  props:[],
+  props:['obj'],
   components: {
     InfoBox,
     InformacaoGeral,
@@ -373,7 +374,6 @@ export default {
           }
         },
       },
-
       user: {
         token: ""
       },
@@ -383,13 +383,8 @@ export default {
     panels: [],
     //para apagar!!!!!!!
     a: "",
-    //---Fonte de legitimacao---
 
-    //portaria: [],
-    //portariaLC: [],
-    //portariaRada: [],
-    //tabelasSelecao: [],
-    //tsRada: [],
+
     tree_ou_tabela: false,
     search: "",
     classesTree: [],
@@ -455,30 +450,14 @@ export default {
 
   methods: {
 
-    guardarPPD: async function() {
-      try {
-        if (this.$store.state.name === "") {
-          this.loginErrorSnackbar = true;
-        } else {
-          delete this.ppd.listaSistemasInfoAuxiliar;
-          delete this.ppd.si;
-          var userBD = this.$verifyTokenUser();
-          var pendenteParams = {
-            numInterv: 1,
-            acao: "Criação",
-            tipo: "PPD",
-            objeto: this.ppd,
-            criadoPor: userBD.email,
-            user: { email: userBD.email },
-            token: this.$store.state.token
-          };
-          var response = this.$request("post", "/pendentes", pendenteParams);
-          this.pendenteGuardado = true;
-          this.pendenteGuardadoInfo = JSON.stringify(response.data);
-        }
-      } catch (error) {
-        return error;
-      }
+    guardarPPD() {
+      delete this.ppd.listaSistemasInfoAuxiliar;
+      delete this.ppd.si;
+      let updatePendente = {
+        _id: this.obj._id,
+        objeto: this.ppd
+      };
+      this.$request("put", "/pendentes", updatePendente);
     },
 
     apagar: function() {
@@ -678,22 +657,19 @@ export default {
       }
     },
 
-    //-------Fonte Legitimacao-------
+  //-------Fonte Legitimacao-------
     consultaFT: async function() {
       try {
-        var tipo = this.ppd.fonteLegitimacao.split("_");
-        if(tipo[0] == 'pgd'){
-          var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
-          //this.classesSI = await prepararClasses(response.data);
-          this.classesDaFonteL = response.data[0];
-          for (var c of response.data[0]) {
-            if(c.pca){
-              if(c.codigo){
-                this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
-              }
-              else{
-                this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
-              }
+        var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
+        //this.classesSI = await prepararClasses(response.data);
+        this.classesDaFonteL = response.data;
+        for (var c of response.data) {
+          if(c.pca){
+            if(c.codigo){
+              this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
+            }
+            else{
+              this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
             }
           }
         }
@@ -746,9 +722,20 @@ export default {
 
     //--------------------
     //----------------------------------------------
-    
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
 
 
+  //-------Fonte Legitimacao-------
 
 
     // Faz load de todas as entidades
@@ -770,7 +757,6 @@ export default {
       }
     },
 
-    /*apagar
     loadLegislacao: async function() {
       try {
         var response = await this.$request("get", "/legislacao?estado=Ativo");
@@ -793,7 +779,7 @@ export default {
         return error;
       }
     },
-    */
+
     newSistema: async function(sis, lista) {
         var index = lista.findIndex(e => e.numeroSI === sis.numeroSI);
         if(index != -1){
@@ -832,7 +818,6 @@ export default {
         }
     },
 
-    //apagar
     selectSistema: function(sis) {
       this.ppd.sistemasInfo.push(sis);
       this.ppd.listaSistemasInfoAuxiliar.push(sis);
@@ -844,9 +829,12 @@ export default {
       // Recoloca o sistema nos selecionáveis
       //this.listaLegislacao.push(sistema);
       var index = this.ppd.sistemasInfo.findIndex(e => e.numeroSI === sistema.numeroSI);
+      var indexArv = this.ppd.arvore.findIndex(e => e.id === sistema.numeroSI);
+      alert("Si id - ",index);
+      alert(index);
       this.ppd.sistemasInfo.splice(index, 1);
-      this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
-      this.ppd.arvore.splice(index,1);
+      //this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
+      this.ppd.arvore.splice(indexArv,1);
     },
 
     validarPPD: function(){
@@ -859,9 +847,9 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
+          delete this.ppd.listaSistemasInfoAuxiliar
           var erros = await this.validarPPD();
           if (erros == 0) {
-            delete this.ppd.listaSistemasInfoAuxiliar
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",
@@ -894,8 +882,9 @@ export default {
 
   created: async function() {
       try{
+        this.ppd = this.obj.objeto;
+        this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
         await this.loadEntidades();
-        //await this.loadLegislacao();
       }
       catch(e){
         console.log('Erro ao carregar a informação inicial: ' + e);

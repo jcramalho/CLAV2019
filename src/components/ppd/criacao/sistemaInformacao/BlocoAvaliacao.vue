@@ -330,7 +330,7 @@ import AddDecomposicao from"@/components/ppd/criacao/sistemaInformacao/AddDecomp
 import AddClasse from"@/components/ppd/criacao/sistemaInformacao/AddClasse.vue";
 
 export default {
-  props: ["ppd", "semaforos", "listaLegislacao", "classesSI", "classesDaFonteL"],
+  props: ["ppd", "semaforos", "classesSI", "classesDaFonteL"],
 
   components: {
     InfoBox,
