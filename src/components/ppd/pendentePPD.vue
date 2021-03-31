@@ -660,16 +660,19 @@ export default {
   //-------Fonte Legitimacao-------
     consultaFT: async function() {
       try {
-        var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
-        //this.classesSI = await prepararClasses(response.data);
-        this.classesDaFonteL = response.data;
-        for (var c of response.data) {
-          if(c.pca){
-            if(c.codigo){
-              this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
-            }
-            else{
-              this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
+        var tipo = this.ppd.fonteLegitimacao.id.split("_");
+        if(tipo[0] == 'pgd'){
+          var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
+          //this.classesSI = await prepararClasses(response.data);
+          this.classesDaFonteL = response.data[0];
+          for (var c of response.data[0]) {
+            if(c.pca){
+              if(c.codigo){
+                this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
+              }
+              else{
+                this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
+              }
             }
           }
         }
@@ -677,7 +680,6 @@ export default {
         return err;
       }
     },
-
 
     parseEntidades: async function(ent) {
       try {
@@ -883,8 +885,9 @@ export default {
   created: async function() {
       try{
         this.ppd = this.obj.objeto;
-        this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
+        //this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
         await this.loadEntidades();
+        await this.consultaFT();
       }
       catch(e){
         console.log('Erro ao carregar a informação inicial: ' + e);

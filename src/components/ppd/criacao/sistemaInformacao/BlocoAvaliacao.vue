@@ -154,8 +154,10 @@
             :myhelp="myhelp"
             v-bind:classesSI="classesSI"
             v-bind:classesDaFonteL="classesDaFonteL"
+            :v-bind:addClasse="addClasse"
             hide-overlay
             @guardarClasse="guardarClasse($event)"
+            @cancelarAdd="cancelarAdd"
           />
         </v-dialog>
 
@@ -422,6 +424,9 @@ export default {
 
   methods: {
 
+    cancelarAdd: function(){
+      this.addClasse = false
+    },
     //-----------
     guardarClasse(item) {
       this.ppd.si.avaliacao.selecionadosTabelaFL.push(item);

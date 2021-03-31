@@ -460,8 +460,7 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          delete this.ppd.listaSistemasInfoAuxiliar;
-          delete this.ppd.si;
+          //delete this.ppd.listaSistemasInfoAuxiliar;
           var userBD = this.$verifyTokenUser();
           var pendenteParams = {
             numInterv: 1,
@@ -681,7 +680,7 @@ export default {
     //-------Fonte Legitimacao-------
     consultaFT: async function() {
       try {
-        var tipo = this.ppd.fonteLegitimacao.split("_");
+        var tipo = this.ppd.fonteLegitimacao.id.split("_");
         if(tipo[0] == 'pgd'){
           var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
           //this.classesSI = await prepararClasses(response.data);
