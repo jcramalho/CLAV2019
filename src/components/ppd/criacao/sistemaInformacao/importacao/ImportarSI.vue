@@ -77,6 +77,7 @@ export default {
         });
     },
     inserirSI(allSI) {
+      var auxSistemasInfo = []
       for(let i = 0; i< allSI.length; i++){
         var index = this.ppd.sistemasInfo.findIndex(l => l.numeroSI == allSI[i].numeroSI);
         this.ppd.listaSistemasInfoAuxiliar.push(allSI[i])
@@ -96,11 +97,12 @@ export default {
           }
         }
         else{
-          this.ppd.sistemasInfo.push(allSI[i]);
+          auxSistemasInfo.push(allSI[i]);
         }
       }
-      this.ppd.sistemasInfo.forEach(element => {
-        var regex = /\d/g;
+      auxSistemasInfo.forEach(element => {
+        this.ppd.sistemasInfo.push(element)
+        //var regex = /\d/g;
         var child = [];
         if(element.avaliacao.decomposicao.length > 0){
           var childAux =  element.avaliacao.decomposicao.split(new RegExp('[#]'))
@@ -115,6 +117,7 @@ export default {
           }
         }
         child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));
+        alert("A - ",element.numeroSI)
         this.ppd.arvore.push({"id": element.numeroSI, "name": element.nomeSI, children: child })
         this.ppd.arvore.sort((a,b) => (parseInt(a.id) >parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
 
