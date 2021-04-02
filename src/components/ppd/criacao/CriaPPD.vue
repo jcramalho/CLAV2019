@@ -140,7 +140,7 @@
                 Guardar Trabalho
                 <v-icon right>save</v-icon>
               </v-btn>
-              <v-btn color="indigo darken-2" dark class="ma-2" @click="criarPPD">
+              <v-btn color="indigo darken-2" dark class="ma-2" @click="submeterPPD">
                 Submeter
               </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
@@ -814,7 +814,6 @@ export default {
             if(this.ppd.arvore[index].avaliacao.tabelaDecomposicao.length>0){
               let aux = this.ppd.arvore[index].avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
               child = aux.split("#").map(e=> e=({"id": e, "name":e}));
-              alert(child[0]);
             }
           }
           else{
@@ -853,19 +852,22 @@ export default {
       return 0;
     },
 
-    criarPPD: async function() {
+    submeterPPD: async function() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
           var erros = await this.validarPPD();
           if (erros == 0) {
-            delete this.ppd.listaSistemasInfoAuxiliar
+            var auxPPD;
+            auxPPD.geral = this.ppd.geral;
+            auxPPD.sistemasInfo = this.ppd.sistemasInfo;
+            auxPPD.arvore = this.ppd.arvore;
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",
               tipoObjeto: "PPD",
-              novoObjeto: this.ppd,
+              novoObjeto: auxPPD,
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
