@@ -1,6 +1,6 @@
 <template>
   <v-card flat class="mb-12">
-    <RADAEntry v-if="!RE.tipologiasProd" label="Entidades Produtoras">
+    <RADAEntry v-if="!RE.tipologiasProd" label="Entidade produtora">
       <template v-slot:valor>
         <ul>
           <li v-for="(ent, i) in RE.entidadesProd" :key="i">{{ent}}</li>
@@ -8,15 +8,15 @@
       </template>
     </RADAEntry>
 
-    <RADAEntry v-if="!RE.entidadesProd[0]" label="Tipologias das Entidades Produtoras">
+    <RADAEntry v-if="!RE.entidadesProd[0]" label="Tipologias da entidade produtora">
       <template v-slot:valor>
         <ul>
           <li>{{ RE.tipologiasProd }}</li>
         </ul>
       </template>
     </RADAEntry>
-    <RADAEntry label="Data Inicial da Documentação" :value="RE.dataInicial" />
-    <RADAEntry label="Data Final da Documentação" :value="RE.dataFinal" />
+    <RADAEntry label="Data inicial da documentação" :value="RE.dataInicial" />
+    <RADAEntry label="Data final da documentação" :value="RE.dataFinal" />
     <div v-if="!!RE.dimSuporte.nSeries">
       <v-card flat outlined>
         <div class="info-label">Dimensão e Suporte</div>
@@ -30,7 +30,7 @@
           <RADAEntryDouble
             :value_1="RE.dimSuporte.nUI"
             :value_2="RE.dimSuporte.medicaoUI_papel"
-            label_1="Número de Unidades de Instalação"
+            label_1="Número de Unidades de instalação"
             label_2="Medição das UIs em Papel"
           />
           <RADAEntryDouble
@@ -42,11 +42,11 @@
         </v-card-text>
       </v-card>
     </div>
-    <RADAEntry label="História Administrativa/Biográfica" :value="RE.hist_admin" />
-    <RADAEntry label="História Custodial" :value="RE.hist_cust" />
-    <RADAEntry label="Sistema de Organização" :value="RE.sist_org" />
+    <RADAEntry label="História administrativa/biográfica" :value="RE.hist_admin" />
+    <RADAEntry label="História custodial" :value="RE.hist_cust" />
+    <RADAEntry label="Sistema de organização" :value="RE.sist_org" />
     <RADAEntry label="Localização" :value="RE.localizacao" />
-    <RADAEntry label="Estado de Conservação" :value="RE.est_conser" />
+    <RADAEntry label="Estado de conservação" :value="RE.est_conser" />
   </v-card>
 </template>
 

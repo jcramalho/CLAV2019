@@ -191,7 +191,7 @@
 
                       <v-row v-if="item.notaDF">
                         <v-col cols="2">
-                          <div class="info-label">Nota do Destino Final</div>
+                          <div class="info-label">Nota do Destino final</div>
                         </v-col>
                         <v-col>
                           <div class="info-content">{{ item.notaDF }}</div>
@@ -289,13 +289,13 @@ export default {
       { text: "Referência", sortable: false, value: "referencia" },
       { text: "Título", sortable: false, value: "titulo" },
       { text: "PCA", sortable: false, value: "pca" },
-      { text: "Destino Final", sortable: false, value: "df" },
+      { text: "Destino final", sortable: false, value: "df" },
     ],
     headersLC: [
       { text: "Código", sortable: false, value: "codigo" },
       { text: "Título", sortable: false, value: "titulo" },
       { text: "PCA", sortable: false, value: "pca" },
-      { text: "Destino Final", sortable: false, value: "df" },
+      { text: "Destino final", sortable: false, value: "df" },
     ],
     footer_props: {
       "items-per-page-options": [10, 25, -1],

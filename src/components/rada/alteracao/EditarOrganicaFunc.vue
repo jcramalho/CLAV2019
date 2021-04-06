@@ -65,7 +65,7 @@
 
           <v-row>
             <v-col md="3" sm="3">
-              <div class="info-label">Classe Pai</div>
+              <div class="info-label">Classe pai</div>
             </v-col>
             <v-col sm="9" md="9">
               <v-autocomplete
@@ -76,7 +76,7 @@
                 item-value="codigo"
                 solo
                 clearable
-                placeholder="Classe Pai"
+                placeholder="Classe pai"
                 chips
               >
                 <template v-slot:no-data>

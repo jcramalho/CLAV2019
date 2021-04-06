@@ -80,7 +80,7 @@
     <v-row v-if="!!historico.UIs.dados[0]">
       <v-col cols="12">
         <v-divider></v-divider>
-        <h5>Unidades de Instalação</h5>
+        <h5>Unidades de instalação</h5>
         <v-data-table
           :headers="headersUI"
           :items="historico.UIs.dados"
@@ -199,7 +199,7 @@ export default {
           class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
-          text: "Classe Pai",
+          text: "Classe pai",
           value: "eFilhoDe",
           sortable: false,
           align: "center",

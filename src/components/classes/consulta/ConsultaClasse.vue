@@ -413,12 +413,12 @@
 
                 <!-- DESTINO FINAL ................................................... -->
                 <v-row justify="center">
-                  <span class="clav-content-title-2 mt-5">Destino Final</span>
+                  <span class="clav-content-title-2 mt-5">Destino final</span>
                 </v-row>
                 <!-- VALOR -->
                 <Campo
-                  nome="Destino Final"
-                  infoHeader="Destino Final"
+                  nome="Destino final"
+                  infoHeader="Destino final"
                   :infoBody="myhelp.Classe.Campos.DF"
                   color="neutralpurple"
                 >

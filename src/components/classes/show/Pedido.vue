@@ -220,7 +220,7 @@
                       dark
                       height="30"
                     >
-                      <v-toolbar-title>Destino Final</v-toolbar-title>
+                      <v-toolbar-title>Destino final</v-toolbar-title>
                     </v-toolbar>
                   </v-flex>
                 </v-layout>
@@ -228,7 +228,7 @@
                 <v-layout wrap ma-2>
                   <!-- VALOR -->
                   <v-flex xs2>
-                    <div class="info-label">Destino Final</div>
+                    <div class="info-label">Destino final</div>
                   </v-flex>
                   <v-flex xs10>
                     <div class="info-content">

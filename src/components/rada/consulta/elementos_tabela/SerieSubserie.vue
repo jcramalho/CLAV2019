@@ -23,7 +23,7 @@
           <v-card flat>
             <v-card-text>
               <RADAEntry v-if="!!classe.descricao" label="Descrição" :value="classe.descricao" />
-              <RADAEntry v-if="!!classe.eFilhoDe" label="Classe Pai" :value="classe.eFilhoDe" />
+              <RADAEntry v-if="!!classe.eFilhoDe" label="Classe pai" :value="classe.eFilhoDe" />
               <RADAEntry
                 v-if="classe.tipo"
                 label="Nível"
@@ -31,12 +31,12 @@
               />
               <RADAEntryDouble
                 v-if="!!classe.dataInicial && !!classe.dataFinal"
-                label_1="Data Inicial"
-                label_2="Data Final"
+                label_1="Data inicial"
+                label_2="Data final"
                 :value_1="classe.dataInicial"
                 :value_2="classe.dataFinal"
               />
-              <RADAEntry v-if="!!classe.UIs[0]" label="Unidades de Instalação">
+              <RADAEntry v-if="!!classe.UIs[0]" label="Unidades de instalação">
                 <template v-slot:valor>
                   <ul>
                     <li v-for="(ui, i) in classe.UIs" :key="i">{{ui}}</li>
@@ -46,9 +46,9 @@
               <div v-if="classe.tipo == 'Série'">
                 <RADAEntryDouble
                   v-if="!!classe.tUA && !!classe.tSerie"
-                  label_1="Tipo de Unidade Arquivística"
+                  label_1="Tipo de unidade arquivística"
                   :value_1="classe.tUA"
-                  label_2="Tipo de Série"
+                  label_2="Tipo de série"
                   :value_2="classe.tSerie"
                 />
                 <v-card
@@ -123,19 +123,19 @@
         <v-stepper-content :step="3" flat>
           <v-card flat>
             <v-card outlined>
-              <div class="info-label">Prazo de Conservação Administrativo</div>
+              <div class="info-label">Prazo de conservação administrativa</div>
               <v-card-text>
                 <RADAEntry v-if="!!classe.pca" label="PCA" :value="classe.pca" />
                 <RADAEntry v-if="!!classe.notaPCA" label="Nota sobre PCA" :value="classe.notaPCA" />
                 <div v-if="!!classe.formaContagem">
                   <RADAEntry
                     v-if="!!classe.formaContagem.forma"
-                    label="Forma de Contagem do PCA"
+                    label="Forma de contagem do PCA"
                     :value="forma(classe.formaContagem.forma)"
                   />
                   <RADAEntry
                     v-if="!!classe.formaContagem.subforma"
-                    label="Subforma de Contagem do PCA"
+                    label="Subforma de contagem do PCA"
                     :value="classe.formaContagem.subforma"
                   />
                 </div>
@@ -166,10 +166,10 @@
             </v-card>
             <br />
             <v-card outlined>
-              <div class="info-label">Destino Final</div>
+              <div class="info-label">Destino final</div>
               <v-card-text>
                 <RADAEntry v-if="!!classe.df" label="DF" :value="classe.df" />
-                <RADAEntry v-if="!!classe.notaDF" label="Nota sobre o DF" :value="classe.notaDF" />
+                <RADAEntry v-if="!!classe.notaDF" label="Notas ao DF" :value="classe.notaDF" />
                 <RADAEntry
                   label="Justificação do DF"
                   v-if="!!classe.justificacaoDF && classe.justificacaoDF.length > 0"

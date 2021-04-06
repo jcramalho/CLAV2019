@@ -79,7 +79,7 @@
           </v-row>
           <v-row v-if="item.dados.destino">
             <v-col cols="4">
-              <div :class="`info-descricao-${item.cor}`">Destino Final</div>
+              <div :class="`info-descricao-${item.cor}`">Destino final</div>
             </v-col>
             <v-col v-if="item.dados.destino === 'E'" style="width:80%;">
               Eliminação

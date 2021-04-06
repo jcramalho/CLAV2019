@@ -84,7 +84,7 @@
     <br />
     <br />
 
-    <h5>Unidades de Instalação</h5>
+    <h5>Unidades de instalação</h5>
     <v-divider></v-divider>
     <v-row v-if="TS.UIs[0]">
       <v-col cols="12" xs="12" sm="12">
@@ -144,7 +144,7 @@
       <v-col cols="12" xs="12" sm="12">
         <v-alert class="text-center" :value="true" color="amber accent-3" icon="warning">
           Não foram adicionadas
-          <b>Unidades de Instalação</b>.
+          <b>Unidades de instalação</b>.
         </v-alert>
       </v-col>
     </v-row>

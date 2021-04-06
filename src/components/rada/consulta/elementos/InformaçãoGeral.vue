@@ -1,7 +1,7 @@
 <template>
   <div>
     <RADAEntry label="Título" :value="rada.titulo" />
-    <RADAEntry label="Entidades Responsáveis">
+    <RADAEntry label="Entidade responsável">
       <template v-slot:valor>
         <ul>
           <li v-for="(entidade, i) in rada.entResp" :key="i">

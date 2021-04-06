@@ -54,7 +54,7 @@
           :dadosOriginais="elemento"
           :novoHistorico="novoHistorico.dados"
           campoValue="eFilhoDe"
-          campoText="Classe Pai"
+          campoText="Classe pai"
           tipo="string"
           :permitirEditar="false"
           @corAlterada="validadeClasse"

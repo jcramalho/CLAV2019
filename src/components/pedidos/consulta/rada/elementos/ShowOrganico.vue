@@ -8,7 +8,7 @@
         <RADAEntry label="Código" :value="organico.codigo" /> 
         <RADAEntry label="Título" :value="organico.titulo" />
         <RADAEntry label="Descrição" :value="organico.descricao" />
-        <RADAEntry v-if="organico.eFilhoDe" label="Classe Pai" :value="organico.eFilhoDe" />
+        <RADAEntry v-if="organico.eFilhoDe" label="Classe pai" :value="organico.eFilhoDe" />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>

@@ -60,7 +60,7 @@
 
       <v-row v-if="classe.df">
         <v-col cols="2">
-          <div class="info-label">Destino Final</div>
+          <div class="info-label">Destino final</div>
         </v-col>
         <v-col>
           <div class="info-content">
@@ -71,7 +71,7 @@
           </div>
         </v-col>
         <v-col cols="2" v-if="classe.notaDF">
-          <div class="info-label">Nota do Destino Final</div>
+          <div class="info-label">Nota do Destino final</div>
         </v-col>
         <v-col v-if="classe.notaDF">
           <div class="info-content">{{classe.notaDF}}</div>

@@ -417,7 +417,7 @@
                                   dark
                                   height="25"
                                 >
-                                  <v-toolbar-title>Destino Final</v-toolbar-title>
+                                  <v-toolbar-title>Destino final</v-toolbar-title>
                                 </v-toolbar>
                               </v-col>
                             </v-row>
@@ -426,9 +426,9 @@
                               <!-- VALOR -->
                               <v-col xs="2" sm="2">
                                 <div class="info-label">
-                                  Destino Final
+                                  Destino final
                                   <InfoBox
-                                    header="Destino Final"
+                                    header="Destino final"
                                     :text="myhelp.Classe.Campos.DF"
                                     helpColor="indigo darken-4"
                                   />
@@ -614,7 +614,7 @@ export default {
       { text: "Código", sortable: false, value: "codigo" },
       { text: "Título", sortable: false, value: "titulo" },
       { text: "PCA", sortable: false, value: "pca.valores" },
-      { text: "Destino Final", sortable: false, value: "df.valor" },
+      { text: "Destino final", sortable: false, value: "df.valor" },
     ],
     footer_props: {
       "items-per-page-options": [10, 25, -1],

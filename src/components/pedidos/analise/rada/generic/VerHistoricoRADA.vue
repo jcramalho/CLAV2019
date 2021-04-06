@@ -1,7 +1,7 @@
 <template>
   <div>
     <VerHistoricoCampo campoText="Título" :historicoCampo="historico.titulo" />
-    <VerHistoricoCampo campoText="Entidades Responsáveis" :historicoCampo="historico.entRes" />
+    <VerHistoricoCampo campoText="Entidade responsável" :historicoCampo="historico.entRes" />
 
     <v-expansion-panels class="ma-1">
       <v-expansion-panel class="ma-1" popout focusable>

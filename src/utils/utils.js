@@ -459,43 +459,40 @@ export function mapKeysRADA(key) {
       descricao = "Título";
       break;
     case "entRes":
-      descricao = "Entidades Responsáveis";
+      descricao = "Entidade responsável";
       break;
     case "entidadesProd":
-      descricao = "Entidades Produtoras";
+      descricao = "Entidade produtora";
       break;
     case "tipologiasProd":
       descricao = "Tipologia Produtora";
       break;
     case "dataInicial":
-      descricao = "Data Inicial";
+      descricao = "Data inicial";
       break;
     case "dataFinal":
-      descricao = "Data Final";
+      descricao = "Data final";
       break;
     case "hist_admin":
-      descricao = "História Administrativa/Biográfica";
+      descricao = "História administrativa/biográfica";
       break;
     case "hist_cust":
-      descricao = "História Custodial";
+      descricao = "História custodial";
       break;
     case "sist_org":
-      descricao = "Sistema de Organização";
+      descricao = "Sistema de organização";
       break;
     case "localizacao":
       descricao = "Localização";
       break;
     case "est_conser":
-      descricao = "Estado de Conservação";
+      descricao = "Estado de conservação";
       break;
     case "codigo":
       descricao = "Código";
       break;
     case "descricao":
       descricao = "Descrição";
-      break;
-    case "est_conser":
-      descricao = "Estado de Conservação";
       break;
     case "eFilhoDe":
       descricao = "Pai";
@@ -504,13 +501,13 @@ export function mapKeysRADA(key) {
       descricao = "Tipo de Classe";
       break;
     case "tUA":
-      descricao = "Tipo de Unidade Arquivística";
+      descricao = "Tipo de unidade arquivística";
       break;
     case "tSerie":
-      descricao = "Tipo de Série";
+      descricao = "Tipo de série";
       break;
     case "UIs":
-      descricao = "Unidades de Instalação";
+      descricao = "Unidades de instalação";
       break;
     case "suporte_e_medicao":
       descricao = "Suporte e Medição";
@@ -519,7 +516,7 @@ export function mapKeysRADA(key) {
       descricao = "Relações";
       break;
     case "pca":
-      descricao = "Prazo de Conservação Administrativo";
+      descricao = "Prazo de conservação administrativa";
       break;
     case "notaPCA":
       descricao = "Nota PCA";
@@ -528,7 +525,7 @@ export function mapKeysRADA(key) {
       descricao = "Justificação do PCA";
       break;
     case "df":
-      descricao = "Destino Final";
+      descricao = "Destino final";
       break;
     case "justificacaoDF":
       descricao = "Justificação do DF";
@@ -537,7 +534,7 @@ export function mapKeysRADA(key) {
       descricao = "Nota DF";
       break;
     case "entProdutoras":
-      descricao = "Entidades Produtoras";
+      descricao = "Entidade produtora";
       break;
     case "tipologiasProdutoras":
       descricao = "Tipologia Produtora";

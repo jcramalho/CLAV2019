@@ -73,9 +73,9 @@
               >
                 <v-col cols="12" lg="2">
                   <div class="info-label">
-                    Classe Pai
+                    Classe pai
                     <InfoBox
-                      header="Classe Pai"
+                      header="Classe pai"
                       :text="myhelp.Classe.Campos.Pai"
                       helpColor="info"
                     />

@@ -7,7 +7,7 @@
         <RADAEntry label="Código" :value="classe.codigo"/>
         <RADAEntry label="Título" :value="classe.titulo"/>
         <RADAEntry label="Descrição" :value="classe.descricao"/>
-        <RADAEntry v-if="!!classe.pai" label="Classe Pai" :value="classe.pai"/>
+        <RADAEntry v-if="!!classe.pai" label="Classe pai" :value="classe.pai"/>
       </v-card-text>
       <v-card-actions>
         <v-spacer />

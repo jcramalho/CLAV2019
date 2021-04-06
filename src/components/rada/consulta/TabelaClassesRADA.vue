@@ -148,7 +148,7 @@ export default {
         class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
-        text: "Classe Pai",
+        text: "Classe pai",
         value: "eFilhoDe",
         sortable: true,
         align: "center",

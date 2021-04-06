@@ -107,7 +107,7 @@
       :formaContagem="formaContagem"
     />
     <div v-if="novoHistorico.tsRada.UIs.dados[0]">
-      <h5>Unidades de Instalação</h5>
+      <h5>Unidades de instalação</h5>
       <v-divider></v-divider>
       <v-row>
         <v-col cols="12">
@@ -273,7 +273,7 @@ export default {
           class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
-          text: "Classe Pai",
+          text: "Classe pai",
           value: "eFilhoDe",
           sortable: true,
           align: "center",

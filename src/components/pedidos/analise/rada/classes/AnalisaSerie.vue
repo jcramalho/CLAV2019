@@ -36,7 +36,7 @@
           :dadosOriginais="elemento"
           :novoHistorico="novoHistorico.dados"
           campoValue="eFilhoDe"
-          campoText="Classe Pai"
+          campoText="Classe pai"
           tipo="string"
           :permitirEditar="false"
           @corAlterada="validadeClasse"
@@ -65,23 +65,23 @@
                   ></v-text-field>
                 </template>
               </ValidaCampo>
-              <!-- Data Inicial -->
+              <!-- Data inicial -->
               <ValidaCampo
                 :dadosOriginais="elemento"
                 :novoHistorico="novoHistorico.dados"
                 campoValue="dataInicial"
-                campoText="Data Inicial"
+                campoText="Data inicial"
                 tipo="string"
                 :permitirEditar="false"
                 @corAlterada="validadeClasse"
               />
 
-              <!-- Data Final -->
+              <!-- Data final -->
               <ValidaCampo
                 :dadosOriginais="elemento"
                 :novoHistorico="novoHistorico.dados"
                 campoValue="dataFinal"
-                campoText="Data Final"
+                campoText="Data final"
                 tipo="string"
                 :permitirEditar="false"
                 @corAlterada="validadeClasse"
@@ -92,7 +92,7 @@
                 :dadosOriginais="elemento"
                 :novoHistorico="novoHistorico.dados"
                 campoValue="UIs"
-                campoText="Unidades de Instalação"
+                campoText="Unidades de instalação"
                 tipo="array"
                 :permitirEditar="false"
                 @corAlterada="validadeClasse"
@@ -104,7 +104,7 @@
                   :dadosOriginais="elemento"
                   :novoHistorico="novoHistorico.dados"
                   campoValue="tUA"
-                  campoText="Tipo de Unidade Arquivística"
+                  campoText="Tipo de unidade arquivística"
                   tipo="string"
                   @corAlterada="validadeClasse"
                 >
@@ -120,12 +120,12 @@
                     ></v-select>
                   </template>
                 </ValidaCampo>
-                <!-- Tipo de Série -->
+                <!-- Tipo de série -->
                 <ValidaCampo
                   :dadosOriginais="elemento"
                   :novoHistorico="novoHistorico.dados"
                   campoValue="tSerie"
-                  campoText="Tipo de Série"
+                  campoText="Tipo de série"
                   tipo="string"
                   @corAlterada="validadeClasse"
                 >
@@ -201,7 +201,7 @@
                   :dadosOriginais="elemento"
                   :novoHistorico="novoHistorico.dados"
                   campoValue="entProdutoras"
-                  campoText="Entidades Produtoras"
+                  campoText="Entidade produtora"
                   tipo="array"
                   :permitirEditar="false"
                 />
@@ -272,7 +272,7 @@
                 :dadosOriginais="elemento"
                 :novoHistorico="novoHistorico.dados"
                 campoValue="pca"
-                campoText="Prazo de Conservação Administrativo"
+                campoText="Prazo de conservação administrativa"
                 tipo="string"
                 :permitirEditar="false"
               />
@@ -369,7 +369,7 @@
                 :dadosOriginais="elemento"
                 :novoHistorico="novoHistorico.dados"
                 campoValue="df"
-                campoText="Destino Final"
+                campoText="Destino final"
                 tipo="string"
                 :permitirEditar="false"
               />

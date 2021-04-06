@@ -106,7 +106,7 @@ export default {
       { text: "Referência", value: "referencia", class: "subtitle-1" },
       { text: "Séries Documentais", value: "seriesDocumentais", class: "subtitle-1" },
       { text: "PCA", value: "pca", class: "subtitle-1" },
-      { text: "Destino Final", value: "df", class: "subtitle-1" }
+      { text: "Destino final", value: "df", class: "subtitle-1" }
     ],
     footerProps: {
       "items-per-page-text": "Processos por página",

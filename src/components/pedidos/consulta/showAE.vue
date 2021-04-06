@@ -202,7 +202,7 @@
                         </tr-->
                     <!--tr v-if="item.destino">
                           <td style="width:20%;">
-                            <div class="info-label">Destino Final</div>
+                            <div class="info-label">Destino final</div>
                           </td>
                           <td v-if="item.destino === 'E'" style="width:80%;">
                             Eliminação

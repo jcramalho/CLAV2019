@@ -1,11 +1,11 @@
 <template>
   <v-dialog v-model="dialogState" max-width="80%">
     <v-card>
-      <v-card-title class="indigo darken-4 white--text">Importar Unidades de Instalação</v-card-title>
+      <v-card-title class="indigo darken-4 white--text">Importar Unidades de instalação</v-card-title>
       <v-card-text>
         <v-form ref="form">
           <ImportarFicheiro
-            label="Ficheiro Unidades de Instalação"
+            label="Ficheiro Unidades de instalação"
             @ficheiro="novoFicheiroClasses"
           />
         </v-form>

@@ -6,7 +6,7 @@
       :dadosOriginais="RADA.RE"
       :novoHistorico="novoHistorico.RE"
       campoValue="entidadesProd"
-      campoText="Entidades Produtoras"
+      campoText="Entidade produtora"
       tipo="array"
       :permitirEditar="false"
     />
@@ -25,7 +25,7 @@
       :dadosOriginais="RADA.RE"
       :novoHistorico="novoHistorico.RE"
       campoValue="dataInicial"
-      campoText="Data Inicial"
+      campoText="Data inicial"
       tipo="string"
       :permitirEditar="false"
     />
@@ -33,7 +33,7 @@
       :dadosOriginais="RADA.RE"
       :novoHistorico="novoHistorico.RE"
       campoValue="dataFinal"
-      campoText="Data Final"
+      campoText="Data final"
       tipo="string"
       :permitirEditar="false"
     />
@@ -43,7 +43,7 @@
       :dadosOriginais="RADA.RE"
       :novoHistorico="novoHistorico.RE"
       campoValue="hist_admin"
-      campoText="História Administrativa/Biográfica"
+      campoText="História administrativa/biográfica"
       tipo="string"
     >
       <template v-slot:input="props">
@@ -62,7 +62,7 @@
       :dadosOriginais="RADA.RE"
       :novoHistorico="novoHistorico.RE"
       campoValue="hist_cust"
-      campoText="História Custodial"
+      campoText="História custodial"
       tipo="string"
     >
       <template v-slot:input="props">
@@ -81,7 +81,7 @@
       :dadosOriginais="RADA.RE"
       :novoHistorico="novoHistorico.RE"
       campoValue="sist_org"
-      campoText="Sistema de Organização"
+      campoText="Sistema de organização"
       tipo="string"
     >
       <template v-slot:input="props">
@@ -114,12 +114,12 @@
       </template>
     </ValidaCampo>
 
-    <!-- Estado de Conservação -->
+    <!-- Estado de conservação -->
     <ValidaCampo
       :dadosOriginais="RADA.RE"
       :novoHistorico="novoHistorico.RE"
       campoValue="est_conser"
-      campoText="Estado de Conservação"
+      campoText="Estado de conservação"
       tipo="string"
     >
       <template v-slot:input="props">

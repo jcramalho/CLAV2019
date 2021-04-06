@@ -40,10 +40,10 @@ var importarUIs = (file, uis_originais, classes_originais, re) => {
                     titulo: !!uis[i][1] ? uis[i][1] : adicionarErro(erros, uis[i][0], "Título"),
                     dataInicial: new Date(uis[i][4] + "-01-01") >= new Date(re.dataInicial)
                         ? uis[i][4] + "-01-01"
-                        : adicionarErro(erros, uis[i][0], "Data Inicial"),
+                        : adicionarErro(erros, uis[i][0], "Data inicial"),
                     dataFinal: new Date(uis[i][5] + "-12-31") <= new Date(re.dataFinal) && new Date(uis[i][5] + "-12-31") >= new Date(uis[i][4] + "-01-01")
                         ? uis[i][5] + "-12-31"
-                        : adicionarErro(erros, uis[i][0], "Data Final"),
+                        : adicionarErro(erros, uis[i][0], "Data final"),
                     produtor: produtoras(uis[i], erros, re),
                     classesAssociadas: preencherClassesAssociadas(uis[i], classes_originais, erros),
                     descricao: !!uis[i][3] ? uis[i][3] : adicionarErro(erros, uis[i][0], "Descrição"),

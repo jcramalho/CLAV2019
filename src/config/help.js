@@ -254,7 +254,7 @@ module.exports.help = {
       "<p>A plataforma CLAV inclui o serviço de submissão de autos de eliminação. Para que este serviço possa ser utilizado, beneficiando de mecanismos " +
       "de criação assistida, de pré-validação e de controlo e validação automática aquando do envio, foi necessário proceder a uma uniformização das " +
       "tabelas de seleção (TS) publicadas ao longo de 30 anos, nomeadamente:</p>" +
-      "<ul><li>correção interpretativa de um Destino Final (DF), quando formalmente figura um valor que não traduz a situação de aplicação " +
+      "<ul><li>correção interpretativa de um Destino final (DF), quando formalmente figura um valor que não traduz a situação de aplicação " +
       "(por ex.: quando o DF é Conservação e a nota ao DF refere “Apenas devem ser conservadas as atas”). Neste caso, o DF original foi substituído pelo " +
       "valor real, i.e., a conservação parcial, dado que uma parte da documentação é conservada e outra é eliminada. Caso esta correção interpretativa " +
       "não tivesse sido efetuada, não poderiam ser submetidos autos de eliminação pela plataforma, dado que apenas se podem efetuar autos de eliminação " +
@@ -425,7 +425,7 @@ module.exports.help = {
       DataContagemInicio:
         "A Data de Inicio de contagem da Agregação <strong>não pode</strong> ser inferior à Data de Início da Classe.",
       DonoPN:
-        "Quando o Destino Final da classe é <strong>Conservação</strong>, é obrigatório o preenchimento do campo <strong>Dono do PN</strong>"
+        "Quando o Destino final da classe é <strong>Conservação</strong>, é obrigatório o preenchimento do campo <strong>Dono do PN</strong>"
     },
     Campos: {
       FonteLegitimacao:

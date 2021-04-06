@@ -4,7 +4,7 @@
     <v-row>
 
       <v-col md="3" sm="3">
-        <div class="info-label">Prazo de Conservação Administrativo</div>
+        <div class="info-label">Prazo de conservação administrativa</div>
       </v-col>
       <v-col sm="9" md="9">
         <v-text-field
@@ -19,14 +19,14 @@
     <v-row>
       <!-- {{newSerie}} -->
       <v-col md="3" sm="3">
-        <div class="info-label">Nota sobre o PCA</div>
+        <div class="info-label">Notas ao PCA</div>
       </v-col>
       <v-col sm="9" md="9">
         <v-text-field
           :rules="[v => rule_nota_PCA(v)]"
           solo
           clearable
-          label="Nota sobre o PCA"
+          label="Notas ao PCA"
           v-model="newSerie.notaPCA"
         ></v-text-field>
       </v-col>
