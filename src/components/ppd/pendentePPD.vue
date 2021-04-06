@@ -492,86 +492,19 @@ export default {
         //this.$refs.form.validate() para verificar se os campos obrigatorios tao preenchidos
         true
       ){
-        var sistema = {
+         var sistema = {
           visto: true,
           numeroSI: this.ppd.si.numeroSI,
           nomeSI: this.ppd.si.nomeSI,
-          identificacao:{
-            adminSistema: this.ppd.si.identificacao.adminSistema,
-            adminDados: this.ppd.si.identificacao.adminDados,
-            propSistemaPublico: this.ppd.si.identificacao.propSistemaPublico,
-            propSistemaPrivado: this.ppd.si.identificacao.propSistemaPrivado,
-            propDados: this.ppd.si.identificacao.propDados,
-            localDadosPublico: this.ppd.si.identificacao.localDadosPublico,
-            localDadosPrivado: this.ppd.si.identificacao.localDadosPrivado,
-            userList: this.ppd.si.identificacao.userList,
-            defResponsavel: this.ppd.si.identificacao.defResponsavel,
-            expressaoResponsavel:this.ppd.si.identificacao.expressaoResponsavel,
-            insourcing: this.ppd.si.identificacao.insourcing,
-            outsourcing: this.ppd.si.identificacao.outsourcing,
-            notas: this.ppd.si.identificacao.notas,
-          },
-          avaliacao:{
-            descricao: this.ppd.si.avaliacao.descricao,
-            tabelaDecomposicao:this.ppd.si.avaliacao.tabelaDecomposicao,
-            selecionadosTabelaFL:this.ppd.si.avaliacao.selecionadosTabelaFL,
-            sistemasRelacionados:this.ppd.si.avaliacao.sistemasRelacionados,
-            checkedAti:this.ppd.si.avaliacao.checkedAti,
-            checkedGrau:this.ppd.si.avaliacao.checkedGrau,
-            checkedCriticidade:this.ppd.si.avaliacao.checkedCriticidade,
-            objetoPreservacao:this.ppd.si.avaliacao.objetoPreservacao,
-            legislacoes:this.ppd.si.avaliacao.legislacoes,
-          },
-          caracterizacao:{
-            dependenciaSoft: this.ppd.si.caracterizacao.dependenciaSoft,
-            categoriaDados: this.ppd.si.caracterizacao.categoriaDados,
-            formato: this.ppd.si.caracterizacao.formato,
-            modeloCres: this.ppd.si.caracterizacao.modeloCres,
-            dimensao: this.ppd.si.caracterizacao.dimensao,
-            crescimento: this.ppd.si.caracterizacao.crescimento,
-            localSistema: this.ppd.si.caracterizacao.localSistema,
-            salaTec: this.ppd.si.caracterizacao.salaTec,
-            acessoSalaTec: this.ppd.si.caracterizacao.acessoSalaTec,
-            energiaRed: this.ppd.si.caracterizacao.energiaRed,
-            energiaSoc: this.ppd.si.caracterizacao.energiaSoc,
-            alarme: this.ppd.si.caracterizacao.alarme,
-            climatizacao: this.ppd.si.caracterizacao.climatizacao,
-            seguranca: this.ppd.si.caracterizacao.seguranca,
-            comunicacaoEx: this.ppd.si.caracterizacao.comunicacaoEx,
-            planoContingencia: this.ppd.si.caracterizacao.planoContingencia,
-            planoMudEvolucao: this.ppd.si.caracterizacao.planoMudEvolucao,
-            privAcesso: this.ppd.si.caracterizacao.privAcesso,
-            catSegDados: this.ppd.si.caracterizacao.catSegDados,
-            rotinaAuditoria: this.ppd.si.caracterizacao.rotinaAuditoria,
-            logsRotinas: this.ppd.si.caracterizacao.logsRotinas,
-            integridadeInfo: this.ppd.si.caracterizacao.integridadeInfo,
-            armazenamento: this.ppd.si.caracterizacao.armazenamento,
-            replicacaoDados: this.ppd.si.caracterizacao.replicacaoDados,
-            backupsRegular: this.ppd.si.caracterizacao.backupsRegular,
-            modeloBackup: this.ppd.si.caracterizacao.modeloBackup,
-            qualidadeBackup: this.ppd.si.caracterizacao.qualidadeBackup,
-            inventarioSoft: this.ppd.si.caracterizacao.inventarioSoft,
-            inventarioHard: this.ppd.si.caracterizacao.inventarioHard,
-            documentacaoSis: this.ppd.si.caracterizacao.documentacaoSis,
-            documentacaoProc: this.ppd.si.caracterizacao.documentacaoProc,
-            controlVersaoDProc: this.ppd.si.caracterizacao.controlVersaoDProc,
-            contratoAtivos: this.ppd.si.caracterizacao.contratoAtivos,
-            planoRecuperacao: this.ppd.si.caracterizacao.planoRecuperacao,
-            notas: this.ppd.si.caracterizacao.notas,
-          },
-          estrategia:{
-            utilizacaoOperacional:{
-              idMetodoPreservacao: this.ppd.si.estrategia.utilizacaoOperacional.idMetodoPreservacao,
-              fundMetodoPreservacao: this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao,
-              lacunas: this.ppd.si.estrategia.utilizacaoOperacional.lacunas,
-          },
-            utilizacaoMemoria:{
-              idMetodoPreservacao: this.ppd.si.estrategia.utilizacaoMemoria.idMetodoPreservacao,
-              fundMetodoPreservacao: this.ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao,
-              lacunas: this.ppd.si.estrategia.utilizacaoMemoria.lacunas,
-            }
-          }
+          identificacao: {},
+          avaliacao: {},
+          caracterizacao: {},
+          estrategia: {},
         };
+        Object.assign(sistema.identificacao,this.ppd.si.identificacao)
+        Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
+        Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
+        Object.assign(sistema.estrategia,this.ppd.si.estrategia)
         /*this.ppd.si.numeroSI = "",
         this.ppd.si.nomeSI = "",
         this.ppd.si.identificacao.adminSistema = [],
@@ -660,16 +593,19 @@ export default {
   //-------Fonte Legitimacao-------
     consultaFT: async function() {
       try {
-        var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
-        //this.classesSI = await prepararClasses(response.data);
-        this.classesDaFonteL = response.data;
-        for (var c of response.data) {
-          if(c.pca){
-            if(c.codigo){
-              this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
-            }
-            else{
-              this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
+        var tipo = this.ppd.fonteLegitimacao.id.split("_");
+        if(tipo[0] == 'pgd'){
+          var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
+          //this.classesSI = await prepararClasses(response.data);
+          this.classesDaFonteL = response.data[0];
+          for (var c of response.data[0]) {
+            if(c.pca){
+              if(c.codigo){
+                this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
+              }
+              else{
+                this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
+              }
             }
           }
         }
@@ -677,7 +613,6 @@ export default {
         return err;
       }
     },
-
 
     parseEntidades: async function(ent) {
       try {
@@ -883,8 +818,9 @@ export default {
   created: async function() {
       try{
         this.ppd = this.obj.objeto;
-        this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
+        //this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
         await this.loadEntidades();
+        await this.consultaFT();
       }
       catch(e){
         console.log('Erro ao carregar a informação inicial: ' + e);

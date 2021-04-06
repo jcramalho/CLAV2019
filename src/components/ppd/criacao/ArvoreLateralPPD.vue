@@ -3,7 +3,7 @@
     <v-sheet class="indigo lighten-2">
       <v-text-field
         v-model="search"
-        label="Filtrar por número SI ou título"
+        label="Filtrar por título ou número SI"
         dark
         flat
         solo-inverted

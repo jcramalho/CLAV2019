@@ -63,9 +63,22 @@
           >
             Guardar
           </v-btn>
+          <v-btn
+          color="red darken-2"
+          dark
+          class="ma-2"
+          rounded
+          @click="fechar()"
+          >
+            Cancelar
+          </v-btn>
         </v-row>
       </v-card-text>
     </v-form>
+    <v-snackbar v-model="erroAddClasse" :color="'warning'" :timeout="60000">
+        <a>Escolha uma classe ou então cancele a adição</a>
+        <v-btn dark text @click="fecharErros">Fechar</v-btn>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -75,7 +88,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 
 
 export default {
-  props: ["classesSI","classesDaFonteL","myhelp"],
+  props: ["classesSI", "classesDaFonteL", "myhelp"],
 
   components: {
     InfoBox
@@ -85,10 +98,19 @@ export default {
     return {
       classeSelecionada: "",
       classeShow: "",
+      erroAddClasse: false,
     }
   },
 
   methods: {
+
+    fechar: function(){
+       this.$emit("cancelarAdd");
+    },
+
+    fecharErros: function() {
+      this.erroAddClasse = false;
+    },
     //funçao para ir buscar a info que falta para mostrar no dialog...
     consultaClasse:function(id){
       var index = this.classesDaFonteL.findIndex(c => c.classe === id)
@@ -96,7 +118,8 @@ export default {
     },
     guardarClasse() {
       //URGENTE --------------------------------ver qual é o id !!!!
-      var indexAux = this.classesSI.findIndex(e => e.classe === this.classeSelecionada.classe);
+      if(this.classeSelecionada.classe != null){
+        var indexAux = this.classesSI.findIndex(e => e.classe === this.classeSelecionada.classe);
       var index = this.classesDaFonteL.findIndex(e => e.classe === this.classeSelecionada.classe);
       var selectedClasse = JSON.parse(JSON.stringify(this.classesDaFonteL[index]));
       this.classesSI.splice(indexAux,1);
@@ -104,6 +127,10 @@ export default {
       //this.$refs.formAddClasse.reset();
       this.$emit("guardarClasse", selectedClasse);
       this.classeShow = ""
+      }
+      else{
+        this.erroAddClasse= true;
+      }
     },
   },
 

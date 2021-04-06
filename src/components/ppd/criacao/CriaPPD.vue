@@ -140,7 +140,7 @@
                 Guardar Trabalho
                 <v-icon right>save</v-icon>
               </v-btn>
-              <v-btn color="indigo darken-2" dark class="ma-2" @click="criarPPD">
+              <v-btn color="indigo darken-2" dark class="ma-2" @click="submeterPPD">
                 Submeter
               </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
@@ -460,8 +460,7 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
-          delete this.ppd.listaSistemasInfoAuxiliar;
-          delete this.ppd.si;
+          //delete this.ppd.listaSistemasInfoAuxiliar;
           var userBD = this.$verifyTokenUser();
           var pendenteParams = {
             numInterv: 1,
@@ -517,82 +516,15 @@ export default {
           visto: true,
           numeroSI: this.ppd.si.numeroSI,
           nomeSI: this.ppd.si.nomeSI,
-          identificacao:{
-            adminSistema: this.ppd.si.identificacao.adminSistema,
-            adminDados: this.ppd.si.identificacao.adminDados,
-            propSistemaPublico: this.ppd.si.identificacao.propSistemaPublico,
-            propSistemaPrivado: this.ppd.si.identificacao.propSistemaPrivado,
-            propDados: this.ppd.si.identificacao.propDados,
-            localDadosPublico: this.ppd.si.identificacao.localDadosPublico,
-            localDadosPrivado: this.ppd.si.identificacao.localDadosPrivado,
-            userList: this.ppd.si.identificacao.userList,
-            defResponsavel: this.ppd.si.identificacao.defResponsavel,
-            expressaoResponsavel:this.ppd.si.identificacao.expressaoResponsavel,
-            insourcing: this.ppd.si.identificacao.insourcing,
-            outsourcing: this.ppd.si.identificacao.outsourcing,
-            notas: this.ppd.si.identificacao.notas,
-          },
-          avaliacao:{
-            descricao: this.ppd.si.avaliacao.descricao,
-            tabelaDecomposicao:this.ppd.si.avaliacao.tabelaDecomposicao,
-            selecionadosTabelaFL:this.ppd.si.avaliacao.selecionadosTabelaFL,
-            sistemasRelacionados:this.ppd.si.avaliacao.sistemasRelacionados,
-            checkedAti:this.ppd.si.avaliacao.checkedAti,
-            checkedGrau:this.ppd.si.avaliacao.checkedGrau,
-            checkedCriticidade:this.ppd.si.avaliacao.checkedCriticidade,
-            objetoPreservacao:this.ppd.si.avaliacao.objetoPreservacao,
-            legislacoes:this.ppd.si.avaliacao.legislacoes,
-          },
-          caracterizacao:{
-            dependenciaSoft: this.ppd.si.caracterizacao.dependenciaSoft,
-            categoriaDados: this.ppd.si.caracterizacao.categoriaDados,
-            formato: this.ppd.si.caracterizacao.formato,
-            modeloCres: this.ppd.si.caracterizacao.modeloCres,
-            dimensao: this.ppd.si.caracterizacao.dimensao,
-            crescimento: this.ppd.si.caracterizacao.crescimento,
-            localSistema: this.ppd.si.caracterizacao.localSistema,
-            salaTec: this.ppd.si.caracterizacao.salaTec,
-            acessoSalaTec: this.ppd.si.caracterizacao.acessoSalaTec,
-            energiaRed: this.ppd.si.caracterizacao.energiaRed,
-            energiaSoc: this.ppd.si.caracterizacao.energiaSoc,
-            alarme: this.ppd.si.caracterizacao.alarme,
-            climatizacao: this.ppd.si.caracterizacao.climatizacao,
-            seguranca: this.ppd.si.caracterizacao.seguranca,
-            comunicacaoEx: this.ppd.si.caracterizacao.comunicacaoEx,
-            planoContingencia: this.ppd.si.caracterizacao.planoContingencia,
-            planoMudEvolucao: this.ppd.si.caracterizacao.planoMudEvolucao,
-            privAcesso: this.ppd.si.caracterizacao.privAcesso,
-            catSegDados: this.ppd.si.caracterizacao.catSegDados,
-            rotinaAuditoria: this.ppd.si.caracterizacao.rotinaAuditoria,
-            logsRotinas: this.ppd.si.caracterizacao.logsRotinas,
-            integridadeInfo: this.ppd.si.caracterizacao.integridadeInfo,
-            armazenamento: this.ppd.si.caracterizacao.armazenamento,
-            replicacaoDados: this.ppd.si.caracterizacao.replicacaoDados,
-            backupsRegular: this.ppd.si.caracterizacao.backupsRegular,
-            modeloBackup: this.ppd.si.caracterizacao.modeloBackup,
-            qualidadeBackup: this.ppd.si.caracterizacao.qualidadeBackup,
-            inventarioSoft: this.ppd.si.caracterizacao.inventarioSoft,
-            inventarioHard: this.ppd.si.caracterizacao.inventarioHard,
-            documentacaoSis: this.ppd.si.caracterizacao.documentacaoSis,
-            documentacaoProc: this.ppd.si.caracterizacao.documentacaoProc,
-            controlVersaoDProc: this.ppd.si.caracterizacao.controlVersaoDProc,
-            contratoAtivos: this.ppd.si.caracterizacao.contratoAtivos,
-            planoRecuperacao: this.ppd.si.caracterizacao.planoRecuperacao,
-            notas: this.ppd.si.caracterizacao.notas,
-          },
-          estrategia:{
-            utilizacaoOperacional:{
-              idMetodoPreservacao: this.ppd.si.estrategia.utilizacaoOperacional.idMetodoPreservacao,
-              fundMetodoPreservacao: this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao,
-              lacunas: this.ppd.si.estrategia.utilizacaoOperacional.lacunas,
-          },
-            utilizacaoMemoria:{
-              idMetodoPreservacao: this.ppd.si.estrategia.utilizacaoMemoria.idMetodoPreservacao,
-              fundMetodoPreservacao: this.ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao,
-              lacunas: this.ppd.si.estrategia.utilizacaoMemoria.lacunas,
-            }
-          }
+          identificacao: {},
+          avaliacao: {},
+          caracterizacao: {},
+          estrategia: {},
         };
+        Object.assign(sistema.identificacao,this.ppd.si.identificacao)
+        Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
+        Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
+        Object.assign(sistema.estrategia,this.ppd.si.estrategia)
         /*this.ppd.si.numeroSI = "",
         this.ppd.si.nomeSI = "",
         this.ppd.si.identificacao.adminSistema = [],
@@ -681,7 +613,7 @@ export default {
     //-------Fonte Legitimacao-------
     consultaFT: async function() {
       try {
-        var tipo = this.ppd.fonteLegitimacao.split("_");
+        var tipo = this.ppd.fonteLegitimacao.id.split("_");
         if(tipo[0] == 'pgd'){
           var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
           //this.classesSI = await prepararClasses(response.data);
@@ -744,12 +676,6 @@ export default {
       }
     },
 
-    //--------------------
-    //----------------------------------------------
-    
-
-
-
 
     // Faz load de todas as entidades
     loadEntidades: async function() {
@@ -770,30 +696,6 @@ export default {
       }
     },
 
-    /*apagar
-    loadLegislacao: async function() {
-      try {
-        var response = await this.$request("get", "/legislacao?estado=Ativo");
-        this.listaLegislacao = response.data
-          .map(function(item) {
-            return {
-              tipo: item.tipo,
-              numero: item.numero,
-              sumario: item.sumario,
-              data: item.data,
-              selected: false,
-              id: item.id
-            };
-          })
-          .sort(function(a, b) {
-            return -1 * a.data.localeCompare(b.data);
-          });
-        this.semaforos.legislacaoReady = true;
-      } catch (error) {
-        return error;
-      }
-    },
-    */
     newSistema: async function(sis, lista) {
         var index = lista.findIndex(e => e.numeroSI === sis.numeroSI);
         if(index != -1){
@@ -815,7 +717,6 @@ export default {
             if(this.ppd.arvore[index].avaliacao.tabelaDecomposicao.length>0){
               let aux = this.ppd.arvore[index].avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
               child = aux.split("#").map(e=> e=({"id": e, "name":e}));
-              alert(child[0]);
             }
           }
           else{
@@ -854,19 +755,22 @@ export default {
       return 0;
     },
 
-    criarPPD: async function() {
+    submeterPPD: async function() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
           var erros = await this.validarPPD();
           if (erros == 0) {
-            delete this.ppd.listaSistemasInfoAuxiliar
+            var auxPPD;
+            auxPPD.geral = this.ppd.geral;
+            auxPPD.sistemasInfo = this.ppd.sistemasInfo;
+            auxPPD.arvore = this.ppd.arvore;
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",
               tipoObjeto: "PPD",
-              novoObjeto: this.ppd,
+              novoObjeto: auxPPD,
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
