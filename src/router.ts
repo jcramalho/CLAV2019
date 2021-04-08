@@ -526,6 +526,13 @@ export default new Router({
       component: () => import("./views/pendentes/PendentesContinuacao.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
+    // Routes painel de utilizador
+    {
+      path: "/users/painel",
+      name: "painelDeControlo",
+      component: () => import("./views/users/PainelDeControlo.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
     // Routes da gestão de utilizadores
     {
       path: "/users/autenticacao",
