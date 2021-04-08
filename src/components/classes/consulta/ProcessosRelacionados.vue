@@ -1,18 +1,18 @@
 <template>
   <v-row v-if="!valida">
     <!-- PROCESSOS RELACIONADOS -->
-    <v-col xs="2" sm="2">
-      <div class="info-label">
-        Processos Relacionados
-        <InfoBox
-          header="Processos Relacionados"
-          :text="myhelp.Classe.Campos.ProcessosRelacionados"
-          helpColor="indigo darken-4"
-          dialogColor="#E0F2F1"
-        />
-      </div>
+    <v-col cols="12" sm="4" md="3">
+      <v-card class="pa-4" color="neutralpurple">
+        <v-row class="pa-0 ma-0" justify="center">
+          <span class="clav-info-label">Processos Relacionados</span>
+          <InfoBox
+            header="Processos Relacionados"
+            :text="myhelp.Classe.Campos.ProcessosRelacionados"
+          />
+        </v-row>
+      </v-card>
     </v-col>
-    <v-col xs="10" sm="10">
+    <v-col cols="12" sm="8" md="9">
       <div class="info-content">
         <v-data-table
           :headers="headers"
@@ -22,7 +22,7 @@
         >
           <template v-slot:item="props">
             <tr>
-              <td style="color: #1A237E;">{{ props.item.label }}</td>
+              <td style="color: #1a237e">{{ props.item.label }}</td>
               <td>
                 <ul>
                   <li v-for="p in props.item.processos" :key="p.label">
@@ -48,7 +48,7 @@
     >
       <template v-slot:item="props">
         <tr>
-          <td style="color: #1A237E;">{{ props.item.label }}</td>
+          <td style="color: #1a237e">{{ props.item.label }}</td>
           <td>
             <ul>
               <li v-for="p in props.item.processos" :key="p.label">
@@ -71,7 +71,7 @@ export default {
   props: ["processos", "valida"],
   components: { InfoBox },
 
-  data: function() {
+  data: function () {
     return {
       headers: [
         {
@@ -79,13 +79,13 @@ export default {
           align: "left",
           sortable: false,
           value: "label",
-          class: ["table-header", "body-2", "font-weight-bold"]
+          class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
           text: "Processos",
           value: "processos",
-          class: ["table-header", "body-2", "font-weight-bold"]
-        }
+          class: ["table-header", "body-2", "font-weight-bold"],
+        },
       ],
       relPorTipo: {
         eAntecessorDe: [],
@@ -95,7 +95,7 @@ export default {
         eSintetizadoPor: [],
         eSucessorDe: [],
         eSuplementoDe: [],
-        eSuplementoPara: []
+        eSuplementoPara: [],
       },
       labels: {
         eAntecessorDe: "É Antecessor de",
@@ -105,21 +105,21 @@ export default {
         eSintetizadoPor: "É Sintetizado por",
         eSucessorDe: "É Sucessor de",
         eSuplementoDe: "É Suplemento de",
-        eSuplementoPara: "É Suplemento para"
+        eSuplementoPara: "É Suplemento para",
       },
       myProcRel: [],
-      myhelp: help
+      myhelp: help,
     };
   },
 
   methods: {
-    go: function(id) {
+    go: function (id) {
       this.$router.push("/classes/consultar/c" + id);
       this.$router.go();
-    }
+    },
   },
 
-  mounted: function() {
+  mounted: function () {
     var tipo;
     for (var i = 0; i < this.processos.length; i++) {
       tipo = this.processos[i].idRel;
@@ -130,11 +130,11 @@ export default {
       if (this.relPorTipo[tipo].length > 0) {
         this.myProcRel.push({
           label: this.labels[tipo],
-          processos: this.relPorTipo[tipo]
+          processos: this.relPorTipo[tipo],
         });
       }
     }
-  }
+  },
 };
 </script>
 

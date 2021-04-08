@@ -1,18 +1,18 @@
 <template>
   <v-row v-if="!valida">
     <!-- LEGISLAÇÂO -->
-    <v-col xs="2" sm="2">
-      <div class="info-label">
-        Legislação
-        <InfoBox
-          header="Legislação"
-          :text="myhelp.Classe.Campos.Legislacao"
-          helpColor="indigo darken-4"
-          dialogColor="#E0F2F1"
-        />
-      </div>
+    <v-col cols="12" sm="4" md="3">
+      <v-card class="pa-4" color="neutralpurple">
+        <v-row class="pa-0 ma-0" justify="center">
+          <span class="clav-info-label">Legislação</span>
+          <InfoBox
+            header="Legislação"
+            :text="myhelp.Classe.Campos.Legislacao"
+          />
+        </v-row>
+      </v-card>
     </v-col>
-    <v-col xs="10" sm="10">
+    <v-col cols="12" sm="8" md="9">
       <div class="info-content">
         <v-data-table
           :headers="headers"
@@ -65,36 +65,36 @@ export default {
   props: ["legs", "valida"],
   components: { InfoBox },
 
-  data: function() {
+  data: function () {
     return {
       headers: [
         {
           text: "Tipo",
           align: "left",
           value: "tipo",
-          class: ["table-header", "body-2", "font-weight-bold"]
+          class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
           text: "Número",
           value: "numero",
-          class: ["table-header", "body-2", "font-weight-bold"]
+          class: ["table-header", "body-2", "font-weight-bold"],
         },
         {
           text: "Sumário",
           value: "sumario",
-          class: ["table-header", "body-2", "font-weight-bold"]
-        }
+          class: ["table-header", "body-2", "font-weight-bold"],
+        },
       ],
-      myhelp: help
+      myhelp: help,
     };
   },
 
   methods: {
-    go: function(idClasse) {
+    go: function (idClasse) {
       this.$router.push("/entidades/" + idClasse);
       this.$router.go();
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -298,12 +298,16 @@
           <v-col cols="12" md="4" lg="2">
             <v-btn
               v-if="stepNo > 2"
-              @click="verificaTS"
+              @click="
+                loading = true;
+                verificaTS();
+              "
               block
               color="success darken-1"
               rounded
               class="white--text"
               style="width: 100%"
+              :loading="loading"
             >
               <unicon
                 name="adicionar-icon"
@@ -347,8 +351,14 @@
     <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
       <ConfirmacaoOperacao
         :mensagem="dialogConfirmacao.mensagem"
-        @fechar="dialogConfirmacao.visivel = false"
-        @confirma="submeterTS()"
+        @fechar="
+          loading = false;
+          dialogConfirmacao.visivel = false;
+        "
+        @confirma="
+          dialogConfirmacao.visivel = false;
+          submeterTS();
+        "
       />
     </v-dialog>
   </v-card>
@@ -423,8 +433,8 @@ export default {
       sairOperacao: false,
       // Dialog de confirmação de eliminação de TS
       eliminarTabela: false,
-      // Dialog de confirmação finalização de TS
-      finalizaUltPasso: false,
+      //Loading do botão de submeter impedindo múltiplos cliques
+      loading: false,
     };
   },
 
@@ -612,7 +622,13 @@ export default {
     //Verifica a TS antes de submeter
     verificaTS: async function () {
       var procs = this.listaProcessos.procs.filter((p) => p.edited);
-      if (
+      if (procs.length < 1) {
+        this.mensagensErro.push({
+          sobre: "Escolha de processos",
+          mensagem: `Não tem nenhum processo selecionado`,
+        });
+        this.numeroErros++;
+      } else if (
         procs
           .map((p) => p.codigo)
           .sort()
@@ -634,6 +650,10 @@ export default {
             " processos por selecionar, deseja mesmo continuar com a submissão do pedido?",
         };
       } else await this.submeterTS();
+      if (this.numeroErros > 0) {
+        this.loading = false;
+        this.validacaoTerminada = true;
+      }
     },
 
     // Lança o pedido de submissão de uma TS
@@ -865,15 +885,21 @@ export default {
       this.$router.push("/");
     },
 
-    // Funções de validação --------------------------------------
+    // Funções de validação
     // Validação da TS
     validarTS: async function () {
-      //Valida se os processos a selecionar estão todos selecionados
-
       var procs = this.tabelaSelecao.listaProcessos.procs.filter(
         (p) => p.edited
       );
+      if (procs.length < 1) {
+        this.mensagensErro.push({
+          sobre: "Escolha de processos",
+          mensagem: `Não tem nenhum processo selecionado`,
+        });
+        this.numeroErros++;
+      }
 
+      //Valida se os processos a selecionar estão todos selecionados
       if (
         procs
           .map((p) => p.codigo)
