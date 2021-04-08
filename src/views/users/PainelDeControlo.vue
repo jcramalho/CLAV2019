@@ -1,10 +1,22 @@
 <template>
-  <v-card flat class="ma-3">
+  <v-card flat class="ma-3 pa-2">
     <p class="clav-content-title-1">Painel de controlo</p>
-    <Loading v-if="loading" :message="'pedidos'" />
-    <GestaoPedidos v-else :pedidos="pedidos" />
-
-    <ListaPendentes @pendenteSelected="consultaPendente($event)" />
+    <v-row>
+      <v-col cols="9">
+        <Loading v-if="loading" :message="'pedidos'" />
+        <v-expansion-panels v-else>
+          <GestaoPedidos :pedidos="pedidos" />
+          <ListaPendentes @pendenteSelected="consultaPendente($event)" />
+        </v-expansion-panels>
+      </v-col>
+      <v-col cols="3" align="center">
+        <v-card class="fill-height">
+          <v-card-title class="clav-content-title-2 justify-center">
+            Notificações
+          </v-card-title>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 <script>
