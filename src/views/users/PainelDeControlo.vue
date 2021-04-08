@@ -3,8 +3,9 @@
     <p class="clav-content-title-1">Painel de controlo</p>
     <v-row>
       <v-col cols="9">
+        <TogglePanelsCLAV :n="2" @alternar="panelsArr = $event" />
         <Loading v-if="loading" :message="'pedidos'" />
-        <v-expansion-panels v-else>
+        <v-expansion-panels v-else v-model="panelsArr" multiple>
           <GestaoPedidos :pedidos="pedidos" />
           <ListaPendentes @pendenteSelected="consultaPendente($event)" />
         </v-expansion-panels>
@@ -23,18 +24,21 @@
 import Loading from "@/components/generic/Loading";
 import GestaoPedidos from "@/components/users/GestaoPedidos";
 import ListaPendentes from "@/components/pendentes/ListaPendentes.vue"; // @ is an alias to /src
+import TogglePanelsCLAV from "@/components/generic/TogglePanelsCLAV";
 
 export default {
   components: {
     Loading,
     GestaoPedidos,
     ListaPendentes,
+    TogglePanelsCLAV,
   },
 
   data() {
     return {
       loading: true,
       pedidos: [],
+      panelsArr: [0, 1],
     };
   },
 

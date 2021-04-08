@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col cols="12" sm="8" align="center">
+    <v-col cols="12" sm="10" align="center">
       <v-btn
         @click="expandAll"
         rounded
