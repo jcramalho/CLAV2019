@@ -1,7 +1,6 @@
 <template>
   <div>
     <Campo
-      class="pa-5"
       color="neutralpurple"
       nome="Entidade abrangida"
       infoHeader="
@@ -17,7 +16,7 @@
         </v-chip>
       </template>
     </Campo>
-    <v-card class="pa-4 my-5 mx-5" color="neutralpurple">
+    <v-card class="pa-4 my-5" color="neutralpurple">
       <span class="clav-info-label">
         Tabela de Seleção para a entidade
         {{ p.objeto.dados.ts.designacaoEntidade }}
@@ -29,7 +28,7 @@
       :headers="tsHeaders"
       :items="procs"
       item-key="codigo"
-      class="elevation-1 mx-5"
+      class="elevation-1"
       :footer-props="tsFooterProps"
       expand-icon="$expand"
       single-expand
@@ -511,7 +510,7 @@ export default {
     },
     myhelp: require("@/config/help").help,
   }),
-  created: async function () {
+  async created() {
     const lvl1 = await this.$request(
       "get",
       "/classes?estrutura=arvore&nivel=1&info=esqueleto"
