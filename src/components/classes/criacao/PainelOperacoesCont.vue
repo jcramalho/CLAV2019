@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row class="justify-start align-start">
+    <v-row>
       <!-- Guardar trabalho......................... -->
       <v-col>
         <v-btn
@@ -8,12 +8,11 @@
           rounded
           class="ma-2 indigo darken-4"
           @click="guardarTrabalho"
-          v-bind:disabled="o.objeto.codigo == ''"
+          :disabled="o.objeto.codigo == ''"
         >
           Guardar trabalho
         </v-btn>
       </v-col>
-
       <valida-classe-info-box :c="o.objeto" />
 
       <!-- Criar classe......................... -->
@@ -47,22 +46,15 @@
     <v-row justify-center>
       <v-dialog v-model="errosValidacao" width="60%">
         <v-card>
-          <v-card-title class="headline">
-            Erros detetados na validação
-          </v-card-title>
+          <v-card-title class="headline"> Erros detetados na validação </v-card-title>
           <v-card-text>
             <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
+              Há erros de validação. Selecione "Validar" para ver extamente quais e
+              proceder à sua correção.
             </p>
           </v-card-text>
           <v-card-actions>
-            <v-btn
-              color="red darken-4"
-              rounded
-              dark
-              @click="errosValidacao = false"
-            >
+            <v-btn color="red darken-4" rounded dark @click="errosValidacao = false">
               Fechar
             </v-btn>
           </v-card-actions>
@@ -74,23 +66,16 @@
     <v-row justify-center>
       <v-dialog v-model="pendenteGuardado" persistent max-width="60%">
         <v-card>
-          <v-card-title class="headline">
-            Trabalho pendente guardado
-          </v-card-title>
+          <v-card-title class="headline"> Trabalho pendente guardado </v-card-title>
           <v-card-text>
             <p>
-              Os seus dados foram guardados para que possa retomar o trabalho
-              mais tarde.
+              Os seus dados foram guardados para que possa retomar o trabalho mais tarde.
             </p>
             <p>{{ pendenteGuardadoInfo }}</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="green darken-1"
-              text
-              @click="criacaoPendenteTerminada"
-            >
+            <v-btn color="green darken-1" text @click="criacaoPendenteTerminada">
               Fechar
             </v-btn>
           </v-card-actions>
@@ -126,9 +111,7 @@
           <v-card-text>
             <p>Selecionou o cancelamento da criação da classe.</p>
             <p>Toda a informação introduzida será eliminada.</p>
-            <p>
-              Confirme a decisão para ser reencaminhado para a página principal.
-            </p>
+            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -144,12 +127,7 @@
     </v-row>
 
     <v-row>
-      <v-snackbar
-        v-model="loginErrorSnackbar"
-        :timeout="8000"
-        color="error"
-        :top="true"
-      >
+      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
@@ -163,7 +141,7 @@ import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBo
 export default {
   props: ["o"],
   components: {
-    ValidaClasseInfoBox
+    ValidaClasseInfoBox,
   },
   data() {
     return {
@@ -184,24 +162,24 @@ export default {
         1: /^[0-9]{3}$/,
         2: /^[0-9]{3}\.[0-9]{2}$/,
         3: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}$/,
-        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/
-      }
+        4: /^[0-9]{3}\.[0-9]{2}\.[0-9]{3}\.[0-9]{3}$/,
+      },
     };
   },
 
-  created: function() {
+  created: function () {
     this.c = this.o.objeto;
   },
 
   watch: {
-    dialog: function(val) {
+    dialog: function (val) {
       if (!val) this.limpaErros();
-    }
+    },
   },
 
   methods: {
     // Permite guardar o trabalho para ser retomado depois
-    guardarTrabalho: async function() {
+    guardarTrabalho: async function () {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
@@ -215,7 +193,7 @@ export default {
             objeto: this.o.objeto,
             criadoPor: userBD.email,
             user: { email: userBD.email },
-            token: this.$store.state.token
+            token: this.$store.state.token,
           };
           var response = this.$request("put", "/pendentes", pendenteParams);
           this.pendenteGuardado = true;
@@ -226,13 +204,13 @@ export default {
       }
     },
 
-    criacaoPendenteTerminada: function() {
+    criacaoPendenteTerminada: function () {
       this.$router.push("/");
     },
 
     // Verifica se o código introduzido pelo utilizador já existe na BD....................
 
-    verificaExistenciaCodigo: async function(codigo) {
+    verificaExistenciaCodigo: async function (codigo) {
       var response = await this.$request(
         "get",
         "/classes/codigo?valor=" + encodeURIComponent(codigo)
@@ -240,10 +218,10 @@ export default {
       return response.data;
     },
 
-    notaDuplicada: function(notas) {
+    notaDuplicada: function (notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
-        var duplicados = notas.filter(n => n.nota == lastNota);
+        var duplicados = notas.filter((n) => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -252,10 +230,10 @@ export default {
       }
     },
 
-    exemploDuplicado: function(exemplos) {
+    exemploDuplicado: function (exemplos) {
       if (exemplos.length > 1) {
         var lastExemplo = exemplos[exemplos.length - 1].exemplo;
-        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
+        var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -264,10 +242,10 @@ export default {
       }
     },
 
-    tiDuplicado: function(termos) {
+    tiDuplicado: function (termos) {
       if (termos.length > 1) {
         var lastTermo = termos[termos.length - 1].termo;
-        var duplicados = termos.filter(t => t.termo == lastTermo);
+        var duplicados = termos.filter((t) => t.termo == lastTermo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -278,7 +256,7 @@ export default {
 
     // Valida a classe antes de a criar
 
-    validaClasse: async function() {
+    validaClasse: async function () {
       var i = 0,
         numeroErros = 0;
 
@@ -336,8 +314,7 @@ export default {
         try {
           var existeNotaAp = await this.$request(
             "get",
-            "/notasAp/notaAp?valor=" +
-              encodeURIComponent(this.c.notasAp[i].nota)
+            "/notasAp/notaAp?valor=" + encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             numeroErros++;
@@ -431,8 +408,7 @@ export default {
           if (subclasse.pca.formaContagem == "") {
             numeroErros++;
           } else if (
-            subclasse.pca.formaContagem ==
-              "vc_pcaFormaContagem_disposicaoLegal" &&
+            subclasse.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal" &&
             subclasse.pca.subFormaContagem == ""
           ) {
             numeroErros++;
@@ -444,7 +420,7 @@ export default {
 
     // Valida a informação introduzida e verifica se a classe pode ser criada
 
-    validarClasse2: async function() {
+    validarClasse2: async function () {
       var i = 0;
       this.numeroErros = 0;
 
@@ -501,8 +477,7 @@ export default {
         try {
           var existeNotaAp = await this.$request(
             "get",
-            "/notasAp/notaAp?valor=" +
-              encodeURIComponent(this.c.notasAp[i].nota)
+            "/notasAp/notaAp?valor=" + encodeURIComponent(this.c.notasAp[i].nota)
           );
           if (existeNotaAp.data) {
             this.numeroErros++;
@@ -577,10 +552,7 @@ export default {
           this.numeroErros++;
         }
         // DF
-        if (
-          (!this.c.df.valor || this.c.df.valor == "NE") &&
-          this.c.df.notas == ""
-        ) {
+        if ((!this.c.df.valor || this.c.df.valor == "NE") && this.c.df.notas == "") {
           this.numeroErros++;
         }
       }
@@ -591,13 +563,12 @@ export default {
         for (i = 0; i < this.c.subclasses.length; i++) {
           // Unicidade do título
           if (
-            this.c.subclasses.filter(
-              s => s.titulo == this.c.subclasses[i].titulo
-            ).length > 1
+            this.c.subclasses.filter((s) => s.titulo == this.c.subclasses[i].titulo)
+              .length > 1
           ) {
             this.mensagensErro.push({
               sobre: "Título da subclasse " + this.c.subclasses[i].codigo,
-              mensagem: "Está repetido noutra subclasse."
+              mensagem: "Está repetido noutra subclasse.",
             });
           }
           // PCA: prazo
@@ -611,8 +582,7 @@ export default {
           if (subclasse.pca.formaContagem == "") {
             this.numeroErros++;
           } else if (
-            subclasse.pca.formaContagem ==
-              "vc_pcaFormaContagem_disposicaoLegal" &&
+            subclasse.pca.formaContagem == "vc_pcaFormaContagem_disposicaoLegal" &&
             subclasse.pca.subFormaContagem == ""
           ) {
             this.numeroErros++;
@@ -631,7 +601,7 @@ export default {
 
     // Lança o pedido de criação da classe no worflow
 
-    criarClasse: async function() {
+    criarClasse: async function () {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
@@ -646,14 +616,10 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: []
+              historico: [],
             };
 
-            var response = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
+            var response = await this.$request("post", "/pedidos", pedidoParams);
             this.$router.push(`/pedidos/submissao/${response.data}`);
             // this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
             // this.dialogClasseCriada = true;
@@ -666,19 +632,19 @@ export default {
       }
     },
 
-    criacaoClasseTerminada: function() {
+    criacaoClasseTerminada: function () {
       this.$router.push("/");
     },
 
     // Cancela a criação da classe
-    eliminarClasse: function() {
+    eliminarClasse: function () {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoClasse: function() {
+    cancelarCriacaoClasse: function () {
       this.$router.push("/");
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
