@@ -49,7 +49,7 @@
                   (v && v.length > 1) ||
                   'Tem de escolher pelo menos 2 entidades',
               ]"
-              label="Selecione as entidades"
+              label="Selecione as entidades abrangidas pela Tabela de Seleção"
               item-text="label"
               item-color="primary"
               multiple

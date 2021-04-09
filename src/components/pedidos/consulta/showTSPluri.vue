@@ -1,33 +1,41 @@
 <template>
   <div>
-    <v-row class="mt-1">
-      <v-col cols="2">
-        <div class="info-label">Entidades</div>
-      </v-col>
-      <v-col>
-        <div class="info-content">
-          <span>
-            <v-chip
-              v-for="e in p.objeto.dados.entidades"
-              :key="e.sigla"
-              class="ma-2"
-              color="indigo darken-4"
-              outlined
-              label
-            >
-              <v-icon left>account_balance</v-icon>
-              {{ e.label }}
-            </v-chip>
-          </span>
-        </div>
-      </v-col>
-    </v-row>
+    <Campo
+      class="pa-5"
+      color="neutralpurple"
+      nome="Entidades abrangidas"
+      infoHeader="
+            Entidades abrangidas
+          "
+      infoBody="Entidades às quais a tabela de seleção se destina, sendo responsáveis pela sua aplicação."
+    >
+      <template v-slot:conteudo>
+        <span>
+          <v-chip
+            v-for="e in p.objeto.dados.entidades"
+            :key="e.sigla"
+            class="ma-2"
+            color="indigo darken-4"
+            outlined
+            label
+          >
+            <v-icon left>account_balance</v-icon>
+            {{ e.label }}
+          </v-chip>
+        </span>
+      </template>
+    </Campo>
 
+    <v-card class="pa-4 my-5 mx-5" color="neutralpurple">
+      <span class="clav-info-label">
+        Tabela de Seleção para as entidades
+      </span></v-card
+    >
     <v-data-table
       :headers="tsHeaders"
       :items="procs"
       item-key="codigo"
-      class="elevation-1"
+      class="elevation-1 mx-5"
       :footer-props="tsFooterProps"
       expand-icon="$expand"
       single-expand

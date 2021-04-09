@@ -1,30 +1,35 @@
 <template>
   <div>
-    <v-row class="mt-1">
-      <v-col cols="2">
-        <div class="info-label">Entidade</div>
-      </v-col>
-      <v-col>
-        <div class="info-content">
-          <span>
-            <v-chip class="ma-2" color="indigo darken-4" outlined label>
-              <v-icon left>account_balance</v-icon>
-              {{ p.objeto.dados.ts.designacaoEntidade }}
-              {{ p.objeto.dados.ts.designacaoTipologia }}
-            </v-chip>
-          </span>
-        </div>
-      </v-col>
-    </v-row>
-    <v-card-title class="info-label title" dark
-      >Tabela de Seleção para a entidade
-      {{ p.objeto.dados.ts.entidade }}</v-card-title
+    <Campo
+      class="pa-5"
+      color="neutralpurple"
+      nome="Entidade abrangida"
+      infoHeader="
+            Entidade abrangida
+          "
+      infoBody="Entidade à qual a tabela de seleção se destina, sendo responsável pela sua aplicação."
     >
+      <template v-slot:conteudo>
+        <v-chip class="ma-2" color="indigo darken-4" outlined label>
+          <v-icon left>account_balance</v-icon>
+          {{ p.objeto.dados.ts.designacaoEntidade }}
+          {{ p.objeto.dados.ts.designacaoTipologia }}
+        </v-chip>
+      </template>
+    </Campo>
+    <v-card class="pa-4 my-5 mx-5" color="neutralpurple">
+      <span class="clav-info-label">
+        Tabela de Seleção para a entidade
+        {{ p.objeto.dados.ts.designacaoEntidade }}
+        {{ p.objeto.dados.ts.designacaoTipologia }}
+      </span></v-card
+    >
+
     <v-data-table
       :headers="tsHeaders"
       :items="procs"
       item-key="codigo"
-      class="elevation-1"
+      class="elevation-1 mx-5"
       :footer-props="tsFooterProps"
       expand-icon="$expand"
       single-expand
