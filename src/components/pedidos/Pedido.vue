@@ -25,7 +25,7 @@
     </Campo>
     <Campo nome="Entidade" infoHeader="Entidade do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
-        <span>{{ Pedido.entidade }}</span>
+        <span>{{ Pedido.entidade.split("_")[1] }}</span>
       </template>
     </Campo>
     <Campo nome="Criado Por" infoHeader="Criador do Pedido" color="neutralpurple">
@@ -35,7 +35,7 @@
     </Campo>
     <Campo nome="Tipo" infoHeader="Tipo do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
-        <span>{{ Pedido.objeto.acao }} - {{ p.objeto.tipo }}</span>
+        <span>{{ Pedido.objeto.acao }} - {{ Pedido.objeto.tipo }}</span>
       </template>
     </Campo>
     <v-card>

@@ -2,14 +2,14 @@
   <v-container fill-height fluid>
     <v-row align="center" justify="center">
       <v-card width="60%">
-        <v-card-title class="blue white--text" dark>
+        <v-card-title class="justify-center">
           <v-skeleton-loader
             :loading="!pedidoCarregado"
             transition="fade-transition"
             type="card-heading"
-            width="100%"
+            width="75%"
           >
-            <span>Pedido submetido com sucesso!</span>
+            <span class="clav-content-title-2">Pedido submetido com sucesso!</span>
           </v-skeleton-loader>
         </v-card-title>
 
@@ -83,18 +83,39 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer />
-          <v-skeleton-loader
-            :loading="!pedidoCarregado"
-            transition="fade-transition"
-            type="button"
-          >
-            <v-btn class="blue" dark @click="verPedido()">
-              Ver Pedido
-              <v-icon right>search</v-icon>
-            </v-btn>
-          </v-skeleton-loader>
-          <v-spacer />
+          <v-row>
+            <v-col align="center">
+              <v-skeleton-loader
+                :loading="!pedidoCarregado"
+                transition="fade-transition"
+                type="button"
+              >
+                <v-btn class="primary" rounded @click="verPedido()">
+                  Ver Pedido
+                  <v-icon right>search</v-icon>
+                </v-btn>
+              </v-skeleton-loader>
+            </v-col>
+            <v-col align="center">
+              <v-skeleton-loader
+                :loading="!pedidoCarregado"
+                transition="fade-transition"
+                type="button"
+              >
+                <v-btn class="primary" rounded @click="$router.push('/users/painel')">
+                  Painel de controlo
+                  <unicon
+                    class="ml-1"
+                    name="perfil-icon"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 20.71 23.677"
+                    fill="#fff"
+                  />
+                </v-btn>
+              </v-skeleton-loader>
+            </v-col>
+          </v-row>
         </v-card-actions>
       </v-card>
     </v-row>

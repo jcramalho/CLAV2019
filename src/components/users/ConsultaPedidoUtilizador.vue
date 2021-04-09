@@ -1,261 +1,211 @@
 <template>
   <div>
-    <Loading v-if="loading" :message="'pedido'" />
-    <span v-else>
-      <v-card shaped class="ma-8">
-        <v-card-title class="indigo darken-4 white--text" dark
-          >Informação sobre o pedido: {{ numeroPedido }}</v-card-title
+    <Loading v-if="loading" message="pedido" />
+    <v-card v-else flat class="pa-2">
+      <v-card-title class="clav-content-title-1">
+        Informação sobre o pedido: {{ numeroPedido }}
+      </v-card-title>
+
+      <v-card-text>
+        <v-progress-linear
+          :color="calculaCor(pedido.estado)"
+          height="20"
+          :value="calculaValor(pedido.estado)"
+          buffer-value="100"
+          rounded
+          class="mb-3"
         >
+          <template>
+            <strong class="white--text">{{ pedido.estado }}</strong>
+          </template>
+        </v-progress-linear>
 
-        <v-card-text>
-          <div class="ma-2">
-            <v-progress-linear
-              :color="calculaCor(pedido.estado)"
-              height="20"
-              :value="calculaValor(pedido.estado)"
-              striped
-              rounded
-            >
-              <template>
-                <strong class="white--text">{{ pedido.estado }}</strong>
-              </template>
-            </v-progress-linear>
-          </div>
-
-          <v-card outlined class="ma-2">
-            <v-card-title>
-              {{ tipoPedido }}
-              <v-spacer />
-              
-              <v-chip v-if="pedido.estado === 'Validado'" outlined color="green">
-                {{ pedido.estado }}
-                <v-icon right>assignment_turned_in</v-icon>
-              </v-chip>
-
-              <v-chip
-                v-else-if="pedido.estado === 'Devolvido'"
-                outlined
-                color="red"
-              >
-                {{ pedido.estado }}
-                <v-icon right>assignment_late</v-icon>
-              </v-chip>
-
-              <v-chip
-                v-else-if="pedido.estado === 'Submetido'"
-                outlined
-                color="blue"
-              >
-                {{ pedido.estado }}
-                <v-icon right>send</v-icon>
-              </v-chip>
-
-              <v-chip v-else outlined color="orange">
-                {{ pedido.estado }}
-                <v-icon right>assignment</v-icon>
-              </v-chip>
-            </v-card-title>
-
-            <v-card-subtitle>{{ dataPedido }}</v-card-subtitle>
-
-            <v-card-text>
-              <span v-if="pedido.objeto.acao !== 'Criação'">
-                <v-alert
-                  type="info"
-                  width="90%"
-                  class="m-auto mb-2 mt-2"
-                  outlined
-                >
-                  <span v-if="pedido.objeto.tipo === 'Legislação'">
-                    <b>{{ pedido.objeto.tipo }}:</b>
-                    {{ dadosOriginais.diplomaFonte }}
-                    - {{ dadosOriginais.numero }} -
-                    {{ dadosOriginais.sumario }}
-                  </span>
-
-                  <span v-else-if="pedido.objeto.tipo === 'Entidade'">
-                    <b>{{ pedido.objeto.tipo }}:</b>
-                    {{ dadosOriginais.sigla }}
-                    - {{ dadosOriginais.designacao }}
-                  </span>
-
-                  <span v-else-if="pedido.objeto.tipo === 'Tipologia'">
-                    <b>{{ pedido.objeto.tipo }}:</b>
-                    {{ dadosOriginais.sigla }}
-                    - {{ dadosOriginais.designacao }}
-                  </span>
-                </v-alert>
-
-                <v-divider class="m-auto mb-2" />
-              </span>
-              <ShowTSPluri v-if="pedido.objeto.tipo=='TS Pluriorganizacional'" :p="pedido" />
-              <ShowTSOrg v-else-if="pedido.objeto.tipo=='TS Organizacional'" :p="pedido" />
-              <ShowAE v-else-if="pedido.objeto.tipo === 'Auto de Eliminação'" :p="pedido" />
-              <div v-else v-for="(info, campo) in dados" :key="campo">
-                <v-row
-                  v-if="
-                    campo !== 'id' &&
-                      campo !== 'user' &&
-                      !camposEscondidos.find(item => item === campo) &&
-                      info !== '' &&
-                      info !== null &&
-                      info !== undefined
-                  "
-                >
-                  <v-col>
-                    <v-text-field
-                      v-if="!(info instanceof Array)"
-                      shaped
-                      rounded
-                      filled
-                      readonly
-                      dense
-                      hide-details
-                      :label="transformaKeys(campo)"
-                      :value="info"
-                    />
-
-                    <!-- Entidades -->
-                    <v-card
-                      v-else-if="campo === 'entidadesSel'"
-                      shaped
-                      class="rounded-t"
-                    >
-                      <v-card-title class="cardTitle">{{
-                        transformaKeys(campo)
-                      }}</v-card-title>
-
-                      <v-card-text class="mt-2">
-                        <v-data-table
-                          :headers="entidadesHeaders"
-                          :items="info"
-                          class="elevation-1"
-                          :footer-props="entidadesFooterProps"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
-                              >Nenhuma entidade selecionada...</v-alert
-                            >
-                          </template>
-                        </v-data-table>
-                      </v-card-text>
-                    </v-card>
-
-                    <!-- Processos -->
-                    <v-card
-                      v-else-if="campo === 'processosSel'"
-                      shaped
-                      class="rounded-t"
-                    >
-                      <v-card-title class="cardTitle">{{
-                        transformaKeys(campo)
-                      }}</v-card-title>
-
-                      <v-card-text class="mt-2">
-                        <v-data-table
-                          :headers="processosHeaders"
-                          :items="info"
-                          class="elevation-1"
-                          :footer-props="processosFooterProps"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
-                              >Nenhum processo selecionado...</v-alert
-                            >
-                          </template>
-                        </v-data-table>
-                      </v-card-text>
-                    </v-card>
-
-                    <!-- Tipologias -->
-                    <v-card
-                      v-else-if="campo === 'tipologiasSel'"
-                      shaped
-                      class="rounded-t"
-                    >
-                      <v-card-title class="cardTitle">{{
-                        transformaKeys(campo)
-                      }}</v-card-title>
-
-                      <v-card-text class="mt-2">
-                        <v-data-table
-                          :headers="tipologiasHeaders"
-                          :items="info"
-                          class="elevation-1"
-                          :footer-props="tipologiasFooterProps"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
-                              >Nenhuma tipologias de entidade
-                              selecionada...</v-alert
-                            >
-                          </template>
-                        </v-data-table>
-                      </v-card-text>
-                    </v-card>
-
-                    <!-- Notas de Aplicaçao/Exclusao -->
-                    <v-card
-                      v-else-if="campo === 'notasAp' || campo === 'notasEx'"
-                      shaped
-                      class="rounded-t"
-                    >
-                      <v-card-title class="cardTitle">{{
-                        transformaKeys(campo)
-                      }}</v-card-title>
-
-                      <v-card-text class="mt-2">
-                        <v-data-table
-                          :headers="notasAppHeaders"
-                          :items="info"
-                          class="elevation-1"
-                          :footer-props="notasAppFooterProps"
-                        >
-                          <template v-slot:no-data>
-                            <v-alert
-                              type="error"
-                              width="100%"
-                              class="m-auto mb-2 mt-2"
-                              outlined
-                              >Nenhuma Nota adicionada...</v-alert
-                            >
-                          </template>
-                        </v-data-table>
-                      </v-card-text>
-                    </v-card>
-                  </v-col>
-                </v-row>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-card-text>
-
-        <v-card-actions class="ml-4">
-          <v-btn color="indigo" dark class="mb-2" @click="voltar">Voltar</v-btn>
+        <v-row>
+          <v-col cols="9">
+            <div class="clav-content-title-2">{{ tipoPedido }}</div>
+            <div class="content-text ml-1">{{ dataPedido }}</div>
+          </v-col>
           <v-spacer />
-          <v-btn
-            v-if="['Validado', 'Devolvido'].includes(pedido.estado)"
-            color="indigo"
-            dark
-            class="mb-2 mr-4"
-            @click="verRelatorio"
-            >Ver Relatório</v-btn
+          <v-col cols="3" align="right">
+            <v-chip v-if="pedido.estado === 'Validado'" outlined color="green">
+              {{ pedido.estado }}
+              <v-icon right>assignment_turned_in</v-icon>
+            </v-chip>
+            <v-chip v-else-if="pedido.estado === 'Devolvido'" outlined color="red">
+              {{ pedido.estado }}
+              <v-icon right>assignment_late</v-icon>
+            </v-chip>
+            <v-chip v-else-if="pedido.estado === 'Submetido'" outlined color="blue">
+              {{ pedido.estado }}
+              <v-icon right>send</v-icon>
+            </v-chip>
+            <v-chip v-else outlined color="orange">
+              {{ pedido.estado }}
+              <v-icon right>assignment</v-icon>
+            </v-chip>
+          </v-col>
+        </v-row>
+
+        <span v-if="pedido.objeto.acao !== 'Criação'">
+          <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
+            <span v-if="pedido.objeto.tipo === 'Legislação'">
+              <b>{{ pedido.objeto.tipo }}:</b>
+              {{ dadosOriginais.diplomaFonte }}
+              - {{ dadosOriginais.numero }} -
+              {{ dadosOriginais.sumario }}
+            </span>
+
+            <span v-else-if="pedido.objeto.tipo === 'Entidade'">
+              <b>{{ pedido.objeto.tipo }}:</b>
+              {{ dadosOriginais.sigla }}
+              - {{ dadosOriginais.designacao }}
+            </span>
+
+            <span v-else-if="pedido.objeto.tipo === 'Tipologia'">
+              <b>{{ pedido.objeto.tipo }}:</b>
+              {{ dadosOriginais.sigla }}
+              - {{ dadosOriginais.designacao }}
+            </span>
+          </v-alert>
+
+          <v-divider class="m-auto mb-2" />
+        </span>
+        <ShowTSPluri v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'" :p="pedido" />
+        <ShowTSOrg v-else-if="pedido.objeto.tipo == 'TS Organizacional'" :p="pedido" />
+        <ShowAE v-else-if="pedido.objeto.tipo === 'Auto de Eliminação'" :p="pedido" />
+        <div v-else v-for="(info, campo) in dados" :key="campo">
+          <v-row
+            v-if="
+              campo !== 'id' &&
+              campo !== 'user' &&
+              !camposEscondidos.find((item) => item === campo) &&
+              info !== '' &&
+              info !== null &&
+              info !== undefined
+            "
           >
-        </v-card-actions>
-      </v-card>
-    </span>
+            <v-col>
+              <Campo
+                v-if="!(info instanceof Array)"
+                :nome="transformaKeys(campo)"
+                color="neutralpurple"
+                class="mb-n5"
+              >
+                <template v-slot:conteudo>
+                  {{ info }}
+                </template>
+              </Campo>
+
+              <!-- Entidades -->
+              <Campo
+                v-else-if="campo === 'entidadesSel'"
+                :nome="transformaKeys(campo)"
+                color="neutralpurple"
+              >
+                <template v-slot:conteudo>
+                  <v-data-table
+                    :headers="entidadesHeaders"
+                    :items="info"
+                    :footer-props="entidadesFooterProps"
+                  >
+                    <template v-slot:no-data>
+                      <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined
+                        >Nenhuma entidade selecionada...</v-alert
+                      >
+                    </template>
+                  </v-data-table>
+                </template>
+              </Campo>
+
+              <!-- Processos -->
+              <Campo
+                v-else-if="campo === 'processosSel'"
+                :nome="transformaKeys(campo)"
+                color="neutralpurple"
+              >
+                <template v-slot:conteudo>
+                  <v-data-table
+                    :headers="processosHeaders"
+                    :items="info"
+                    :footer-props="processosFooterProps"
+                  >
+                    <template v-slot:no-data>
+                      <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined
+                        >Nenhum processo selecionado...</v-alert
+                      >
+                    </template>
+                  </v-data-table>
+                </template>
+              </Campo>
+
+              <!-- Tipologias -->
+              <Campo
+                v-else-if="campo === 'tipologiasSel'"
+                :nome="transformaKeys(campo)"
+                color="neutralpurple"
+              >
+                <template v-slot:conteudo>
+                  <v-data-table
+                    :headers="tipologiasHeaders"
+                    :items="info"
+                    :footer-props="tipologiasFooterProps"
+                  >
+                    <template v-slot:no-data>
+                      <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined
+                        >Nenhuma tipologias de entidade selecionada...</v-alert
+                      >
+                    </template>
+                  </v-data-table>
+                </template>
+              </Campo>
+
+              <!-- Notas de Aplicaçao/Exclusao -->
+
+              <Campo
+                v-else-if="campo === 'notasAp' || campo === 'notasEx'"
+                :nome="transformaKeys(campo)"
+                color="neutralpurple"
+              >
+                <template v-slot:conteudo>
+                  <v-data-table
+                    :headers="notasAppHeaders"
+                    :items="info"
+                    :footer-props="notasAppFooterProps"
+                  >
+                    <template v-slot:no-data>
+                      <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined
+                        >Nenhuma Nota adicionada...</v-alert
+                      >
+                    </template>
+                  </v-data-table>
+                </template>
+              </Campo>
+            </v-col>
+          </v-row>
+        </div>
+      </v-card-text>
+
+      <v-card-actions class="justify-center">
+        <v-btn color="primary" rounded @click="voltar"
+          >Painel de controlo
+          <unicon
+            class="ml-1"
+            name="perfil-icon"
+            width="15"
+            height="15"
+            viewBox="0 0 20.71 23.677"
+            fill="#fff"
+        /></v-btn>
+        <v-btn
+          v-if="['Validado', 'Devolvido'].includes(pedido.estado)"
+          color="primary"
+          dark
+          class="ml-1"
+          @click="verRelatorio"
+          >Ver Relatório</v-btn
+        >
+      </v-card-actions>
+    </v-card>
 
     <!-- Dialog de erros da API -->
     <v-dialog v-model="erroPedido" width="50%" persistent>
@@ -269,9 +219,10 @@ import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import Loading from "@/components/generic/Loading";
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
-import ShowAE from "@/components/pedidos/consulta/showSubmissaoAE.vue"
+import ShowAE from "@/components/pedidos/consulta/showSubmissaoAE.vue";
 import { mapKeys } from "@/utils/utils";
 import PedidosDevolvidosVue from "../pedidos/PedidosDevolvidos.vue";
+import Campo from "@/components/generic/Campo";
 
 export default {
   props: ["numeroPedido"],
@@ -281,7 +232,8 @@ export default {
     Loading,
     ShowTSPluri,
     ShowTSOrg,
-    ShowAE
+    ShowAE,
+    Campo,
   },
 
   data() {
@@ -345,10 +297,7 @@ export default {
 
   computed: {
     dados() {
-      if (
-        this.pedido.estado === "Devolvido" ||
-        this.pedido.estado === "Validado"
-      )
+      if (this.pedido.estado === "Devolvido" || this.pedido.estado === "Validado")
         return this.pedido.objeto.dados;
       else return this.dadosSubmetidos;
     },
@@ -356,7 +305,7 @@ export default {
     dadosSubmetidos() {
       const criaEstruturaPedido = {};
 
-      Object.keys(this.pedido.historico[0]).forEach(key => {
+      Object.keys(this.pedido.historico[0]).forEach((key) => {
         criaEstruturaPedido[key] = this.pedido.historico[0][key].dados;
       });
 
@@ -378,10 +327,7 @@ export default {
 
   async created() {
     try {
-      const { data } = await this.$request(
-        "get",
-        `/pedidos/${this.numeroPedido}`
-      );
+      const { data } = await this.$request("get", `/pedidos/${this.numeroPedido}`);
 
       this.pedido = data;
 
@@ -394,7 +340,7 @@ export default {
 
       if (parsedError !== undefined) {
         if (parsedError.status === 422) {
-          parsedError.data.forEach(erro => {
+          parsedError.data.forEach((erro) => {
             this.erros.push({ parametro: erro.param, mensagem: erro.msg });
           });
         }
@@ -482,7 +428,7 @@ export default {
 
       if (submissao) {
         localStorage.removeItem("submissao");
-        this.$router.push("/users/pedidos");
+        this.$router.push("/users/painel");
       } else {
         this.$router.go(-1);
       }
