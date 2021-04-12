@@ -74,7 +74,7 @@
           </template>
 
           <template v-slot:footer.page-text="props">
-              Sistemas {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
+              Entidades {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}
           </template>
         </v-data-table>
       </v-col>
@@ -115,8 +115,8 @@
               <td>{{ props.item.numeroSI }}</td>
               <td>{{ props.item.nomeSI }}</td>
               <td>
-                <v-btn small color="blue darken-2" dark rounded @click="show(props.item)">
-                  <v-icon dark>edit</v-icon>
+                <v-btn small color="blue darken-2" dark rounded @click="item2Show(props.item)">
+                  <v-icon dark>visibility</v-icon>
                 </v-btn>
               </td>
             </tr>
@@ -128,6 +128,46 @@
         </v-data-table>
       </v-col>
     </v-col>
+    <template>
+      <div>
+        <v-dialog
+          :retain-focus="false"
+          v-model="verSI"
+        >
+          <v-card>
+            <v-card-title class="expansion-panel-heading">Sitema de informação</v-card-title>
+            <div class="v-card__text mt-4">
+              <verBlocoIdentificacao
+                :siSpec="siSpec"
+              />
+              <verBlocoAvaliacao
+                :siSpec="siSpec"
+              />
+              <verBlocoCaracterizacao
+                :siSpec="siSpec"
+              />
+              <verBlocoEstrategia
+                :siSpec="siSpec"
+              />
+            </div>
+            <v-divider></v-divider>
+            <v-card-actions>
+              <v-row align="center" justify="space-around">
+                <v-btn
+                color="indigo darken-2"
+                dark
+                class="ma-2"
+                rounded
+                @click="verSI = false"
+                >
+                  Fechar
+                </v-btn>
+              </v-row>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
+    </template>
   </v-row>
 </template>
 
@@ -139,20 +179,38 @@ const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
 import ArvoreLateralPPD from '@/components/ppd/criacao/ArvoreLateralPPD.vue';
+import verBlocoIdentificacao from "@/components/ppd/criacao/verSI/verBlocoIdentificacao.vue"
+import verBlocoAvaliacao from "@/components/ppd/criacao/verSI/verBlocoAvaliacao.vue"
+import verBlocoCaracterizacao from "@/components/ppd/criacao/verSI/verBlocoCaracterizacao.vue"
+import verBlocoEstrategia from "@/components/ppd/criacao/verSI/verBlocoEstrategia.vue"
 import mixinCriacaoPPD from "@/mixins/ppd/mixinCriacaoPPD.js";
+
 
 export default {
   props: ['p'],
   components: {
     ArvoreLateralPPD,
-		mixinCriacaoPPD
+    verBlocoIdentificacao,
+    verBlocoAvaliacao,
+    verBlocoCaracterizacao,
+    verBlocoEstrategia,
+    mixinCriacaoPPD
   },
-	mixins: [mixinCriacaoPPD],
+  mixins: [mixinCriacaoPPD],
 
 	data: () => ({
-		ppd: {},
+    ppd: {},
     searchSI: "",
     entidades: [],
+    siSpec: {
+      numeroSI: [],
+        nomeSI: [],
+        identificacao:{},
+        avaliacao:{},
+        caracterizacao:{},
+        estrategia:{}
+    },
+    verSI: false,
 
     headersEnt: [
       { text: "Sigla", value: "sigla" },
@@ -188,8 +246,85 @@ export default {
       catch(e){
         console.log('Erro ao carregar a informação inicial: ' + e);
       }
+  },
+  methods: {
+    item2Show: function(item){
+      this.siSpec = item;
+      this.verSI = true;
+      if(item.visto){
+        this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
+        this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
+        this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
+        this.siSpec.identificacao.propDados= item.identificacao.propDados.map(e => e.sigla).toString(),
+        this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString(),
+        this.siSpec.avaliacao.decomposicao= item.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.siRelacionado= item.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
+        item.visto=false;
+      }
+    }
   }
 
 };
 
 </script>
+
+<style>
+.separador {
+  color: white;
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #1A237E;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.separadorMini {
+  color: #283593;
+  text-align: center;
+  padding: 5px;
+  font-weight: 400;
+  width: 75%;
+  background-color: #e8eaf6;
+  font-size: 14pt;
+  font-weight: bold;
+  margin: auto;
+  border-radius: 3px;
+}
+
+.info-label {
+  color: #283593; /* indigo darken-3 */
+  padding: 5px;
+  font-weight: 400;
+  width: 100%;
+  background-color: #e8eaf6; /* indigo lighten-5 */
+  font-weight: bold;
+  margin: 5px;
+  border-radius: 3px;
+}
+
+.expansion-panel-heading {
+  background-color: #283593 !important;
+  color: #fff;
+  font-size: large;
+  font-weight: bold;
+}
+
+.card-heading {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.info-content {
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #1a237e;
+}
+
+.is-collapsed li:nth-child(n + 5) {
+  display: none;
+}
+</style>
