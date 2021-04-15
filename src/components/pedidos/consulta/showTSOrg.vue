@@ -1,25 +1,29 @@
 <template>
   <div>
-    <v-row class="mt-1">
-      <v-col cols="2">
-        <div class="info-label">Entidade</div>
-      </v-col>
-      <v-col>
-        <div class="info-content">
-          <span>
-            <v-chip class="ma-2" color="indigo darken-4" outlined label>
-              <v-icon left>account_balance</v-icon>
-              {{ p.objeto.dados.ts.designacaoEntidade }}
-              {{ p.objeto.dados.ts.designacaoTipologia }}
-            </v-chip>
-          </span>
-        </div>
-      </v-col>
-    </v-row>
-    <v-card-title class="info-label title" dark
-      >Tabela de Seleção para a entidade
-      {{ p.objeto.dados.ts.entidade }}</v-card-title
+    <Campo
+      color="neutralpurple"
+      nome="Entidade abrangida"
+      infoHeader="
+            Entidade abrangida
+          "
+      infoBody="Entidade à qual a tabela de seleção se destina, sendo responsável pela sua aplicação."
     >
+      <template v-slot:conteudo>
+        <v-chip class="ma-2" color="indigo darken-4" outlined label>
+          <v-icon left>account_balance</v-icon>
+          {{ p.objeto.dados.ts.designacaoEntidade }}
+          {{ p.objeto.dados.ts.designacaoTipologia }}
+        </v-chip>
+      </template>
+    </Campo>
+    <v-card class="pa-4 my-5" color="neutralpurple">
+      <span class="clav-info-label">
+        Tabela de Seleção para a entidade
+        {{ p.objeto.dados.ts.designacaoEntidade }}
+        {{ p.objeto.dados.ts.designacaoTipologia }}
+      </span></v-card
+    >
+
     <v-data-table
       :headers="tsHeaders"
       :items="procs"
@@ -56,9 +60,7 @@
               <v-expansion-panels>
                 <v-expansion-panel popout>
                   <!-- DESCRITIVO DA CLASSE -->
-                  <v-expansion-panel-header
-                    class="clav-linear-background white--text"
-                  >
+                  <v-expansion-panel-header class="clav-linear-background white--text">
                     <div class="separador">
                       <font size="4"><b> Descritivo da Classe</b></font>
                       <InfoBox
@@ -95,9 +97,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="
-                        item.exemplosNotasAp && item.exemplosNotasAp.length > 0
-                      "
+                      v-if="item.exemplosNotasAp && item.exemplosNotasAp.length > 0"
                       color="neutralpurple"
                       nome="Exemplos de Notas de Aplicação"
                       infoHeader="Exemplos de Notas de Aplicação"
@@ -105,10 +105,7 @@
                     >
                       <template v-slot:conteudo>
                         <ul>
-                          <li
-                            v-for="n in item.exemplosNotasAp"
-                            :key="n.idExemplo"
-                          >
+                          <li v-for="n in item.exemplosNotasAp" :key="n.idExemplo">
                             {{ n.exemplo }}
                           </li>
                         </ul>
@@ -146,14 +143,9 @@
                     </Campo>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel
-                  v-if="item.codigo.split('.').length === 3"
-                  popout
-                >
+                <v-expansion-panel v-if="item.codigo.split('.').length === 3" popout>
                   <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-                  <v-expansion-panel-header
-                    class="clav-linear-background white--text"
-                  >
+                  <v-expansion-panel-header class="clav-linear-background white--text">
                     <div class="separador">
                       <font size="4"><b>Contexto de Avaliação</b></font>
                       <InfoBox
@@ -196,14 +188,9 @@
                     </Campo>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel
-                  v-if="item.codigo.split('.').length === 3"
-                  popout
-                >
+                <v-expansion-panel v-if="item.codigo.split('.').length === 3" popout>
                   <!-- DECISÔES DE AVALIAÇÂO DA CLASSE -->
-                  <v-expansion-panel-header
-                    class="clav-linear-background white--text"
-                  >
+                  <v-expansion-panel-header class="clav-linear-background white--text">
                     <div class="separador">
                       <font size="4"><b>Decisões de Avaliação</b></font>
                       <InfoBox
@@ -286,9 +273,7 @@
                       <template v-slot:conteudo>
                         <div v-for="c in item.pca.justificacao" :key="c.tipoId">
                           <!-- Critério Gestionário ...............................-->
-                          <v-row
-                            v-if="c.tipoId == 'CriterioJustificacaoGestionario'"
-                          >
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoGestionario'">
                             <v-col xs="2" sm="2">
                               <div class="info-label">Critério Gestionário</div>
                             </v-col>
@@ -307,8 +292,7 @@
                           <!-- Critério Utilidade Administrativa .................-->
                           <v-row
                             v-if="
-                              c.tipoId ==
-                              'CriterioJustificacaoUtilidadeAdministrativa'
+                              c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'
                             "
                           >
                             <v-col xs="2" sm="2">
@@ -425,11 +409,7 @@
                           </v-row>
 
                           <!-- Critério de Densidade Informacional ..............-->
-                          <v-row
-                            v-if="
-                              c.tipoId == 'CriterioJustificacaoDensidadeInfo'
-                            "
-                          >
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'">
                             <v-col xs="2" sm="2">
                               <div class="info-label">
                                 Critério de Densidade Informacional
@@ -451,10 +431,7 @@
 
                           <!-- Critério de Complementaridade Informacional ..............-->
                           <v-row
-                            v-if="
-                              c.tipoId ==
-                              'CriterioJustificacaoComplementaridadeInfo'
-                            "
+                            v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'"
                           >
                             <v-col xs="2" sm="2">
                               <div class="info-label">
@@ -533,7 +510,7 @@ export default {
     },
     myhelp: require("@/config/help").help,
   }),
-  created: async function () {
+  async created() {
     const lvl1 = await this.$request(
       "get",
       "/classes?estrutura=arvore&nivel=1&info=esqueleto"
@@ -543,9 +520,7 @@ export default {
       "/classes?estrutura=arvore&nivel=2&info=esqueleto"
     );
     let aux = [];
-    this.procs = JSON.parse(
-      JSON.stringify(this.p.objeto.dados.ts.listaProcessos.procs)
-    );
+    this.procs = JSON.parse(JSON.stringify(this.p.objeto.dados.ts.listaProcessos.procs));
     this.procs.map((proc) => {
       !aux.some((pr) => pr && proc.pai.codigo === pr.codigo)
         ? aux.push(lvl2.data.find((p) => p.codigo === proc.pai.codigo))

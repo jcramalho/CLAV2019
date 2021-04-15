@@ -1,202 +1,151 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <!-- Header -->
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Nova Entidade</v-toolbar-title>
-        </v-app-bar>
+  <v-card flat class="pa-3">
+    <p class="clav-content-title-1">Nova Entidade</p>
 
-        <!-- Content -->
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Nome da Entidade
-                <InfoBox
-                  header="Nome da entidade"
-                  :text="myhelp.Entidade.Campos.Nome"
-                  helpColor="indigo darken-4"
-                  dialogColor="#E0F2F1"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="entidade.designacao"
-                label="Nome da Entidade"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+    <!-- Content -->
+    <v-card-text>
+      <Campo
+        nome="Nome da entidade"
+        infoHeader="Nome da entidade"
+        :infoBody="myhelp.Entidade.Campos.Nome"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-text-field
+            filled
+            clearable
+            color="primary"
+            single-line
+            dense
+            hide-details
+            v-model="entidade.designacao"
+            label="Nome da Entidade"
+          ></v-text-field>
+        </template>
+      </Campo>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Sigla
-                <InfoBox
-                  header="Sigla"
-                  :text="myhelp.Entidade.Campos.Sigla"
-                  helpColor="indigo darken-4"
-                  dialogColor="#E0F2F1"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="entidade.sigla"
-                label="Sigla"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+      <Campo
+        nome="Sigla"
+        infoHeader="Sigla"
+        :infoBody="myhelp.Entidade.Campos.Sigla"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-text-field
+            filled
+            clearable
+            color="primary"
+            dense
+            hide-details
+            single-line
+            v-model="entidade.sigla"
+            label="Sigla"
+          ></v-text-field>
+        </template>
+      </Campo>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Internacional
-                <InfoBox
-                  header="Internacional"
-                  :text="myhelp.Entidade.Campos.Internacional"
-                  helpColor="indigo darken-4"
-                  dialogColor="#E0F2F1"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-select
-                v-model="entidade.internacional"
-                :items="['Sim', 'Não']"
-                label="Selecione uma opção"
-                item-color="indigo"
-                color="indigo"
-                filled
-              />
-            </v-col>
-          </v-row>
+      <Campo
+        nome="Internacional"
+        infoHeader="Internacional"
+        :infoBody="myhelp.Entidade.Campos.Internacional"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-select
+            v-model="entidade.internacional"
+            :items="['Sim', 'Não']"
+            label="Selecione uma opção"
+            item-color="primary"
+            color="primary"
+            filled
+            dense
+            hide-details
+          />
+        </template>
+      </Campo>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                SIOE
-                <InfoBox
-                  header="Código SIOE"
-                  :text="myhelp.Entidade.Campos.SIOE"
-                  helpColor="indigo darken-4"
-                  dialogColor="#E0F2F1"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="entidade.sioe"
-                :rules="regraSIOE"
-                label="SIOE"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+      <Campo
+        nome="SIOE"
+        infoHeader="Código SIOE"
+        :infoBody="myhelp.Entidade.Campos.SIOE"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            dense
+            hide-details
+            v-model="entidade.sioe"
+            :rules="regraSIOE"
+            label="SIOE"
+          ></v-text-field>
+        </template>
+      </Campo>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Data de criação
-                <InfoBox
-                  header="Data de criação"
-                  :text="myhelp.Entidade.Campos.DataCriacao"
-                  helpColor="indigo darken-4"
-                  dialogColor="#E0F2F1"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <SelecionarData
-                :d="entidade.dataCriacao"
-                :label="'Data: AAAA-MM-DD'"
-                @dataSelecionada="entidade.dataCriacao = $event"
-              />
-            </v-col>
-          </v-row>
+      <Campo
+        nome="Data de criação"
+        infoHeader="Data de criação"
+        :infoBody="myhelp.Entidade.Campos.DataCriacao"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <SelecionarData
+            :d="entidade.dataCriacao"
+            :label="'Data: AAAA-MM-DD'"
+            @dataSelecionada="entidade.dataCriacao = $event"
+          />
+        </template>
+      </Campo>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Data de extinção
-                <InfoBox
-                  header="Data de extinção"
-                  :text="myhelp.Entidade.Campos.DataExtincao"
-                  helpColor="indigo darken-4"
-                  dialogColor="#E0F2F1"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <SelecionarData
-                :d="entidade.dataExtincao"
-                :label="'Data: AAAA-MM-DD'"
-                @dataSelecionada="entidade.dataExtincao = $event"
-              />
-            </v-col>
-          </v-row>
+      <Campo
+        nome="Data de extinção"
+        infoHeader="Data de extinção"
+        :infoBody="myhelp.Entidade.Campos.DataExtincao"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <SelecionarData
+            :d="entidade.dataExtincao"
+            :label="'Data: AAAA-MM-DD'"
+            @dataSelecionada="entidade.dataExtincao = $event"
+          />
+        </template>
+      </Campo>
 
-          <!-- Blocos expansivos -->
-          <v-expansion-panels>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Tipologias de Entidade
-                  <InfoBox
-                    header="Selecionar tipologias de entidades"
-                    :text="myhelp.Entidade.Campos.Tipologias"
-                    helpColor="indigo lighten-5"
-                    dialogColor="#E0F2F1"
-                />
-                </div>
-
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DesSelTip
-                  :tipologias="tipSel"
-                  @unselectTipologia="unselectTipologia($event)"
-                />
-
-                <hr style="border-top: 1px dashed #dee2f8;" />
-
-                <SelTip
-                  :tipologiasReady="tipologiasReady"
-                  :tipologias="tipologias"
-                  @selectTipologia="selectTipologia($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-card-text>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
+      <!-- Blocos expansivos -->
+      <v-expansion-panels>
+        <PainelCLAV
+          titulo="Tipologias de Entidade"
+          icon="mdi-set-merge"
+          infoHeader="Selecionar tipologias de entidades"
+          :infoBody="myhelp.Entidade.Campos.Tipologias"
         >
-          {{ text }}
-          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
+          <template v-slot:conteudo>
+            <DesSelTip
+              :tipologias="tipSel"
+              @unselectTipologia="unselectTipologia($event)"
+            />
 
+            <hr style="border-top: 1px dashed #dee2f8" />
+
+            <SelTip
+              :tipologiasReady="tipologiasReady"
+              :tipologias="tipologias"
+              @selectTipologia="selectTipologia($event)"
+            />
+          </template>
+        </PainelCLAV>
+      </v-expansion-panels>
       <PainelOpsEnt :e="entidade" :acao="'Criação'" />
-    </v-col>
-  </v-row>
+    </v-card-text>
+    <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+      {{ text }}
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+    </v-snackbar>
+  </v-card>
 </template>
 
 <script>
@@ -204,7 +153,8 @@ import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue"
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
 import SelecionarData from "@/components/generic/SelecionarData";
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo.vue";
+import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
 const help = require("@/config/help").help;
 
@@ -227,9 +177,7 @@ export default {
     tipSel: [],
     tipologiasReady: false,
 
-    regraSIOE: [
-      (v) => /^\d+$/.test(v) || "Apenas são aceites caracteres numéricos.",
-    ],
+    regraSIOE: [(v) => /^\d+$/.test(v) || "Apenas são aceites caracteres numéricos."],
 
     snackbar: false,
     text: "",
@@ -240,15 +188,16 @@ export default {
     SelTip,
     PainelOpsEnt,
     SelecionarData,
-    InfoBox
+    Campo,
+    PainelCLAV,
   },
 
   methods: {
     // Vai à API buscar todas as tipologias
-    loadTipologias: async function() {
+    loadTipologias: async function () {
       try {
         let response = await this.$request("get", "/tipologias/");
-        this.tipologias = response.data.map(function(item) {
+        this.tipologias = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -261,7 +210,7 @@ export default {
       }
     },
 
-    unselectTipologia: function(tipologia) {
+    unselectTipologia: function (tipologia) {
       // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
       let index = this.tipSel.findIndex((e) => e.id === tipologia.id);
@@ -269,7 +218,7 @@ export default {
       this.entidade.tipologiasSel = this.tipSel;
     },
 
-    selectTipologia: function(tipologia) {
+    selectTipologia: function (tipologia) {
       this.tipSel.push(tipologia);
       this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
@@ -283,7 +232,7 @@ export default {
     },
   },
 
-  created: function() {
+  created: function () {
     this.loadTipologias();
   },
 };

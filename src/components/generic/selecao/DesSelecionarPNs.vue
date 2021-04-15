@@ -1,57 +1,69 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <v-subheader class="info-label">Processos selecionados</v-subheader>
-    </v-col>
-    <v-col v-if="processos.length > 0">
-      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-default-footer>
+  <Campo nome="Processos selecionados" color="neutralpurple">
+    <template v-slot:conteudo>
+      <v-data-table
+        v-if="processos.length > 0"
+        :headers="headers"
+        :items="processos"
+        hide-default-footer
+      >
         <template v-slot:item="props">
           <tr>
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
-              <v-btn small color="red darken-2" dark rounded @click="unselectProcesso(props.item)">
+              <v-btn
+                small
+                color="red darken-2"
+                dark
+                rounded
+                @click="unselectProcesso(props.item)"
+              >
                 <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
           </tr>
         </template>
       </v-data-table>
-    </v-col>
-    <v-col v-else>
-      <v-alert :value="true" type="warning">Não tem processos selecionados...</v-alert>
-    </v-col>
-  </v-row>
+      <v-alert v-else :value="true" type="warning"
+        >Não tem processos selecionados...</v-alert
+      >
+    </template>
+  </Campo>
 </template>
 
 <script>
+import Campo from "@/components/generic/Campo.vue";
 export default {
   props: ["processos"],
 
-  data: function() {
+  components: {
+    Campo,
+  },
+  data: function () {
     return {
       headers: [
         {
           text: "Código",
           align: "left",
           value: "codigo",
-          class: ["body-2", "font-weight-bold"]
+          class: ["body-2", "font-weight-bold"],
         },
         {
           text: "Designação",
           value: "titulo",
-          class: ["body-2", "font-weight-bold"]
+          class: ["body-2", "font-weight-bold"],
         },
-        { text: "Remover", class: ["body-2", "font-weight-bold"] }
-      ]
+        { text: "Remover", class: ["body-2", "font-weight-bold"] },
+      ],
     };
   },
 
   methods: {
-    unselectProcesso: function(processo) {
+    unselectProcesso: function (processo) {
       this.$emit("unselectProcesso", processo);
-    }
-  }
+    },
+  },
 };
 </script>
 

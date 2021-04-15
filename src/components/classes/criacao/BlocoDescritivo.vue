@@ -1,44 +1,22 @@
 <template>
   <!-- BLOCO DESCRITIVO -->
-  <v-expansion-panel popout>
-    <v-expansion-panel-header
-      style="outline: none;"
-      :class="{
-        'text-center': $vuetify.breakpoint.smAndDown,
-        'text-left': $vuetify.breakpoint.mdAndUp,
-      }"
-      class="pa-0"
-    >
-      <div
-        :class="{
-          'px-3': $vuetify.breakpoint.mdAndUp,
-        }"
-        class="separador"
-      >
-        <unicon
-          class="mt-3"
-          name="descricao-icon"
-          width="20"
-          height="20"
-          viewBox="0 0 20.71 23.668"
-          fill="#ffffff"
-        />
-        <span class="ml-3 mr-1">Descritivo da Classe</span>
-        <InfoBox
-          header="Descritivo da Classe"
-          :text="myhelp.Classe.BlocoDescritivo"
-          helpColor="info"
-        />
-      </div>
-    </v-expansion-panel-header>
-    <v-expansion-panel-content id="expanded-content">
-      <v-container fluid class="pa-0 ma-0" style="max-width:100%;">
-        <v-row
-          :class="{
-            'mt-12': $vuetify.breakpoint.smAndDown,
-            'mt-6': $vuetify.breakpoint.mdAndUp,
-          }"
-        >
+  <PainelCLAV
+    titulo="Descritivo da Classe"
+    infoHeader="Descritivo da Classe"
+    :infoBody="myhelp.Classe.BlocoDescritivo"
+  >
+    <template v-slot:icon>
+      <unicon
+        name="descricao-icon"
+        width="20"
+        height="20"
+        viewBox="0 0 20.71 23.668"
+        fill="#ffffff"
+      />
+    </template>
+    <template v-slot:conteudo>
+      <v-expansion-panel-content id="expanded-content">
+        <v-row>
           <!-- DESCRIÇÂO -->
           <v-col cols="12" lg="2">
             <div class="info-label">
@@ -51,7 +29,7 @@
             </div>
           </v-col>
           <v-col cols="12" lg="10">
-            <div class="info-content pa-4 px-8 pb-6" style="min-height: 50px;">
+            <div class="info-content pa-4 px-8 pb-6" style="min-height: 50px">
               <v-textarea
                 class="mt-n4"
                 v-model="c.descricao"
@@ -67,41 +45,42 @@
             </div>
           </v-col>
         </v-row>
-      </v-container>
 
-      <hr style="border-top: 1px dashed #dee2f8;" />
+        <hr style="border-top: 1px dashed #dee2f8" />
 
-      <BlocoDescritivoNotasAp :c="c" />
+        <BlocoDescritivoNotasAp :c="c" />
 
-      <div v-if="c.nivel > 2">
-        <hr style="border-top: 1px dashed #dee2f8;" />
-        <BlocoDescritivoExemplosNotasAp :c="c" />
-      </div>
+        <div v-if="c.nivel > 2">
+          <hr style="border-top: 1px dashed #dee2f8" />
+          <BlocoDescritivoExemplosNotasAp :c="c" />
+        </div>
 
-      <hr style="border-top: 1px dashed #dee2f8;" />
+        <hr style="border-top: 1px dashed #dee2f8" />
 
-      <BlocoDescritivoNotasEx :c="c" />
+        <BlocoDescritivoNotasEx :c="c" />
 
-      <div v-if="c.nivel == 3 && !c.temSubclasses4Nivel">
-        <hr style="border-top: 1px dashed #dee2f8;" />
-        <TermosIndiceOps :c="c" />
-      </div>
-    </v-expansion-panel-content>
-  </v-expansion-panel>
+        <div v-if="c.nivel == 3 && !c.temSubclasses4Nivel">
+          <hr style="border-top: 1px dashed #dee2f8" />
+          <TermosIndiceOps :c="c" />
+        </div>
+      </v-expansion-panel-content>
+    </template>
+  </PainelCLAV>
 </template>
 
 <script>
-const nanoid = require('nanoid');
-const help = require('@/config/help').help;
+const nanoid = require("nanoid");
+const help = require("@/config/help").help;
 
-import BlocoDescritivoNotasAp from '@/components/classes/criacao/BlocoDescritivoNotasAp.vue';
-import BlocoDescritivoExemplosNotasAp from '@/components/classes/criacao/BlocoDescritivoExemplosNotasAp.vue';
-import BlocoDescritivoNotasEx from '@/components/classes/criacao/BlocoDescritivoNotasEx.vue';
-import TermosIndiceOps from '@/components/classes/criacao/TermosIndiceOps.vue';
-import InfoBox from '@/components/generic/infoBox.vue';
+import BlocoDescritivoNotasAp from "@/components/classes/criacao/BlocoDescritivoNotasAp.vue";
+import BlocoDescritivoExemplosNotasAp from "@/components/classes/criacao/BlocoDescritivoExemplosNotasAp.vue";
+import BlocoDescritivoNotasEx from "@/components/classes/criacao/BlocoDescritivoNotasEx.vue";
+import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
+import InfoBox from "@/components/generic/infoBox.vue";
+import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
 export default {
-  props: ['c'],
+  props: ["c"],
 
   components: {
     BlocoDescritivoNotasAp,
@@ -109,6 +88,7 @@ export default {
     BlocoDescritivoNotasEx,
     TermosIndiceOps,
     InfoBox,
+    PainelCLAV,
   },
 
   data() {

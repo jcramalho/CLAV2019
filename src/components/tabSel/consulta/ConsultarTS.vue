@@ -34,7 +34,20 @@
           </template>
         </Campo>
 
-        <Campo color="neutralpurple" nome="Entidades">
+        <Campo
+          color="neutralpurple"
+          :nome="
+            ts.entidades.length > 1
+              ? 'Entidades abrangidas'
+              : 'Entidade abrangida'
+          "
+          :infoHeader="
+            ts.entidades.length > 1
+              ? 'Entidades abrangidas'
+              : 'Entidade abrangida'
+          "
+          infoBody="Entidade à qual a tabela de seleção se destina, sendo responsável pela sua aplicação."
+        >
           <template v-slot:conteudo>
             <ul>
               <li v-for="(ent, i) in ts.entidades" :key="i">
