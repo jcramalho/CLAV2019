@@ -25,7 +25,7 @@
     </Campo>
     <Campo nome="Entidade" infoHeader="Entidade do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
-        <span>{{ Pedido.entidade.split("_")[1] }}</span>
+        <span>{{ Pedido.entidade ? Pedido.entidade.split("_")[1] : "a carregar" }}</span>
       </template>
     </Campo>
     <Campo nome="Criado Por" infoHeader="Criador do Pedido" color="neutralpurple">

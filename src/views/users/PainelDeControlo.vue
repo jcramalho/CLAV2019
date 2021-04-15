@@ -10,11 +10,83 @@
           <ListaPendentes @pendenteSelected="consultaPendente($event)" />
         </v-expansion-panels>
       </v-col>
-      <v-col cols="3" align="center">
-        <v-card class="fill-height">
-          <v-card-title class="clav-content-title-2 justify-center">
+      <v-col cols="3" align="center" class="pt-0 pl-0">
+        <v-card class="fill-height pa-0">
+          <v-card-title class="clav-content-title-2 justify-center my-2">
             Notificações
           </v-card-title>
+          <v-card-text>
+            <v-expansion-panels v-if="notificacoes">
+              <v-expansion-panel v-for="(item, i) in notificacoes" :key="i">
+                <v-expansion-panel-header
+                  hide-actions
+                  class="white--text clav-linear-background justify-left"
+                >
+                  <v-row>
+                    <v-col cols="2" align="center">
+                      <v-badge inline dot color="error"></v-badge>
+                    </v-col>
+                    <v-col class="ml-0 pl-0">
+                      <p>{{ item.acao }} de {{ item.tipo }} {{ item.objeto }}</p>
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content class="pa-0">
+                  <v-row>
+                    <v-col align="left">
+                      <ul>
+                        <li>
+                          Movido para <strong>{{ item.novoEstado }}</strong
+                          >.
+                        </li>
+                        <li v-if="item.realizadoPor">
+                          Realizado por <strong>{{ item.realizadoPor }}</strong
+                          >.
+                        </li>
+                        <li v-if="item.responsavel">
+                          Responsável: <strong>{{ item.responsavel }}</strong>
+                        </li>
+                        <li>
+                          Entidade responsavel:
+                          <strong>{{ item.entidade.split("_")[1] }}</strong>
+                        </li>
+                      </ul>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon
+                            color="red"
+                            @click="removerNotificacao(item._id)"
+                            v-on="on"
+                          >
+                            clear
+                          </v-icon>
+                        </template>
+                        <span>Remover notificação</span>
+                      </v-tooltip>
+                    </v-col>
+                    <v-col>
+                      <v-tooltip v-if="item.pedido" bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon
+                            @click="$router.push(`/pedidos/novos/${item.pedido}`)"
+                            color="indigo darken-2"
+                            v-on="on"
+                          >
+                            visibility
+                          </v-icon>
+                        </template>
+                        <span>Ver pedido...</span>
+                      </v-tooltip>
+                    </v-col>
+                  </v-row>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -39,6 +111,7 @@ export default {
       loading: true,
       pedidos: [],
       panelsArr: [0, 1],
+      notificacoes: [],
     };
   },
 
@@ -54,11 +127,24 @@ export default {
     } catch (e) {
       console.log("e", e);
     }
+    this.obterNotificacoes();
   },
 
   methods: {
     consultaPendente: function (item) {
       this.$router.push("/pendentes/" + item.codigo);
+    },
+    obterNotificacoes() {
+      this.$request("get", "/notificacoes")
+        .then((data) => {
+          this.notificacoes = data.data;
+        })
+        .catch((e) => console.log(e));
+    },
+    removerNotificacao(id) {
+      this.$request("delete", "/notificacoes/" + id)
+        .then(() => this.obterNotificacoes())
+        .catch((e) => console.log(e));
     },
     atualizaPedidos(pedido) {
       return pedido.map((p) => {

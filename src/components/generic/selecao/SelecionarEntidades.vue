@@ -1,10 +1,7 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <v-subheader class="info-label">Selecionar Entidades</v-subheader>
-    </v-col>
-    <v-col v-if="entidadesReady">
-      <v-card>
+  <Campo nome="Selecionar Entidades" color="neutralpurple">
+    <template v-slot:conteudo>
+      <v-card flat v-if="entidadesReady">
         <v-card-title>
           <v-text-field
             filled
@@ -20,7 +17,6 @@
           :items="entidades"
           :search="searchEntidades"
           item-key="id"
-          class="elevation-1"
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
@@ -40,39 +36,41 @@
           >
         </v-data-table>
       </v-card>
-    </v-col>
-    <v-col v-else>
-      <v-subheader>A carregar entidades...</v-subheader>
-    </v-col>
-  </v-row>
+      <v-subheader v-else>A carregar entidades...</v-subheader>
+    </template>
+  </Campo>
 </template>
 
 <script>
+import Campo from "@/components/generic/Campo.vue";
 export default {
   props: ["entidades", "entidadesReady"],
+  components: {
+    Campo,
+  },
 
-  data: function() {
+  data: function () {
     return {
       searchEntidades: "",
       footer_props: {
-        "items-per-page-text": "Linhas por página"
+        "items-per-page-text": "Linhas por página",
       },
       entidadesHeaders: [
         { text: "Sigla", align: "left", value: "sigla" },
-        { text: "Designação", value: "designacao" }
-      ]
+        { text: "Designação", value: "designacao" },
+      ],
     };
   },
 
   methods: {
-    go: function(idClasse) {
+    go: function (idClasse) {
       this.$router.push("/entidades/" + idClasse);
       this.$router.go();
     },
-    selectEntidade: function(entidade) {
+    selectEntidade: function (entidade) {
       this.$emit("selectEntidade", entidade);
-    }
-  }
+    },
+  },
 };
 </script>
 

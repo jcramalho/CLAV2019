@@ -1,12 +1,7 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <v-subheader class="info-label">
-        Selecionar Tipologias de Entidade
-      </v-subheader>
-    </v-col>
-    <v-col v-if="tipologiasReady">
-      <v-card>
+  <Campo nome="Selecionar Tipologias de Entidade" color="neutralpurple">
+    <template v-slot:conteudo>
+      <v-card flat v-if="tipologiasReady">
         <v-card-title>
           <v-text-field
             filled
@@ -22,7 +17,6 @@
           :items="tipologias"
           :search="searchTipologias"
           item-key="id"
-          class="elevation-1"
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
@@ -42,35 +36,37 @@
           >
         </v-data-table>
       </v-card>
-    </v-col>
-    <v-col v-else>
-      <v-subheader>A carregar tipologias...</v-subheader>
-    </v-col>
-  </v-row>
+      <v-subheader v-else>A carregar tipologias...</v-subheader>
+    </template>
+  </Campo>
 </template>
 
 <script>
+import Campo from "@/components/generic/Campo.vue";
 export default {
   props: ["tipologias", "tipologiasReady"],
 
-  data: function() {
+  components: {
+    Campo,
+  },
+  data: function () {
     return {
       searchTipologias: "",
       footer_props: {
-        "items-per-page-text": "Tipologias por página"
+        "items-per-page-text": "Tipologias por página",
       },
       tipologiasHeaders: [
         { text: "Sigla", align: "left", value: "sigla" },
-        { text: "Designação", value: "designacao" }
-      ]
+        { text: "Designação", value: "designacao" },
+      ],
     };
   },
 
   methods: {
-    selectTipologia: function(tipologia) {
+    selectTipologia: function (tipologia) {
       this.$emit("selectTipologia", tipologia);
-    }
-  }
+    },
+  },
 };
 </script>
 
