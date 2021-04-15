@@ -95,6 +95,7 @@ export default {
   },
 
   data: () => ({
+    search: "",
     headers: [
       {
         text: "Criado em",

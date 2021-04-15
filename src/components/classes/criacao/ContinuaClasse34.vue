@@ -75,8 +75,35 @@
 
             <!-- DECISÕES DE AVALIAÇÂO -->
             <v-expansion-panel popout focusable v-if="classe.nivel == 3">
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>Decisões de Avaliação</div>
+              <v-expansion-panel-header
+              style="outline: none;"
+              :class="{
+                  'text-center': $vuetify.breakpoint.smAndDown,
+                  'text-left': $vuetify.breakpoint.mdAndUp,
+                }"
+              class="pa-0"
+              >
+                <div
+                  :class="{
+                      'px-3': $vuetify.breakpoint.mdAndUp,
+                  }"
+                  class="separador"
+                >
+                  <unicon
+                    class="mt-3"
+                    name="descricao-icon"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20.71 23.668"
+                    fill="#ffffff"
+                  />
+                  <span class="ml-3 mr-1">Decisões de Avaliação</span>
+                  <InfoBox
+                    header="Decisões de Avaliação"
+                    :text="myhelp.Classe.BlocoDecisoes"
+                    helpColor="info"
+                  />
+                </div>
               </v-expansion-panel-header>
 
               <v-expansion-panel-content>
@@ -203,6 +230,10 @@ export default {
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
     mensValCodigo: ""
   }),
+
+  mounted: function(){
+    this.loadPCA();
+  },
 
   watch: {
     "classe.temSubclasses4Nivel": function() {

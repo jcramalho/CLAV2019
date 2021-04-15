@@ -38,7 +38,8 @@
       </v-col>
     </v-row>
 
-    <v-row class="ma-2" v-if="semaforos.pcaFormasContagemReady">
+    <v-row class="ma-2"> 
+          <!--v-if="semaforos.pcaFormasContagemReady"-->
       <v-col cols="2">
         <div class="info-label">
           Forma de Contagem
@@ -60,7 +61,7 @@
     <v-row
       class="ma-2"
       v-if="
-        semaforos.pcaSubFormasContagemReady &&
+        //semaforos.pcaSubFormasContagemReady &&
           c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'
       "
     >
