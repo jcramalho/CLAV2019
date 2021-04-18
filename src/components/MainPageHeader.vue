@@ -660,13 +660,6 @@ export default {
           },
           level: [1, 3, 3.5, 4, 5, 6, 7],
           url: "/pedidos",
-          menu: [
-            {
-              opcao: "Pendentes",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-              url: "/pendentes",
-            },
-          ],
         },
         {
           titulo: "Estatística",
