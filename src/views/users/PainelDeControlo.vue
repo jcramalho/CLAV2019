@@ -2,7 +2,7 @@
   <v-card flat class="ma-3 pa-2">
     <p class="clav-content-title-1">Painel de controlo</p>
     <v-row>
-      <v-col cols="9">
+      <v-col :cols="!notificacoes ? '9' : '12'">
         <TogglePanelsCLAV :n="2" @alternar="panelsArr = $event" />
         <Loading v-if="loading" :message="'pedidos'" />
         <v-expansion-panels v-else v-model="panelsArr" multiple>
@@ -10,13 +10,13 @@
           <ListaPendentes @pendenteSelected="consultaPendente($event)" />
         </v-expansion-panels>
       </v-col>
-      <v-col cols="3" align="center" class="pt-0 pl-0">
+      <v-col v-if="!notificacoes" cols="3" align="center" class="pt-0 pl-0">
         <v-card class="fill-height pa-0">
           <v-card-title class="clav-content-title-2 justify-center my-2">
             Notificações
           </v-card-title>
           <v-card-text>
-            <v-expansion-panels v-if="notificacoes">
+            <v-expansion-panels>
               <v-expansion-panel v-for="(item, i) in notificacoes" :key="i">
                 <v-expansion-panel-header
                   hide-actions
