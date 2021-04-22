@@ -93,6 +93,7 @@
             </td>
             <td>
               <v-radio-group
+                v-if="props.item.procTrans === 'S'"
                 class="mt-5"
                 v-model="participante[props.item.chave]"
                 v-on:change="
