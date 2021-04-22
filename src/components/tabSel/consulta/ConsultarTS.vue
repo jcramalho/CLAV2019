@@ -37,14 +37,14 @@
         <Campo
           color="neutralpurple"
           :nome="
-            ts.entidades.length > 1
-              ? 'Entidades abrangidas'
-              : 'Entidade abrangida'
+            tipo === 'Organizacional'
+              ? 'Entidade abrangida'
+              : 'Entidades abrangidas'
           "
           :infoHeader="
-            ts.entidades.length > 1
-              ? 'Entidades abrangidas'
-              : 'Entidade abrangida'
+            tipo === 'Organizacional'
+              ? 'Entidade abrangida'
+              : 'Entidades abrangidas'
           "
           infoBody="Entidade à qual a tabela de seleção se destina, sendo responsável pela sua aplicação."
         >
@@ -100,7 +100,7 @@
                     <span v-if="item.donos && item.donos.length > 0">
                       <span v-for="(e, i) in item.donos" :key="i">
                         <v-chip
-                          v-if="ts.entidades.length > 1"
+                          v-if="tipo === 'Pluriorganizacional'"
                           class="ml-1"
                           color="indigo darken-4"
                           outlined
@@ -122,17 +122,58 @@
                     >
                       <span v-for="(e, i) in item.participantes" :key="i">
                         <v-chip
-                          v-if="ts.entidades.length > 1"
+                          v-if="tipo === 'Pluriorganizacional'"
                           class="ml-1"
                           color="indigo darken-4"
                           outlined
                           label
                           x-small
                         >
-                          {{ e.sigla }} - {{ e.participLabel }}
+                          {{ e.sigla }} -
+                          {{ participacaoLabel(e.participLabel) }}
                         </v-chip>
-                        <span v-else>{{ e.participLabel }}</span>
+                        <span v-else>{{
+                          participacaoLabel(e.participLabel)
+                        }}</span>
                       </span>
+                    </span>
+                  </td>
+                </template>
+
+                <template v-slot:[`item.pca`]="{ item }">
+                  <td
+                    v-if="
+                      item.codigo.split('.').length === 3 ||
+                      item.codigo.split('.').length === 4
+                    "
+                  >
+                    <span v-if="item.pca && item.pca.valores">
+                      {{
+                        item.pca.valores > 1
+                          ? item.pca.valores + " Anos"
+                          : item.pca.valores + " Ano"
+                      }}
+                    </span>
+                  </td>
+                </template>
+
+                <template v-slot:[`item.df`]="{ item }">
+                  <td
+                    v-if="
+                      item.codigo.split('.').length === 3 ||
+                      item.codigo.split('.').length === 4
+                    "
+                  >
+                    <span v-if="item.df && item.df.valor">
+                      {{
+                        item.df.valor === "C"
+                          ? "Conservação"
+                          : item.df.valor === "E"
+                          ? "Eliminação"
+                          : item.df.valor === "CP"
+                          ? "Conservação Parcial"
+                          : ""
+                      }}
                     </span>
                   </td>
                 </template>
@@ -383,7 +424,7 @@
                                       ? item.pca.valores + " Anos"
                                       : item.pca.valores === ""
                                       ? "Não Específicado"
-                                      : " Ano"
+                                      : item.pca.valores + " Ano"
                                   }}
                                 </template>
                               </Campo>
@@ -729,6 +770,7 @@ export default {
   data: () => ({
     search: "",
     expanded: [],
+    tipo: "",
     singleExpand: false,
     tree_ou_tabela: false,
     paginaTabela: 1,
@@ -737,14 +779,14 @@ export default {
         text: "Código",
         value: "codigo",
         class: "subtitle-1",
-        width: "15%",
+        width: "10%",
         sortable: false,
       },
       {
         text: "Título",
         value: "titulo",
         class: "subtitle-1",
-        width: "35%",
+        width: "30%",
         sortable: false,
       },
       {
@@ -762,6 +804,21 @@ export default {
         sortable: false,
       },
       {
+        text: "PCA",
+        value: "pca",
+        class: "subtitle-1",
+        width: "10%",
+        sortable: false,
+      },
+      {
+        text: "DF",
+        value: "df",
+        class: "subtitle-1",
+        width: "10%",
+        sortable: false,
+      },
+
+      {
         text: "",
         value: "data-table-expand",
         width: "5%",
@@ -777,6 +834,18 @@ export default {
     myhelp: require("@/config/help").help,
     mylabels: require("@/config/labels").criterios,
   }),
+  beforeUpdate() {
+    this.ts.entidades.length > 1
+      ? (this.tipo = "Pluriorganizacional")
+      : (this.tipo = "Organizacional");
+
+    if (this.tipo === "Organizacional") {
+      this.headers[2].width = "5%";
+      this.headers[3].width = "5%";
+      this.headers[4].width = "5%";
+      this.headers[5].width = "5%";
+    }
+  },
   methods: {
     csvExport() {
       //let csvContent = "data:text/csv;charset=utf-8,";
@@ -854,18 +923,21 @@ export default {
       link.setAttribute("download", fileName + ".csv");
       link.click();
     },
-    clicked(value) {
-      if (
-        value.descricao ||
-        value.notaDF ||
-        value.notaPCA ||
-        value.formaContagem ||
-        value.subFormaContagem ||
-        value.designacaoParticipante ||
-        value.designacaoDono
-      )
-        if (this.expanded[0] == value) this.expanded.pop();
-        else this.expanded = [value];
+
+    participacaoLabel(label) {
+      return label === "Apreciador"
+        ? "Apreciar"
+        : label === "Assessor"
+        ? "Assessorar"
+        : label === "Comunicador"
+        ? "Comunicar"
+        : label === "Decisor"
+        ? "Decidir"
+        : label === "Executor"
+        ? "Executar"
+        : label === "Iniciador"
+        ? "Iniciar"
+        : "";
     },
   },
 };

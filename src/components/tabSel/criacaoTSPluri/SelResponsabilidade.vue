@@ -8,12 +8,12 @@
           </v-card-title>
           <v-card-text>
             <v-row justify="end">
-              <v-col cols="2">
+              <v-col :cols="p.procTrans === 'S' ? 2 : 2">
                 <span class="table-header subtitle-2 font-weight-bold"
                   >Aplica a todos</span
                 >
               </v-col>
-              <v-col cols="1">
+              <v-col :cols="p.procTrans === 'S' ? 1 : 7">
                 <span class="table-header subtitle-2 font-weight-bold"
                   >Dono</span
                 >
@@ -22,7 +22,7 @@
                   v-model="todosDonos"
                 ></v-checkbox>
               </v-col>
-              <v-col cols="7">
+              <v-col v-if="p.procTrans === 'S'" cols="6">
                 <span class="table-header subtitle-2 font-weight-bold"
                   >Participante</span
                 >
@@ -61,7 +61,7 @@
                       v-model="props.item.dono"
                     ></v-checkbox>
                   </td>
-                  <td>
+                  <td v-if="p.procTrans === 'S'">
                     <v-radio-group v-model="props.item.participante" row>
                       <v-radio
                         color="indigo darken-4"
@@ -101,7 +101,7 @@
 export default {
   props: ["p"],
 
-  data: function() {
+  data: function () {
     return {
       dialog: false,
       participacao: [],
@@ -114,41 +114,43 @@ export default {
           value: "searchField",
           width: "40%",
           class: ["table-header", "subtitle-2", "font-weight-bold"],
-          sortable: false
+          sortable: false,
         },
         {
           text: "Dono",
           value: "dono",
           class: ["table-header", "subtitle-2", "font-weight-bold"],
-          sortable: false
+          sortable: false,
         },
-        {
-          text: "Participante",
-          value: "participante",
-          class: ["table-header", "subtitle-2", "font-weight-bold"],
-          sortable: false
-        }
+        this.p.procTrans === "S"
+          ? {
+              text: "Participante",
+              value: "participante",
+              class: ["table-header", "subtitle-2", "font-weight-bold"],
+              sortable: false,
+            }
+          : "",
       ],
       footerConfig: {
         "items-per-page-text": "Entidades por página",
         "items-per-page-options": [10, 20, 50, 100, -1],
-        "items-per-page-all-text": "Todos"
-      }
+        "items-per-page-all-text": "Todos",
+      },
     };
   },
 
   watch: {
-    todosDonos: function() {
+    todosDonos: function () {
       for (let i = 0; i < this.p.entidades.length; i++)
         this.p.entidades[i].dono = this.todosDonos;
     },
-    todosParticipantes: function() {
+    todosParticipantes: function () {
       for (let i = 0; i < this.p.entidades.length; i++)
         this.p.entidades[i].participante = this.todosParticipantes;
-    }
+    },
   },
 
-  created: async function() {
+  created: async function () {
     try {
       await this.tipoParticipacao();
     } catch (e) {
@@ -158,13 +160,13 @@ export default {
     }
   },
 
-  mounted: function() {
+  mounted: function () {
     this.dialog = true;
   },
 
   methods: {
     // Lista com todos os tipos de intervenção possíveis
-    tipoParticipacao: async function() {
+    tipoParticipacao: async function () {
       var resPar = await this.$request(
         "get",
         "/vocabularios/vc_processoTipoParticipacao"
@@ -174,12 +176,12 @@ export default {
     },
 
     // Cancela sem alterar nada
-    cancelar: function() {
+    cancelar: function () {
       this.$emit("cancelada");
     },
 
     // Devolve a seleção para cima
-    selecionar: function() {
+    selecionar: function () {
       var contador = 0; // Controla se este proc entra ou não na contagem dos selecionados
       let i = 0,
         encontreiDono = false,
@@ -212,7 +214,7 @@ export default {
 
       this.p.inc = contador;
       this.$emit("selecionadas", this.p);
-    }
-  }
+    },
+  },
 };
 </script>

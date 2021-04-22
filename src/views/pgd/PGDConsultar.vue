@@ -53,7 +53,7 @@ export default {
           },
           entidades: {
             campo: "Entidades",
-            text: leg.entidades,
+            text: leg.entidades1,
           },
         };
         return myLegislacao;
@@ -97,6 +97,7 @@ export default {
           return {
             idClasse: c.classe,
             codigo: c.codigo,
+            nivel: c.nivel,
             referencia: c.referencia,
             titulo: c.titulo,
             descricao: c.descricao,
@@ -123,9 +124,15 @@ export default {
           "/legislacao/" + this.idLegislacao
         );
         this.legislacao = await this.preparaLegislacao(response2.data);
-        this.legislacao.entidades.text = this.legislacao.entidades.text.map(
-          (e) => e.id
-        );
+
+        var response3 = await this.$request("get", "/rada/old/");
+
+        response3.data.find((r) => r.idRADA === this.id).ent.split("#")[1];
+
+        this.legislacao.entidades.text = [
+          response3.data.find((r) => r.idRADA === this.id).ent.split("#")[1],
+        ];
+
         this.titulo = `RADA de ${response2.data.tipo} ${response2.data.numero}`;
       } else {
         this.idLegislacao = this.id.split("pgd_")[1];
@@ -133,12 +140,13 @@ export default {
           this.idLegislacao = this.idLegislacao.split("lc_")[1];
 
         var response = await this.$request("get", "/pgd/" + this.id);
-        this.classesTree = await this.prepararClasses(response.data[0]);
+        this.classesTree = await this.prepararClasses(response.data);
 
-        this.classes = response.data[0].map((c) => {
+        this.classes = response.data.map((c) => {
           return {
             idClasse: c.classe,
             codigo: c.codigo,
+            nivel: c.nivel,
             referencia: c.referencia,
             titulo: c.titulo,
             descricao: c.descricao,
@@ -166,7 +174,7 @@ export default {
         );
 
         this.legislacao = await this.preparaLegislacao(response2.data);
-        this.legislacao.entidades.text = response.data[1];
+
         this.titulo = `Tabela de Seleção da ${response2.data.tipo} ${response2.data.numero}`;
       }
     } catch (e) {
