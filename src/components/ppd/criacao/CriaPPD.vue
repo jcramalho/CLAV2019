@@ -151,24 +151,6 @@
               </v-btn>
             </v-stepper-content>
           </v-stepper>
-          <v-row justify-center>
-            <v-dialog v-model="ppdGuardado" persistent width="50%">
-              <v-card>
-                <v-card-title class="headline grey lighten-2" primary-title>Trabalho pendente guardado</v-card-title>
-                <v-card-text>
-                  <br />
-                  <p>
-                    Os seus dados foram guardados para que possa retomar o trabalho
-                    mais tarde. Aceda aos pendentes para continuar.
-                  </p>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-row>
         </v-card-text>
       </v-card>
     </v-col>
@@ -217,6 +199,24 @@
         </v-dialog>
       </div>
     </template>
+    <v-row justify-center>
+      <v-dialog v-model="ppdPendente" persistent width="50%">
+        <v-card>
+          <v-card-title class="headline grey lighten-2" primary-title>Trabalho pendente guardado</v-card-title>
+          <v-card-text>
+            <br />
+            <p>
+              Os seus dados foram guardados para que possa retomar o trabalho
+              mais tarde. Aceda aos pendentes para continuar.
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-row>
 </template>
 
@@ -439,9 +439,7 @@ export default {
     errosValidacao: false,
     pendenteGuardado: false,
     pendenteGuardadoInfo: "",
-
-
-
+    ppdPendente: false,
   }),
 
 
@@ -472,6 +470,13 @@ export default {
             token: this.$store.state.token
           };
           var response = this.$request("post", "/pendentes", pendenteParams);
+          response.then((resp) => {
+            this.ppdPendente = true;
+            setTimeout(() => {
+              this.ppdPendente = false;
+              this.$router.push('/')
+            }, 5000);
+          });
           this.pendenteGuardado = true;
           this.pendenteGuardadoInfo = JSON.stringify(response.data);
         }
@@ -765,7 +770,7 @@ export default {
             var auxPPD;
             auxPPD.geral = this.ppd.geral;
             auxPPD.sistemasInfo = this.ppd.sistemasInfo;
-            auxPPD.arvore = this.ppd.arvore;
+            //auxPPD.arvore = this.ppd.arvore;
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",

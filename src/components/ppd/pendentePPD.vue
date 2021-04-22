@@ -218,6 +218,24 @@
         </v-dialog>
       </div>
     </template>
+    <v-row justify-center>
+      <v-dialog v-model="ppdPendente" persistent width="50%">
+        <v-card>
+          <v-card-title class="headline grey lighten-2" primary-title>Trabalho pendente guardado</v-card-title>
+          <v-card-text>
+            <br />
+            <p>
+              Os seus dados foram guardados para que possa retomar o trabalho
+              mais tarde. Aceda aos pendentes para continuar.
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-row>
 </template>
 
@@ -434,7 +452,7 @@ export default {
     errosValidacao: false,
     pendenteGuardado: false,
     pendenteGuardadoInfo: "",
-
+    ppdPendente: false
 
 
   }),
@@ -457,7 +475,14 @@ export default {
         _id: this.obj._id,
         objeto: this.ppd
       };
-      this.$request("put", "/pendentes", updatePendente);
+      var response = this.$request("put", "/pendentes", updatePendente);
+      response.then((resp) => {
+          this.ppdPendente = true;
+          setTimeout(() => {
+            this.ppdPendente = false;
+            this.$router.push('/')
+          }, 5000);
+        });
     },
 
     apagar: function() {
