@@ -561,7 +561,6 @@ import Legislacao from "@/components/classes/consulta/Legislacao.vue";
 import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue";
 import Voltar from "@/components/generic/Voltar.vue";
 
-import InfoBox from "@/components/generic/infoBox.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV";
 import Campo from "@/components/generic/Campo";
 
@@ -592,7 +591,6 @@ export default {
   }),
 
   components: {
-    InfoBox,
     ClassesFilho,
     Participantes,
     ProcessosRelacionados,

@@ -15,36 +15,25 @@
       />
     </template>
     <template v-slot:conteudo>
-      <v-expansion-panel-content id="expanded-content">
-        <v-row>
-          <!-- DESCRIÇÂO -->
-          <v-col cols="12" lg="2">
-            <div class="info-label">
-              Descrição
-              <InfoBox
-                header="Descrição"
-                :text="myhelp.Classe.Campos.Descricao"
-                helpColor="info"
-              />
-            </div>
-          </v-col>
-          <v-col cols="12" lg="10">
-            <div class="info-content pa-4 px-8 pb-6" style="min-height: 50px">
-              <v-textarea
-                class="mt-n4"
-                v-model="c.descricao"
-                label="Descrição"
-                auto-grow
-                text
-                single-line
-                hide-details
-                clearable
-                color="blue darken-3"
-                rows="1"
-              ></v-textarea>
-            </div>
-          </v-col>
-        </v-row>
+      <v-expansion-panel-content>
+        <!-- DESCRIÇÂO -->
+        <Campo
+          nome="Descrição"
+          infoHeader="Descrição"
+          :infoBody="myhelp.Classe.Campos.Descricao"
+        >
+          <template v-slot:conteudo>
+            <v-text-field
+              v-model="c.descricao"
+              label="Descrição"
+              auto-grow
+              dense
+              single-line
+              hide-details
+              clearable
+            ></v-text-field>
+          </template>
+        </Campo>
 
         <hr style="border-top: 1px dashed #dee2f8" />
 
@@ -76,7 +65,7 @@ import BlocoDescritivoNotasAp from "@/components/classes/criacao/BlocoDescritivo
 import BlocoDescritivoExemplosNotasAp from "@/components/classes/criacao/BlocoDescritivoExemplosNotasAp.vue";
 import BlocoDescritivoNotasEx from "@/components/classes/criacao/BlocoDescritivoNotasEx.vue";
 import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
 export default {
@@ -87,7 +76,7 @@ export default {
     BlocoDescritivoExemplosNotasAp,
     BlocoDescritivoNotasEx,
     TermosIndiceOps,
-    InfoBox,
+    Campo,
     PainelCLAV,
   },
 

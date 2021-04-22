@@ -19,7 +19,7 @@
     <v-main>
       <v-row justify="center" class="my-5">
         <v-col cols="12" sm="12" md="11">
-          <keep-alive include="pedidos">
+          <keep-alive :include="['pedidos', 'criaClasse']">
             <router-view />
           </keep-alive>
         </v-col>

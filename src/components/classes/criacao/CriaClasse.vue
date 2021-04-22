@@ -122,7 +122,7 @@
               />
             </template>
             <template v-slot:conteudo>
-              <v-expansion-panel-content id="expanded-content">
+              <v-expansion-panel-content>
                 <!-- HÁ SUBDIVISÃO? -->
                 <Subdivisao3Nivel :c="classe" />
 

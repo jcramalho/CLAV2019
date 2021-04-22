@@ -1,67 +1,48 @@
 <template>
-  <v-row v-if="!valida">
-    <!-- PARTICIPANTES NO PROCESSO -->
-    <v-col cols="12" sm="4" md="3">
-      <v-card class="pa-4" color="neutralpurple">
-        <v-row class="pa-0 ma-0" justify="center">
-          <span class="clav-info-label">Participantes no processo</span>
-          <InfoBox
-            header="Participantes no processo"
-            :text="myhelp.Classe.Campos.Participantes"
-          />
-        </v-row>
-      </v-card>
-    </v-col>
-
-    <v-col cols="12" sm="8" md="9">
-      <div class="info-content">
-        <v-data-table
-          :headers="headers"
-          :items="myParticipantes"
-          hide-default-footer
-        >
-          <template v-slot:item="props">
-            <tr>
-              <td>{{ props.item.label }}</td>
-              <td>
-                <ul>
-                  <li v-for="p in props.item.participantes" :key="p.label">
-                    <a
-                      v-if="p.idTipo == 'Entidade'"
-                      :href="'/entidades/' + p.idParticipante"
-                    >
-                      {{ p.sigla }}
-                      ({{ p.idTipo }}) - {{ p.designacao }}
-                    </a>
-                    <a v-else :href="'/tipologias/' + p.idParticipante">
-                      {{ p.sigla }}
-                      ({{ p.idTipo }}) - {{ p.designacao }}
-                    </a>
-                  </li>
-                </ul>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
-    </v-col>
-  </v-row>
+  <!-- PARTICIPANTES NO PROCESSO -->
+  <Campo
+    v-if="!valida"
+    nome="Participantes no processo"
+    infoHeader="Participantes no processo"
+    :infoBody="myhelp.Classe.Campos.Participantes"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
+      <v-data-table :headers="headers" :items="myParticipantes" hide-default-footer>
+        <template v-slot:item="props">
+          <tr>
+            <td>{{ props.item.label }}</td>
+            <td>
+              <ul>
+                <li v-for="p in props.item.participantes" :key="p.label">
+                  <a
+                    v-if="p.idTipo == 'Entidade'"
+                    :href="'/entidades/' + p.idParticipante"
+                  >
+                    {{ p.sigla }}
+                    ({{ p.idTipo }}) - {{ p.designacao }}
+                  </a>
+                  <a v-else :href="'/tipologias/' + p.idParticipante">
+                    {{ p.sigla }}
+                    ({{ p.idTipo }}) - {{ p.designacao }}
+                  </a>
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </template>
+  </Campo>
   <div v-else>
-    <v-data-table
-      :headers="headers"
-      :items="myParticipantes"
-      hide-default-footer
-    >
+    <v-data-table :headers="headers" :items="myParticipantes" hide-default-footer>
       <template v-slot:item="props">
         <tr>
           <td style="color: #1a237e">{{ props.item.label }}</td>
           <td>
             <ul>
               <li v-for="p in props.item.participantes" :key="p.label">
-                <a
-                  v-if="p.idTipo == 'Entidade'"
-                  :href="'/entidades/' + p.idParticipante"
-                >
+                <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idParticipante">
                   {{ p.sigla }}
                   ({{ p.idTipo }}) - {{ p.designacao }}
                 </a>
@@ -79,12 +60,12 @@
 </template>
 
 <script>
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo";
 const help = require("@/config/help").help;
 
 export default {
   props: ["entidades", "valida"],
-  components: { InfoBox },
+  components: { Campo },
 
   data: function () {
     return {
@@ -94,12 +75,12 @@ export default {
           align: "left",
           sortable: false,
           value: "label",
-          class: ["table-header", "body-2", "font-weight-bold"],
+          class: ["body-2", "font-weight-bold"],
         },
         {
           text: "Participantes",
           value: "participantes",
-          class: ["table-header", "body-2", "font-weight-bold"],
+          class: ["body-2", "font-weight-bold"],
         },
       ],
       participPorTipo: {
@@ -192,12 +173,5 @@ a:hover {
   padding: 5px;
   width: 100%;
   border: 1px solid #1a237e;
-}
-
-.table-header {
-  color: #1a237e;
-  font-weight: 400;
-  background-color: #dee2f8;
-  font-weight: bold;
 }
 </style>

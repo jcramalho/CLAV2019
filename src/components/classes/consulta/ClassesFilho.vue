@@ -1,17 +1,12 @@
 <template>
-  <v-row align="center">
-    <!-- DESCENDÊNCIA -->
-    <v-col cols="12" md="3" class="px-6">
-      <div class="info-label">
-        Descendência
-        <InfoBox
-          header="Descendência"
-          :text="myhelp.Classe.Campos.Descendencia"
-          helpColor="info"
-        />
-      </div>
-    </v-col>
-    <v-col cols="12" md="9">
+  <!-- DESCENDÊNCIA -->
+  <Campo
+    nome="Descendência"
+    infoHeader="Descendência"
+    :infoBody="myhelp.Classe.Campos.Descendencia"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
       <v-data-table
         :items="subclasses"
         hide-default-header
@@ -29,17 +24,17 @@
           </tr>
         </template>
       </v-data-table>
-    </v-col>
-  </v-row>
+    </template>
+  </Campo>
 </template>
 
 <script>
-import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
+import Campo from "@/components/generic/Campo";
 
 export default {
-  components: { InfoBox },
   props: ["subclasses"],
+  components: { Campo },
   data: () => ({
     myhelp: help,
   }),

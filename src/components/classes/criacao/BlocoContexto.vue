@@ -15,7 +15,7 @@
     </template>
     <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
     <template v-slot:conteudo>
-      <v-expansion-panel-content v-if="c.nivel == 3" id="expanded-content">
+      <v-expansion-panel-content v-if="c.nivel == 3">
         <!-- TIPO DE PROCESSO -->
         <BlocoContextoSelTipoProcesso :c="c" />
 

@@ -1,54 +1,33 @@
 <template>
-  <v-row v-if="!valida">
-    <!-- LEGISLAÇÂO -->
-    <v-col cols="12" sm="4" md="3">
-      <v-card class="pa-4" color="neutralpurple">
-        <v-row class="pa-0 ma-0" justify="center">
-          <span class="clav-info-label">Legislação</span>
-          <InfoBox
-            header="Legislação"
-            :text="myhelp.Classe.Campos.Legislacao"
-          />
-        </v-row>
-      </v-card>
-    </v-col>
-    <v-col cols="12" sm="8" md="9">
-      <div class="info-content">
-        <v-data-table
-          :headers="headers"
-          :items="legs"
-          class="elevation-1"
-          hide-default-footer
-        >
-          <template v-slot:item="props">
-            <tr>
-              <td>{{ props.item.tipo }}</td>
-              <td>
-                <a :href="'/legislacao/' + props.item.idLeg">
-                  {{ props.item.numero }}</a
-                >
-              </td>
-              <td>{{ props.item.sumario }}</td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
-    </v-col>
-  </v-row>
+  <!-- LEGISLAÇÂO -->
+  <Campo
+    v-if="!valida"
+    nome="Legislação"
+    infoHeader="Legislação"
+    :infoBody="myhelp.Classe.Campos.Legislacao"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
+      <v-data-table :headers="headers" :items="legs" hide-default-footer>
+        <template v-slot:item="props">
+          <tr>
+            <td>{{ props.item.tipo }}</td>
+            <td>
+              <a :href="'/legislacao/' + props.item.idLeg"> {{ props.item.numero }}</a>
+            </td>
+            <td>{{ props.item.sumario }}</td>
+          </tr>
+        </template>
+      </v-data-table>
+    </template>
+  </Campo>
   <div v-else>
-    <v-data-table
-      :headers="headers"
-      :items="legs"
-      class="elevation-1"
-      hide-default-footer
-    >
+    <v-data-table :headers="headers" :items="legs" hide-default-footer>
       <template v-slot:item="props">
         <tr>
           <td>{{ props.item.tipo }}</td>
           <td>
-            <a :href="'/legislacao/' + props.item.idLeg">
-              {{ props.item.numero }}</a
-            >
+            <a :href="'/legislacao/' + props.item.idLeg"> {{ props.item.numero }}</a>
           </td>
           <td>{{ props.item.sumario }}</td>
         </tr>
@@ -58,12 +37,12 @@
 </template>
 
 <script>
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo.vue";
 const help = require("@/config/help").help;
 
 export default {
   props: ["legs", "valida"],
-  components: { InfoBox },
+  components: { Campo },
 
   data: function () {
     return {
@@ -72,17 +51,17 @@ export default {
           text: "Tipo",
           align: "left",
           value: "tipo",
-          class: ["table-header", "body-2", "font-weight-bold"],
+          class: ["body-2", "font-weight-bold"],
         },
         {
           text: "Número",
           value: "numero",
-          class: ["table-header", "body-2", "font-weight-bold"],
+          class: ["body-2", "font-weight-bold"],
         },
         {
           text: "Sumário",
           value: "sumario",
-          class: ["table-header", "body-2", "font-weight-bold"],
+          class: ["body-2", "font-weight-bold"],
         },
       ],
       myhelp: help,
@@ -122,12 +101,5 @@ a:hover {
   padding: 5px;
   width: 100%;
   border: 1px solid #1a237e;
-}
-
-.table-header {
-  color: #1a237e;
-  font-weight: 400;
-  background-color: #dee2f8;
-  font-weight: bold;
 }
 </style>
