@@ -295,42 +295,10 @@ export default {
     };
   },
 
-  computed: {
-    dados() {
-      if (this.pedido.estado === "Devolvido" || this.pedido.estado === "Validado")
-        return this.pedido.objeto.dados;
-      else return this.dadosSubmetidos;
-    },
-
-    dadosSubmetidos() {
-      const criaEstruturaPedido = {};
-
-      Object.keys(this.pedido.historico[0]).forEach((key) => {
-        criaEstruturaPedido[key] = this.pedido.historico[0][key].dados;
-      });
-
-      return criaEstruturaPedido;
-    },
-
-    dadosOriginais() {
-      return this.pedido.objeto.dadosOriginais;
-    },
-
-    tipoPedido() {
-      return `${this.pedido.objeto.acao} - ${this.pedido.objeto.tipo}`;
-    },
-
-    dataPedido() {
-      return this.pedido.data.split("T")[0];
-    },
-  },
-
   async created() {
     try {
       const { data } = await this.$request("get", `/pedidos/${this.numeroPedido}`);
-
       this.pedido = data;
-
       this.loading = false;
     } catch (e) {
       this.erroPedido = true;
@@ -351,6 +319,35 @@ export default {
         });
       }
     }
+  },
+  computed: {
+    dados() {
+      if (this.pedido.estado === "Devolvido" || this.pedido.estado === "Validado")
+        return this.pedido.objeto.dados;
+      else return this.dadosSubmetidos;
+    },
+
+    dadosSubmetidos() {
+      const criaEstruturaPedido = {};
+      console.log(this.pedido);
+      Object.keys(this.pedido.historico[0]).forEach((key) => {
+        criaEstruturaPedido[key] = this.pedido.historico[0][key].dados;
+      });
+
+      return criaEstruturaPedido;
+    },
+
+    dadosOriginais() {
+      return this.pedido.objeto.dadosOriginais;
+    },
+
+    tipoPedido() {
+      return `${this.pedido.objeto.acao} - ${this.pedido.objeto.tipo}`;
+    },
+
+    dataPedido() {
+      return this.pedido.data.split("T")[0];
+    },
   },
 
   methods: {

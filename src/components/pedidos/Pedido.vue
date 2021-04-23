@@ -149,7 +149,10 @@
 
     <!-- Substituir responsável dialog -->
     <v-dialog v-model="substituirResponsavelDialog" width="80%" persistent>
-      <SubstituirResponsavel :pedido="Pedido" @fecharDialog="fecharDialog()" />
+      <SubstituirResponsavel
+        :pedido="Pedido"
+        @fecharDialog="substituirResponsavelDialog = false"
+      />
     </v-dialog>
 
     <!-- Dialog para reapreciar pedidos -->
