@@ -1,5 +1,5 @@
 <template>
-  <CriaClasse />
+  <CriaClasse @limpar="destroy = true" />
 </template>
 
 <script>
@@ -9,6 +9,20 @@ export default {
   name: "criaClasse",
   components: {
     CriaClasse,
+  },
+  data() {
+    return {
+      destroy: false,
+    };
+  },
+  beforeDestroy() {
+    console.log("Main Vue destroyed");
+  },
+  deactivated() {
+    if (this.destroy) {
+      console.log("deactivated");
+      this.$destroy();
+    }
   },
 };
 </script>

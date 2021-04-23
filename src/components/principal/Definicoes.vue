@@ -1,5 +1,12 @@
 <template>
-  <v-navigation-drawer :value="drawer" width="320px" right absolute clipped>
+  <v-navigation-drawer
+    style="z-index: 2 !important"
+    :value="drawer"
+    width="320px"
+    right
+    absolute
+    clipped
+  >
     <v-list dense rounded>
       <v-list-item-group color="primary">
         <v-list-item @click="$router.push('/users/pedidos')">
