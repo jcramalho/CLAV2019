@@ -316,7 +316,9 @@ export default {
           : "";
       leg && leg.data.entidades1.length > 0
         ? (obj.entidades = leg.data.entidades1.map((e) => {
-            return e.includes("ent_") ? e.split("ent_")[1] : e.split("tip_")[1];
+            return e.id.includes("ent_")
+              ? e.id.split("ent_")[1]
+              : e.id.split("tip_")[1];
           }))
         : "";
     });
@@ -331,7 +333,9 @@ export default {
           : "";
       leg && leg.data.entidades1.length > 0
         ? (obj.entidades = leg.data.entidades1.map((e) => {
-            return e.includes("ent_") ? e.split("ent_")[1] : e.split("tip_")[1];
+            return e.id.includes("ent_")
+              ? e.id.split("ent_")[1]
+              : e.id.split("tip_")[1];
           }))
         : "";
     });

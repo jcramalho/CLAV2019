@@ -47,12 +47,18 @@
                 <li v-for="(ent, i) in item.text" :key="i">
                   <a
                     :href="
-                      ent.includes('ent_')
+                      objeto.fonte.text != 'RADA'
+                        ? ent.id.includes('ent_')
+                          ? '/entidades/' + ent.id
+                          : '/tipologias/' + ent.id
+                        : ent.includes('ent_')
                         ? '/entidades/' + ent
                         : '/tipologias/' + ent
                     "
                     >{{
-                      ent.includes("ent_")
+                      objeto.fonte.text != "RADA"
+                        ? ent.sigla
+                        : ent.includes("ent_")
                         ? ent.split("ent_")[1]
                         : ent.split("tip_")[1]
                     }}</a
