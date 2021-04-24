@@ -217,6 +217,23 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-row justify-center>
+      <v-dialog v-model="classeCriada" persistent width="50%">
+        <v-card>
+          <v-card-title class="headline grey lighten-2" primary-title>Trabalho submetido</v-card-title>
+          <v-card-text>
+            <br />
+            <p>
+              Os seus dados foram submetidos. Pode verificar na secção "Gestão de Pedidos".
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-row>
 </template>
 
@@ -290,6 +307,8 @@ export default {
         nomePPD: "",
         mencaoResp: "",
         entSel: [],
+        fonteLegitimacao: "",
+        tipoFonteL: ""
       },
       si:{
         numeroSI: "",
@@ -377,8 +396,7 @@ export default {
       user: {
         token: ""
       },
-      fonteLegitimacao: "",
-      tipoFonteL: ""
+
     },
     panels: [],
     //para apagar!!!!!!!
@@ -618,9 +636,9 @@ export default {
     //-------Fonte Legitimacao-------
     consultaFT: async function() {
       try {
-        var tipo = this.ppd.fonteLegitimacao.id.split("_");
+        var tipo = this.ppd.geral.fonteLegitimacao.id.split("_");
         if(tipo[0] == 'pgd'){
-          var response = await this.$request("get", "/pgd/"+this.ppd.fonteLegitimacao.id);
+          var response = await this.$request("get", "/pgd/"+this.ppd.geral.fonteLegitimacao.id);
           //this.classesSI = await prepararClasses(response.data);
           this.classesDaFonteL = response.data[0];
           for (var c of response.data[0]) {
@@ -714,7 +732,7 @@ export default {
           lista.push(sis);
           //Dar reset as listas usadas....
           this.ppd.listaSistemasInfoAuxiliar = [...lista];
-          this.consultaFT(this.fonteLegitimacao);
+          this.consultaFT(this.ppd.geral.fonteLegitimacao);
           var child = [];
           var index =  this.ppd.arvore.findIndex(l => l.id === sis.numeroSI);
           //ESTE CASO NUNCA ACONTECE PORQUE NAO SE PODE INSERIR OUTRO SI COM O MESMO ID....
@@ -767,10 +785,12 @@ export default {
         } else {
           var erros = await this.validarPPD();
           if (erros == 0) {
-            var auxPPD;
+            var auxPPD = {
+              geral: {},
+              sistemasInfo: []
+            };
             auxPPD.geral = this.ppd.geral;
             auxPPD.sistemasInfo = this.ppd.sistemasInfo;
-            //auxPPD.arvore = this.ppd.arvore;
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",
@@ -787,14 +807,15 @@ export default {
               "/pedidos",
               pedidoParams
             );
-            this.codigoPedido = JSON.stringify(response.data);
-            this.classeCriada = true;
+            if(response.status == '200'){
+              this.classeCriada = true;
+            }
           } else {
             this.errosValidacao = true;
           }
         }
       } catch (error) {
-        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
+        console.log("Erro na criação do pedido: " + error);
       }
     },
 

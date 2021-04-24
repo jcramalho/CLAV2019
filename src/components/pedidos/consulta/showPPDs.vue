@@ -31,7 +31,7 @@
           <div class="info-label">Fonte de legitimação</div>
         </v-col>
         <v-col>
-          <v-text-field solo readonly :value="this.ppd.fonteLegitimacao.titulo"></v-text-field>
+          <v-text-field solo readonly :value="this.ppd.geral.fonteLegitimacao.titulo"></v-text-field>
         </v-col>
       </div>
       <v-col v-if="this.ppd.geral.entSel.length > 0">
@@ -238,7 +238,7 @@ export default {
 
 	created: async function() {
       try{
-        this.ppd = this.p.objeto;
+        this.ppd = this.p.objeto.dados;
         //this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
         //await this.loadEntidades();
         //await this.consultaFT();

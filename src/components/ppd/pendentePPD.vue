@@ -309,6 +309,8 @@ export default {
         nomePPD: "",
         mencaoResp: "",
         entSel: [],
+        fonteLegitimacao: "",
+        tipoFonteL: ""
       },
       si:{
         numeroSI: "",
@@ -395,8 +397,7 @@ export default {
       user: {
         token: ""
       },
-      fonteLegitimacao: "",
-      tipoFonteL: ""
+
     },
     panels: [],
     //para apagar!!!!!!!
