@@ -46,7 +46,7 @@ const gerarHeaderConteudo = (rada) => {
 
   const entResp = {
     text: [
-      { text: '\nEntidades Responsáveis: ', fontSize: 11, bold: true },
+      { text: '\nEntidade responsável: ', fontSize: 11, bold: true },
       { text: rada.entResp.map(e => { return e.sigla + " - " + e.designacao }).toString(), fontSize: 11 }
     ]
   }
@@ -108,13 +108,13 @@ const gerarRE = (rada) => {
       { text: rada.produtoras.map(e => { return e.sigla + ' - ' + e.designacao }).toString(), fontSize: 11 }
     ]
   })
-  adicionarCampo('\nData Inicial: ', rada.dataInicial)
-  adicionarCampo('\nData Final: ', rada.dataFinal)
-  adicionarCampo('\nHistória Administrativa/Biográfica: ', rada.hist_admin)
-  adicionarCampo('\nHistória Custodial: ', rada.hist_cust)
-  adicionarCampo('\nSistema de Organização: ', rada.sist_org)
+  adicionarCampo('\nData inicial: ', rada.dataInicial)
+  adicionarCampo('\nData final: ', rada.dataFinal)
+  adicionarCampo('\nHistória administrativa/biográfica: ', rada.hist_admin)
+  adicionarCampo('\nHistória custodial: ', rada.hist_cust)
+  adicionarCampo('\nSistema de organização: ', rada.sist_org)
   adicionarCampo('\nLocalização: ', rada.localizacao)
-  adicionarCampo('\nEstado de Conservação: ', rada.est_conser)
+  adicionarCampo('\nEstado de conservação: ', rada.est_conser)
 
 };
 
@@ -141,18 +141,18 @@ const gerarClasse = (classe, rada) => {
   adicionarCampo('\nCódigo: ', classe.codigo)
   adicionarCampo('\nTítulo: ', classe.titulo)
   adicionarCampo('\nDescrição: ', classe.descricao)
-  adicionarCampo('\nClasse Pai: ', pai(classe.pai, rada))
+  adicionarCampo('\nClasse pai: ', pai(classe.pai, rada))
 
   if (!!classe.nivel) {
     adicionarCampo('\nNível: ', classe.nivel)
   } else {
-    adicionarCampo('\nData Inicial: ', classe.dataInicial)
-    adicionarCampo('\nData Final: ', classe.dataFinal)
+    adicionarCampo('\nData inicial: ', classe.dataInicial)
+    adicionarCampo('\nData final: ', classe.dataFinal)
 
     if (!!classe.legislacao) {
 
-      adicionarCampo('\nTipo de Unidade Arquivística: ', classe.tipoUA)
-      adicionarCampo('\nTipo de Série: ', classe.tipoSerie)
+      adicionarCampo('\nTipo de unidade arquivística: ', classe.tipoUA)
+      adicionarCampo('\nTipo de série: ', classe.tipoSerie)
       adicionarCampo('\nLocalização: ', classe.localizacao)
       adicionarCampo('\nSuporte e Medição: ', classe.suporte_e_medicao.map(e => { return '\n' + e.suporte + ' - ' + e.medicao }).toString())
       adicionarCampo('\nLegislação: ', classe.legislacao.map(e => { return '\n' + e.tipo + ' ' + e.numero + ' - ' + e.sumario }).toString())
@@ -163,8 +163,8 @@ const gerarClasse = (classe, rada) => {
 
     if (!!classe.pca && !!classe.df) {
       adicionarCampo('\nPCA: ', classe.pca.pca)
-      adicionarCampo('\nForma de Contagem do PCA: ', classe.pca.formaLabel)
-      adicionarCampo('\nSubforma de Contagem do PCA: ', classe.pca.subformaLabel)
+      adicionarCampo('\nForma de contagem do PCA: ', classe.pca.formaLabel)
+      adicionarCampo('\nSubforma de contagem do PCA: ', classe.pca.subformaLabel)
       adicionarCampo('\nNota ao PCA: ', !!classe.pca.notaPCA ? classe.pca.notaPCA : 'Sem nota sobre o PCA')
       adicionarCampo('\nJustificação do PCA: ', classe.pca.justificacaoPCA.map(e => `\n\n ${corrigirNomeCriterio(e.tipo)}: ${e.conteudo != 'undefined' ? e.conteudo : '[Sem nota]'} \n ${listarCriterio(e.tipo, e.relacoes)}`).toString())
 

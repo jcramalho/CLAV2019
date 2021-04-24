@@ -159,7 +159,7 @@
                             readonly
                             dense
                             hide-details
-                            label="Destino Final"
+                            label="Destino final"
                             :value="item.destino === 'E' ? 'Eliminação' : item.destino === 'C' ? 'Conservação' : item.destino"
                           />
                         </v-col>

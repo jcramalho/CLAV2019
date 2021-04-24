@@ -76,7 +76,7 @@
       <v-col cols="12" xs="12" sm="12">
         <v-alert class="text-center" :value="true" color="amber accent-3" icon="warning">
           Ainda não foram adicionadas
-          <b>Unidades de Instalação</b>.
+          <b>Unidades de instalação</b>.
         </v-alert>
       </v-col>
     </v-row>

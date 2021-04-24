@@ -16,8 +16,8 @@
         </ul>
       </template>
     </RADAEntry>
-    <RADAEntry label="Data Inicial" :value="rada.dataInicial" />
-    <RADAEntry label="Data Final" :value="rada.dataFinal" />
+    <RADAEntry label="Data inicial" :value="rada.dataInicial" />
+    <RADAEntry label="Data final" :value="rada.dataFinal" />
     <br />
     <v-card outlined>
       <div class="info-label">Dimensão e Suporte</div>
@@ -29,7 +29,7 @@
           :value_2="rada.nSubseries"
         />
         <RADAEntryDouble
-          label_1="Número de Unidades de Instalação"
+          label_1="Número de Unidades de instalação"
           :value_1="rada.nUI"
           label_2="Medição das UIs em Papel"
           :value_2="rada.medicaoUI_papel"
@@ -43,11 +43,11 @@
       </v-card-text>
     </v-card>
     <br />
-    <RADAEntry label="História Administrativa/Biográfica" :value="rada.hist_admin" />
-    <RADAEntry label="História Custodial" :value="rada.hist_cust" />
-    <RADAEntry label="Sistema de Organização" :value="rada.sist_org" />
+    <RADAEntry label="História administrativa/biográfica" :value="rada.hist_admin" />
+    <RADAEntry label="História custodial" :value="rada.hist_cust" />
+    <RADAEntry label="Sistema de organização" :value="rada.sist_org" />
     <RADAEntry label="Localização" :value="rada.localizacao" />
-    <RADAEntry label="Estado de Conservação" :value="rada.est_conser" />
+    <RADAEntry label="Estado de conservação" :value="rada.est_conser" />
   </div>
 </template>
 

@@ -38,11 +38,12 @@
       </v-col>
     </v-row>
 
-    <v-row class="ma-2" v-if="semaforos.pcaFormasContagemReady">
+    <v-row class="ma-2"> 
+          <!--v-if="semaforos.pcaFormasContagemReady"-->
       <v-col cols="2">
         <div class="info-label">
           Forma de Contagem
-          <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
+          <InfoBox header="Forma de contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
         </div>
       </v-col>
       <v-col>
@@ -60,14 +61,14 @@
     <v-row
       class="ma-2"
       v-if="
-        semaforos.pcaSubFormasContagemReady &&
+        //semaforos.pcaSubFormasContagemReady &&
           c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'
       "
     >
       <v-col cols="2">
         <div class="info-label">
           Subforma de contagem
-          <InfoBox header="Forma de Contagem do PCA" :text="myhelp.Classe.Campos.SubformaContagem" />
+          <InfoBox header="Forma de contagem do PCA" :text="myhelp.Classe.Campos.SubformaContagem" />
         </div>
       </v-col>
       <v-col cols="10">

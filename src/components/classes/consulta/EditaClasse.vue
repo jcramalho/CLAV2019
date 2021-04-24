@@ -379,7 +379,7 @@
                         dark
                         height="30"
                       >
-                        <v-toolbar-title>Destino Final</v-toolbar-title>
+                        <v-toolbar-title>Destino final</v-toolbar-title>
                       </v-toolbar>
                     </v-col>
                   </v-row>
@@ -388,9 +388,9 @@
                     <!-- VALOR -->
                     <v-col xs="2" sm="2">
                       <div class="info-label">
-                        Destino Final
+                        Destino final
                         <InfoBox
-                          header="Destino Final"
+                          header="Destino final"
                           :text="myhelp.Classe.Campos.DF"
                           helpColor="indigo darken-4"
                           dialogColor="#E0F2F1"

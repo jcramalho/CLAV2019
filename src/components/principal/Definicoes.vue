@@ -7,7 +7,7 @@
             {{ this.$store.state.name }}</v-list-item-content
           >
           <v-list-item-icon>
-            <v-icon>account_circle</v-icon>
+            <v-icon color="secondary">account_circle</v-icon>
           </v-list-item-icon>
         </v-list-item>
         <v-list-item @click="$router.push('/users/alteracaoPassword')">

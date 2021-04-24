@@ -95,10 +95,9 @@
               class="elevation-1"
               :footer-props="tsFooterProps"
               :page.sync="paginaTabela"
-              :expanded="expanded"
               expand-icon="$expand"
-              :single-expand="true"
-              @click:row="clicked"
+              single-expand
+              @item-expanded="clicked"
               show-expand
             >
               <template v-slot:[`item.dono`]="{ item }">
@@ -156,30 +155,12 @@
                                   )
                                 ].dados
                               "
-                              campoValue="descricao"
-                              campoText="Descrição"
-                              :permitirEditar="false"
-                              tipo="string"
-                              :info="{
-                                text: myhelp.Classe.Campos.Descricao,
-                                header: 'Descrição',
-                              }"
-                            />
-                            <ValidaCampo
-                              v-if="item.notasAp.length > 0"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
                               campoValue="notasAp"
                               campoText="Notas de Aplicação"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="notasAp"
                               arrayValue="nota"
+                              :notas="expandedProc.notasAp"
                               :info="{
                                 header: 'Notas de Aplicação',
                                 text: myhelp.Classe.Campos.NotasAp,
@@ -187,7 +168,6 @@
                             />
 
                             <ValidaCampo
-                              v-if="item.exemplosNotasAp.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -198,9 +178,10 @@
                               "
                               campoValue="exemplosNotasAp"
                               campoText="Exemplos de Notas de Aplicação"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="exemplosNotasAp"
                               arrayValue="exemplo"
+                              :notas="expandedProc.exemplosNotasAp"
                               :info="{
                                 header: 'Exemplos de Notas de Aplicação',
                                 text: myhelp.Classe.Campos.ExemplosNotasAp,
@@ -208,7 +189,6 @@
                             />
 
                             <ValidaCampo
-                              v-if="item.notasEx.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -217,11 +197,12 @@
                                   )
                                 ].dados
                               "
-                              campoValue="NotasEx"
+                              campoValue="notasEx"
                               campoText="Notas de Exclusão"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="notasEx"
                               arrayValue="nota"
+                              :notas="expandedProc.notasEx"
                               :info="{
                                 header: 'Notas de Exclusão',
                                 text: myhelp.Classe.Campos.NotasEx,
@@ -229,7 +210,6 @@
                             />
 
                             <ValidaCampo
-                              v-if="item.termosInd.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -240,9 +220,10 @@
                               "
                               campoValue="termosInd"
                               campoText="Termos de indice"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="termosInd"
                               arrayValue="termo"
+                              :notas="expandedProc.termosInd"
                               :info="{
                                 header: 'Termos de Indice',
                                 text: myhelp.Classe.Campos.TermosIndice,
@@ -311,6 +292,7 @@ export default {
       expanded: [],
       novoHistorico: null,
       json: null,
+      expandedProc: {},
       listaProcs: false,
       dialogConfirmacao: {
         visivel: false,
@@ -342,18 +324,14 @@ export default {
     };
   },
   methods: {
-    clicked(value) {
+    async clicked({ item }) {
       if (
-        value.descricao ||
-        value.notaDF ||
-        value.notaPCA ||
-        value.formaContagem ||
-        value.subFormaContagem ||
-        value.designacaoParticipante ||
-        value.designacaoDono
-      )
-        if (this.expanded[0] == value) this.expanded.pop();
-        else this.expanded = [value];
+        !this.expandedProc.codigo ||
+        this.expandedProc.codigo != item.codigo
+      ) {
+        let response = await this.$request("get", "/classes/c" + item.codigo);
+        this.expandedProc = response.data;
+      }
     },
     async despacharPedido(dados) {
       try {

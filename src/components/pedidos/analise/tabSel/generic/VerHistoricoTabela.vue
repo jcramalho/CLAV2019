@@ -9,7 +9,7 @@
       item-key="dados.codigo.dados"
       show-expand
       single-expand
-      :expanded="expanded"
+      @item-expanded="clicked"
     >
       <template v-slot:[`item.codigo`]="{ item }">{{
         item.dados.codigo.dados
@@ -75,33 +75,33 @@
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <VerHistoricoCampo
-                      v-if="item.dados.notasAp.dados.length > 0"
                       campoText="Notas de aplicação"
                       :historicoCampo="item.dados.notasAp"
-                      tipo="array"
+                      :notas="expandedProc.notasAp"
+                      tipo="notasAp"
                       arrayValue="nota"
                     />
                     <VerHistoricoCampo
-                      v-if="item.dados.exemplosNotasAp.dados.length > 0"
                       campoText="Exemplos de Notas de aplicação"
                       :historicoCampo="item.dados.exemplosNotasAp"
-                      tipo="array"
+                      :notas="expandedProc.exemplosNotasAp"
+                      tipo="exemplosNotasAp"
                       arrayValue="exemplo"
                     />
 
                     <VerHistoricoCampo
-                      v-if="item.dados.notasEx.dados.length > 0"
                       campoText="Notas de Exclusão"
                       :historicoCampo="item.dados.notasEx"
-                      tipo="array"
+                      :notas="expandedProc.notasEx"
+                      tipo="notasEx"
                       arrayValue="nota"
                     />
 
                     <VerHistoricoCampo
-                      v-if="item.dados.termosInd.dados.length > 0"
                       campoText="Termos de Indice"
                       :historicoCampo="item.dados.termosInd"
-                      tipo="array"
+                      :notas="expandedProc.termosInd"
+                      tipo="termosInd"
                       arrayValue="termo"
                     />
                   </v-expansion-panel-content>
@@ -129,7 +129,7 @@ export default {
         "items-per-page-options": [1, 5, 10, -1],
         "items-per-page-text": "Mostrar",
       },
-      expanded: [],
+      expandedProc: {},
       headers: [
         {
           text: "Código",
@@ -163,6 +163,20 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    async clicked({ item }) {
+      if (
+        !this.expandedProc.codigo ||
+        this.expandedProc.codigo != item.codigo
+      ) {
+        let response = await this.$request(
+          "get",
+          "/classes/c" + item.dados.codigo.dados
+        );
+        this.expandedProc = response.data;
+      }
+    },
   },
 };
 </script>

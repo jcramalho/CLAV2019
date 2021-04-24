@@ -331,7 +331,7 @@
           </v-row>
           <v-row class="mt-2">
             <v-col cols="2">
-              <div class="info-label">Ficheiro Agregações / Unidades de Instalação</div>
+              <div class="info-label">Ficheiro Agregações / Unidades de instalação</div>
             </v-col>
 
             <v-col class="info-content">
@@ -535,7 +535,7 @@ export default {
         }
         if (!zc.destino || zc.destino == "") {
           this.errosVal.erros.push({
-            sobre: "Destino Final",
+            sobre: "Destino final",
             mensagem:
               "Preenchimento incorreto ou não preenchimento na classe " +
               zc.codigo +

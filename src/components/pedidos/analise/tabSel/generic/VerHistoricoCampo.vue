@@ -25,13 +25,50 @@
                 </li>
               </ul>
             </span>
+            <span
+              v-else-if="
+                tipo == 'notasAp' ||
+                tipo == 'notasEx' ||
+                tipo == 'exemplosNotasAp' ||
+                tipo == 'termosInd'
+              "
+            >
+              <ul
+                v-if="
+                  loadNotas().length != 0 || historicoCampo.dados.length != 0
+                "
+              >
+                <li v-for="(v, i) in loadNotas()" :key="i">
+                  <span
+                    v-if="
+                      !historicoCampo.dados.some(
+                        (e) => e[arrayValue] == v[arrayValue]
+                      )
+                    "
+                    class="text-decoration-line-through"
+                  >
+                    {{ v[arrayValue]
+                    }}<v-badge right dot inline color="error"></v-badge
+                  ></span>
+                  <span
+                    v-else-if="
+                      !notas.some((n) => n[arrayValue] == v[arrayValue])
+                    "
+                  >
+                    {{ v[arrayValue] }}
+                    <v-badge right dot inline color="orange"></v-badge>
+                  </span>
+                  <span v-else>{{ v[arrayValue] }}</span>
+                </li>
+              </ul>
+              <span v-else>
+                [Campo não preenchido na submissão do pedido]
+              </span>
+            </span>
+
             <span v-else-if="tipo == 'estado'">
-              <div v-if="historicoCampo.dados === 'A'">
-                Ativa
-              </div>
-              <div v-else-if="historicoCampo.dados === 'H'">
-                Em revisão...
-              </div>
+              <div v-if="historicoCampo.dados === 'A'">Ativa</div>
+              <div v-else-if="historicoCampo.dados === 'H'">Em revisão...</div>
               <div v-else>Inativa</div>
             </span>
             <span v-else-if="tipo == 'procTrans'">{{
@@ -60,18 +97,14 @@
               <div v-else-if="historicoCampo.dados == 1">
                 {{ historicoCampo.dados }} ano
               </div>
-              <div v-else>
-                Não específicado
-              </div>
+              <div v-else>Não específicado</div>
             </span>
             <span v-else-if="tipo == 'justPCA'">
               <div v-for="c in historicoCampo.dados" :key="c.tipoId">
                 <!-- Critério Gestionário ...............................-->
                 <v-row v-if="c.tipoId == 'CriterioJustificacaoGestionario'">
                   <v-col xs="2" sm="2">
-                    <div class="info-label">
-                      Critério Gestionário
-                    </div>
+                    <div class="info-label">Critério Gestionário</div>
                   </v-col>
                   <v-col xs="10" sm="10">
                     <div class="info-content">
@@ -116,9 +149,7 @@
                 <!-- Critério Legal ...................................-->
                 <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
                   <v-col xs="2" sm="2">
-                    <div class="info-label">
-                      Critério Legal
-                    </div>
+                    <div class="info-label">Critério Legal</div>
                   </v-col>
                   <v-col xs="10" sm="10">
                     <div class="info-content">
@@ -150,9 +181,7 @@
                 <!-- Critério Legal ...................................-->
                 <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
                   <v-col xs="2" sm="2">
-                    <div class="info-label">
-                      Critério Legal
-                    </div>
+                    <div class="info-label">Critério Legal</div>
                   </v-col>
                   <v-col xs="10" sm="10">
                     <div class="info-content">
@@ -282,12 +311,24 @@ import ProcessosRelacionados from "@/components/classes/consulta/ProcessosRelaci
 import Legislacao from "@/components/classes/consulta/Legislacao.vue";
 
 export default {
-  props: ["campoText", "historicoCampo", "tipo", "arrayValue"],
+  props: ["campoText", "historicoCampo", "tipo", "arrayValue", "notas"],
   components: { Donos, Participantes, ProcessosRelacionados, Legislacao },
   data() {
     return {
-      verNota: false
+      verNota: false,
     };
-  }
+  },
+  methods: {
+    loadNotas: function () {
+      let array = this.notas.filter(
+        (n) =>
+          n[this.arrayValue].replace(" ", "") != "" &&
+          !this.historicoCampo.dados.some(
+            (n1) => n1[this.arrayValue] == n[this.arrayValue]
+          )
+      );
+      return array.concat(this.historicoCampo.dados);
+    },
+  },
 };
 </script>

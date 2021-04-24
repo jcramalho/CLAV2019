@@ -26,7 +26,7 @@
           <Identificacao :newSerie="subserie" />
           <v-row>
             <v-col md="3" sm="3">
-              <div class="info-label">Classe Pai</div>
+              <div class="info-label">Classe pai</div>
             </v-col>
             <v-col cols="12" sm="9" md="0">
               <v-autocomplete
@@ -38,7 +38,7 @@
                 item-text="searchField"
                 solo
                 clearable
-                placeholder="Classe Pai"
+                placeholder="Classe pai"
                 chips
               >
                 <template v-slot:no-data>
@@ -158,14 +158,14 @@ export default {
       if (!Boolean(this.subserie.pca)) {
         if (!Boolean(this.subserie.notaPCA)) {
           this.erros.push(
-            "Prazo de Conservação Administrativo ou nota sobre o PCA;"
+            "Prazo de conservação administrativa ou nota sobre o PCA;"
           );
         }
       }
 
       if (!Boolean(this.subserie.df)) {
         if (!Boolean(this.subserie.notaDF)) {
-          this.erros.push("Destino Final ou nota sobre o DF;");
+          this.erros.push("Destino final ou nota sobre o DF;");
         }
       }
 

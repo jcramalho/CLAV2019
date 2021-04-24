@@ -88,7 +88,7 @@
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="12" sm="2" >
-      <div class="info-label">Destino Final da classe / série</div>
+      <div class="info-label">Destino final da classe / série</div>
     </v-col>
     <v-col cols="12" xs="12" sm="4" >
       <v-text-field

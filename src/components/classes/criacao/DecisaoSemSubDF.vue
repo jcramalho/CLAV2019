@@ -4,7 +4,7 @@
     <v-row class="ma-2">
       <v-col>
         <v-toolbar color="indigo darken-2 font-weight-regular" dark height="30">
-          <v-toolbar-title>Destino Final</v-toolbar-title>
+          <v-toolbar-title>Destino final</v-toolbar-title>
         </v-toolbar>
       </v-col>
     </v-row>

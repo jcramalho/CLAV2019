@@ -246,7 +246,7 @@
                             `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
                           ]"
                         >
-                          Destino Final
+                          Destino final
                         </div>
                       </td>
                       <td v-if="item.destino === 'E'" style="width:80%;">

@@ -9,7 +9,7 @@
           <Identificacao :newSerie="newSerie" :classes="classes" />
           <v-row>
             <v-col md="3" sm="3">
-              <div class="info-label">Classe Pai</div>
+              <div class="info-label">Classe pai</div>
             </v-col>
             <v-col sm="9" md="9">
               <v-autocomplete
@@ -20,7 +20,7 @@
                 item-text="searchField"
                 solo
                 clearable
-                label="Classe Pai"
+                label="Classe pai"
                 chips
               >
                 <template v-slot:no-data>

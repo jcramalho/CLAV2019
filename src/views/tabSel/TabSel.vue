@@ -306,6 +306,39 @@ export default {
         return e;
       });
 
+    await this.fontesPGDTS.map(async (obj) => {
+      var leg =
+        obj.idPGD != ""
+          ? await this.$request(
+              "get",
+              `/legislacao/${obj.idPGD.split("pgd_")[1]}`
+            )
+          : "";
+      leg && leg.data.entidades1.length > 0
+        ? (obj.entidades = leg.data.entidades1.map((e) => {
+            return e.id.includes("ent_")
+              ? e.id.split("ent_")[1]
+              : e.id.split("tip_")[1];
+          }))
+        : "";
+    });
+
+    await this.fontesPGDLC.map(async (obj) => {
+      var leg =
+        obj.idPGD != ""
+          ? await this.$request(
+              "get",
+              `/legislacao/${obj.idPGD.split("pgd_lc_")[1]}`
+            )
+          : "";
+      leg && leg.data.entidades1.length > 0
+        ? (obj.entidades = leg.data.entidades1.map((e) => {
+            return e.id.includes("ent_")
+              ? e.id.split("ent_")[1]
+              : e.id.split("tip_")[1];
+          }))
+        : "";
+    });
     // Faz load de todas as entidades
 
     await this.$request("get", "/entidades")

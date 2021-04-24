@@ -3,7 +3,7 @@
     <v-expansion-panels flat focusable v-model="panel">
       <v-expansion-panel>
         <v-expansion-panel-header disable-icon-rotate color="#dee2f8">
-          <b style="color: #1a237e">Criar Nova Entidade</b>
+          <b style="color: #1a237e">Adicionar nova entidade</b>
 
           <template v-slot:actions>
             <v-icon color="sucess" rounded>add</v-icon>
@@ -38,7 +38,7 @@
                     <v-text-field
                       :rules="designacaoRules"
                       v-model="designacao"
-                      label="Designação"
+                      label="Nome da entidade"
                     ></v-text-field>
                   </v-col>
                 </v-row>

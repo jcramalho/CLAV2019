@@ -26,10 +26,7 @@ export default {
     try {
       let { email } = this.$verifyTokenUser();
 
-      const { data } = await this.$request(
-        "get",
-        `/pedidos?criadoPor=${email}`
-      );
+      const { data } = await this.$request("get", `/pedidos?criadoPor=${email}`);
 
       this.pedidos = this.atualizaPedidos(data);
 

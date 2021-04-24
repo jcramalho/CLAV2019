@@ -250,8 +250,160 @@
                 </li>
               </ul>
             </span>
-            <span v-else-if="tipo == 'procsAselecionar'">
+            <span
+              v-else-if="
+                (tipo == 'notasAp' || tipo == 'notasEx') &&
+                (!!novoHistorico[campoValue].dados[0] || loadNotas().length > 0)
+              "
+            >
               <ul>
+                <li v-for="(v, i) in loadNotas()" :key="i">
+                  <span
+                    v-if="
+                      !dadosOriginais[campoValue].some((e) => e.nota == v.nota)
+                    "
+                    class="text-decoration-line-through"
+                  >
+                    {{ v[arrayValue] }}
+                    <v-btn
+                      icon
+                      x-small
+                      color="error"
+                      @click="dadosOriginais[campoValue].push(v)"
+                      ><v-icon>done</v-icon></v-btn
+                    >
+                  </span>
+                  <span
+                    v-else-if="
+                      !notas.some((n) => n.nota == v[arrayValue]) ||
+                      (dadosOriginais[campoValue].some(
+                        (e) => e.nota == v.nota
+                      ) &&
+                        !novoHistorico[campoValue].dados.some(
+                          (e) => e.nota == v.nota
+                        ))
+                    "
+                    >{{ v[arrayValue] }}
+                    <v-badge right dot inline color="orange"></v-badge>
+                  </span>
+                  <span
+                    v-else-if="
+                      dadosOriginais[campoValue].some((e) => e.nota == v.nota)
+                    "
+                    >{{ v[arrayValue] }}</span
+                  >
+                  <span v-else-if="notas.some((e) => e.nota == v.nota)">{{
+                    v[arrayValue]
+                  }}</span>
+                </li>
+              </ul>
+            </span>
+            <span
+              v-else-if="
+                tipo == 'exemplosNotasAp' &&
+                (!!novoHistorico[campoValue].dados[0] ||
+                  loadExemplos().length > 0)
+              "
+            >
+              <ul>
+                <li v-for="(v, i) in loadExemplos()" :key="i">
+                  <span
+                    v-if="
+                      !dadosOriginais[campoValue].some(
+                        (e) => e.exemplo == v.exemplo
+                      )
+                    "
+                    class="text-decoration-line-through"
+                  >
+                    {{ v[arrayValue] }}
+                    <v-btn
+                      icon
+                      x-small
+                      color="error"
+                      @click="dadosOriginais[campoValue].push(v)"
+                      ><v-icon>done</v-icon></v-btn
+                    >
+                  </span>
+                  <span
+                    v-else-if="
+                      !notas.some((n) => n.exemplo == v[arrayValue]) ||
+                      (dadosOriginais[campoValue].some(
+                        (e) => e.exemplo == v.exemplo
+                      ) &&
+                        !novoHistorico[campoValue].dados.some(
+                          (e) => e.exemplo == v.exemplo
+                        ))
+                    "
+                    >{{ v[arrayValue] }}
+                    <v-badge right dot inline color="orange"></v-badge>
+                  </span>
+                  <span
+                    v-else-if="
+                      dadosOriginais[campoValue].some(
+                        (e) => e.exemplo == v.exemplo
+                      )
+                    "
+                    >{{ v[arrayValue] }}</span
+                  >
+                  <span v-else-if="notas.some((e) => e.exemplo == v.exemplo)">{{
+                    v[arrayValue]
+                  }}</span>
+                </li>
+              </ul>
+            </span>
+            <span
+              v-else-if="
+                tipo == 'termosInd' &&
+                (!!novoHistorico[campoValue].dados[0] ||
+                  loadTermosInd().length > 0)
+              "
+            >
+              <ul>
+                <li v-for="(v, i) in loadTermosInd()" :key="i">
+                  <span
+                    v-if="
+                      !dadosOriginais[campoValue].some(
+                        (e) => e.termo == v.termo
+                      )
+                    "
+                    class="text-decoration-line-through"
+                  >
+                    {{ v[arrayValue] }}
+                    <v-btn
+                      icon
+                      x-small
+                      color="error"
+                      @click="dadosOriginais[campoValue].push(v)"
+                      ><v-icon>done</v-icon></v-btn
+                    >
+                  </span>
+                  <span
+                    v-else-if="
+                      !notas.some((n) => n.termo == v[arrayValue]) ||
+                      (dadosOriginais[campoValue].some(
+                        (e) => e.termo == v.termo
+                      ) &&
+                        !novoHistorico[campoValue].dados.some(
+                          (e) => e.termo == v.termo
+                        ))
+                    "
+                    >{{ v[arrayValue] }}
+                    <v-badge right dot inline color="orange"></v-badge>
+                  </span>
+                  <span
+                    v-else-if="
+                      dadosOriginais[campoValue].some((e) => e.termo == v.termo)
+                    "
+                    >{{ v[arrayValue] }}</span
+                  >
+                  <span v-else-if="notas.some((e) => e.termo == v.termo)">{{
+                    v[arrayValue]
+                  }}</span>
+                </li>
+              </ul>
+            </span>
+            <span v-else-if="tipo == 'procsAselecionar'">
+              <ul v-if="novoHistorico[campoValue].dados.length > 0">
                 <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
                   {{ v.codigo }} - {{ v.titulo }}
                   <v-badge
@@ -268,6 +420,7 @@
                   <v-icon v-else class="mr-1" color="green">check</v-icon>
                 </li>
               </ul>
+              <span v-else>[Sem processos a selecionar]</span>
             </span>
             <span
               v-else-if="
@@ -322,15 +475,10 @@
         </span>
         <!-- Ver como vai ser a edição. -->
         <v-icon
-          v-if="
-            permitirEditar && tipo != 'procsAselecionar' && tipo != 'classes'
-          "
+          v-if="permitirEditar && (tipo == 'array' || tipo == 'string')"
           class="mr-1"
           color="orange"
-          @click="
-            editaCampo = campoValue;
-            campoEditado = novoHistorico[campoValue].dados;
-          "
+          @click="edita()"
           >create</v-icon
         >
         <v-icon
@@ -340,6 +488,19 @@
           class="mr-1"
           color="orange"
           @click="loadSelecao()"
+          >create</v-icon
+        >
+        <v-icon
+          v-if="
+            permitirEditar &&
+            (tipo == 'notasAp' ||
+              tipo == 'exemplosNotasAp' ||
+              tipo == 'notasEx' ||
+              tipo == 'termosInd')
+          "
+          class="mr-1"
+          color="orange"
+          @click="editaBlocoDescritivoFlag = true"
           >create</v-icon
         >
 
@@ -411,6 +572,12 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <EditDescritivo
+      v-if="editaBlocoDescritivoFlag"
+      :p="dadosOriginais"
+      @editado="blocoDescritivoEditado($event)"
+      @cancelado="blocoDescritivoCancelado($event)"
+    />
   </div>
 </template>
 
@@ -423,6 +590,7 @@ import ProcessosRelacionados from "@/components/classes/consulta/ProcessosRelaci
 import Legislacao from "@/components/classes/consulta/Legislacao.vue";
 import ListaProcessosOrg from "@/components/tabSel/criacaoTSOrg/ListaProcessos.vue";
 import ListaProcessosPluri from "@/components/tabSel/criacaoTSPluri/ListaProcessos.vue";
+import EditDescritivo from "@/components/tabSel/parteDescritiva/EditDescritivo.vue";
 
 export default {
   props: {
@@ -439,6 +607,7 @@ export default {
     info: { text: "", header: "" },
     tabelaSelecao: {},
     tipoTS: {},
+    notas: {},
   },
 
   components: {
@@ -450,6 +619,7 @@ export default {
     Legislacao,
     ListaProcessosOrg,
     ListaProcessosPluri,
+    EditDescritivo,
   },
   data: () => ({
     campoEditado: null,
@@ -464,6 +634,7 @@ export default {
     listaCodigosEsp: [],
     fechoTransitivo: {},
     listaProcessosKey: 0,
+    editaBlocoDescritivoFlag: false,
   }),
   methods: {
     forceRender() {
@@ -501,43 +672,62 @@ export default {
 
             break;
           case "array":
-            if (
-              !(
-                this.campoEditado.length ==
-                  this.novoHistorico[this.campoValue].dados.length &&
-                this.campoEditado.every(
-                  (val, index) =>
-                    val === this.novoHistorico[this.campoValue].dados[index]
-                )
-              )
-            ) {
-              this.novoHistorico[this.campoValue].dados = this.campoEditado;
+            if (this.arrayValue == "") {
               if (
-                this.campoEditado.length ==
-                  this.dadosOriginais[this.campoValue].length &&
-                this.campoEditado.every(
-                  (val, index) =>
-                    val === this.dadosOriginais[this.campoValue][index]
+                !(
+                  this.campoEditado.length ==
+                    this.novoHistorico[this.campoValue].dados.length &&
+                  this.campoEditado.every(
+                    (val, index) =>
+                      val === this.novoHistorico[this.campoValue].dados[index]
+                  )
                 )
               ) {
-                this.novoHistorico[this.campoValue].cor = "verde";
-                this.$emit(
-                  "corAlterada",
-                  this.novoHistorico[this.campoValue].cor
-                );
-                this.foiEditado = false;
-              } else {
-                this.novoHistorico[this.campoValue].cor = "amarelo";
-                this.$emit(
-                  "corAlterada",
-                  this.novoHistorico[this.campoValue].cor
-                );
-                this.foiEditado = true;
+                this.novoHistorico[this.campoValue].dados = this.campoEditado;
+                if (
+                  this.campoEditado.length ==
+                    this.dadosOriginais[this.campoValue].length &&
+                  this.campoEditado.every(
+                    (val, index) =>
+                      val === this.dadosOriginais[this.campoValue][index]
+                  )
+                ) {
+                  this.novoHistorico[this.campoValue].cor = "verde";
+                  this.$emit(
+                    "corAlterada",
+                    this.novoHistorico[this.campoValue].cor
+                  );
+                  this.foiEditado = false;
+                } else {
+                  this.novoHistorico[this.campoValue].cor = "amarelo";
+                  this.$emit(
+                    "corAlterada",
+                    this.novoHistorico[this.campoValue].cor
+                  );
+                  this.foiEditado = true;
+                }
+                this.editaCampo = null;
+                this.campoEditado = null;
               }
-              this.editaCampo = null;
-              this.campoEditado = null;
+              break;
+            } else {
+              if (
+                !(
+                  this.campoEditado.length ==
+                    this.novoHistorico[this.campoValue].dados.length &&
+                  this.campoEditado.every((val, index) => {
+                    val ===
+                      this.novoHistorico[this.campoValue].dados[index][
+                        this.arrayValue
+                      ];
+                  })
+                )
+              ) {
+                this.novoHistorico[this.campoValue].dados = this.campoEditado;
+                this.editaCampo = null;
+                this.campoEditado = null;
+              }
             }
-            break;
         }
       }
     },
@@ -648,6 +838,20 @@ export default {
             this.listaProcessos.procs[i].preSelectedLabel = "";
             this.listaProcessos.procs[i].dono = false;
             this.listaProcessos.procs[i].participante = "NP";
+            this.listaProcessos.procs[i].notasAp = this.listaProcessos.procs[
+              i
+            ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
+            this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
+              i
+            ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
+            this.listaProcessos.procs[
+              i
+            ].exemplosNotasAp = this.listaProcessos.procs[
+              i
+            ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
+            this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
+              i
+            ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
           }
           this.participante = new Array(this.listaProcessos.procs.length).fill(
             "NP"
@@ -812,10 +1016,10 @@ export default {
             })
         )
         .sort((p1, p2) => p2.codigo < p1.codigo);
-
       if (
         this.tabelaSelecao.listaProcessos.procsAselecionar.length !==
-        this.listaProcessos.procsAselecionar.length
+          this.listaProcessos.procsAselecionar.length &&
+        this.listaProcessos.procsAselecionar.length > 0
       ) {
         this.novoHistorico.procsAselecionar.cor = "amarelo";
       }
@@ -834,6 +1038,8 @@ export default {
       this.dadosOriginais.processosPreSelecionados = this.listaProcessos.processosPreSelecionados;
       this.dadosOriginais.procsAselecionar = this.listaProcessos.procsAselecionar;
 
+      let aux = this.novoHistorico.classes.dados;
+
       this.novoHistorico.classes.dados = JSON.parse(
         JSON.stringify(this.listaProcessos.procs)
       );
@@ -844,13 +1050,22 @@ export default {
       );
 
       this.novoHistorico.classes.dados.map((p) => {
+        let i = aux.findIndex(
+          (proc) => proc.dados.codigo.dados == p.dados.codigo
+        );
+
         Object.keys(p.dados).map((e) => {
-          p.dados[e] = { cor: "verde", dados: p.dados[e], nota: null };
+          p.dados[e] = {
+            cor: i > -1 ? aux[i].dados[e].cor : "verde",
+            dados: p.dados[e],
+            nota: null,
+          };
+
           if (e === "pca" || e === "df") {
-            Object.keys(p.dados[e].dados).map((k) => {
-              p.dados[e].dados[k] = {
+            Object.keys(p.dados[e].dados).map((d) => {
+              p.dados[e].dados[d] = {
                 cor: "verde",
-                dados: p.dados[e].dados[k],
+                dados: p.dados[e].dados[d],
                 nota: null,
               };
             });
@@ -862,8 +1077,96 @@ export default {
       this.verListaProcessos = false;
       this.listaProcessosReady = false;
     },
+
+    // Função de retorno do processo de edição do Bloco Descritivo
+    blocoDescritivoEditado: function (p) {
+      this.dadosOriginais.notasAp = p.notasAp;
+      this.dadosOriginais.exemplosNotasAp = p.exemplosNotasAp;
+      this.dadosOriginais.notasEx = p.notasEx;
+      this.dadosOriginais.termosInd = p.termosInd;
+
+      !(
+        this.novoHistorico.notasAp.dados.length ===
+          this.dadosOriginais.notasAp.length &&
+        this.novoHistorico.notasAp.dados.every((n) =>
+          this.dadosOriginais.notasAp.some((nota) => nota.nota == n.nota)
+        )
+      )
+        ? (this.novoHistorico.notasAp.cor = "amarelo")
+        : "";
+
+      !(
+        this.novoHistorico.exemplosNotasAp.dados.length ===
+          this.dadosOriginais.exemplosNotasAp.length &&
+        this.novoHistorico.exemplosNotasAp.dados.every((n) =>
+          this.dadosOriginais.exemplosNotasAp.some(
+            (nota) => nota.exemplo == n.exemplo
+          )
+        )
+      )
+        ? (this.novoHistorico.exemplosNotasAp.cor = "amarelo")
+        : "";
+
+      !(
+        this.novoHistorico.notasEx.dados.length ===
+          this.dadosOriginais.notasEx.length &&
+        this.novoHistorico.notasEx.dados.every((n) =>
+          this.dadosOriginais.notasEx.some((nota) => nota.nota == n.nota)
+        )
+      )
+        ? (this.novoHistorico.notasEx.cor = "amarelo")
+        : "";
+
+      !(
+        this.novoHistorico.termosInd.dados.length ===
+          this.dadosOriginais.termosInd.length &&
+        this.novoHistorico.termosInd.dados.every((n) =>
+          this.dadosOriginais.termosInd.some((nota) => nota.termo == n.termo)
+        )
+      )
+        ? (this.novoHistorico.termosInd.cor = "amarelo")
+        : "";
+
+      this.editaBlocoDescritivoFlag = false;
+    },
+    // Função de cancelamento do processo de edição do Bloco Descritivo
+    blocoDescritivoCancelado: function (p) {
+      this.editaBlocoDescritivoFlag = false;
+    },
     cancelar: function () {
       this.verListaProcessos = false;
+    },
+    edita: function () {
+      this.editaCampo = this.campoValue;
+      this.campoEditado = this.novoHistorico[this.campoValue].dados;
+    },
+    loadNotas: function () {
+      let array = this.notas.filter(
+        (n) =>
+          n.nota.replace(" ", "") != "" &&
+          !this.dadosOriginais[this.campoValue].some((n1) => n1.nota == n.nota)
+      );
+      return array.concat(this.dadosOriginais[this.campoValue]);
+    },
+    loadExemplos: function () {
+      let array = this.notas.filter(
+        (n) =>
+          n.exemplo.replace(" ", "") != "" &&
+          !this.dadosOriginais[this.campoValue].some(
+            (n1) => n1.exemplo == n.exemplo
+          )
+      );
+      return array.concat(this.dadosOriginais[this.campoValue]);
+    },
+    loadTermosInd: function () {
+      let array = this.notas.filter(
+        (n) =>
+          n.termo.replace(" ", "") != "" &&
+          !this.dadosOriginais[this.campoValue].some(
+            (n1) => n1.termo == n.termo
+          )
+      );
+      return array.concat(this.dadosOriginais[this.campoValue]);
     },
   },
 };

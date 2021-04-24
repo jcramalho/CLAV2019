@@ -1,7 +1,7 @@
 <template>
   <!-- DF -->
   <v-card class="ma-2" >
-    <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>Destino Final</v-card-title>
+    <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>Destino final</v-card-title>
     <v-card-text>
       <v-row class="ma-2">
         <v-col cols="2">

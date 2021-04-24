@@ -1,10 +1,10 @@
 <template>
   <v-row class="ma-1">
     <Loading v-if="loading" :message="'pedido'" />
-    <v-row v-else class="ma-1">
+    <v-row v-else>
       <v-col>
         <v-card>
-          <v-card-title class="indigo darken-4 title white--text" dark>
+          <v-card-title class="clav-linear-background white--text">
             Análise do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
             <v-spacer />
@@ -271,8 +271,14 @@ export default {
   async created() {
     try {
       const { data } = await this.$request("get", "/pedidos/" + this.idp);
+
       if (data.estado !== "Distribuído" && data.estado !== "Redistribuído")
         throw new URIError("Este pedido não pertence a este estado.");
+
+      data.historico = data.historico.map(hist => ({
+        ...hist,
+        codigo: { dados: data.objeto.codigo }
+      }));
 
       this.pedido = data;
       this.loading = false;

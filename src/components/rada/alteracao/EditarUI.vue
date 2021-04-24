@@ -68,11 +68,11 @@
           </v-row>
           <v-row>
             <v-col xs="12" sm="3">
-              <div class="info-label">Data Inicial da Documentação</div>
+              <div class="info-label">Data inicial da documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
               <SelecionarData
-                label="Data Inicial"
+                label="Data inicial"
                 :d="UI_clone.dataInicial"
                 @dataSelecionada="UI_clone.dataInicial = $event"
                 :dataMinima="RE.dataInicial"
@@ -92,12 +92,12 @@
               </SelecionarData>
             </v-col>
             <v-col xs="12" sm="3">
-              <div class="info-label">Data Final da Documentação</div>
+              <div class="info-label">Data final da documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
               <SelecionarData
                 :d="UI_clone.dataFinal"
-                label="Data Final"
+                label="Data final"
                 @dataSelecionada="UI_clone.dataFinal = $event"
                 :dataMinima="RE.dataInicial"
                 :dataMaxima="RE.dataFinal"

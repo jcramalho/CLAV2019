@@ -1,73 +1,77 @@
 <template>
-  <v-card flat class="pa-3">
-    <v-row>
-      <v-col>
-        <p class="clav-content-title-1">Lista de Trabalhos Pendentes</p>
-      </v-col>
-    </v-row>
-    <v-card flat class="clav-info-content">
-      <v-tooltip top color="info" open-delay="500">
-        <template v-slot:activator="{ on }">
-          <v-text-field
-            v-on="on"
-            v-model="search"
-            append-icon="search"
-            label="Procurar / filtrar tabela"
-            text
-            single-line
-            hide-details
-            clearable
-            color="blue darken-3"
-            class="mt-n2 mb-3 mx-6 font-weight-medium"
-          ></v-text-field>
-        </template>
+  <PainelCLAV titulo="Lista de Trabalhos Pendentes">
+    <template v-slot:icon>
+      <v-badge color="error" :content="pendentes.length" overlap>
+        <v-icon color="secondary"> mdi-content-save-edit </v-icon>
+      </v-badge>
+    </template>
+    <template v-slot:conteudo>
+      <v-card flat>
+        <v-card-title>
+          <v-tooltip top color="info" open-delay="500">
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-on="on"
+                v-model="search"
+                append-icon="search"
+                label="Procurar / filtrar tabela"
+                text
+                single-line
+                hide-details
+                clearable
+                color="primary"
+                class="mt-n2 mb-3 mx-6 font-weight-medium"
+              ></v-text-field>
+            </template>
 
-        <span> Filtrar tabela</span>
-      </v-tooltip>
-      <v-data-table
-        class="content-table"
-        :headers="headers"
-        :items="pendentes"
-        :footer-props="procsFooterProps"
-        :sort-by="['dataAtualizacao']"
-        :search="search"
-        :sort-desc="[true]"
-      >
-        <template v-slot:no-data>
-          <br />
-          <v-alert :value="true" color="error" icon="warning">
-            Não foi possível apresentar uma lista dos trabalhos guardados...
-          </v-alert>
-        </template>
+            <span> Filtrar tabela</span>
+          </v-tooltip>
+        </v-card-title>
+        <v-data-table
+          class="content-table"
+          :headers="headers"
+          :items="pendentes"
+          :footer-props="procsFooterProps"
+          :sort-by="['dataAtualizacao']"
+          :search="search"
+          :sort-desc="[true]"
+        >
+          <template v-slot:no-data>
+            <br />
+            <v-alert :value="true" color="error" icon="warning">
+              Não foi possível apresentar uma lista dos trabalhos guardados...
+            </v-alert>
+          </template>
 
-        <template v-slot:item="props">
-          <tr>
-            <td class="subheading">
-              {{ props.item.dataCriacao.split("T")[0] }}
-            </td>
-            <td class="subheading">
-              {{ props.item.dataAtualizacao.split("T")[0] }}
-            </td>
-            <td class="subheading">{{ props.item.numInterv }}</td>
-            <td class="subheading">{{ props.item.criadoPor }}</td>
-            <td class="subheading">{{ props.item.acao }}</td>
-            <td class="subheading">{{ props.item.tipo }}</td>
-            <td class="subheading">
-              <PainelOperacoesPendentes
-                @continuar="continuarTrabalho(props.item)"
-                @show="showPendente(props.item)"
-                @apagar="apagarTrabalho(props.item)"
-              />
-            </td>
-          </tr>
-        </template>
+          <template v-slot:item="props">
+            <tr>
+              <td class="subheading">
+                {{ props.item.dataCriacao.split("T")[0] }}
+              </td>
+              <td class="subheading">
+                {{ props.item.dataAtualizacao.split("T")[0] }}
+              </td>
+              <td class="subheading">{{ props.item.numInterv }}</td>
+              <td class="subheading">{{ props.item.criadoPor }}</td>
+              <td class="subheading">{{ props.item.acao }}</td>
+              <td class="subheading">{{ props.item.tipo }}</td>
+              <td class="subheading">
+                <PainelOperacoesPendentes
+                  @continuar="continuarTrabalho(props.item)"
+                  @show="showPendente(props.item)"
+                  @apagar="apagarTrabalho(props.item)"
+                />
+              </td>
+            </tr>
+          </template>
 
-        <template v-slot:footer.page-text="props">
-          {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
-        </template>
-      </v-data-table>
-    </v-card>
+          <template v-slot:footer.page-text="props">
+            {{ props.pageStart }} - {{ props.pageStop }} de
+            {{ props.itemsLength }}
+          </template>
+        </v-data-table>
+      </v-card>
+    </template>
 
     <v-dialog v-model="pendenteRemovido" width="50%">
       <v-card>
@@ -84,17 +88,20 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-card>
+  </PainelCLAV>
 </template>
 
 <script>
 import PainelOperacoesPendentes from "@/components/pendentes/PainelOperacoesPendentes";
+import PainelCLAV from "@/components/generic/PainelCLAV";
 export default {
   components: {
     PainelOperacoesPendentes,
+    PainelCLAV,
   },
 
   data: () => ({
+    search: "",
     headers: [
       {
         text: "Criado em",

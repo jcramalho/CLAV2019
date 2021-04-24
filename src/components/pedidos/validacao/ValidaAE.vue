@@ -166,7 +166,7 @@
                         <div :class="[
                           'info-descricao',
                           `info-descricao-${novoHistorico.zonaControlo[index].cor}`
-                        ]">Destino Final</div>
+                        ]">Destino final</div>
                       </td>
                       <td v-if="item.destino === 'E'" style="width:80%;">
                         Eliminação

@@ -1,10 +1,7 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <v-subheader class="info-label">Selecionar Processos</v-subheader>
-    </v-col>
-    <v-col v-if="processosReady">
-      <v-card>
+  <Campo nome="Selecionar Processos" color="neutralpurple">
+    <template v-slot:conteudo>
+      <v-card flat v-if="processosReady">
         <v-card-title>
           <v-text-field
             filled
@@ -20,7 +17,6 @@
           :items="processos"
           :search="searchProcessos"
           item-key="id"
-          class="elevation-1"
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
@@ -40,41 +36,45 @@
           >
         </v-data-table>
       </v-card>
-    </v-col>
-    <v-col v-else style="text-align:center;">
-      <p>A carregar processos...</p>
-      <v-progress-circular
-        indeterminate
-        size="100"
-        width="10"
-        color="indigo accent-4"
-      />
-    </v-col>
-  </v-row>
+      <div v-else style="text-align: center">
+        <p>A carregar processos...</p>
+        <v-progress-circular
+          indeterminate
+          size="100"
+          width="10"
+          color="indigo accent-4"
+        />
+      </div>
+    </template>
+  </Campo>
 </template>
 
 <script>
+import Campo from "@/components/generic/Campo.vue";
 export default {
   props: ["processos", "processosReady"],
 
-  data: function() {
+  components: {
+    Campo,
+  },
+  data: function () {
     return {
       searchProcessos: "",
       footer_props: {
-        "items-per-page-text": "Linhas por página"
+        "items-per-page-text": "Linhas por página",
       },
       processosHeaders: [
         { text: "Código", align: "left", value: "codigo" },
-        { text: "Designação", value: "titulo" }
-      ]
+        { text: "Designação", value: "titulo" },
+      ],
     };
   },
 
   methods: {
-    selectProcesso: function(processo) {
+    selectProcesso: function (processo) {
       this.$emit("selectProcesso", processo);
-    }
-  }
+    },
+  },
 };
 </script>
 

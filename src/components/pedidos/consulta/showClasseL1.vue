@@ -1,6 +1,6 @@
 <template>
-  <v-card class="mt-4">
-    <v-card-title class="indigo darken-4 white--text title">
+  <v-card class="mt-2">
+    <v-card-title class="clav-linear-background white--text">
       {{ p.objeto.acao }} da Classe
 
       <v-spacer />
@@ -22,51 +22,54 @@
     </v-card-title>
 
     <v-card-text>
-      <v-row v-for="c in classeInfo" :key="c.campo">
-        <v-col cols="2">
-          <div class="info-label">{{ c.campo }}</div>
-        </v-col>
-        <v-col>
-          <!-- <div class="info-content">{{ c.conteudo }}</div> -->
-          <div v-if="!(c.conteudo instanceof Array)" class="info-content">
-            {{ c.conteudo }}
+      <Campo
+        v-for="c in classeInfo"
+        :key="c.campo"
+        :nome="c.campo"
+        :infoHeader="c.campo"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <div>
+            <span v-if="!(c.conteudo instanceof Array)">
+              {{ c.conteudo }}
+            </span>
+
+            <div v-else>
+              <v-data-table
+                :headers="notasAppHeader"
+                :items="c.conteudo"
+                :footer-props="footerProps"
+              >
+                <template v-slot:no-data>
+                  <v-alert
+                    type="error"
+                    width="100%"
+                    class="m-auto mb-2 mt-2"
+                    outlined
+                  >
+                    Nenhuma Nota selecionada...
+                  </v-alert>
+                </template>
+
+                <template v-slot:item.sigla="{ item }">
+                  <v-badge
+                    v-if="novoItemAdicionado(item, campo)"
+                    right
+                    dot
+                    inline
+                    >{{ item.sigla }}</v-badge
+                  >
+
+                  <span v-else>
+                    {{ item.sigla }}
+                  </span>
+                </template>
+              </v-data-table>
+            </div>
           </div>
-
-          <div v-else>
-            <v-data-table
-              :headers="notasAppHeader"
-              :items="c.conteudo"
-              class="elevation-1"
-              :footer-props="footerProps"
-            >
-              <template v-slot:no-data>
-                <v-alert
-                  type="error"
-                  width="100%"
-                  class="m-auto mb-2 mt-2"
-                  outlined
-                >
-                  Nenhuma tipologia selecionada...
-                </v-alert>
-              </template>
-
-              <template v-slot:item.sigla="{ item }">
-                <v-badge
-                  v-if="novoItemAdicionado(item, campo)"
-                  right
-                  dot
-                  inline
-                  >{{ item.sigla }}</v-badge
-                >
-
-                <span v-else>
-                  {{ item.sigla }}
-                </span>
-              </template>
-            </v-data-table>
-          </div>
-        </v-col>
-      </v-row>
+        </template>
+      </Campo>
     </v-card-text>
   </v-card>
 </template>
@@ -85,29 +88,37 @@ import ShowLegislacao from "@/components/pedidos/consulta/classes/ShowLegislacao
 import ShowDecisoesPCA from "@/components/pedidos/consulta/classes/ShowDecisoesPCA";
 import ShowDecisoesDF from "@/components/pedidos/consulta/classes/ShowDecisoesDF";
 
+import Campo from "@/components/generic/Campo";
+
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
 export default {
   props: ["p"],
 
-  components: {},
+  components: {
+    Campo
+  },
+
+  created() {
+    this.classeInfo = [
+      { campo: "Nível", conteudo: this.p.objeto.dados.nivel },
+      { campo: "Código", conteudo: this.p.objeto.dados.codigo },
+      { campo: "Título", conteudo: this.p.objeto.dados.titulo },
+      { campo: "Descrição", conteudo: this.p.objeto.dados.descricao },
+      { campo: "Notas de Aplicação", conteudo: this.p.objeto.dados.notasAp },
+      { campo: "Notas de Exclusão", conteudo: this.p.objeto.dados.notasEx }
+    ];
+  },
 
   data() {
     return {
-      classeInfo: [
-        { campo: "Nível", conteudo: this.p.objeto.dados.nivel },
-        { campo: "Código", conteudo: this.p.objeto.dados.codigo },
-        { campo: "Título", conteudo: this.p.objeto.dados.titulo },
-        { campo: "Descrição", conteudo: this.p.objeto.dados.descricao },
-        { campo: "Notas de Aplicação", conteudo: this.p.objeto.dados.notasAp },
-        { campo: "Notas de Exclusão", conteudo: this.p.objeto.dados.notasEx },
-      ],
+      classeInfo: [],
       notasAppHeader: [{ text: "Notas", value: "nota", class: "subtitle-1" }],
       footerProps: {
-        "items-per-page-text": "Tipologias por página",
+        "items-per-page-text": "Notas por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
-      },
+        "items-per-page-all-text": "Todas"
+      }
     };
   },
 
@@ -118,8 +129,8 @@ export default {
 
     verHistorico() {
       this.$emit("verHistorico");
-    },
-  },
+    }
+  }
 };
 </script>
 

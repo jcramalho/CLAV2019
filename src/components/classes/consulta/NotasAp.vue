@@ -27,13 +27,12 @@
 <script>
 import InfoBox from "@/components/generic/infoBox.vue";
 const help = require("@/config/help").help;
-
 export default {
   props: ["notas"],
   components: { InfoBox },
   data: () => ({
-    myhelp: help
-  })
+    myhelp: help,
+  }),
 };
 </script>
 
@@ -46,7 +45,6 @@ export default {
   background-color: #dee2f8;
   font-weight: bold;
 }
-
 .info-content {
   padding: 5px;
   width: 100%;

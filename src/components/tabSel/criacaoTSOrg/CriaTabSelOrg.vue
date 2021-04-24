@@ -407,12 +407,16 @@
           <v-col cols="12" md="4" lg="2">
             <v-btn
               v-if="stepNo > 2"
-              @click="verificaTS"
+              @click="
+                loading = true;
+                verificaTS();
+              "
               block
               color="success darken-1"
               rounded
               class="white--text"
               style="width: 100%"
+              :loading="loading"
             >
               <unicon
                 name="adicionar-icon"
@@ -457,8 +461,14 @@
     <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
       <ConfirmacaoOperacao
         :mensagem="dialogConfirmacao.mensagem"
-        @fechar="dialogConfirmacao.visivel = false"
-        @confirma="submeterTS()"
+        @fechar="
+          loading = false;
+          dialogConfirmacao.visivel = false;
+        "
+        @confirma="
+          dialogConfirmacao.visivel = false;
+          submeterTS();
+        "
       />
     </v-dialog>
     <v-dialog v-model="erroDialog" width="700" persistent>
@@ -571,6 +581,8 @@ export default {
       sairOperacao: false,
       //Verificação de ficheiro importado
       importadoFlag: false,
+      //Loading do botão de submeter impedindo múltiplos cliques
+      loading: false,
     };
   },
   methods: {
@@ -742,6 +754,20 @@ export default {
             this.listaProcessos.procs[i].preSelectedLabel = "";
             this.listaProcessos.procs[i].dono = false;
             this.listaProcessos.procs[i].participante = "NP";
+            this.listaProcessos.procs[i].notasAp = this.listaProcessos.procs[
+              i
+            ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
+            this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
+              i
+            ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
+            this.listaProcessos.procs[
+              i
+            ].exemplosNotasAp = this.listaProcessos.procs[
+              i
+            ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
+            this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
+              i
+            ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
           }
           this.participante = new Array(this.listaProcessos.procs.length).fill(
             "NP"
@@ -792,7 +818,13 @@ export default {
       var procs = this.listaProcessos.procs.filter(
         (p) => p.dono || p.participante != "NP"
       );
-      if (
+      if (procs.length < 1) {
+        this.mensagensErro.push({
+          sobre: "Escolha de processos",
+          mensagem: `Não tem nenhum processo selecionado`,
+        });
+        this.numeroErros++;
+      } else if (
         procs
           .map((p) => p.codigo)
           .sort()
@@ -814,6 +846,10 @@ export default {
             " processos por selecionar, deseja mesmo continuar com a submissão do pedido?",
         };
       } else await this.submeterTS();
+      if (this.numeroErros > 0) {
+        this.loading = false;
+        this.validacaoTerminada = true;
+      }
     },
     // Lança o pedido de submissão de uma TS
     submeterTS: async function () {
@@ -917,6 +953,13 @@ export default {
       var procs = this.listaProcessos.procs.filter(
         (p) => p.dono || p.participante != "NP"
       );
+      if (procs.length < 1) {
+        this.mensagensErro.push({
+          sobre: "Escolha de processos",
+          mensagem: `Não tem nenhum processo selecionado`,
+        });
+        this.numeroErros++;
+      }
       if (
         procs
           .map((p) => p.codigo)
@@ -978,6 +1021,10 @@ export default {
       this.$router.push("/");
     },
     criaHistoricoTS: async function (userBD) {
+      var response = await this.$request(
+        "get",
+        "/classes?nivel=3&info=completa"
+      );
       let historico = [
         {
           designacao: {
@@ -1022,7 +1069,8 @@ export default {
       ];
       // Cria histórico para cada processo
       for (let i = 0; i < historico[0].ts.classes.dados.length; i++) {
-        Object.keys(historico[0].ts.classes.dados[i].dados).map((p) => {
+        let codigo;
+        Object.keys(historico[0].ts.classes.dados[i].dados).map(async (p) => {
           historico[0].ts.classes.dados[i].dados[p] = {
             cor: "verde",
             dados: historico[0].ts.classes.dados[i].dados[p],
@@ -1038,6 +1086,75 @@ export default {
                 };
               }
             );
+          }
+          if (p == "notasAp") {
+            let index = response.data.findIndex((p) => p.codigo == codigo);
+
+            !(
+              response.data[index].notasAp.length ===
+                historico[0].ts.classes.dados[i].dados[p].dados.length &&
+              response.data[index].notasAp
+                .filter((n) => n.nota.replace(" ", "") != "")
+                .every((n) =>
+                  historico[0].ts.classes.dados[i].dados[p].dados.some(
+                    (n1) => n.nota == n1.nota
+                  )
+                )
+            )
+              ? (historico[0].ts.classes.dados[i].dados[p].cor = "amarelo")
+              : "";
+          }
+          if (p == "exemplosNotasAp") {
+            let index = response.data.findIndex((p) => p.codigo == codigo);
+            !(
+              response.data[index].exemplosNotasAp.length ===
+                historico[0].ts.classes.dados[i].dados[p].dados.length &&
+              response.data[index].exemplosNotasAp
+                .filter((n) => n.exemplo.replace(" ", "") != "")
+                .every((n) =>
+                  historico[0].ts.classes.dados[i].dados[p].dados.some(
+                    (n1) => n.exemplo == n1.exemplo
+                  )
+                )
+            )
+              ? (historico[0].ts.classes.dados[i].dados[p].cor = "amarelo")
+              : "";
+          }
+          if (p == "notasEx") {
+            let index = response.data.findIndex((p) => p.codigo == codigo);
+            !(
+              response.data[index].notasEx.length ===
+                historico[0].ts.classes.dados[i].dados[p].dados.length &&
+              response.data[index].notasEx
+                .filter((n) => n.nota.replace(" ", "") != "")
+                .every((n) =>
+                  historico[0].ts.classes.dados[i].dados[p].dados.some(
+                    (n1) => n.nota == n1.nota
+                  )
+                )
+            )
+              ? (historico[0].ts.classes.dados[i].dados[p].cor = "amarelo")
+              : "";
+          }
+          if (p == "termosInd") {
+            let index = response.data.findIndex((p) => p.codigo == codigo);
+            !(
+              response.data[index].termosInd.length ===
+                historico[0].ts.classes.dados[i].dados[p].dados.length &&
+              response.data[index].termosInd
+                .filter((n) => n.termo.replace(" ", "") != "")
+                .every((n) =>
+                  historico[0].ts.classes.dados[i].dados[p].dados.some(
+                    (n1) => n.termo == n1.termo
+                  )
+                )
+            )
+              ? (historico[0].ts.classes.dados[i].dados[p].cor = "amarelo")
+              : "";
+          }
+
+          if (p == "codigo") {
+            codigo = historico[0].ts.classes.dados[i].dados[p].dados;
           }
         });
       }
@@ -1056,6 +1173,12 @@ export default {
         historico[0].ts["procsAselecionar"] = {
           cor: "vermelho",
           dados: this.listaProcessos.procsAselecionar,
+          nota: null,
+        };
+      } else {
+        historico[0].ts["procsAselecionar"] = {
+          cor: "verde",
+          dados: [],
           nota: null,
         };
       }

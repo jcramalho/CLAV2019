@@ -721,7 +721,7 @@ export default {
         });
 
         this.dadosTabela.push({
-          campo: "Destino Final",
+          campo: "Destino final",
           colunaA: {
             cor: classA.dados.df.dados.valor.cor,
             dados:

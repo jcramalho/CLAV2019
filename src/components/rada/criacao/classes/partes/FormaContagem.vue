@@ -2,7 +2,7 @@
   <v-card outlined>
     <v-row>
       <v-col md="3" sm="3">
-        <div class="info-label">Forma de Contagem do PCA</div>
+        <div class="info-label">Forma de contagem do PCA</div>
       </v-col>
 
       <v-col sm="9" md="9" style="padding-right: 20px;">
@@ -11,7 +11,7 @@
           :items="formaContagem.formasContagem"
           v-model="newSerie.formaContagem.forma"
           item-text="label"
-          label="Forma de Contagem"
+          label="Forma de contagem"
           solo
           clearable
         ></v-select>
@@ -20,7 +20,7 @@
     <v-row v-if="newSerie.formaContagem.forma == 'vc_pcaFormaContagem_disposicaoLegal'">
       <!-- newSerie.formaContagem.forma == 'vc_pcaFormaContagem_disposicaoLegal'  -->
       <v-col md="3" sm="3">
-        <div class="info-label">Subforma de Contagem do PCA</div>
+        <div class="info-label">Subforma de contagem do PCA</div>
       </v-col>
       <v-col sm="9" md="9" style="padding-right: 20px;">
         <v-combobox
@@ -29,7 +29,7 @@
           v-model="newSerie.formaContagem.subforma"
           item-text="label"
           item-value="label"
-          label="Subforma de Contagem"
+          label="Subforma de contagem"
           solo
           clearable
           :return-object="false"
