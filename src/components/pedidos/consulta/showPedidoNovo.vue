@@ -115,7 +115,7 @@
           @verHistorico="verHistorico()"
         />
         <ShowTI v-else-if="p.objeto.tipo == 'Termo de Indice'" :p="p" />
-        <showPPDs v-else-if="p.objeto.tipo == 'PPD'" :p="p" />
+        <ShowPPD v-else-if="p.objeto.tipo == 'PPD'" :p="p" />
         <ShowDefault v-else :p="p" />
       </v-card-text>
       <v-card-actions>
@@ -182,7 +182,7 @@ import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
 import ShowLegislacao from "@/components/pedidos/consulta/showLegislacao";
 import ShowTI from "@/components/pedidos/consulta/showTI";
 import ShowPGD from "@/components/pedidos/consulta/showPGD";
-import showPPDs from "@/components/pedidos/consulta/showPPDs";
+import ShowPPD from "@/components/pedidos/consulta/showPPD";
 
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 import ErroDialog from "@/components/generic/ErroDialog";
@@ -213,7 +213,7 @@ export default {
     ErroDialog,
     VerHistorico,
     DevolverPedido,
-    showPPDs
+    ShowPPD
   },
 
   data() {

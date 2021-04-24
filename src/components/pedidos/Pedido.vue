@@ -104,6 +104,7 @@
       @verHistorico="verHistorico()"
     />
     <ShowTI v-else-if="Pedido.objeto.tipo == 'Termo de Indice'" :p="Pedido" />
+    <ShowPPD v-else-if="Pedido.objeto.tipo == 'PPD'" :p="Pedido" />
     <ShowDefault v-else :p="Pedido" />
 
     <v-row>
@@ -185,6 +186,7 @@ import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
 import ShowLegislacao from "@/components/pedidos/consulta/showLegislacao";
 import ShowTI from "@/components/pedidos/consulta/showTI";
 import ShowPGD from "@/components/pedidos/consulta/showPGD";
+import ShowPPD from "@/components/pedidos/consulta/showPPD";
 
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
@@ -233,6 +235,7 @@ export default {
     ShowLegislacao,
     ShowTI,
     ShowRADA,
+    ShowPPD,
 
     VerHistorico,
     AvancarPedido,
