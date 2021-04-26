@@ -730,9 +730,12 @@ export default {
         var legAux = this.auto.legislacao.split(" - ")
         legAux = legAux[0].split(" ")
         var indLeg = legAux.length - 1;
+        var autoAux = this.auto.legislacao.split(" ");
 
-        var leg = response.data.filter(l => l.numero == this.auto.legislacao.split(" ")[indLeg])
-
+        var leg = response.data.filter(
+          (l) => l.numero === autoAux[indLeg] && l.tipo === autoAux[0]
+        );
+        
         if(this.tipo=="PGD") 
           var response2 = await this.$request(
             "get",
