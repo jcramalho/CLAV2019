@@ -281,6 +281,22 @@
           </v-card>
         </div>
         <div class="text-center mt-6">
+          <v-progress-linear
+            class="my-2 white--text"
+            v-if="loading && multImport"
+            :value="(progresso * 100) / total"
+            color="primary"
+            height="25"
+          >
+            <template v-slot:default="{}">
+              <strong>
+                A Processar: {{ fileName }} - {{ progresso }}/{{
+                  total
+                }}
+                Ficheiros</strong
+              >
+            </template>
+          </v-progress-linear>
           <v-btn
             v-if="
               (multImport && (fonteLegitimacao == null || file.length < 2)) ||
@@ -559,6 +575,9 @@ export default {
     success: "",
     successDialog: false,
     loading: false,
+    progresso: 0,
+    total: 0,
+    fileName: "",
     entidades_tipologias: [],
     entidade_tipologia: [],
     tipo: "Organizacional",
@@ -661,10 +680,12 @@ export default {
       this.erroDialog = false;
       this.successDialog = false;
       this.success = "";
+      this.total = this.file.length;
       this.loading = true;
 
       for (var index in this.file) {
         try {
+          this.fileName = this.file[index].name;
           var formData = new FormData();
           formData.append("file", this.file[index]);
 
@@ -727,6 +748,7 @@ export default {
             this.erroDialog = true;
           }
         }
+        this.progresso += 1;
       }
 
       /*
@@ -807,6 +829,7 @@ export default {
 
       //this.success = `Código do pedido: ${response.data.codigo}\n<p>Estatísticas:<\p>\n${stats}`;
       //this.codigo = response.data.codigo;
+
       !this.dialogConfirmacao.visivel
         ? !this.erroDialog
           ? (this.successDialog = true)
