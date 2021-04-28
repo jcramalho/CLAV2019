@@ -171,8 +171,8 @@ export default {
 
   created: async function() {
       try{
-        this.fonteLegitimacaoSelected = this.ppd.fonteLegitimacao;
-        this.loadCheck = this.ppd.tipoFonteL;
+        this.fonteLegitimacaoSelected = this.ppd.geral.fonteLegitimacao;
+        this.loadCheck = this.ppd.geral.tipoFonteL;
         //await this.loadLegislacao();
       }
       catch(e){
@@ -183,7 +183,7 @@ export default {
   watch:{
     "loadCheck": async function(){
       try{
-        this.ppd.tipoFonteL = this.loadCheck;
+        this.ppd.geral.tipoFonteL = this.loadCheck;
         if(this.loadCheck == "TS/LC"){
           var response = await this.$request("get","/tabelasSelecao")
           this.tabelasSelecao = response.data.map(ts=>{return {
@@ -221,7 +221,7 @@ export default {
 
     "fonteLegitimacaoSelected": function() {
       if (this.fonteLegitimacaoSelected) {
-        this.ppd.fonteLegitimacao = this.fonteLegitimacaoSelected
+        this.ppd.geral.fonteLegitimacao = this.fonteLegitimacaoSelected
         this.$emit("consultaFT");
       }
     }

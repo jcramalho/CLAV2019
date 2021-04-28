@@ -31,7 +31,7 @@
           <div class="info-label">Fonte de legitimação</div>
         </v-col>
         <v-col>
-          <v-text-field solo readonly :value="this.ppd.fonteLegitimacao.titulo"></v-text-field>
+          <v-text-field solo readonly :value="this.ppd.geral.fonteLegitimacao.titulo"></v-text-field>
         </v-col>
       </div>
       <v-col v-if="this.ppd.geral.entSel.length > 0">
@@ -238,10 +238,8 @@ export default {
 
 	created: async function() {
       try{
-        this.ppd = this.p.objeto;
-        //this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
-        //await this.loadEntidades();
-        //await this.consultaFT();
+        this.ppd = this.p.objeto.dados;
+        this.criarArvore()
       }
       catch(e){
         console.log('Erro ao carregar a informação inicial: ' + e);
@@ -262,6 +260,21 @@ export default {
         this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
         item.visto=false;
       }
+    },
+
+    criarArvore: function(){
+      var child = [];
+      this.ppd.arvore = []
+      this.ppd.sistemasInfo.forEach(element => {
+      var index =  this.ppd.arvore.findIndex(l => l.id === element.numeroSI);
+        child = [];
+        if(element.avaliacao.decomposicao != ""){
+          child = element.avaliacao.decomposicao.split("#").map(e=> e=({"id": e.split("-")[0], "name":e.split("-").slice(1).toString()}));
+        }
+        child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));
+        this.ppd.arvore.push({"id": element.numeroSI, "name": element.nomeSI, "titulo": element.nomeSI, children: child })
+        this.ppd.arvore.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
+      });
     }
   }
 

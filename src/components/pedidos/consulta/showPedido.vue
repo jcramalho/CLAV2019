@@ -84,6 +84,7 @@
       <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
       <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
+      <ShowPPD v-else-if="p.objeto.tipo == 'PPD'" :p="p" />
       <ShowClasseL1
         v-else-if="p.objeto.tipo == 'Classe_N1' || p.objeto.tipo == 'Classe_N2'"
         :p="p"
@@ -194,6 +195,8 @@ import ShowTipologia from "@/components/pedidos/consulta/showTipologia";
 import ShowLegislacao from "@/components/pedidos/consulta/showLegislacao";
 import ShowTI from "@/components/pedidos/consulta/showTI";
 import ShowPGD from "@/components/pedidos/consulta/showPGD";
+import ShowPPD from "@/components/pedidos/consulta/showPPD";
+
 
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
@@ -224,6 +227,7 @@ export default {
     ShowPGD,
     VerHistorico,
     AvancarPedido,
+    ShowPPD
   },
 
   data() {
