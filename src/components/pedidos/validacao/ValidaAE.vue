@@ -47,7 +47,7 @@
       <v-col class="mr-2">
           <div
             v-for="(f, i) in dados.fundo" :key="i"
-          >{{f}}
+          >{{f.fundo.split('ent_')[1]}}: {{f.nome}}
           </div>
       </v-col>
       <v-col cols="1">
