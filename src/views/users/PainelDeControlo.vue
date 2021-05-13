@@ -23,11 +23,49 @@
                   class="white--text clav-linear-background justify-left"
                 >
                   <v-row>
-                    <v-col cols="2" align="center">
+                    <v-col cols="2" align="center" justify="center">
                       <v-badge inline dot color="error"></v-badge>
                     </v-col>
                     <v-col class="ml-0 pl-0">
                       <p>{{ item.acao }} de {{ item.tipo }} {{ item.objeto }}</p>
+                      <p class="text-body-2">Nr: {{ item.pedido }}</p>
+                      <v-divider dark class="ma-0"></v-divider>
+                      <v-row no-gutters>
+                        <v-col align="right">
+                          <p class="text-caption">
+                            {{
+                              [
+                                "Janeiro",
+                                "Fevereiro",
+                                "Março",
+                                "Abril",
+                                "Maio",
+                                "Junho",
+                                "Julho",
+                                "Agosto",
+                                "Setembro",
+                                "Outubro",
+                                "Novembro",
+                                "Dezembro",
+                              ][new Date(item.data).getMonth()]
+                            }}
+                            {{ new Date(item.data).getDate() }},
+                            {{
+                              [
+                                "Domingo",
+                                "Segunda",
+                                "Terça",
+                                "Quarta",
+                                "Quinta",
+                                "Sexta",
+                                "Sábado",
+                              ][new Date(item.data).getDay()]
+                            }}, {{ new Date(item.data).getHours() }}:{{
+                              new Date(item.data).getMinutes()
+                            }}H
+                          </p>
+                        </v-col>
+                      </v-row>
                     </v-col>
                   </v-row>
                 </v-expansion-panel-header>
