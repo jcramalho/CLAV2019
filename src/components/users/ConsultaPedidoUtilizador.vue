@@ -73,6 +73,7 @@
         <ShowTSPluri v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'" :p="pedido" />
         <ShowTSOrg v-else-if="pedido.objeto.tipo == 'TS Organizacional'" :p="pedido" />
         <ShowAE v-else-if="pedido.objeto.tipo === 'Auto de Eliminação'" :p="pedido" />
+        <ShowRADA v-else-if="pedido.objeto.tipo == 'RADA'" :p="pedido" />
         <div v-else v-for="(info, campo) in dados" :key="campo">
           <v-row
             v-if="
@@ -86,13 +87,24 @@
           >
             <v-col>
               <Campo
-                v-if="!(info instanceof Array)"
+                v-if="!(info instanceof Array) && campo !== 'pai'"
                 :nome="transformaKeys(campo)"
                 color="neutralpurple"
                 class="mb-n5"
               >
                 <template v-slot:conteudo>
                   {{ info }}
+                </template>
+              </Campo>
+
+              <Campo
+                v-else-if="campo === 'pai' && !!info.codigo"
+                :nome="campo.charAt(0).toUpperCase() + campo.slice(1)"
+                color="neutralpurple"
+                class="mb-n5"
+              >
+                <template v-slot:conteudo>
+                  {{ info.codigo }} {{ !!info.titulo ? "- " + info.titulo : "" }}
                 </template>
               </Campo>
 
@@ -220,6 +232,7 @@ import Loading from "@/components/generic/Loading";
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowAE from "@/components/pedidos/consulta/showSubmissaoAE.vue";
+import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import { mapKeys } from "@/utils/utils";
 import PedidosDevolvidosVue from "../pedidos/PedidosDevolvidos.vue";
 import Campo from "@/components/generic/Campo";
@@ -233,6 +246,7 @@ export default {
     ShowTSPluri,
     ShowTSOrg,
     ShowAE,
+    ShowRADA,
     Campo,
   },
 
@@ -295,42 +309,10 @@ export default {
     };
   },
 
-  computed: {
-    dados() {
-      if (this.pedido.estado === "Devolvido" || this.pedido.estado === "Validado")
-        return this.pedido.objeto.dados;
-      else return this.dadosSubmetidos;
-    },
-
-    dadosSubmetidos() {
-      const criaEstruturaPedido = {};
-
-      Object.keys(this.pedido.historico[0]).forEach((key) => {
-        criaEstruturaPedido[key] = this.pedido.historico[0][key].dados;
-      });
-
-      return criaEstruturaPedido;
-    },
-
-    dadosOriginais() {
-      return this.pedido.objeto.dadosOriginais;
-    },
-
-    tipoPedido() {
-      return `${this.pedido.objeto.acao} - ${this.pedido.objeto.tipo}`;
-    },
-
-    dataPedido() {
-      return this.pedido.data.split("T")[0];
-    },
-  },
-
   async created() {
     try {
       const { data } = await this.$request("get", `/pedidos/${this.numeroPedido}`);
-
       this.pedido = data;
-
       this.loading = false;
     } catch (e) {
       this.erroPedido = true;
@@ -351,6 +333,33 @@ export default {
         });
       }
     }
+  },
+  computed: {
+    dados() {
+      if (this.pedido.estado === "Devolvido" || this.pedido.estado === "Validado")
+        return this.pedido.objeto.dados;
+      else return this.dadosSubmetidos;
+    },
+
+    dadosSubmetidos() {
+      const criaEstruturaPedido = {};
+      Object.keys(this.pedido.historico[0]).forEach((key) => {
+        criaEstruturaPedido[key] = this.pedido.historico[0][key].dados;
+      });
+      return criaEstruturaPedido;
+    },
+
+    dadosOriginais() {
+      return this.pedido.objeto.dadosOriginais;
+    },
+
+    tipoPedido() {
+      return `${this.pedido.objeto.acao} - ${this.pedido.objeto.tipo}`;
+    },
+
+    dataPedido() {
+      return this.pedido.data.split("T")[0];
+    },
   },
 
   methods: {

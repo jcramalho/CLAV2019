@@ -1,103 +1,97 @@
 <template>
-  <v-main>
-    <v-card>
-      <v-card-title>
-        <h1>Listagem de Utilizadores</h1>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" @click="registo">
-              <v-icon large color="primary">person_add</v-icon>
-            </v-btn>
-          </template>
-          <span>Adicionar novo utilizador</span>
-        </v-tooltip>
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="search"
-          label="Filtrar"
-          single-line
-        ></v-text-field>
-      </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="utilizadores"
-        :search="search"
-        class="elevation-1"
-        :footer-props="usersFooterProps"
-      >
-        <template v-slot:no-results>
-          <v-alert :value="true" color="error" icon="warning">
-            Não foram encontrados resultados para "{{ search }}" .
-          </v-alert>
+  <v-card flat class="pa-3">
+    <v-card-title>
+      <span class="clav-content-title-1">Listagem de Utilizadores</span>
+      <v-spacer></v-spacer>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on" @click="registo">
+            <v-icon large color="primary">person_add</v-icon>
+          </v-btn>
         </template>
-        <template v-slot:item="props">
-          <tr>
-            <td class="subheading">{{ props.item.name }}</td>
-            <td class="subheading">{{ format(props.item.entidade) }}</td>
-            <td class="subheading">{{ props.item.email }}</td>
-            <td class="subheading">{{ props.item.level }}</td>
-            <td class="subheading">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on" @click="editar(props.item)">
-                    <v-icon medium color="primary">edit</v-icon>
-                  </v-btn>
-                </template>
-                <span>Editar utilizador</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    icon
-                    v-on="on"
-                    @click="
-                      alterarNICId = props.item.id;
-                      newNIC = props.item.id;
-                    "
-                  >
-                    <v-icon medium color="brown">credit_card</v-icon>
-                  </v-btn>
-                </template>
-                <span>Alterar NIC do utilizador</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    icon
-                    v-on="on"
-                    @click="alterarPasswordId = props.item.id"
-                  >
-                    <v-icon medium color="yellow">vpn_key</v-icon>
-                  </v-btn>
-                </template>
-                <span>Alterar password do utilizador</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn icon v-on="on" @click="desativarId = props.item.id">
-                    <v-icon color="grey darken-2">lock</v-icon>
-                  </v-btn>
-                </template>
-                <span>Desativar utilizador</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="eliminarId = props.item.id">
-                    <v-icon color="red">delete</v-icon>
-                  </v-btn>
-                </template>
-                <span>Eliminar utilizador</span>
-              </v-tooltip>
-            </td>
-          </tr>
-        </template>
-        <template v-slot:pageText="props">
-          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
-          {{ props.itemsLength }}
-        </template>
-      </v-data-table>
-    </v-card>
+        <span>Adicionar novo utilizador</span>
+      </v-tooltip>
+    </v-card-title>
+    <v-text-field
+      v-model="search"
+      append-icon="search"
+      label="Filtrar"
+      single-line
+      class="mx-5"
+    ></v-text-field>
+    <v-data-table
+      :headers="headers"
+      :items="utilizadores"
+      :search="search"
+      :footer-props="usersFooterProps"
+    >
+      <template v-slot:no-results>
+        <v-alert :value="true" color="error" icon="warning">
+          Não foram encontrados resultados para "{{ search }}" .
+        </v-alert>
+      </template>
+      <template v-slot:item="props">
+        <tr>
+          <td class="subheading">{{ props.item.name }}</td>
+          <td class="subheading">{{ format(props.item.entidade) }}</td>
+          <td class="subheading">{{ props.item.email }}</td>
+          <td class="subheading">{{ props.item.level }}</td>
+          <td class="subheading">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on" @click="editar(props.item)">
+                  <v-icon medium color="primary">edit</v-icon>
+                </v-btn>
+              </template>
+              <span>Editar utilizador</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click="
+                    alterarNICId = props.item.id;
+                    newNIC = props.item.id;
+                  "
+                >
+                  <v-icon medium color="brown">credit_card</v-icon>
+                </v-btn>
+              </template>
+              <span>Alterar NIC do utilizador</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on" @click="alterarPasswordId = props.item.id">
+                  <v-icon medium color="yellow">vpn_key</v-icon>
+                </v-btn>
+              </template>
+              <span>Alterar password do utilizador</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on" @click="desativarId = props.item.id">
+                  <v-icon color="grey darken-2">lock</v-icon>
+                </v-btn>
+              </template>
+              <span>Desativar utilizador</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" icon @click="eliminarId = props.item.id">
+                  <v-icon color="red">delete</v-icon>
+                </v-btn>
+              </template>
+              <span>Eliminar utilizador</span>
+            </v-tooltip>
+          </td>
+        </tr>
+      </template>
+      <template v-slot:pageText="props">
+        Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+        {{ props.itemsLength }}
+      </template>
+    </v-data-table>
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-card-title class="headline">
@@ -149,7 +143,7 @@
                       'Utilizador Arquivo Distrital',
                       'Utilizador Simples',
                       'Representante Entidade',
-                      'Utilizador desativado'
+                      'Utilizador desativado',
                     ]"
                     :rules="regraTipo"
                     prepend-icon="assignment"
@@ -192,9 +186,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="alterarNICId = ''">
-            Cancelar
-          </v-btn>
+          <v-btn color="red" text @click="alterarNICId = ''"> Cancelar </v-btn>
           <v-btn
             :disabled="alterarNICId == newNIC"
             color="primary"
@@ -239,9 +231,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="alterarPasswordId = ''">
-            Cancelar
-          </v-btn>
+          <v-btn color="red" text @click="alterarPasswordId = ''"> Cancelar </v-btn>
           <v-btn color="primary" text @click="alterarPassword()">
             Alterar Password
           </v-btn>
@@ -251,99 +241,88 @@
     <v-dialog :value="desativarId != ''" persistent max-width="290">
       <v-card>
         <v-card-title class="headline">Confirmar ação</v-card-title>
-        <v-card-text>
-          Tem a certeza que pretende desativar o utilizador?
-        </v-card-text>
+        <v-card-text> Tem a certeza que pretende desativar o utilizador? </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="desativarId = ''">
-            Cancelar
-          </v-btn>
-          <v-btn color="primary" text @click="desativar(desativarId)">
-            Confirmar
-          </v-btn>
+          <v-btn color="red" text @click="desativarId = ''"> Cancelar </v-btn>
+          <v-btn color="primary" text @click="desativar(desativarId)"> Confirmar </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog :value="eliminarId != ''" persistent max-width="290px">
       <v-card>
         <v-card-title class="headline">Confirmar ação</v-card-title>
-        <v-card-text>
-          Tem a certeza que pretende eliminar o utilizador?
-        </v-card-text>
+        <v-card-text> Tem a certeza que pretende eliminar o utilizador? </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text @click="eliminarId = ''">
-            Cancelar
-          </v-btn>
-          <v-btn color="primary" text @click="eliminar(eliminarId)">
-            Confirmar
-          </v-btn>
+          <v-btn color="red" text @click="eliminarId = ''"> Cancelar </v-btn>
+          <v-btn color="primary" text @click="eliminar(eliminarId)"> Confirmar </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar
-      v-model="snackbar"
-      :color="color"
-      :timeout="timeout"
-      :top="true"
-    >
+    <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :top="true">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
-  </v-main>
+  </v-card>
 </template>
 
 <script>
 export default {
   data: () => ({
     search: "",
-    regraNome: [v => !!v || "Nome é obrigatório."],
-    regraEntidade: [v => !!v || "Entidade é obrigatório."],
+    regraNome: [(v) => !!v || "Nome é obrigatório."],
+    regraEntidade: [(v) => !!v || "Entidade é obrigatório."],
     regraEmail: [
-      v => !!v || "Email é obrigatório.",
-      v => /^.+@.+\..+$/.test(v) || "Email tem de ser válido."
+      (v) => !!v || "Email é obrigatório.",
+      (v) => /^.+@.+\..+$/.test(v) || "Email tem de ser válido.",
     ],
-    regraTipo: [v => !!v || "Tipo de utilizador é obrigatório."],
-    regraPassword: [v => !!v || "Password é obrigatório."],
-    regraNIC: [v => !!v || "NIC é obrigatório."],
+    regraTipo: [(v) => !!v || "Tipo de utilizador é obrigatório."],
+    regraPassword: [(v) => !!v || "Password é obrigatório."],
+    regraNIC: [(v) => !!v || "NIC é obrigatório."],
     ent_list: [],
     usersFooterProps: {
       "items-per-page-text": "Pedidos por página",
       "items-per-page-options": [5, 10, -1],
-      "items-per-page-all-text": "Todos"
+      "items-per-page-all-text": "Todos",
     },
     headers: [
       {
         text: "Nome",
         sortable: true,
         value: "name",
-        class: "title"
+        class: "title",
+        width: "25%",
       },
       {
         text: "Entidade",
         sortable: true,
         value: "entidade",
-        class: "title"
+        class: "title",
+        width: "15%",
       },
       {
         text: "Email",
         sortable: true,
         value: "email",
-        class: "title"
+        class: "title",
+        width: "25%",
       },
       {
         text: "Nível de utilizador",
         sortable: true,
         value: "level",
-        class: "title"
+        class: "title",
+        width: "15%",
       },
       {
         text: "Ações",
         sortable: false,
         value: "",
-        class: "title"
-      }
+        class: "title",
+        width: "20%",
+        align: "center",
+      },
     ],
     dialog: false,
     alterarNICId: "",
@@ -356,7 +335,7 @@ export default {
       nome: "",
       entidade: "",
       email: "",
-      level: ""
+      level: "",
     },
     password: "",
     rep_password: "",
@@ -366,7 +345,7 @@ export default {
     color: "",
     done: false,
     timeout: 4000,
-    text: ""
+    text: "",
   }),
   async created() {
     await this.getUtilizadores();
@@ -375,15 +354,15 @@ export default {
   methods: {
     async getEntidades() {
       this.$request("get", "/entidades")
-        .then(res => {
-          this.entidades = res.data.map(ent => {
+        .then((res) => {
+          this.entidades = res.data.map((ent) => {
             return {
               label: ent.sigla + " - " + ent.designacao,
-              value: ent.sigla
+              value: ent.sigla,
             };
           });
         })
-        .catch(error => alert(error));
+        .catch((error) => alert(error));
     },
     async getUtilizadores() {
       try {
@@ -396,9 +375,7 @@ export default {
     verificaPassword() {
       if (this.password != this.rep_password) {
         if (this.regraPassword.length == 1) {
-          this.regraPassword = this.regraPassword.concat([
-            "A password deve ser igual!"
-          ]);
+          this.regraPassword = this.regraPassword.concat(["A password deve ser igual!"]);
         }
       } else {
         if (this.regraPassword.length == 2) {
@@ -415,9 +392,9 @@ export default {
     alterarNIC() {
       if (this.$refs.form3.validate()) {
         this.$request("put", "/users/" + this.alterarNICId + "/nic", {
-          nic: this.newNIC
+          nic: this.newNIC,
         })
-          .then(res => {
+          .then((res) => {
             this.text = res.data;
             this.color = "success";
             this.snackbar = true;
@@ -425,7 +402,7 @@ export default {
             this.done = true;
             this.getUtilizadores();
           })
-          .catch(err => {
+          .catch((err) => {
             this.text = "Ocorreu um erro ao atualizar o NIC.";
             this.color = "error";
             this.snackbar = true;
@@ -441,16 +418,16 @@ export default {
     alterarPassword() {
       if (this.$refs.form2.validate()) {
         this.$request("put", "/users/" + this.alterarPasswordId + "/password", {
-          novaPassword: this.password
+          novaPassword: this.password,
         })
-          .then(res => {
+          .then((res) => {
             this.text = res.data;
             this.color = "success";
             this.snackbar = true;
             this.alterarPasswordId = "";
             this.done = true;
           })
-          .catch(err => {
+          .catch((err) => {
             this.text = "Ocorreu um erro ao atualizar a password.";
             this.color = "error";
             this.snackbar = true;
@@ -465,7 +442,7 @@ export default {
     },
     desativar(id) {
       this.$request("put", "/users/" + id + "/desativar")
-        .then(res => {
+        .then((res) => {
           this.text = res.data;
           this.color = "success";
           this.snackbar = true;
@@ -473,7 +450,7 @@ export default {
           this.desativarId = "";
           this.getUtilizadores();
         })
-        .catch(err => {
+        .catch((err) => {
           this.text = err.response.data[0].msg || err.response.data;
           this.color = "error";
           this.snackbar = true;
@@ -482,7 +459,7 @@ export default {
     },
     eliminar(id) {
       this.$request("delete", "/users/" + id)
-        .then(res => {
+        .then((res) => {
           this.text = res.data;
           this.color = "success";
           this.snackbar = true;
@@ -490,7 +467,7 @@ export default {
           this.eliminarId = "";
           this.getUtilizadores();
         })
-        .catch(err => {
+        .catch((err) => {
           this.text = err.response.data[0].msg || err.response.data;
           this.color = "error";
           this.snackbar = true;
@@ -533,9 +510,9 @@ export default {
           nome: this.editedItem.name,
           email: this.editedItem.email,
           entidade: "ent_" + this.editedItem.entidade,
-          level: parsedType
+          level: parsedType,
         })
-          .then(res => {
+          .then((res) => {
             this.text = res.data;
             this.color = "success";
             this.snackbar = true;
@@ -543,7 +520,7 @@ export default {
             this.dialog = false;
             this.getUtilizadores();
           })
-          .catch(err => {
+          .catch((err) => {
             this.text = err.response.data[0].msg || err.response.data;
             this.color = "error";
             this.snackbar = true;
@@ -569,7 +546,7 @@ export default {
       } else {
         return "";
       }
-    }
-  }
+    },
+  },
 };
 </script>

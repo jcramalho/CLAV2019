@@ -53,10 +53,13 @@ export function mapKeys(key) {
       descricao = "Nome";
       break;
 
+    case "tsRada":
+      descricao = "Tabela de seleção";
+      break;
     case "entidadesSel":
+    case "entRes":
       descricao = "Entidades";
       break;
-
     case "tipologiasSel":
       descricao = "Tipologias";
       break;

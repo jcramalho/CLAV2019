@@ -1,51 +1,32 @@
 <template>
-  <v-row v-if="!valida">
-    <!-- PROCESSOS RELACIONADOS -->
-    <v-col cols="12" sm="4" md="3">
-      <v-card class="pa-4" color="neutralpurple">
-        <v-row class="pa-0 ma-0" justify="center">
-          <span class="clav-info-label">Processos Relacionados</span>
-          <InfoBox
-            header="Processos Relacionados"
-            :text="myhelp.Classe.Campos.ProcessosRelacionados"
-          />
-        </v-row>
-      </v-card>
-    </v-col>
-    <v-col cols="12" sm="8" md="9">
-      <div class="info-content">
-        <v-data-table
-          :headers="headers"
-          :items="myProcRel"
-          class="elevation-1"
-          hide-default-footer
-        >
-          <template v-slot:item="props">
-            <tr>
-              <td style="color: #1a237e">{{ props.item.label }}</td>
-              <td>
-                <ul>
-                  <li v-for="p in props.item.processos" :key="p.label">
-                    <a :href="'/classes/consultar/c' + p.codigo">{{
-                      p.codigo
-                    }}</a>
-                    - {{ p.titulo }}
-                  </li>
-                </ul>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
-    </v-col>
-  </v-row>
+  <!-- PROCESSOS RELACIONADOS -->
+  <Campo
+    v-if="!valida"
+    nome="Processos Relacionados"
+    infoHeader="Processos Relacionados"
+    :infoBody="myhelp.Classe.Campos.ProcessosRelacionados"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
+      <v-data-table :headers="headers" :items="myProcRel" hide-default-footer>
+        <template v-slot:item="props">
+          <tr>
+            <td style="color: #1a237e">{{ props.item.label }}</td>
+            <td>
+              <ul>
+                <li v-for="p in props.item.processos" :key="p.label">
+                  <a :href="'/classes/consultar/c' + p.codigo">{{ p.codigo }}</a>
+                  - {{ p.titulo }}
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </template>
+  </Campo>
   <div v-else>
-    <v-data-table
-      :headers="headers"
-      :items="myProcRel"
-      class="elevation-1"
-      hide-default-footer
-    >
+    <v-data-table :headers="headers" :items="myProcRel" hide-default-footer>
       <template v-slot:item="props">
         <tr>
           <td style="color: #1a237e">{{ props.item.label }}</td>
@@ -64,12 +45,12 @@
 </template>
 
 <script>
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo.vue";
 const help = require("@/config/help").help;
 
 export default {
   props: ["processos", "valida"],
-  components: { InfoBox },
+  components: { Campo },
 
   data: function () {
     return {
@@ -79,12 +60,12 @@ export default {
           align: "left",
           sortable: false,
           value: "label",
-          class: ["table-header", "body-2", "font-weight-bold"],
+          class: ["body-2", "font-weight-bold"],
         },
         {
           text: "Processos",
           value: "processos",
-          class: ["table-header", "body-2", "font-weight-bold"],
+          class: ["body-2", "font-weight-bold"],
         },
       ],
       relPorTipo: {

@@ -122,7 +122,7 @@
               />
             </template>
             <template v-slot:conteudo>
-              <v-expansion-panel-content id="expanded-content">
+              <v-expansion-panel-content>
                 <!-- HÁ SUBDIVISÃO? -->
                 <Subdivisao3Nivel :c="classe" />
 
@@ -151,7 +151,6 @@
             </template>
           </PainelCLAV>
         </v-expansion-panels>
-
         <v-snackbar
           v-model="loginErrorSnackbar"
           :timeout="8000"
@@ -170,7 +169,7 @@
           </v-btn>
         </v-snackbar>
 
-        <PainelOperacoes :c="classe" :pendenteId="''" />
+        <PainelOperacoes @limpar="$emit('limpar')" :c="classe" :pendenteId="''" />
       </v-col>
     </v-row>
   </v-card>
