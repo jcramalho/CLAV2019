@@ -401,7 +401,6 @@ export default {
       let n_vermelhos = 0;
       Object.keys(this.novoHistorico).map((k) => {
         if (k != "ts") {
-          this.novoHistorico[k].nota = null;
           n_vermelhos =
             this.novoHistorico[k].cor === "vermelho"
               ? n_vermelhos + 1
@@ -409,7 +408,6 @@ export default {
         }
       });
       Object.keys(this.novoHistorico.ts).map((k) => {
-        this.novoHistorico.ts[k].nota = null;
         n_vermelhos =
           this.novoHistorico.ts[k].cor === "vermelho"
             ? n_vermelhos + 1
@@ -417,7 +415,6 @@ export default {
       });
 
       this.novoHistorico.ts.classes.dados.forEach((classe) => {
-        classe.nota = null;
         Object.keys(classe.dados).map((k) => {
           classe.dados[k].nota = null;
           n_vermelhos =
@@ -494,29 +491,6 @@ export default {
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );
-    Object.keys(this.novoHistorico).map((k) => {
-      if (k != "ts") this.novoHistorico[k].nota = null;
-    });
-
-    Object.keys(this.novoHistorico.ts).map((k) => {
-      if (k != "entidades") this.novoHistorico.ts[k].nota = null;
-    });
-
-    this.novoHistorico.ts.entidades.dados.forEach((e) => {
-      e.nota = null;
-    });
-
-    this.novoHistorico.ts.classes.dados.forEach((classe) => {
-      classe.nota = null;
-      Object.keys(classe.dados).map((k) => {
-        classe.dados[k].nota = null;
-        if (k === "pca" || k === "df") {
-          Object.keys(classe.dados[k].dados).map((d) => {
-            classe.dados[k].dados[d].nota = null;
-          });
-        }
-      });
-    });
   },
 };
 </script>

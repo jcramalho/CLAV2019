@@ -1,6 +1,7 @@
 <template>
   <div>
     <Campo
+      class="my-5"
       color="neutralpurple"
       nome="Entidade abrangida"
       infoHeader="
@@ -21,14 +22,27 @@
         Tabela de Seleção para a entidade
         {{ p.objeto.dados.ts.designacaoEntidade }}
         {{ p.objeto.dados.ts.designacaoTipologia }}
-      </span></v-card
+      </span>
+    </v-card>
+    <Campo
+      class="my-5"
+      color="neutralpurple"
+      nome="Designação"
+      infoHeader="
+            Designação
+          "
+      infoBody="Designação da Tabela de Seleção"
     >
+      <template v-slot:conteudo>
+        {{ p.objeto.dados.ts.designacao }}
+      </template>
+    </Campo>
 
     <v-data-table
       :headers="tsHeaders"
       :items="procs"
       item-key="codigo"
-      class="elevation-1"
+      class="elevation-1 my-2"
       :footer-props="tsFooterProps"
       expand-icon="$expand"
       single-expand
@@ -60,8 +74,10 @@
               <v-expansion-panels>
                 <v-expansion-panel popout>
                   <!-- DESCRITIVO DA CLASSE -->
-                  <v-expansion-panel-header class="clav-linear-background white--text">
-                    <div class="separador">
+                  <v-expansion-panel-header
+                    class="clav-linear-background white--text"
+                  >
+                    <div>
                       <font size="4"><b> Descritivo da Classe</b></font>
                       <InfoBox
                         header="Descritivo da Classe"
@@ -97,7 +113,9 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="item.exemplosNotasAp && item.exemplosNotasAp.length > 0"
+                      v-if="
+                        item.exemplosNotasAp && item.exemplosNotasAp.length > 0
+                      "
                       color="neutralpurple"
                       nome="Exemplos de Notas de Aplicação"
                       infoHeader="Exemplos de Notas de Aplicação"
@@ -105,7 +123,10 @@
                     >
                       <template v-slot:conteudo>
                         <ul>
-                          <li v-for="n in item.exemplosNotasAp" :key="n.idExemplo">
+                          <li
+                            v-for="n in item.exemplosNotasAp"
+                            :key="n.idExemplo"
+                          >
                             {{ n.exemplo }}
                           </li>
                         </ul>
@@ -143,55 +164,16 @@
                     </Campo>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel v-if="item.codigo.split('.').length === 3" popout>
-                  <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-                  <v-expansion-panel-header class="clav-linear-background white--text">
-                    <div class="separador">
-                      <font size="4"><b>Contexto de Avaliação</b></font>
-                      <InfoBox
-                        header="Contexto de Avaliação"
-                        :text="myhelp.Classe.BlocoContexto"
-                        helpColor="white"
-                      />
-                    </div>
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <Campo
-                      color="neutralpurple"
-                      nome="Tipo de Processo"
-                      infoHeader="Tipo de Processo"
-                      :infoBody="myhelp.Classe.Campos.TipoProcesso"
-                    >
-                      <template v-slot:conteudo>
-                        {{ item.tipoProc }}
-                      </template>
-                    </Campo>
-                    <Campo
-                      color="neutralpurple"
-                      nome="Processo Transversal"
-                      infoHeader="Processo Transversal"
-                      :infoBody="myhelp.Classe.Campos.ProcessoTransversal"
-                    >
-                      <template v-slot:conteudo>
-                        {{ item.procTrans === "S" ? "Sim" : "Não" }}
-                      </template>
-                    </Campo>
-                    <Campo
-                      color="neutralpurple"
-                      nome="Tipo de Processo"
-                      infoHeader="Tipo de Processo"
-                      :infoBody="myhelp.Classe.Campos.TipoProcesso"
-                    >
-                      <template v-slot:conteudo>
-                        {{ item.tipoProc }}
-                      </template>
-                    </Campo>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-                <v-expansion-panel v-if="item.codigo.split('.').length === 3" popout>
+
+                <v-expansion-panel
+                  v-if="item.codigo.split('.').length === 3"
+                  popout
+                >
                   <!-- DECISÔES DE AVALIAÇÂO DA CLASSE -->
-                  <v-expansion-panel-header class="clav-linear-background white--text">
-                    <div class="separador">
+                  <v-expansion-panel-header
+                    class="clav-linear-background white--text"
+                  >
+                    <div>
                       <font size="4"><b>Decisões de Avaliação</b></font>
                       <InfoBox
                         header="Decisões de Avaliação"
@@ -273,7 +255,9 @@
                       <template v-slot:conteudo>
                         <div v-for="c in item.pca.justificacao" :key="c.tipoId">
                           <!-- Critério Gestionário ...............................-->
-                          <v-row v-if="c.tipoId == 'CriterioJustificacaoGestionario'">
+                          <v-row
+                            v-if="c.tipoId == 'CriterioJustificacaoGestionario'"
+                          >
                             <v-col xs="2" sm="2">
                               <div class="info-label">Critério Gestionário</div>
                             </v-col>
@@ -292,7 +276,8 @@
                           <!-- Critério Utilidade Administrativa .................-->
                           <v-row
                             v-if="
-                              c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'
+                              c.tipoId ==
+                              'CriterioJustificacaoUtilidadeAdministrativa'
                             "
                           >
                             <v-col xs="2" sm="2">
@@ -409,7 +394,11 @@
                           </v-row>
 
                           <!-- Critério de Densidade Informacional ..............-->
-                          <v-row v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'">
+                          <v-row
+                            v-if="
+                              c.tipoId == 'CriterioJustificacaoDensidadeInfo'
+                            "
+                          >
                             <v-col xs="2" sm="2">
                               <div class="info-label">
                                 Critério de Densidade Informacional
@@ -431,7 +420,10 @@
 
                           <!-- Critério de Complementaridade Informacional ..............-->
                           <v-row
-                            v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'"
+                            v-if="
+                              c.tipoId ==
+                              'CriterioJustificacaoComplementaridadeInfo'
+                            "
                           >
                             <v-col xs="2" sm="2">
                               <div class="info-label">
@@ -520,7 +512,9 @@ export default {
       "/classes?estrutura=arvore&nivel=2&info=esqueleto"
     );
     let aux = [];
-    this.procs = JSON.parse(JSON.stringify(this.p.objeto.dados.ts.listaProcessos.procs));
+    this.procs = JSON.parse(
+      JSON.stringify(this.p.objeto.dados.ts.listaProcessos.procs)
+    );
     this.procs.map((proc) => {
       !aux.some((pr) => pr && proc.pai.codigo === pr.codigo)
         ? aux.push(lvl2.data.find((p) => p.codigo === proc.pai.codigo))

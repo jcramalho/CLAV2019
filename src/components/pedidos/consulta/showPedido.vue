@@ -197,7 +197,6 @@ import ShowTI from "@/components/pedidos/consulta/showTI";
 import ShowPGD from "@/components/pedidos/consulta/showPGD";
 import ShowPPD from "@/components/pedidos/consulta/showPPD";
 
-
 import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirResponsavel";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
@@ -227,7 +226,7 @@ export default {
     ShowPGD,
     VerHistorico,
     AvancarPedido,
-    ShowPPD
+    ShowPPD,
   },
 
   data() {
@@ -277,10 +276,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado =
-          this.p.estado == "Em Desspacho"
-            ? "Devolvido para validação"
-            : "Redistribuído";
+        const estado = "Redistribuído";
 
         let dadosUtilizador = this.$verifyTokenUser();
 

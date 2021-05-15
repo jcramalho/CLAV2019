@@ -18,7 +18,7 @@
                 solo
                 readonly
               ></v-text-field>
-              <template v-slot:append> 
+              <template v-slot:append>
                 <p>OLA</p>
               </template>
             </v-col>
@@ -48,6 +48,8 @@
               <SelecionarData
                 @dataSelecionada="despacho.data = $event"
                 :label="'AAAA-MM-DD'"
+                :dataMinima="new Date().toISOString()"
+                :dataMaxima="new Date().toISOString()"
               >
                 <template v-slot:default="slotProps">
                   <v-text-field
