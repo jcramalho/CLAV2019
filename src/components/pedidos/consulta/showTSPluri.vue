@@ -114,7 +114,7 @@
                   <v-expansion-panel-header
                     class="clav-linear-background white--text"
                   >
-                    <div class="separador">
+                    <div>
                       <font size="4"><b> Descritivo da Classe</b></font>
                       <InfoBox
                         header="Descritivo da Classe"
@@ -201,56 +201,7 @@
                     </Campo>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel
-                  v-if="item.codigo.split('.').length === 3"
-                  popout
-                >
-                  <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-                  <v-expansion-panel-header
-                    class="clav-linear-background white--text"
-                  >
-                    <div class="separador">
-                      <font size="4"><b>Contexto de Avaliação</b></font>
-                      <InfoBox
-                        header="Contexto de Avaliação"
-                        :text="myhelp.Classe.BlocoContexto"
-                        helpColor="white"
-                      />
-                    </div>
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content>
-                    <Campo
-                      color="neutralpurple"
-                      nome="Tipo de Processo"
-                      infoHeader="Tipo de Processo"
-                      :infoBody="myhelp.Classe.Campos.TipoProcesso"
-                    >
-                      <template v-slot:conteudo>
-                        {{ item.tipoProc }}
-                      </template>
-                    </Campo>
-                    <Campo
-                      color="neutralpurple"
-                      nome="Processo Transversal"
-                      infoHeader="Processo Transversal"
-                      :infoBody="myhelp.Classe.Campos.ProcessoTransversal"
-                    >
-                      <template v-slot:conteudo>
-                        {{ item.procTrans === "S" ? "Sim" : "Não" }}
-                      </template>
-                    </Campo>
-                    <Campo
-                      color="neutralpurple"
-                      nome="Tipo de Processo"
-                      infoHeader="Tipo de Processo"
-                      :infoBody="myhelp.Classe.Campos.TipoProcesso"
-                    >
-                      <template v-slot:conteudo>
-                        {{ item.tipoProc }}
-                      </template>
-                    </Campo>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
+
                 <v-expansion-panel
                   v-if="item.codigo.split('.').length === 3"
                   popout
@@ -259,7 +210,7 @@
                   <v-expansion-panel-header
                     class="clav-linear-background white--text"
                   >
-                    <div class="separador">
+                    <div>
                       <font size="4"><b>Decisões de Avaliação</b></font>
                       <InfoBox
                         header="Decisões de Avaliação"

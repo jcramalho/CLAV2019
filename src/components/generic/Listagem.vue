@@ -51,28 +51,36 @@
             v-else-if="tipo == 'Tipologias de Entidade'"
             :item="props.item"
             @rowClicked="go($event.id)"
-            @iconClicked="switchOperacao($event.operacao.descricao, $event.item.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
           />
 
           <ListagemE
             v-else-if="tipo == 'Entidades'"
             :item="props.item"
             @rowClicked="go($event.id)"
-            @iconClicked="switchOperacao($event.operacao.descricao, $event.item.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
           />
 
           <ListagemLegislacao
             v-else-if="tipo == 'Legislação'"
             :item="props.item"
             @rowClicked="go($event.numero)"
-            @iconClicked="switchOperacao($event.operacao.descricao, $event.item.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
           />
 
           <ListagemNot
             v-else-if="tipo == 'Notícias'"
             :item="props.item"
             @rowClicked="go($event.id)"
-            @iconClicked="switchOperacao($event.operacao.descricao, props.item.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, props.item.id)
+            "
           />
           <tr v-else-if="tipo == 'RADA/CLAV'">
             <td>{{ props.item.dataAprovacao }}</td>
@@ -126,7 +134,9 @@
           </tr>
         </template>
         <template v-slot:[`item.entidades`]="{ item }">
-          <span v-for="(ent, index) in item.entidades" :key="index">{{ ent }}</span>
+          <span v-for="(ent, index) in item.entidades" :key="index">{{
+            ent
+          }}</span>
         </template>
 
         <template v-slot:pageText="props">
@@ -242,7 +252,6 @@ export default {
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "end",
             width: "auto",
             sortable: false,
             class: "subtitle-3",
@@ -251,27 +260,27 @@ export default {
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
+
             sortable: false,
-            width: "25%",
+            width: "auto",
             class: "subtitle-3",
           };
         else if (this.campos[i] === "entidades")
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
+
             sortable: true,
-            width: "15%",
+            width: "auto",
             class: "subtitle-3",
           };
         else if (this.campos[i] === "data" || this.campos[i] === "numero")
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
+
             sortable: true,
-            width: "13%",
+            width: "auto",
             class: "subtitle-3",
           };
         else if (
@@ -282,26 +291,32 @@ export default {
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
             sortable: true,
-            width: "20%",
+            width: "auto",
             class: "subtitle-3",
           };
         else if (this.campos[i] === "designacao")
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "center",
             sortable: true,
-            width: "50%",
+            width: "auto",
+            class: "subtitle-3",
+          };
+        else if (this.campos[i] === "tipo")
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            sortable: true,
+            width: "auto",
             class: "subtitle-3",
           };
         else
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "center",
             sortable: true,
+            width: "auto",
             class: "subtitle-3",
           };
       }

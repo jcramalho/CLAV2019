@@ -58,8 +58,7 @@
         <template v-slot:conteudo>
           <ul>
             <li v-for="(f, i) in p.objeto.dados.fundo" :key="i">
-              <a :href="'/entidades/' + f">{{ f.substring(4) }}</a>
-              - {{ f.nome }}
+              <a :href="'/entidades/ent_' + f.split(' - ')[0]">{{ f }}</a>
             </li>
           </ul>
         </template>
@@ -82,7 +81,9 @@
                       - {{ item.titulo }}</span
                     ></v-list-item-title
                   >
-                  <v-list-item-title v-else-if="item.codigo" v-text="item.codigo"
+                  <v-list-item-title
+                    v-else-if="item.codigo"
+                    v-text="item.codigo"
                     ><span v-if="item.titulo">
                       - {{ item.titulo }}</span
                     ></v-list-item-title
@@ -150,7 +151,9 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.nrAgregacoes ? item.nrAgregacoes : 0 }}</span>
+                      <span>
+                        {{ item.nrAgregacoes ? item.nrAgregacoes : 0 }}</span
+                      >
                     </template>
                   </Campo>
                   <Campo
@@ -246,7 +249,10 @@
                           <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
                         </tr-->
                   </table>
-                  <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
+                  <div
+                    class="ma-1"
+                    v-if="item.agregacoes && item.agregacoes.length > 0"
+                  >
                     <v-row justify="space-between" class="info-label">
                       <v-col>Lista de Agregações</v-col>
                       <v-col>

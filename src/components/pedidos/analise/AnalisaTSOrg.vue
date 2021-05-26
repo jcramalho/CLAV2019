@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ novoHistorico.designacao }}
     <v-card flat class="ma-1">
       <ValidaCampo
         :dadosOriginais="p.objeto.dados.ts"

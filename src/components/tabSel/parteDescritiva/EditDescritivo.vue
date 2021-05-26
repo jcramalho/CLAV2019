@@ -52,6 +52,36 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="errorDialog" persistent width="60%">
+        <v-card class="info-card">
+          <v-card-title class="headline mb-2 white--text"
+            >Erro na alteração dos campos</v-card-title
+          >
+          <div class="info-content-card px-3 mx-6 mb-2">
+            <v-card-text>
+              <h5>Os campos assinalados a vermelho têm valores repetidos:</h5>
+              <ul>
+                <li v-for="(item, index) in errors" :key="index">
+                  <span :class="item.value === true ? 'red--text' : ''">{{
+                    item.text
+                  }}</span>
+                </li>
+              </ul>
+            </v-card-text>
+          </div>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-4"
+              text
+              dark
+              rounded
+              @click="errorDialog = false"
+              >Voltar</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-row>
   </v-container>
 </template>
@@ -74,6 +104,8 @@ export default {
 
   data: function () {
     return {
+      errors: [],
+      errorDialog: false,
       dialog: false,
       proc: JSON.parse(JSON.stringify(this.p)),
     };
@@ -84,10 +116,96 @@ export default {
   },
 
   methods: {
+    notaDuplicada: function (notas) {
+      if (notas.length > 1) {
+        for (let lastNota of notas) {
+          var duplicados = notas.filter((n) => n.nota == lastNota.nota);
+          if (duplicados.length > 1) {
+            return true;
+          } else return false;
+        }
+      } else {
+        return false;
+      }
+    },
+
+    exemploDuplicado: function (exemplos) {
+      if (exemplos.length > 1) {
+        for (let lastExemplo of exemplos) {
+          var duplicados = exemplos.filter(
+            (e) => e.exemplo == lastExemplo.exemplo
+          );
+          if (duplicados.length > 1) {
+            return true;
+          } else return false;
+        }
+      } else {
+        return false;
+      }
+    },
+
+    tiDuplicado: function (termos) {
+      if (termos.length > 1) {
+        for (lastTermo of termos) {
+          var duplicados = termos.filter((t) => t.termo == lastTermo.termo);
+          if (duplicados.length > 1) {
+            return true;
+          } else return false;
+        }
+      } else {
+        return false;
+      }
+    },
+
     // Devolve a seleção para cima
     selecionar: function () {
-      this.p.descriptionEdited = true;
-      this.$emit("editado", this.proc);
+      this.errors = [];
+      this.proc.notasAp && this.proc.notasAp.length > 0
+        ? this.errors.push({
+            text: "Notas de Aplicação",
+            value: this.notaDuplicada(this.proc.notasAp),
+          })
+        : "";
+
+      this.proc.exemplosNotasAp && this.proc.exemplosNotasAp.length > 0
+        ? this.errors.push({
+            text: "Exemplos de Notas de Aplicação",
+            value: this.proc.exemplosNotasAp.some((element, index) => {
+              return (
+                this.proc.exemplosNotasAp.indexOf(
+                  (e) => e.exemplo === element.exemplo
+                ) !== index
+              );
+            }),
+          })
+        : "";
+
+      this.proc.notasEx && this.proc.notasEx.length > 0
+        ? this.errors.push({
+            text: "Notas de Exclusão",
+            value: this.notaDuplicada(this.proc.notasEx),
+          })
+        : "";
+
+      this.proc.termosInd && this.proc.termosInd.length > 0
+        ? this.errors.push({
+            text: "Termos de indice",
+            value: this.proc.termosInd.some((element, index) => {
+              return (
+                this.proc.termosInd.indexOf(
+                  (e) => e.termo === element.termo
+                ) !== index
+              );
+            }),
+          })
+        : "";
+
+      if (this.errors.some((err) => err.value)) {
+        this.errorDialog = true;
+      } else {
+        this.p.descriptionEdited = true;
+        this.$emit("editado", this.proc);
+      }
     },
     // Cancela a alteração dos campos
     cancelar: function () {
@@ -106,5 +224,18 @@ export default {
   font-weight: bold;
   margin: 2px;
   border-radius: 3px;
+}
+
+.info-card {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
+}
+
+.info-content-card {
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  color: #606060;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>
