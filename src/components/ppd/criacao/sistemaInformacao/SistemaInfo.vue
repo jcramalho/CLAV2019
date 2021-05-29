@@ -311,7 +311,7 @@ export default {
           },
           avaliacao:{
             descricao: this.ppd.si.avaliacao.descricao,
-            tabelaDecomposicao:this.ppd.si.avaliacao.tabelaDecomposicao,
+            decomposicao:this.ppd.si.avaliacao.decomposicao,
             selecionadosTabelaFL:this.ppd.si.avaliacao.selecionadosTabelaFL,
             sistemasRelacionados:this.ppd.si.avaliacao.sistemasRelacionados,
             checkedAti:this.ppd.si.avaliacao.checkedAti,
@@ -389,7 +389,7 @@ export default {
         this.ppd.si.identificacao.outsourcing = "",
         this.ppd.si.identificacao.notas = "",
         this.ppd.si.avaliacao.descricao = "",
-        this.ppd.si.avaliacao.tabelaDecomposicao = [],
+        this.ppd.si.avaliacao.decomposicao = [],
         this.ppd.si.avaliacao.selecionadosTabelaFL = [],
         this.ppd.si.avaliacao.sistemasRelacionados = [],
         this.ppd.si.avaliacao.checkedAti = "",

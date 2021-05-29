@@ -255,7 +255,7 @@ export default {
         this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
         this.siSpec.identificacao.propDados= item.identificacao.propDados.map(e => e.sigla).toString(),
         this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString(),
-        this.siSpec.avaliacao.decomposicao= item.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.decomposicao= item.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
         this.siSpec.avaliacao.siRelacionado= item.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
         this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
         item.visto=false;
@@ -266,7 +266,7 @@ export default {
       var child = [];
       this.ppd.arvore = []
       this.ppd.sistemasInfo.forEach(element => {
-      var index =  this.ppd.arvore.findIndex(l => l.id === element.numeroSI);
+        var index =  this.ppd.arvore.findIndex(l => l.id === element.numeroSI);
         child = [];
         if(element.avaliacao.decomposicao != ""){
           child = element.avaliacao.decomposicao.split("#").map(e=> e=({"id": e.split("-")[0], "name":e.split("-").slice(1).toString()}));

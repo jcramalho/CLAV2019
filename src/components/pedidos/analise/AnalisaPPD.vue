@@ -193,7 +193,14 @@ export default {
 
   async created() {
     try {
-      alert(JSON.stringify(this.p))
+      var nome = this.p.objeto.dados.geral.nomePPD
+      this.p.objeto.dados.geral.nomePPD = {"cor":"verde", "dados":nome, "nota":null}
+      this.p.objeto.dados.geral.mencaoResp = {"cor":"verde", "dados":this.p.objeto.dados.geral.mencaoResp, "nota":null}
+      this.p.objeto.dados.geral.entSel = {"cor":"verde", "dados":this.p.objeto.dados.geral.entSel, "nota":null}
+      this.p.objeto.dados.geral.numeroPPD = {"cor":"verde", "dados":this.p.objeto.dados.geral.numeroPPD, "nota":null}
+      this.p.objeto.dados.geral.fonteLegitimacao = {"cor":"verde", "dados":this.p.objeto.dados.geral.fonteLegitimacao, "nota":null}
+      this.p.objeto.dados.geral.tipoFonteL = {"cor":"verde", "dados":this.p.objeto.dados.geral.tipoFonteL, "nota":null}
+      alert(JSON.stringify(this.p.objeto.dados.geral))
       await this.loadTipologias();
       await this.loadEntidades();
       await this.loadProcessos();
@@ -215,11 +222,12 @@ export default {
     );
 
     //:FIXME:
+    alert(JSON.stringify(copiaHistorico))
     copiaHistorico.codigo = { cor: "verde" };
     Object.keys(copiaHistorico).forEach(h => (copiaHistorico[h].nota = null));
 
     this.novoHistorico = copiaHistorico;
-
+    alert(JSON.stringify(this.novoHistorico.numeroPPD.cor))
     Object.keys(this.dados).forEach(key => {
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
@@ -228,7 +236,7 @@ export default {
 
   computed: {
     dados() {
-      alert(JSON.stringify(this.p.objeto.dados.geral))
+      //alert(JSON.stringify(this.p.objeto.dados.geral))
       return this.p.objeto.dados.geral;
     },
 
