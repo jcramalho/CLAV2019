@@ -66,7 +66,7 @@
         :novoHistorico="novoHistorico"
         campoValue="fonteLegitimacao"
         campoText="Fonte de legitimação"
-        tipo="string"
+        tipo="object"
       >
         <template v-slot:input="props">
           <v-text-field
@@ -81,7 +81,7 @@
 </template>
 <script>
 import PO from "@/components/pedidos/generic/PainelOperacoes";
-import ValidaCampo from "@/components/pedidos/analise/tabSel/generic/ValidaCampo";
+import ValidaCampo from "@/components/pedidos/analise/ppd/ValidaCampo";
 import InfoBox from "@/components/generic/infoBox.vue";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
@@ -303,7 +303,7 @@ export default {
     this.json = JSON.stringify(this.p, null, 2);
   },
   created() {
-    alert(JSON.stringify(this.p.objeto.dados))
+    alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
     alert(JSON.stringify(this.p.historico))
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
@@ -316,7 +316,7 @@ export default {
       if (k != "sistemasInfo") this.novoHistorico.sistemasInfo[k].nota = null;
     });
 
-    this.novoHistorico.geral.entidades.dados.forEach((e) => {
+    this.novoHistorico.geral.entSel.dados.forEach((e) => {
       e.nota = null;
     });
 
