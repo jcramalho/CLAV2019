@@ -9,6 +9,12 @@
     </v-col>
     <v-col cols="12" xs="12" sm="9">
       <div>
+        <v-col cols="5" xs="5" sm="3">
+          <div class="info-label">Número</div>
+        </v-col>
+        <v-col>
+          <v-text-field solo readonly :value="this.ppd.geral.numeroPPD"></v-text-field>
+        </v-col>
         <v-col cols="5" xs="5" sm="2">
           <div class="info-label">Título</div>
         </v-col>

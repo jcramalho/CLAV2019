@@ -1,496 +1,336 @@
 <template>
   <div>
-    <Loading v-if="loading" :message="'pedido'" />
-    <div v-else>
-      <div v-for="(info, campo) in dados" :key="campo">
-        <CampoPedido
-          v-if="allowedInfo.includes(campo)"
-          :title="transformaKeys(campo)"
-          :campo="campo"
-          :info="formatInfo(campo, info)"
-          :estado="novoHistorico[campo].cor"
-          :hideOps="esconderOperacoes[campo]"
-          :validate="mudarEstado('verde')"
-          :invalidate="mudarEstado('vermelho')"
-          :edit="!blockedEdit.includes(campo) ? edita : null"
-          :add="abrirNotaAplicacao"
-          :remove="removeNota"
-          :comment="abrirNotaDialog"
-          :header="headerNotas[campo]"
-        />
-      </div>
-    </div>
+    <v-card flat class="ma-1">
+      <ValidaCampo
+        :dadosOriginais="p.objeto.dados.geral"
+        :novoHistorico="novoHistorico"
+        campoValue="numeroPPD"
+        campoText="Número do PPD"
+        tipo="string"
+      >
+        <template v-slot:input="props">
+          <v-text-field
+            :rules="[(v) => !!v || 'Campo obrigatório']"
+            solo
+            v-model="props.items.campoEditado"
+            @input="props.items.updateValue"
+          ></v-text-field> </template
+      ></ValidaCampo>
+      <ValidaCampo
+        :dadosOriginais="p.objeto.dados.geral"
+        :novoHistorico="novoHistorico"
+        campoValue="nomePPD"
+        campoText="Nome do PPD"
+        tipo="string"
+      >
+        <template v-slot:input="props">
+          <v-text-field
+            :rules="[(v) => !!v || 'Campo obrigatório']"
+            solo
+            v-model="props.items.campoEditado"
+            @input="props.items.updateValue"
+          ></v-text-field> </template
+      ></ValidaCampo>
+      <ValidaCampo
+        :dadosOriginais="p.objeto.dados.geral"
+        :novoHistorico="novoHistorico"
+        campoValue="mencaoResp"
+        campoText="Menção de responsabilidade"
+        tipo="string"
+      >
+        <template v-slot:input="props">
+          <v-text-field
+            :rules="[(v) => !!v || 'Campo obrigatório']"
+            solo
+            v-model="props.items.campoEditado"
+            @input="props.items.updateValue"
+          ></v-text-field> </template
+      ></ValidaCampo>
+      <ValidaCampo
+        :dadosOriginais="p.objeto.dados.geral"
+        :novoHistorico="novoHistorico"
+        campoValue="tipoFonteL"
+        campoText="Tipo da fonte de legitimação"
+        tipo="string"
+      >
+        <template v-slot:input="props">
+          <v-text-field
+            :rules="[(v) => !!v || 'Campo obrigatório']"
+            solo
+            v-model="props.items.campoEditado"
+            @input="props.items.updateValue"
+          ></v-text-field> </template
+      ></ValidaCampo>
+      <ValidaCampo
+        :dadosOriginais="p.objeto.dados.geral"
+        :novoHistorico="novoHistorico"
+        campoValue="fonteLegitimacao"
+        campoText="Fonte de legitimação"
+        tipo="string"
+      >
+        <template v-slot:input="props">
+          <v-text-field
+            :rules="[(v) => !!v || 'Campo obrigatório']"
+            solo
+            v-model="props.items.campoEditado"
+            @input="props.items.updateValue"
+          ></v-text-field> </template
+      ></ValidaCampo>
+    </v-card>
   </div>
 </template>
-
 <script>
-const nanoid = require("nanoid");
-import Loading from "@/components/generic/Loading";
-import CampoPedido from "@/components/pedidos/generic/CampoPedido";
-
-import { mapKeys } from "@/utils/utils";
-
+import PO from "@/components/pedidos/generic/PainelOperacoes";
+import ValidaCampo from "@/components/pedidos/analise/tabSel/generic/ValidaCampo";
+import InfoBox from "@/components/generic/infoBox.vue";
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
 export default {
-  props: { p: Object, validar: Boolean },
-
+  props: {
+    p: {},
+    fase: { type: String, required: true },
+  },
   components: {
-    CampoPedido,
-    Loading,
+    PO,
+    ValidaCampo,
+    InfoBox,
+    ConfirmacaoOperacao,
   },
 
   data() {
     return {
-      loading: true,
+      search: "",
+      paginaTabela: 1,
+      expanded: [],
+      novoHistorico: null,
       json: null,
-      dialogNotas: false,
-      nota: "",
-      animacoes: {},
-      esconderOperacoes: {},
-      allowedInfo: [
-        "numeroPPD",
-        "nomePPD",
-        "mencaoResp",
-        "entSel"
-      ],
-      blockedEdit: ["nivel", "codigo"],
-      novoHistorico: {},
-      formatNotas: {
-        notasAp: { id: "id", nota: "nota", idType: "na" },
-        exemplosNotasAp: { id: "idExemplo", nota: "exemplo", idType: "exna" },
-        notasEx: { id: "id", nota: "nota", idType: "ne" },
-        termosInd: { id: "id", nota: "termo", idType: "ti" }
-      },
-      headerNotas: {
-        notasAp: [
-          { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
-          {
-            text: "Operação",
-            value: "operacao",
-            class: "subtitle-1",
-            sortable: false,
-            width: "10%",
-            align: "center"
-          }
-        ],
-        notasEx: [
-          { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
-          {
-            text: "Operação",
-            value: "operacao",
-            class: "subtitle-1",
-            sortable: false,
-            width: "10%",
-            align: "center"
-          }
-        ],
-        exemplosNotasAp: [
-          {
-            text: "Exemplo Notas de Aplicação",
-            value: "exemplo",
-            class: "subtitle-1"
-          },
-          {
-            text: "Operação",
-            value: "operacao",
-            class: "subtitle-1",
-            sortable: false,
-            width: "10%",
-            align: "center"
-          }
-        ],
-        termosInd: [
-          {
-            text: "Termos Indice",
-            value: "termo",
-            class: "subtitle-1"
-          },
-          {
-            text: "Operação",
-            value: "operacao",
-            class: "subtitle-1",
-            sortable: false,
-            width: "10%",
-            align: "center"
-          }
-        ],
-        donos: [
-          { text: "Sigla", value: "sigla", class: "subtitle-1" },
-          { text: "Designação", value: "designacao", class: "subtitle-1" },
-          {
-            text: "Operação",
-            value: "operacao",
-            class: "subtitle-1",
-            sortable: false,
-            width: "10%",
-            align: "center"
-          }
-        ],
-        processosRelacionados: [
-          { text: "Relação", value: "relacao", class: "subtitle-1" },
-          { text: "Processo", value: "codigo", class: "subtitle-1" },
-          { text: "Titulo", value: "titulo", class: "subtitle-1" },
-          {
-            text: "Operação",
-            value: "operacao",
-            class: "subtitle-1",
-            sortable: false,
-            width: "10%",
-            align: "center"
-          }
-        ],
-        legislacao: [
-          { text: "Tipo", value: "tipo", class: "subtitle-1" },
-          { text: "Número", value: "numero", class: "subtitle-1" },
-          { text: "Sumário", value: "sumario", class: "subtitle-1" },
-          { text: "Data", value: "data", class: "subtitle-1" },
-          {
-            text: "Operação",
-            value: "operacao",
-            class: "subtitle-1",
-            sortable: false,
-            width: "10%",
-            align: "center"
-          }
-        ]
-      },
-      erroDialog: {
-        visivel: false,
-        mensagem: null
-      },
-      footerProps: {
-        "items-per-page-text": "Notas por página",
-        "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas"
-      },
-      tipologias: [],
-      notaDialogApp: {
-        visivel: false,
-        campo: "",
-        nota: ""
-      },
-      notaDialog: {
-        visivel: false,
-        campo: "",
-        nota: ""
-      },
+      expandedProc: {},
+      listaProcs: false,
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
-        dados: null
+        dados: null,
       },
-      editaCampo: {
-        visivel: false,
-        nome: "",
-        key: "",
-        valorAtual: ""
+      tsHeaders: [
+        { text: "Código", value: "codigo", class: "subtitle-1" },
+        { text: "Título", value: "titulo", class: "subtitle-1" },
+        { text: "Dono", value: "dono", align: "center", class: "subtitle-1" },
+        {
+          text: "Participante",
+          value: "participante",
+          align: "center",
+          class: "subtitle-1",
+        },
+        {
+          text: "",
+          value: "data-table-expand",
+          width: "5%",
+        },
+      ],
+      tsFooterProps: {
+        "items-per-page-text": "Processos por página",
+        "items-per-page-options": [5, 10, -1],
+        "items-per-page-all-text": "Todos",
       },
-      entidadesD: {},
-      listaProcessos: {},
-      listaLegislacao: {}
+      myhelp: require("@/config/help").help,
     };
   },
+  methods: {
+    async clicked({ item }) {
+      if (
+        !this.expandedProc.codigo ||
+        this.expandedProc.codigo != item.codigo
+      ) {
+        let response = await this.$request("get", "/classes/c" + item.codigo);
+        this.expandedProc = response.data;
+      }
+    },
+    async despacharPedido(dados) {
+      try {
+        const estado = "Devolvido";
 
-  async created() {
-    try {
-      var nome = this.p.objeto.dados.geral.nomePPD
-      this.p.objeto.dados.geral.nomePPD = {"cor":"verde", "dados":nome, "nota":null}
-      this.p.objeto.dados.geral.mencaoResp = {"cor":"verde", "dados":this.p.objeto.dados.geral.mencaoResp, "nota":null}
-      this.p.objeto.dados.geral.entSel = {"cor":"verde", "dados":this.p.objeto.dados.geral.entSel, "nota":null}
-      this.p.objeto.dados.geral.numeroPPD = {"cor":"verde", "dados":this.p.objeto.dados.geral.numeroPPD, "nota":null}
-      this.p.objeto.dados.geral.fonteLegitimacao = {"cor":"verde", "dados":this.p.objeto.dados.geral.fonteLegitimacao, "nota":null}
-      this.p.objeto.dados.geral.tipoFonteL = {"cor":"verde", "dados":this.p.objeto.dados.geral.tipoFonteL, "nota":null}
-      alert(JSON.stringify(this.p.objeto.dados.geral))
-      await this.loadTipologias();
-      await this.loadEntidades();
-      await this.loadProcessos();
-      await this.loadLegislacao();
+        let dadosUtilizador = this.$verifyTokenUser();
 
-      this.loading = false;
-    } catch (e) {
-      this.erroDialog.visivel = true;
-      this.erroDialog.mensagem =
-        "Erro ao carregar os dados, por favor tente novamente";
-    }
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        pedido.estado = estado;
+
+        pedido.historico.push(this.novoHistorico);
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        //console.log("e :", e);
+      }
+    },
+    async encaminharPedido(dados) {
+      try {
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        const estado =
+          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+
+        pedido.estado = estado;
+
+        pedido.historico.push(this.novoHistorico);
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        //console.log("e :", e);
+      }
+    },
+    alterarOriginal() {
+      let n_vermelhos = 0;
+      Object.keys(this.novoHistorico).map((k) => {
+        if (k != "ts") {
+          this.novoHistorico[k].nota = null;
+          n_vermelhos =
+            this.novoHistorico[k].cor === "vermelho"
+              ? n_vermelhos + 1
+              : n_vermelhos;
+        }
+      });
+      Object.keys(this.novoHistorico.ts).map((k) => {
+        this.novoHistorico.ts[k].nota = null;
+        n_vermelhos =
+          this.novoHistorico.ts[k].cor === "vermelho"
+            ? n_vermelhos + 1
+            : n_vermelhos;
+      });
+
+      this.novoHistorico.ts.classes.dados.forEach((classe) => {
+        classe.nota = null;
+        Object.keys(classe.dados).map((k) => {
+          classe.dados[k].nota = null;
+          n_vermelhos =
+            classe.dados[k].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
+        });
+      });
+
+      //Falta a edição de campos
+      this.p.objeto.dados.geral.nomePPD = this.novoHistorico.geral.nomePPD.dados;
+      return n_vermelhos;
+    },
+    async verificaVermelhos(dados) {
+      let existem_vermelhos = await this.alterarOriginal();
+
+      // Se existirem abre dialog de confirmação
+      if (existem_vermelhos > 0)
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem " +
+            existem_vermelhos +
+            " campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          dados: dados,
+        };
+      // Caso contrário segue para a finalização do pedido
+      else await this.finalizarPedido(dados);
+    },
+
+    async finalizarPedido(dados) {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        let dadosUtilizador = this.$verifyTokenUser();
+        const estado = "Em Despacho";
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        pedido.estado = estado;
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.overlay = false;
+        this.sucessDialog = true;
+        this.$router.go(-1);
+      } catch (e) {
+        this.overlay = false;
+        this.erroPedido = true;
+
+        let parsedError = Object.assign({}, e);
+        parsedError = parsedError.response;
+
+        if (parsedError !== undefined) {
+          if (parsedError.status === 422) {
+            parsedError.data.forEach((erro) => {
+              this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+            });
+          }
+        }
+      }
+    },
   },
 
   mounted() {
     this.json = JSON.stringify(this.p, null, 2);
-
-    const copiaHistorico = JSON.parse(
-      JSON.stringify(this.historico[this.historico.length - 1])
+  },
+  created() {
+    alert(JSON.stringify(this.p.objeto.dados))
+    alert(JSON.stringify(this.p.historico))
+    this.novoHistorico = JSON.parse(
+      JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );
+    Object.keys(this.novoHistorico).map((k) => {
+      if (k != "entSel") this.novoHistorico.entSel[k].nota = null;
+    });
 
-    //:FIXME:
-    alert(JSON.stringify(copiaHistorico))
-    copiaHistorico.codigo = { cor: "verde" };
-    Object.keys(copiaHistorico).forEach(h => (copiaHistorico[h].nota = null));
+    Object.keys(this.novoHistorico.geral).map((k) => {
+      if (k != "sistemasInfo") this.novoHistorico.sistemasInfo[k].nota = null;
+    });
 
-    this.novoHistorico = copiaHistorico;
-    alert(JSON.stringify(this.novoHistorico.numeroPPD.cor))
-    Object.keys(this.dados).forEach(key => {
-      this.esconderOperacoes[key] = false;
-      this.animacoes[key] = true;
+    this.novoHistorico.geral.entidades.dados.forEach((e) => {
+      e.nota = null;
+    });
+
+    this.novoHistorico.geral.classes.dados.forEach((classe) => {
+      classe.nota = null;
+      Object.keys(classe.dados).map((k) => {
+        classe.dados[k].nota = null;
+        if (k === "pca" || k === "df") {
+          Object.keys(classe.dados[k].dados).map((d) => {
+            classe.dados[k].dados[d].nota = null;
+          });
+        }
+      });
     });
   },
-
-  computed: {
-    dados() {
-      //alert(JSON.stringify(this.p.objeto.dados.geral))
-      return this.p.objeto.dados.geral;
-    },
-
-    historico() {
-      return this.p.historico;
-    }
-  },
-  methods: {
-    transformaKeys(key) {
-      return mapKeys(key);
-    },
-    mudarEstado(estado) {
-      return campo => {
-        this.novoHistorico[campo] = {
-          ...this.novoHistorico[campo],
-          cor: estado
-        };
-      };
-    },
-    editarDados(campo, dados) {
-      this.novoHistorico[campo] = {
-        ...this.novoHistorico[campo],
-        dados: dados,
-        cor: "amarelo"
-      };
-      this.esconderOperacoes[campo] = true;
-    },
-    formatInfo(campo, info) {
-      switch (campo) {
-        case "tipoProc":
-          return info === "PC" ? "Processo Comum" : "Processo Específico";
-          break;
-        case "procTrans":
-          return info === "S" ? "Sim" : "Não";
-        default:
-          return info;
-          break;
-      }
-    },
-    abrirNotaDialog(campo) {
-      this.notaDialog.visivel = true;
-      this.notaDialog.campo = campo;
-      if (this.novoHistorico[campo].nota !== undefined)
-        this.notaDialog.nota = this.novoHistorico[campo].nota;
-    },
-
-    adicionarNota(dados) {
-      this.notaDialog.visivel = false;
-      this.novoHistorico[dados.campo] = {
-        ...this.novoHistorico[dados.campo],
-        nota: dados.nota
-      };
-    },
-
-    edita(campo) {
-      this.editaCampo = {
-        visivel: true,
-        nome: this.transformaKeys(campo),
-        key: campo,
-        valorAtual: this.dados[campo]
-      };
-    },
-    fechaDialogConfirmacao() {
-      this.dialogConfirmacao = {
-        visivel: false,
-        mensagem: "",
-        dados: null
-      };
-    },
-    editarCampo(event) {
-      this.editaCampo.visivel = false;
-      this.dados[event.campo.key] = event.dados;
-      this.editarDados(event.campo.key, event.dados);
-    },
-
-    abrirNotaAplicacao(campo) {
-      this.notaDialogApp.visivel = true;
-      this.notaDialogApp.campo = campo;
-    },
-
-    adicionarNotaAplicacao(event, campo) {
-      this.notaDialogApp.visivel = false;
-
-      let novaNota = {};
-      novaNota[this.formatNotas[campo].id] = `${
-        this.formatNotas[campo].idType
-      }_${nanoid()}`;
-      novaNota[this.formatNotas[campo].nota] = event.nota;
-
-      this.dados[campo].push(novaNota);
-      this.novoHistorico[campo] = {
-        ...this.novoHistorico[campo],
-        dados: this.dados[campo],
-        cor: "amarelo"
-      };
-
-      this.esconderOperacoes[campo] = true;
-      this.animacoes[campo] = !this.animacoes[campo];
-    },
-
-    removeNota(item, campo) {
-      let index;
-      if (campo === "donos") {
-        index = this.dados[campo].findIndex(i => item.id === i.id);
-        if (item.estado && item.estado != "Nova") {
-          this.entidadesD.push(item);
-        } else if (!item.estado) {
-          this.entidadesD.push(item);
-        }
-      } else if (campo === "processosRelacionados") {
-        index = this.dados[campo].findIndex(i => item.codigo === i.codigo);
-        this.listaProcessos.push(item);
-      } else {
-        index = this.dados[campo].findIndex(i => item === i);
-      }
-
-      if (index !== -1) {
-        const bs = this.dados[campo].splice(index, 1);
-        this.editarDados(campo, this.dados[campo]);
-      }
-    },
-
-    selectEntidade: function(entidade, campo) {
-      var index = this.entidadesD.findIndex(e => e.id === entidade.id);
-      this.entidadesD.splice(index, 1);
-
-      this.dados[campo].push(entidade);
-      this.editarDados(campo, this.dados[campo]);
-    },
-
-    selectDiploma: function(leg, campo) {
-      var index = this.listaLegislacao.findIndex(e => e.id === leg.id);
-      this.listaLegislacao.splice(index, 1);
-      this.dados[campo].push(leg);
-      this.editarDados(campo, this.dados[campo]);
-    },
-
-    selectProcesso: function(processo, campo) {
-      var index = this.listaProcessos.findIndex(e => e.id === processo.id);
-      this.listaProcessos.splice(index, 1);
-      this.dados[campo].push(processo);
-      this.editarDados(campo, this.dados[campo]);
-    },
-
-    async loadTipologias() {
-      try {
-        let { data } = await this.$request("get", "/tipologias/");
-
-        this.tipologias = data.map(item => {
-          return {
-            sigla: item.sigla,
-            designacao: item.designacao,
-            id: item.id
-          };
-        });
-      } catch (error) {
-        this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao carregar os dados, por favor tente novamente";
-      }
-    },
-    async loadEntidades() {
-      try {
-        var response = await this.$request("get", "/entidades");
-        let filtered = response.data.filter(item => {
-          if (this.dados.donos.findIndex(el => el.id == item.id) > -1) {
-            return false;
-          }
-          return true;
-        });
-        this.entidadesD = filtered.map(function(item) {
-          return {
-            selected: false,
-            id: item.id,
-            sigla: item.sigla,
-            designacao: item.designacao,
-            tipo: "Entidade",
-            intervencao: "Indefinido",
-            estado: item.estado
-          };
-        });
-        response = await this.$request("get", "/tipologias");
-        this.entidadesD = await this.entidadesD.concat(
-          response.data.map(function(item) {
-            return {
-              selected: false,
-              id: item.id,
-              sigla: item.sigla,
-              designacao: item.designacao,
-              tipo: "Tipologia",
-              intervencao: "Indefinido"
-            };
-          })
-        );
-        await this.entidadesD.sort(function(a, b) {
-          return a.sigla.localeCompare(b.sigla);
-        });
-
-        this.entidadesP = JSON.parse(JSON.stringify(this.entidadesD));
-      } catch (erro) {
-        return erro;
-      }
-    },
-    async loadProcessos() {
-      try {
-        var response = await this.$request("get", "/classes?nivel=3");
-        let filtered = response.data.filter(item => {
-          if (
-            this.dados.processosRelacionados.findIndex(
-              el => el.codigo == item.codigo
-            ) > -1
-          ) {
-            return false;
-          }
-          return true;
-        });
-        this.listaProcessos = filtered
-          .map(function(item) {
-            return {
-              selected: false,
-              id: item.id.split("#")[1],
-              codigo: item.codigo,
-              titulo: item.titulo,
-              idRel: "Indefinido"
-            };
-          })
-          .sort(function(a, b) {
-            return a.codigo.localeCompare(b.codigo);
-          });
-      } catch (error) {
-        return error;
-      }
-    },
-    async loadLegislacao() {
-      try {
-        var response = await this.$request("get", "/legislacao?estado=Ativo");
-        this.listaLegislacao = response.data
-          .map(function(item) {
-            return {
-              tipo: item.tipo,
-              numero: item.numero,
-              sumario: item.sumario,
-              data: item.data,
-              selected: false,
-              id: item.id
-            };
-          })
-          .sort(function(a, b) {
-            return -1 * a.data.localeCompare(b.data);
-          });
-      } catch (error) {
-        return error;
-      }
-    }
-  }
 };
 </script>
