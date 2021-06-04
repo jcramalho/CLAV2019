@@ -76,6 +76,21 @@
             @input="props.items.updateValue"
           ></v-text-field> </template
       ></ValidaCampo>
+      <ValidaCampo
+        :dadosOriginais="p.objeto.dados.geral"
+        :novoHistorico="novoHistorico"
+        campoValue="entSel"
+        campoText="Entidades"
+        tipo="array"
+      >
+        <template v-slot:input="props">
+          <v-text-field
+            :rules="[(v) => !!v || 'Campo obrigatório']"
+            solo
+            v-model="props.items.campoEditado"
+            @input="props.items.updateValue"
+          ></v-text-field> </template
+      ></ValidaCampo>
     </v-card>
   </div>
 </template>
@@ -305,6 +320,7 @@ export default {
   created() {
     alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
     alert(JSON.stringify(this.p.historico))
+
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );

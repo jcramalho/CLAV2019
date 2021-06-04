@@ -640,8 +640,8 @@ export default {
         if(tipo[0] == 'pgd'){
           var response = await this.$request("get", "/pgd/"+this.ppd.geral.fonteLegitimacao.id);
           //this.classesSI = await prepararClasses(response.data);
-          this.classesDaFonteL = response.data[0];
-          for (var c of response.data[0]) {
+          this.classesDaFonteL = response.data;
+          for (var c of response.data) {
             if(c.pca){
               if(c.codigo){
                 this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
@@ -652,6 +652,7 @@ export default {
             }
           }
         }
+        //if(tipo[0] == '')
       }catch (err) {
         return err;
       }
