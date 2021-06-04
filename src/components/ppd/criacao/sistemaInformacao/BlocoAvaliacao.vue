@@ -28,10 +28,10 @@
                 <InfoBox header="Decomposição do SI" :text="myhelp.Ppd.Avaliacao.decomposicao"/>
               </div>
           </v-col>
-          <v-col v-if="ppd.si.avaliacao.tabelaDecomposicao.length > 0">
+          <v-col v-if="ppd.si.avaliacao.decomposicao.length > 0">
             <v-data-table
             :headers="headersDecomp"
-            :items="ppd.si.avaliacao.tabelaDecomposicao"
+            :items="ppd.si.avaliacao.decomposicao"
             class="elevation-1"
             :footer-props="footer_Classes"
             :page.sync="paginaSelectDecomp"
@@ -404,7 +404,7 @@ export default {
       checkedCriticidade: ["Muito crítico", "Crítico", "Pouco crítico", "Não crítico"],
       simNao: ["Sim", "Não"],
 
-      tabelaDecomposicao:[]
+      decomposicao:[]
 
     };
   },
@@ -464,13 +464,13 @@ export default {
     },
 
     guardarDecomp(item) {
-      this.ppd.si.avaliacao.tabelaDecomposicao.push(item);
+      this.ppd.si.avaliacao.decomposicao.push(item);
       this.addDecomposicao= false;
     },
 
     unselectDecomp: function(item) {
-      var index = this.ppd.si.avaliacao.tabelaDecomposicao.findIndex(e => e.numeroSub === item.numeroSub);
-      this.ppd.si.avaliacao.tabelaDecomposicao.splice(index, 1);
+      var index = this.ppd.si.avaliacao.decomposicao.findIndex(e => e.numeroSub === item.numeroSub);
+      this.ppd.si.avaliacao.decomposicao.splice(index, 1);
     },
 
     selectSistema: function(numeroSI, relacao) {

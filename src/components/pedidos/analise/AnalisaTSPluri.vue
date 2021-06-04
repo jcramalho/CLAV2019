@@ -488,6 +488,7 @@ export default {
     this.json = JSON.stringify(this.p, null, 2);
   },
   created() {
+    alert(JSON.stringify(this.p.objeto.dados.entidades))
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );
