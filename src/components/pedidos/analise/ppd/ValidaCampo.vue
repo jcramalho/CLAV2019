@@ -239,12 +239,12 @@
             </span>
             <span
               v-else-if="
-                tipo == 'array' && !!novoHistorico[campoValue].dados[0]
+                tipo == 'array' && !!novoHistorico[campoValue].dados
               "
             >
               <ul>
                 <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
-                  {{ v[arrayValue] }}
+                  {{ v.dados.label }}
                   <v-badge
                     v-if="!dadosOriginais[campoValue].some((e) => e == v)"
                     right
