@@ -76,6 +76,21 @@
             @input="props.items.updateValue"
           ></v-text-field> </template
       ></ValidaCampo>
+      <ValidaCampo
+        :dadosOriginais="p.objeto.dados.geral"
+        :novoHistorico="novoHistorico"
+        campoValue="entSel"
+        campoText="Entidades"
+        tipo="array"
+      >
+        <template v-slot:input="props">
+          <v-text-field
+            :rules="[(v) => !!v || 'Campo obrigatório']"
+            solo
+            v-model="props.items.campoEditado"
+            @input="props.items.updateValue"
+          ></v-text-field> </template
+      ></ValidaCampo>
     </v-card>
   </div>
 </template>
@@ -304,33 +319,37 @@ export default {
   },
   created() {
     alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
-    alert(JSON.stringify(this.p.historico))
+    //alert(JSON.stringify(this.p.historico))
+
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );
-    Object.keys(this.novoHistorico).map((k) => {
-      if (k != "entSel") this.novoHistorico.entSel[k].nota = null;
-    });
+    alert(JSON.stringify(this.novoHistorico))
+    //Object.keys(this.novoHistorico.entSel).map((k) => {
+    //  if (k != "entSel") this.novoHistorico.entSel[k].nota = null;
+    //});
+    
+    //alert(JSON.stringify(this.novoHistorico))
+    //Object.keys(this.novoHistorico.geral).map((k) => {
+    //  if (k != "sistemasInfo") this.novoHistorico.sistemasInfo[k].nota = null;
+    //});
 
-    Object.keys(this.novoHistorico.geral).map((k) => {
-      if (k != "sistemasInfo") this.novoHistorico.sistemasInfo[k].nota = null;
-    });
-
-    this.novoHistorico.geral.entSel.dados.forEach((e) => {
+    this.novoHistorico.entSel.dados.forEach((e) => {
       e.nota = null;
     });
 
-    this.novoHistorico.geral.classes.dados.forEach((classe) => {
-      classe.nota = null;
-      Object.keys(classe.dados).map((k) => {
-        classe.dados[k].nota = null;
-        if (k === "pca" || k === "df") {
-          Object.keys(classe.dados[k].dados).map((d) => {
-            classe.dados[k].dados[d].nota = null;
-          });
-        }
-      });
-    });
+    //this.novoHistorico.geral.classes.dados.forEach((classe) => {
+    //  classe.nota = null;
+    //  Object.keys(classe.dados).map((k) => {
+    //    classe.dados[k].nota = null;
+    //    if (k === "pca" || k === "df") {
+    //      Object.keys(classe.dados[k].dados).map((d) => {
+    //        classe.dados[k].dados[d].nota = null;
+    //      });
+    //    }
+    //  });
+    //});
+
   },
 };
 </script>
