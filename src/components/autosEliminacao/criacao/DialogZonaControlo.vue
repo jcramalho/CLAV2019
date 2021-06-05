@@ -367,9 +367,10 @@ export default {
           c[0].df.valor == "CP" &&
           c[0].df.justificacao
         )
-          this.justificaDF = c[0].df.justificacao.map((just) => {
+          this.justificaDF = c[0].df.justificacao.data.map((just) => {
             return just.conteudo;
           });
+        
         if (c[0].df.valor === "C") {
           this.df = "Conservação";
           this.ni = "Participante";
