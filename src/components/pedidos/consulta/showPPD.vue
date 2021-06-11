@@ -245,6 +245,7 @@ export default {
 	created: async function() {
       try{
         this.ppd = this.p.objeto.dados;
+        alert(JSON.stringify(this.ppd.sistemasInfo))
         this.criarArvore()
       }
       catch(e){

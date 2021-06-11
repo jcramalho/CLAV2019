@@ -544,6 +544,7 @@ export default {
           caracterizacao: {},
           estrategia: {},
         };
+        alert(JSON.stringify(this.ppd.si.avaliacao))
         Object.assign(sistema.identificacao,this.ppd.si.identificacao)
         Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
         Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)

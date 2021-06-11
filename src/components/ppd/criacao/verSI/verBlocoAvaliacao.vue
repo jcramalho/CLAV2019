@@ -117,7 +117,7 @@
     <v-col cols="12" xs="12" sm="4" >
       <v-text-field
         label="Não possui"
-        :value="siSpec.avaliacao.desfinoFinalSI"
+        :value="siSpec.avaliacao.destinoSI"
         readonly
         solo
         dense
