@@ -1,79 +1,38 @@
 <template>
-  <v-content
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
-    }"
-  >
-    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
-      <v-row>
-        <v-col class="py-0 my-0">
-          <v-btn
-            @click="$router.go(-1)"
-            rounded
-            class="white--text clav-linear-background"
-          >
-            <unicon
-              name="arrow-back-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 20.71 37.261"
-              fill="#ffffff"
-            />
-            <p class="ml-2">Voltar</p>
-          </v-btn>
-          <!-- HEADER -->
-          <v-card flat style="border-radius: 10px !important">
-            <p
-              class="content-title-1 pt-5"
-              style="
-                color: #4da0d0 !important;
-                text-align: center;
-                padding-bottom: 0.7rem !important;
-              "
-            >
-              Alterar Classe
-            </p>
-            <p
-              class="content-title-2 pb-5"
-              style="color: #4da0d0 !important; text-align: center"
-            >
-              {{ classe.codigo }} -
-              {{ classe.titulo }}
-            </p>
-            <v-card-text>
-              <!-- IDENTIFICAÇÃO DA CLASSE -->
-              <BlocoIdentificativo :c="classe" />
+  <v-card flat class="pa-3">
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="3" align="center" justify="center">
+        <Voltar />
+      </v-col>
+      <v-col cols="12" sm="9" align="center" justify="center">
+        <p class="clav-content-title-1">Alterar Classe</p>
+        <p class="clav-content-title-2">
+          {{ classe.codigo }} -
+          {{ classe.titulo }}
+        </p>
+      </v-col>
+    </v-row>
+    <BlocoIdentificativo :c="classe" />
 
-              <v-expansion-panels flat class="mt-6">
-                <!-- DESCRITIVO DA CLASSE -->
-                <BlocoDescritivo :c="classe" />
-              </v-expansion-panels>
-            </v-card-text>
+    <v-expansion-panels flat class="mt-6">
+      <!-- DESCRITIVO DA CLASSE -->
+      <BlocoDescritivo :c="classe" />
+    </v-expansion-panels>
 
-            <v-snackbar
-              v-model="loginErrorSnackbar"
-              :timeout="8000"
-              color="error"
-              :top="true"
-            >
-              {{ loginErrorMessage }}
-              <v-btn icon color="white" @click="loginErrorSnackbar = false">
-                <unicon
-                  name="remove-icon"
-                  width="15"
-                  height="15"
-                  viewBox="0 0 20.71 20.697"
-                  fill="#ffffff"
-                />
-              </v-btn>
-            </v-snackbar>
-            <PainelOperacoes :c="classe" :o="classeCopia" :pendenteId="''" />
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-content>
+    <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
+      {{ loginErrorMessage }}
+      <v-btn icon color="white" @click="loginErrorSnackbar = false">
+        <unicon
+          name="remove-icon"
+          width="15"
+          height="15"
+          viewBox="0 0 20.71 20.697"
+          fill="#ffffff"
+        />
+      </v-btn>
+    </v-snackbar>
+    <PainelOperacoes :c="classe" :o="classeCopia" :pendenteId="''" />
+  </v-card>
 </template>
 
 <script>
@@ -83,12 +42,14 @@ const help = require("@/config/help").help;
 import BlocoIdentificativo from "@/components/classes/edicao/BlocoIdentificativo.vue";
 import BlocoDescritivo from "@/components/classes/criacao/BlocoDescritivo.vue";
 import PainelOperacoes from "@/components/classes/edicao/PainelOperacoes.vue";
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   components: {
     BlocoIdentificativo,
     BlocoDescritivo,
     PainelOperacoes,
+    Voltar,
   },
 
   props: ["idc"],
