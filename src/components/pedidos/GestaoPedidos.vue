@@ -222,6 +222,8 @@ export default {
 
     async devolvePedido(dados) {
       try {
+        let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
+
         const estado = "Devolvido";
 
         let dadosUtilizador = this.$verifyTokenUser();
@@ -233,10 +235,7 @@ export default {
           despacho: dados.mensagemDespacho,
         };
 
-        let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
-
         pedido.estado = estado;
-        pedido.objeto.acao = "Alteração";
 
         await this.$request("put", "/pedidos", {
           pedido: pedido,
