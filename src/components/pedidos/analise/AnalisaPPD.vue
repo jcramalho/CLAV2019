@@ -91,6 +91,21 @@
             @input="props.items.updateValue"
           ></v-text-field> </template
       ></ValidaCampo>
+      <ValidaCampo
+        :dadosOriginais="p.objeto.dados"
+        :novoHistorico="novoHistorico"
+        campoValue="sistemasInfo"
+        campoText="Sistemas de Informação"
+        tipo="si"
+      >
+        <template v-slot:input="props">
+          <v-text-field
+            :rules="[(v) => !!v || 'Campo obrigatório']"
+            solo
+            v-model="props.items.campoEditado"
+            @input="props.items.updateValue"
+          ></v-text-field> </template
+      ></ValidaCampo>
     </v-card>
   </div>
 </template>
@@ -318,7 +333,8 @@ export default {
     this.json = JSON.stringify(this.p, null, 2);
   },
   created() {
-    alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
+    //alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
+    alert(JSON.stringify(this.p.objeto.dados.sistemasInfo))
     //alert(JSON.stringify(this.p.historico))
 
     this.novoHistorico = JSON.parse(
@@ -328,7 +344,7 @@ export default {
     //Object.keys(this.novoHistorico.entSel).map((k) => {
     //  if (k != "entSel") this.novoHistorico.entSel[k].nota = null;
     //});
-    
+
     //alert(JSON.stringify(this.novoHistorico))
     //Object.keys(this.novoHistorico.geral).map((k) => {
     //  if (k != "sistemasInfo") this.novoHistorico.sistemasInfo[k].nota = null;

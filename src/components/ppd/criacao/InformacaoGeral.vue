@@ -23,14 +23,16 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="ppd.geral.entSel"
+            label="Selecione as entidades abrangidas pelo PPD"
             :items="entidades"
             item-text="label"
+            return-object
+            v-model="ppd.geral.entSel"
             placeholder="Selecione as entidades abrangidas pelo PPD"
             multiple
             chips
             deletable-chips
-            return-object
+            :rules="[(v) => !!v || 'Tem de escolher pelo menos uma entidade']"
           >
           </v-autocomplete>
         </v-col>
@@ -48,10 +50,11 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-textarea
-              v-model="ppd.geral.mencaoResp"
-              label=""
-              solo
-              clearable
+            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+            v-model="ppd.geral.mencaoResp"
+            label=""
+            solo
+            clearable
           ></v-textarea>
         </v-col>
       </v-row>
@@ -80,6 +83,7 @@
               v-model="fonteLegitimacaoSelected"
               solo
               dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
             />
           </div>
           <div v-else-if="loadCheck === 'PGD/LC'">
@@ -91,6 +95,7 @@
               v-model="fonteLegitimacaoSelected"
               solo
               dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
             />
           </div>
           <div v-else-if="loadCheck === 'PGD'">
@@ -102,6 +107,7 @@
               v-model="fonteLegitimacaoSelected"
               solo
               dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
             />
           </div>
           <div v-else-if="loadCheck === 'RADA'">
@@ -113,19 +119,21 @@
               v-model="fonteLegitimacaoSelected"
               solo
               dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
             />
           </div>
           <div v-else>
-                <v-autocomplete
-                  label="Selecione a fonte de legitimação"
-                  :items="this.tsRada"
-                  item-text="titulo"
-                  return-object
-                  v-model="fonteLegitimacaoSelected"
-                  solo
-                  dense
-                ></v-autocomplete>
-              </div>
+            <v-autocomplete
+              label="Selecione a fonte de legitimação"
+              :items="this.tsRada"
+              item-text="titulo"
+              return-object
+              v-model="fonteLegitimacaoSelected"
+              solo
+              dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
+            ></v-autocomplete>
+            </div>
         </v-col>
       </v-row>
     </v-form>
@@ -133,6 +141,10 @@
     <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">
       Limpar
     </v-btn>
+    <v-snackbar v-model="valido" :color="'warning'" :timeout="6000">
+      Precisa de selecionar pelo menos uma entidade.
+      <v-btn dark text @click="valido = false">Fechar</v-btn>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -156,6 +168,7 @@ export default {
     //usado para receber a info selecionada da fonteL.. para trocar!! para ja so tem o PGD a funcionar!!!!
     a: "",
     loadCheck: "",
+    valido: false,
     //---Fonte de legitimacao---
 
     portaria: [],
@@ -243,8 +256,11 @@ export default {
       this.$refs.form.reset();
     },
     next: function() {
-      if (this.$refs.form.validate()) {
-        this.$emit("seguinte", 2);
+      if(this.$refs.form.validate()){
+        if(this.ppd.geral.entSel.length > 0)
+          this.$emit("seguinte", 2);
+        else
+          this.valido = true
       }
     }
   }

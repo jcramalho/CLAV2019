@@ -256,6 +256,23 @@
             </span>
             <span
               v-else-if="
+                tipo == 'si' && !!novoHistorico[campoValue].dados
+              "
+            >
+              <ul>
+                <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
+                  {{ v.dados.numeroSI + " - "+ v.dados.nomeSI }}
+                  <v-badge
+                    v-if="!dadosOriginais[campoValue].some((e) => e == v)"
+                    right
+                    dot
+                    inline
+                  ></v-badge>
+                </li>
+              </ul>
+            </span>
+            <span
+              v-else-if="
                 (tipo == 'notasAp' || tipo == 'notasEx') &&
                 (!!novoHistorico[campoValue].dados[0] || loadNotas().length > 0)
               "
@@ -479,7 +496,7 @@
         </span>
         <!-- Ver como vai ser a edição. -->
         <v-icon
-          v-if="permitirEditar && (tipo == 'array' || tipo == 'string')"
+          v-if="permitirEditar && (tipo == 'array' || tipo == 'string' || tipo == 'si')"
           class="mr-1"
           color="orange"
           @click="edita()"
