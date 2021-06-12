@@ -234,6 +234,10 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="6000">
+      {{mensagemErroSI}}
+      <v-btn dark text @click="erroValidacao = false">Fechar</v-btn>
+    </v-snackbar>
   </v-row>
 </template>
 
@@ -438,7 +442,8 @@ export default {
 
     loginErrorMessage: "Precisa de fazer login para criar um Plano de preservação digital!",
     mensValCodigo: "",
-
+    erroValidacao : false,
+    mensagemErroSI: "",
 
     semaforos: {
       entidadesReady: false,
@@ -518,6 +523,7 @@ export default {
       this.ppd.si.avaliacao.sistemasRelacionados.splice(index, 1);
     },
     guardarSistema: async function() {
+      this.mensagemErroSI = "Ainda lhe falta verificar o(s) seguinte(s) separador(es):\n"
       if(/*this.validaAll("O campo número do SI",this.ppd.si.numeroSI) &&
         this.validaAll("O campo  nome do SI",this.ppd.si.nomeSI) &&
         this.validaAll("O campo administrador do sistema",this.ppd.si.identificacao.adminSistema) &&
@@ -532,8 +538,13 @@ export default {
         this.validaOutsourcing(this.ppd.si.identificacao.outsourcing, this.ppd.si.identificacao.outsourcingCheck) &&
         this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
         this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/
-        //this.$refs.form.validate() para verificar se os campos obrigatorios tao preenchidos
-        true
+        this.$refs.form.validate()
+        && this.ppd.si.identificacao.adminSistema.length > 0
+        && this.ppd.si.avaliacao.descricao != ""
+        && this.ppd.si.caracterizacao.formatos != ""
+        && this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao != ""
+         //para verificar se os campos obrigatorios tao preenchidos
+        //true
       ){
         var sistema = {
           visto: true,
@@ -578,7 +589,7 @@ export default {
         this.ppd.si.avaliacao.legislacoes = "",
         this.ppd.si.caracterizacao.dependenciaSoft = "",
         this.ppd.si.caracterizacao.categoriaDados = "",
-        this.ppd.si.caracterizacao.formato = "",
+        this.ppd.si.caracterizacao.formatos = "",
         this.ppd.si.caracterizacao.modeloCres = "",
         this.ppd.si.caracterizacao.dimensao = "",
         this.ppd.si.caracterizacao.crescimento = "",
@@ -617,7 +628,7 @@ export default {
         this.ppd.si.estrategia.utilizacaoMemoria.idMetodoPreservacao= "",
         this.ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao= "",
         this.ppd.si.estrategia.utilizacaoMemoria.lacunas= ""*/
-        this.dialog= false;
+        this.dialog = false;
         this.newSistema(sistema,this.ppd.sistemasInfo);
         this.ppd.si.avaliacao.decomposicao = []
         this.ppd.si.avaliacao.sistemasRelacionados = []
@@ -629,7 +640,21 @@ export default {
         this.ppd.si.avaliacao.selecionadosTabelaFL = [];
         await this.consultaFT();
       } else {
-        this.dialog= true;
+
+          //fazer verificação com os campos todos
+        if(this.ppd.si.identificacao.adminSistema.length <= 0){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Identificação")
+        }
+        if(this.ppd.si.avaliacao.descricao == ""){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Avaliação ")
+        }
+        if(this.ppd.si.caracterizacao.formatos == ""){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Caracterização ")
+        }
+        if(this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao == ""){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Estratégia ")
+        }
+        this.dialog = true;
         this.erroValidacao = true;
       }
     },
