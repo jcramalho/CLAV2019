@@ -23,15 +23,15 @@
           :infoBody="myhelp.Classe.Campos.Descricao"
         >
           <template v-slot:conteudo>
-            <v-text-field
+            <v-textarea
               v-model="c.descricao"
               label="Descrição"
               auto-grow
               dense
-              single-line
+              rows="1"
               hide-details
               clearable
-            ></v-text-field>
+            ></v-textarea>
           </template>
         </Campo>
 
