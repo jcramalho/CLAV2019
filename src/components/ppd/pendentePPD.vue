@@ -336,7 +336,7 @@ export default {
           descricao: "",
           pcaSI: 0,
           destinoSI: "",
-          tabelaDecomposicao: [],
+          decomposicao: [],
           selecionadosTabelaFL: [],
           sistemasRelacionados: [],
           checkedAti: "",
@@ -550,7 +550,7 @@ export default {
         this.ppd.si.identificacao.outsourcing = "",
         this.ppd.si.identificacao.notas = "",
         this.ppd.si.avaliacao.descricao = "",
-        this.ppd.si.avaliacao.tabelaDecomposicao = [],
+        this.ppd.si.avaliacao.decomposicao = [],
         this.ppd.si.avaliacao.selecionadosTabelaFL = [],
         this.ppd.si.avaliacao.sistemasRelacionados = [],
         this.ppd.si.avaliacao.checkedAti = "",
@@ -601,7 +601,7 @@ export default {
         this.ppd.si.estrategia.utilizacaoMemoria.lacunas= ""*/
         this.dialog= false;
         this.newSistema(sistema,this.ppd.sistemasInfo);
-        this.ppd.si.avaliacao.tabelaDecomposicao = []
+        this.ppd.si.avaliacao.decomposicao = []
         this.ppd.si.avaliacao.sistemasRelacionados = []
         this.$refs.form.reset();//   ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.panels = [];
@@ -759,16 +759,16 @@ export default {
           var index =  this.ppd.arvore.findIndex(l => l.id === sis.numeroSI);
           //ESTE CASO NUNCA ACONTECE PORQUE NAO SE PODE INSERIR OUTRO SI COM O MESMO ID....
           if(index != -1){
-            if(this.ppd.arvore[index].avaliacao.tabelaDecomposicao.length>0){
-              let aux = this.ppd.arvore[index].avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
+            if(this.ppd.arvore[index].avaliacao.decomposicao.length>0){
+              let aux = this.ppd.arvore[index].avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
               child = aux.split("#").map(e=> e=({"id": e, "name":e}));
               alert(child[0]);
             }
           }
           else{
               child = [];
-              if(sis.avaliacao.tabelaDecomposicao.length>0){
-                let aux = sis.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub + "-" + e.nomeSub).toString().replaceAll(",","#")
+              if(sis.avaliacao.decomposicao.length>0){
+                let aux = sis.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + "-" + e.nomeSub).toString().replaceAll(",","#")
                 child = aux.split("#").map(e=> e=({"id": e.split("-")[0], "name":e.split("-").slice(1).toString()}));
                 //child.sort();
                 child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));

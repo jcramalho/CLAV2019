@@ -5,7 +5,7 @@
       v-bind:disabled="c.codigo == ''"
       dark
       rounded
-      class="primary"
+      class="ma-2 indigo darken-4"
       @click="validarClasse"
     >
       Validar classe

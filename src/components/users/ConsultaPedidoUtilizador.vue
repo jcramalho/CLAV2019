@@ -45,9 +45,10 @@
             </v-chip>
           </v-col>
         </v-row>
-
-        <span v-if="pedido.objeto.acao !== 'Criação'">
-          <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
+        <span
+          v-if="pedido.objeto.acao !== 'Criação' && pedido.objeto.acao !== 'Alteração'"
+        >
+          <v-alert type="warning" class="m-auto mb-2 mt-2">
             <span v-if="pedido.objeto.tipo === 'Legislação'">
               <b>{{ pedido.objeto.tipo }}:</b>
               {{ dadosOriginais.diplomaFonte }}
@@ -211,14 +212,20 @@
         <v-btn
           v-if="['Validado', 'Devolvido'].includes(pedido.estado)"
           color="primary"
-          dark
+          rounded
           class="ml-1"
-          @click="verRelatorio"
+          @click="verRelatorio()"
           >Ver Relatório</v-btn
+        >
+        <v-btn
+          color="success"
+          rounded
+          class="ml-1"
+          @click="$router.push('/classes/editar/c' + pedido.objeto.dados.codigo)"
+          >Corrigir</v-btn
         >
       </v-card-actions>
     </v-card>
-
     <!-- Dialog de erros da API -->
     <v-dialog v-model="erroPedido" width="50%" persistent>
       <ErroAPIDialog :erros="erros" @fecharErro="fecharErro()" />

@@ -146,6 +146,7 @@
                   :semaforos="semaforos"
                   :pcaFormasContagem="pcaFormasContagem"
                   :pcaSubFormasContagem="pcaSubFormasContagem"
+                  class="mt-3"
                 />
               </v-expansion-panel-content>
             </template>

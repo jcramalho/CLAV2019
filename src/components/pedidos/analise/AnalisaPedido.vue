@@ -106,6 +106,12 @@
               fase="analise"
             />
 
+            <AnalisaPPD
+              v-else-if="pedido.objeto.tipo === 'PPD'"
+              :p="pedido"
+              fase="analise"
+            />
+
             <AnalisaDefault v-else :p="pedido" />
           </v-card-text>
 
@@ -207,6 +213,7 @@ import AnalisaTSPluri from "@/components/pedidos/analise/AnalisaTSPluri";
 import AnalisaTSOrg from "@/components/pedidos/analise/AnalisaTSOrg";
 import AnalisaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
 import AnalisaClasseN3 from "@/components/pedidos/analise/AnalisaClasseN3";
+import AnalisaPPD from "@/components/pedidos/analise/AnalisaPPD";
 
 import AnalisaEditaEntidade from "@/components/pedidos/analise/AnalisaEditaEntidade";
 import AnalisaEditaLegislacao from "@/components/pedidos/analise/AnalisaEditaLegislacao";
@@ -238,6 +245,7 @@ export default {
     AnalisaTSOrg,
     AnalisaClasseN1,
     AnalisaClasseN3,
+    AnalisaPPD,
     AnalisaDefault,
     VerDespachos,
     ErroDialog,

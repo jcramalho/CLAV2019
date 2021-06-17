@@ -53,7 +53,7 @@ var importarSI = (file, ppd) => {
                         formaContagemPrazos: si[i][22],
                         destinoFinalClasse: si[i][23],
                         pcaSI: si[i][24],
-                        desfinoFinalSI: si[i][25],
+                        destinoSI: si[i][25],
                         siRelacionado: si[i][26],
                         siRelacionadoRelacao: si[i][27],
                         checkedAti: si[i][28],

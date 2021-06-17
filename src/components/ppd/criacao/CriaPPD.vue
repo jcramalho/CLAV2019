@@ -234,6 +234,10 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="6000">
+      {{mensagemErroSI}}
+      <v-btn dark text @click="erroValidacao = false">Fechar</v-btn>
+    </v-snackbar>
   </v-row>
 </template>
 
@@ -334,7 +338,7 @@ export default {
           descricao: "",
           pcaSI: 0,
           destinoSI: "",
-          tabelaDecomposicao: [],
+          decomposicao: [],
           selecionadosTabelaFL: [],
           sistemasRelacionados: [],
           checkedAti: "",
@@ -438,7 +442,8 @@ export default {
 
     loginErrorMessage: "Precisa de fazer login para criar um Plano de preservação digital!",
     mensValCodigo: "",
-
+    erroValidacao : false,
+    mensagemErroSI: "",
 
     semaforos: {
       entidadesReady: false,
@@ -518,6 +523,7 @@ export default {
       this.ppd.si.avaliacao.sistemasRelacionados.splice(index, 1);
     },
     guardarSistema: async function() {
+      this.mensagemErroSI = "Ainda lhe falta verificar o(s) seguinte(s) separador(es):\n"
       if(/*this.validaAll("O campo número do SI",this.ppd.si.numeroSI) &&
         this.validaAll("O campo  nome do SI",this.ppd.si.nomeSI) &&
         this.validaAll("O campo administrador do sistema",this.ppd.si.identificacao.adminSistema) &&
@@ -532,8 +538,13 @@ export default {
         this.validaOutsourcing(this.ppd.si.identificacao.outsourcing, this.ppd.si.identificacao.outsourcingCheck) &&
         this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
         this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/
-        //this.$refs.form.validate() para verificar se os campos obrigatorios tao preenchidos
-        true
+        this.$refs.form.validate()
+        && this.ppd.si.identificacao.adminSistema.length > 0
+        && this.ppd.si.avaliacao.descricao != ""
+        && this.ppd.si.caracterizacao.formatos != ""
+        && this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao != ""
+         //para verificar se os campos obrigatorios tao preenchidos
+        //true
       ){
         var sistema = {
           visto: true,
@@ -544,6 +555,7 @@ export default {
           caracterizacao: {},
           estrategia: {},
         };
+        alert(JSON.stringify(this.ppd.si.avaliacao))
         Object.assign(sistema.identificacao,this.ppd.si.identificacao)
         Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
         Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
@@ -567,7 +579,7 @@ export default {
         this.ppd.si.identificacao.outsourcing = "",
         this.ppd.si.identificacao.notas = "",
         this.ppd.si.avaliacao.descricao = "",
-        this.ppd.si.avaliacao.tabelaDecomposicao = [],
+        this.ppd.si.avaliacao.decomposicao = [],
         this.ppd.si.avaliacao.selecionadosTabelaFL = [],
         this.ppd.si.avaliacao.sistemasRelacionados = [],
         this.ppd.si.avaliacao.checkedAti = "",
@@ -577,7 +589,7 @@ export default {
         this.ppd.si.avaliacao.legislacoes = "",
         this.ppd.si.caracterizacao.dependenciaSoft = "",
         this.ppd.si.caracterizacao.categoriaDados = "",
-        this.ppd.si.caracterizacao.formato = "",
+        this.ppd.si.caracterizacao.formatos = "",
         this.ppd.si.caracterizacao.modeloCres = "",
         this.ppd.si.caracterizacao.dimensao = "",
         this.ppd.si.caracterizacao.crescimento = "",
@@ -616,9 +628,9 @@ export default {
         this.ppd.si.estrategia.utilizacaoMemoria.idMetodoPreservacao= "",
         this.ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao= "",
         this.ppd.si.estrategia.utilizacaoMemoria.lacunas= ""*/
-        this.dialog= false;
+        this.dialog = false;
         this.newSistema(sistema,this.ppd.sistemasInfo);
-        this.ppd.si.avaliacao.tabelaDecomposicao = []
+        this.ppd.si.avaliacao.decomposicao = []
         this.ppd.si.avaliacao.sistemasRelacionados = []
         this.$refs.form.reset();//   ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.panels = [];
@@ -628,7 +640,21 @@ export default {
         this.ppd.si.avaliacao.selecionadosTabelaFL = [];
         await this.consultaFT();
       } else {
-        this.dialog= true;
+
+          //fazer verificação com os campos todos
+        if(this.ppd.si.identificacao.adminSistema.length <= 0){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Identificação")
+        }
+        if(this.ppd.si.avaliacao.descricao == ""){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Avaliação ")
+        }
+        if(this.ppd.si.caracterizacao.formatos == ""){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Caracterização ")
+        }
+        if(this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao == ""){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Estratégia ")
+        }
+        this.dialog = true;
         this.erroValidacao = true;
       }
     },
@@ -640,8 +666,8 @@ export default {
         if(tipo[0] == 'pgd'){
           var response = await this.$request("get", "/pgd/"+this.ppd.geral.fonteLegitimacao.id);
           //this.classesSI = await prepararClasses(response.data);
-          this.classesDaFonteL = response.data[0];
-          for (var c of response.data[0]) {
+          this.classesDaFonteL = response.data;
+          for (var c of response.data) {
             if(c.pca){
               if(c.codigo){
                 this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
@@ -652,6 +678,7 @@ export default {
             }
           }
         }
+        //if(tipo[0] == '')
       }catch (err) {
         return err;
       }
@@ -737,15 +764,15 @@ export default {
           var index =  this.ppd.arvore.findIndex(l => l.id === sis.numeroSI);
           //ESTE CASO NUNCA ACONTECE PORQUE NAO SE PODE INSERIR OUTRO SI COM O MESMO ID....
           if(index != -1){
-            if(this.ppd.arvore[index].avaliacao.tabelaDecomposicao.length>0){
-              let aux = this.ppd.arvore[index].avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
+            if(this.ppd.arvore[index].avaliacao.decomposicao.length>0){
+              let aux = this.ppd.arvore[index].avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
               child = aux.split("#").map(e=> e=({"id": e, "name":e}));
             }
           }
           else{
               child = [];
-              if(sis.avaliacao.tabelaDecomposicao.length>0){
-                let aux = sis.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub + "-" + e.nomeSub).toString().replaceAll(",","#")
+              if(sis.avaliacao.decomposicao.length>0){
+                let aux = sis.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + "-" + e.nomeSub).toString().replaceAll(",","#")
                 child = aux.split("#").map(e=> e=({"id": e.split("-")[0], "name":e.split("-").slice(1).toString()}));
                 //child.sort();
                 child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));
@@ -799,7 +826,7 @@ export default {
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: []
+              historico: await this.criaHistorico()
             };
 
             var response = await this.$request(
@@ -818,6 +845,63 @@ export default {
         console.log("Erro na criação do pedido: " + error);
       }
     },
+
+    criaHistorico: async function () {
+      alert(JSON.stringify(this.ppd.geral.entSel))
+      let historico = [
+        {
+            numeroPPD: {
+              cor: "verde",
+              dados: this.ppd.geral.numeroPPD,
+              nota: null,
+            },
+            nomePPD: {
+              cor: "verde",
+              dados: this.ppd.geral.nomePPD,
+              nota: null,
+            },
+            mencaoResp: {
+              cor: "verde",
+              dados: this.ppd.geral.mencaoResp,
+              nota: null,
+            },
+            fonteLegitimacao: {
+              cor: "verde",
+              dados: this.ppd.geral.fonteLegitimacao,
+              nota: null,
+            },
+            tipoFonteL: {
+              cor: "verde",
+              dados: this.ppd.geral.tipoFonteL,
+              nota: null,
+            },
+            entSel: {
+              cor: "verde",
+              dados: this.ppd.geral.entSel.map((c) => {
+                return {
+                  cor: "verde",
+                  dados: JSON.parse(JSON.stringify(c)),
+                  nota: null,
+                };
+              }),
+              nota: null,
+            },
+            sistemasInfo: {
+              cor: "verde",
+              dados: this.ppd.sistemasInfo.map((c) => {
+                return {
+                  cor: "verde",
+                  dados: JSON.parse(JSON.stringify(c)),
+                  nota: null,
+                };
+              }),
+              nota: null,
+            },
+          },
+      ]
+      alert(JSON.stringify(historico))
+      return historico
+    }
 
 
   },

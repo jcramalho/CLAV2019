@@ -1,66 +1,54 @@
 <template>
+  <v-card flat class="pa-3">
   <v-row class="ma-1">
     <v-col>
       <!-- HEADER -->
-      <v-card>
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Nova Classe (continuação do trabalho guardado)</v-toolbar-title>
-        </v-app-bar>
-
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nível:</div>
-            </v-col>
-            <v-col>
-              <div class="info-content">
+      <p class="clav-content-title-1">Nova Classe (continuação do trabalho guardado)</p>
+      
+      <Campo nome="Nível" color="neutralpurple">
+          <template v-slot:conteudo>
+            <div class="info-content">
                 {{ classe.nivel }}
               </div>
-            </v-col>
-          </v-row>
+          </template>
+        </Campo>
 
-          <!-- CÓDIGO DA NOVA CLASSE -->
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Código:
-                <InfoBox
-                  header="Código da Classe"
-                  :text="myhelp.Classe.Campos.Codigo"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <div class="info-content">
+        <Campo 
+          nome="Código" 
+          color="neutralpurple"
+          infoHeader="Código da Classe"
+          :infoBody="myhelp.Classe.Campos.Codigo">
+          <template v-slot:conteudo>
+            <div class="info-content">
                 {{ classe.codigo }}
               </div>
-            </v-col>
-          </v-row>
+          </template>
+        </Campo>
 
-          <!-- TÍTULO -->
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Título:
-                <InfoBox
-                  header="Título da Classe"
-                  :text="myhelp.Classe.Campos.Titulo"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="classe.titulo"
-                label="Título"
-                solo
-                clearable
-              ></v-text-field>
-            </v-col>
-          </v-row>
-
-          <v-expansion-panels>
+        <!-- TÍTULO -->
+        <Campo
+          nome="Título"
+          color="neutralpurple"
+          infoHeader="Título da Classe"
+          :infoBody="myhelp.Classe.Campos.Titulo"
+        >
+          <template v-slot:conteudo>
+            <v-text-field
+              class="mt-n4 px-3"
+              v-model="classe.titulo"
+              label="Título"
+              text
+              hide-details
+              single-line
+              clearable
+              color="blue darken-3"
+            ></v-text-field>
+          </template>
+        </Campo>
+          
+          <v-expansion-panels flat class="mt-6">
             <!-- DESCRITIVO DA CLASSE -->
-            <BlocoDescritivo :c="classe" />
+            <BlocoDescritivo :c="classe" class="mt-6" />
 
             <!-- CONTEXTO DE AVALIAÇÃO DA CLASSE -->
             <BlocoContexto
@@ -74,43 +62,27 @@
             />
 
             <!-- DECISÕES DE AVALIAÇÂO -->
-            <v-expansion-panel popout focusable v-if="classe.nivel == 3">
-              <v-expansion-panel-header
-              style="outline: none;"
-              :class="{
-                  'text-center': $vuetify.breakpoint.smAndDown,
-                  'text-left': $vuetify.breakpoint.mdAndUp,
-                }"
-              class="pa-0"
-              >
-                <div
-                  :class="{
-                      'px-3': $vuetify.breakpoint.mdAndUp,
-                  }"
-                  class="separador"
-                >
-                  <unicon
-                    class="mt-3"
-                    name="descricao-icon"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20.71 23.668"
-                    fill="#ffffff"
-                  />
-                  <span class="ml-3 mr-1">Decisões de Avaliação</span>
-                  <InfoBox
-                    header="Decisões de Avaliação"
-                    :text="myhelp.Classe.BlocoDecisoes"
-                    helpColor="info"
-                  />
-                </div>
-              </v-expansion-panel-header>
-
+            <PainelCLAV
+            v-if="classe.nivel == 3"
+            titulo="Decisões de Avaliação"
+            infoHeader="Decisões de Avaliação"
+            :infoBody="myhelp.Classe.BlocoDecisoes"
+          >
+            <template v-slot:icon>
+              <unicon
+                name="decisao-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 23.668"
+                fill="#ffffff"
+              />
+            </template>
+            <template v-slot:conteudo>
               <v-expansion-panel-content>
                 <!-- HÁ SUBDIVISÃO? -->
                 <Subdivisao3Nivel :c="classe" />
 
-                <hr style="border: 3px solid green; border-radius: 2px;" />
+                <!--<hr style="border: 2px dashed #dee2f8;" /> -->
 
                 <!-- DECISÃO SEM SUBDIVISÃO -->
                 <DecisaoSemSubPCA
@@ -120,22 +92,22 @@
                   :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
 
-                <hr style="border-top: 3px dashed green; border-radius: 2px;" />
+                <!--<hr style="border-top: 3px dashed #1A237E; border-radius: 2px;"/> -->
 
                 <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
 
-            <!-- DECISÃO COM SUBDIVISÃO -->
-            <!-- TODO: Corrigir este componente com o novo layout -->
-            <Subclasses4Nivel
-              :c="classe"
-              :semaforos="semaforos"
-              :pcaFormasContagem="pcaFormasContagem"
-              :pcaSubFormasContagem="pcaSubFormasContagem"
-            />
+                <!-- DECISÃO COM SUBDIVISÃO -->
+                <Subclasses4Nivel
+                  :c="classe"
+                  :semaforos="semaforos"
+                  :pcaFormasContagem="pcaFormasContagem"
+                  :pcaSubFormasContagem="pcaSubFormasContagem"
+                  class="mt-3"
+                />
+              </v-expansion-panel-content>
+            </template>
+          </PainelCLAV>
           </v-expansion-panels>
-        </v-card-text>
 
         <v-snackbar
           v-model="loginErrorSnackbar"
@@ -144,13 +116,22 @@
           :top="true"
         >
           {{ loginErrorMessage }}
-          <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
+          <v-btn icon color="white" @click="loginErrorSnackbar = false">
+            <unicon
+              name="remove-icon"
+              width="15"
+              height="15"
+              viewBox="0 0 20.71 20.697"
+              fill="#ffffff"
+            />
+          </v-btn>
         </v-snackbar>
-      </v-card>
+      
       <!-- TODO: Corrigir este componente -->
       <PainelOperacoes :c="classe" :pendenteId="pendenteID" />
     </v-col>
   </v-row>
+  </v-card>
 </template>
 
 <script>
@@ -158,7 +139,9 @@ const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
+import Campo from "@/components/generic/Campo.vue";
 import InfoBox from "@/components/generic/infoBox.vue";
+import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
 import BlocoDescritivo from "@/components/classes/criacao/BlocoDescritivo.vue";
 import BlocoContexto from "@/components/classes/criacao/BlocoContexto.vue";
@@ -179,6 +162,8 @@ export default {
     DecisaoSemSubPCA,
     DecisaoSemSubDF,
     Subclasses4Nivel,
+    Campo,
+    PainelCLAV,
     InfoBox,
     PainelOperacoes
   },
