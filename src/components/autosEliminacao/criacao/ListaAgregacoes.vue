@@ -78,7 +78,7 @@
       </template>
 
       <template v-slot:item="prop">
-        <tr>
+        <tr v-if="agregacoes.indexOf(prop.item) === 0">
           <td>
             <v-text-field
               hint="Exemplo: AS_DGLAB_1/2019"

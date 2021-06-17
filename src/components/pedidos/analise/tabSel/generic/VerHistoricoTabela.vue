@@ -69,7 +69,7 @@
                   <v-expansion-panel-header
                     class="clav-linear-background white--text"
                   >
-                    <div class="separador">
+                    <div>
                       <font size="4"><b> Descritivo da Classe</b></font>
                     </div>
                   </v-expansion-panel-header>

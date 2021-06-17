@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ p }}
     <v-card flat class="ma-1">
       <ValidaCampo
         :dadosOriginais="p.objeto.dados.ts"
@@ -237,7 +238,15 @@
         </v-row>
       </ValidaCampo>
       <v-row>
+        <Voltar class="ma-5" />
         <v-spacer />
+
+        <v-btn
+          @click="guardarPedido()"
+          rounded
+          class="mt-5 indigo accent-4 white--text"
+          ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
+        >
         <PO
           operacao="Analisar"
           @avancarPedido="encaminharPedido($event)"
@@ -260,6 +269,37 @@
           @confirma="finalizarPedido(dialogConfirmacao.dados)"
         />
       </v-dialog>
+      <v-dialog v-model="dialogGuardado" width="50%" persistent>
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2">
+            Pedido guardado com sucesso!</v-card-title
+          >
+          <div class="info-content-card px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                O seu pedido foi guardado com sucesso. Pode abandonar a página.
+              </p>
+            </v-card-text>
+          </div>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="
+                {
+                  dialogGuardado = false;
+                }
+              "
+            >
+              Fechar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </div>
 </template>
@@ -269,6 +309,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ValidaCampo from "@/components/pedidos/analise/tabSel/generic/ValidaCampo";
 import InfoBox from "@/components/generic/infoBox.vue";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
+import Voltar from "@/components/generic/Voltar";
 import { mdiGuyFawkesMask } from "@mdi/js";
 
 export default {
@@ -281,6 +322,7 @@ export default {
     ValidaCampo,
     PO,
     ConfirmacaoOperacao,
+    Voltar,
   },
 
   data() {
@@ -295,6 +337,7 @@ export default {
         mensagem: "",
         dados: null,
       },
+      dialogGuardado: false,
       listaProcs: false,
       tsHeaders: [
         { text: "Código", width: "15%", value: "codigo", class: "subtitle-1" },
@@ -420,6 +463,30 @@ export default {
         });
 
         this.$router.go(-1);
+      } catch (e) {
+        //console.log("e :", e);
+      }
+    },
+    async guardarPedido() {
+      try {
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        await this.alterarOriginal();
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        pedido.historico[pedido.historico.length - 1] = this.novoHistorico;
+
+        const novaDistribuicao = {
+          estado: pedido.estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+        };
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.dialogGuardado = true;
       } catch (e) {
         //console.log("e :", e);
       }

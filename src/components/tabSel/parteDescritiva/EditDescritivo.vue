@@ -62,9 +62,19 @@
               <h5>Os campos assinalados a vermelho têm valores repetidos:</h5>
               <ul>
                 <li v-for="(item, index) in errors" :key="index">
-                  <span :class="item.value === true ? 'red--text' : ''">{{
-                    item.text
-                  }}</span>
+                  <span
+                    :class="
+                      item.value === true || item.value.length > 0
+                        ? 'red--text'
+                        : ''
+                    "
+                    >{{ item.text }}
+                    <ul v-if="item.value.length > 0">
+                      <li v-for="(item2, index2) in item.value" :key="index2">
+                        {{ item2 }}
+                      </li>
+                    </ul>
+                  </span>
                 </li>
               </ul>
             </v-card-text>
@@ -122,11 +132,12 @@ export default {
           var duplicados = notas.filter((n) => n.nota == lastNota.nota);
           if (duplicados.length > 1) {
             return true;
-          } else return false;
+          }
         }
       } else {
         return false;
       }
+      return false;
     },
 
     exemploDuplicado: function (exemplos) {
@@ -137,28 +148,30 @@ export default {
           );
           if (duplicados.length > 1) {
             return true;
-          } else return false;
+          }
         }
       } else {
         return false;
       }
+      return false;
     },
 
     tiDuplicado: function (termos) {
       if (termos.length > 1) {
-        for (lastTermo of termos) {
+        for (let lastTermo of termos) {
           var duplicados = termos.filter((t) => t.termo == lastTermo.termo);
           if (duplicados.length > 1) {
             return true;
-          } else return false;
+          }
         }
       } else {
         return false;
       }
+      return false;
     },
 
     // Devolve a seleção para cima
-    selecionar: function () {
+    selecionar: async function () {
       this.errors = [];
       this.proc.notasAp && this.proc.notasAp.length > 0
         ? this.errors.push({
@@ -170,13 +183,7 @@ export default {
       this.proc.exemplosNotasAp && this.proc.exemplosNotasAp.length > 0
         ? this.errors.push({
             text: "Exemplos de Notas de Aplicação",
-            value: this.proc.exemplosNotasAp.some((element, index) => {
-              return (
-                this.proc.exemplosNotasAp.indexOf(
-                  (e) => e.exemplo === element.exemplo
-                ) !== index
-              );
-            }),
+            value: this.exemploDuplicado(this.proc.exemplosNotasAp),
           })
         : "";
 
@@ -190,21 +197,71 @@ export default {
       this.proc.termosInd && this.proc.termosInd.length > 0
         ? this.errors.push({
             text: "Termos de indice",
-            value: this.proc.termosInd.some((element, index) => {
-              return (
-                this.proc.termosInd.indexOf(
-                  (e) => e.termo === element.termo
-                ) !== index
-              );
-            }),
+            value: this.tiDuplicado(this.proc.termosInd),
           })
         : "";
 
       if (this.errors.some((err) => err.value)) {
         this.errorDialog = true;
       } else {
-        this.p.descriptionEdited = true;
-        this.$emit("editado", this.proc);
+        //Erros do mesmo PN Verificados
+        //Reset da var de Erros
+        this.errors = [];
+        var aux = [];
+        for (let nota of this.proc.notasAp) {
+          var existeNotaAp = await this.$request(
+            "get",
+            `/notasAp/notaAp?classe=c${
+              this.proc.codigo
+            }&valor=${encodeURIComponent(nota.nota)}`
+          );
+          existeNotaAp.data ? aux.push(nota.nota) : "";
+        }
+
+        this.errors.push({
+          text: `Notas de Aplicação`,
+          value: aux,
+        });
+
+        aux = [];
+
+        for (let nota of this.proc.exemplosNotasAp) {
+          var existeExemplosNotaAp = await this.$request(
+            "get",
+            `/exemplosNotasAp/exemploNotaAp?classe=c${
+              this.proc.codigo
+            }&valor=${encodeURIComponent(nota.exemplo)}`
+          );
+          existeExemplosNotaAp.data ? aux.push(nota.exemplo) : "";
+        }
+
+        this.errors.push({
+          text: `Exemplos de Notas de Aplicação`,
+          value: aux,
+        });
+
+        aux = [];
+
+        for (let nota of this.proc.termosInd) {
+          var existeTermoInd = await this.$request(
+            "get",
+            `/termosIndice/termoIndice?classe=c${
+              this.proc.codigo
+            }&valor=${encodeURIComponent(nota.termo)}`
+          );
+          existeTermoInd.data ? aux.push(nota.termo) : "";
+        }
+        this.errors.push({
+          text: `Termos de indice`,
+          value: aux,
+        });
+
+        if (this.errors.some((err) => err.value.length > 0)) {
+          this.errorDialog = true;
+        } else {
+          this.p.descriptionEdited = true;
+          this.$emit("editado", this.proc);
+        }
       }
     },
     // Cancela a alteração dos campos
