@@ -5,10 +5,9 @@
       <v-card-title class="clav-content-title-1">
         Informação sobre o pedido: {{ numeroPedido }}
       </v-card-title>
-
       <v-card-text>
         <v-progress-linear
-          :color="calculaCor(pedido.estado)"
+          :color="cor[pedido.estado ? pedido.estado : 'Default']"
           height="20"
           :value="calculaValor(pedido.estado)"
           buffer-value="100"
@@ -217,11 +216,7 @@
           @click="verRelatorio()"
           >Ver Relatório</v-btn
         >
-        <v-btn
-          color="success"
-          rounded
-          class="ml-1"
-          @click="$router.push('/classes/editar/c' + pedido.objeto.dados.codigo)"
+        <v-btn color="success" rounded class="ml-1" @click="corrigirPedido(pedido)"
           >Corrigir</v-btn
         >
       </v-card-actions>
@@ -243,6 +238,7 @@ import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import { mapKeys } from "@/utils/utils";
 import PedidosDevolvidosVue from "../pedidos/PedidosDevolvidos.vue";
 import Campo from "@/components/generic/Campo";
+import { bus } from "../../main";
 
 export default {
   props: ["numeroPedido"],
@@ -259,6 +255,16 @@ export default {
 
   data() {
     return {
+      cor: {
+        Submetido: "blue",
+        Distribuído: "orange",
+        Redistribuído: "orange",
+        Apreciado: "orange",
+        Reapreciado: "orange",
+        Devolvido: "red",
+        Validado: "green",
+        Default: "blue",
+      },
       erros: [],
       erroPedido: false,
       loading: true,
@@ -373,41 +379,9 @@ export default {
     verRelatorio() {
       this.$router.push(`/users/pedidos/${this.pedido.codigo}/relatorio`);
     },
-
-    calculaCor(estado) {
-      let cor = "blue";
-
-      switch (estado) {
-        case "Submetido":
-          cor = "blue";
-          break;
-
-        case "Distribuído":
-        case "Redistribuído":
-          cor = "orange";
-          break;
-
-        case "Apreciado":
-        case "Reapreciado":
-          cor = "orange";
-          break;
-
-        case "Devolvido":
-          cor = "red";
-          break;
-
-        case "Validado":
-          cor = "green";
-          break;
-
-        default:
-          cor = "blue";
-          break;
-      }
-
-      return cor;
+    corrigirPedido(pedido) {
+      this.$router.push("/classes/editar/" + pedido.codigo);
     },
-
     calculaValor(estado) {
       let valor = 0;
 

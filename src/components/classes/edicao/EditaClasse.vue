@@ -128,7 +128,7 @@ export default {
     PainelOperacoes,
   },
 
-  props: ["idc"],
+  props: ["idc", "pedido"],
 
   data: () => ({
     // Objeto que guarda uma classe
@@ -189,80 +189,97 @@ export default {
   }),
 
   created: function () {
-    this.$request("get", "/classes/" + this.idc)
-      .then(async (response) => {
-        this.classe = response.data;
-        if (this.classe.df.justificacao) {
-          for (let i = 0; i < this.classe.df.justificacao.length; i++) {
-            if (this.classe.df.justificacao[i].processos) {
-              for (let j = 0; j < this.classe.df.justificacao[i].processos.length; j++) {
-                let help =
-                  "/classes/" +
-                  this.classe.df.justificacao[i].processos[j].procId +
-                  "/meta";
-
-                await this.$request("get", help).then((response) => {
-                  this.classe.df.justificacao[i].processos[j].nome = response.data.titulo;
-                });
-              }
-            }
-
-            if (this.classe.df.justificacao[i].legislacao) {
-              for (let j = 0; j < this.classe.df.justificacao[i].legislacao.length; j++) {
-                await this.$request(
-                  "get",
-                  "/legislacao/" + this.classe.df.justificacao[i].legislacao[j].legId
-                ).then((response) => {
-                  this.classe.df.justificacao[i].legislacao[j].tipo = response.data.tipo;
-                  this.classe.df.justificacao[i].legislacao[j].numero =
-                    response.data.numero;
-                });
-              }
-            }
-          }
-        }
-        if (this.classe.pca.justificacao) {
-          for (let h = 0; h < this.classe.pca.justificacao.length; h++) {
-            if (this.classe.pca.justificacao[h].processos) {
-              for (let z = 0; z < this.classe.pca.justificacao[h].processos.length; z++) {
-                if (this.classe.pca.justificacao[h].processos[z].procId) {
-                  await this.$request(
-                    "get",
+    if (this.pedido) this.classe = this.pedido;
+    else
+      this.$request("get", "/classes/" + this.idc)
+        .then(async (response) => {
+          this.classe = response.data;
+          if (this.classe.df.justificacao) {
+            for (let i = 0; i < this.classe.df.justificacao.length; i++) {
+              if (this.classe.df.justificacao[i].processos) {
+                for (
+                  let j = 0;
+                  j < this.classe.df.justificacao[i].processos.length;
+                  j++
+                ) {
+                  let help =
                     "/classes/" +
-                      this.classe.pca.justificacao[h].processos[z].procId +
-                      "/meta"
-                  ).then((response) => {
-                    this.classe.pca.justificacao[h].processos[z].nome =
+                    this.classe.df.justificacao[i].processos[j].procId +
+                    "/meta";
+
+                  await this.$request("get", help).then((response) => {
+                    this.classe.df.justificacao[i].processos[j].nome =
                       response.data.titulo;
                   });
                 }
               }
-            }
 
-            if (this.classe.pca.justificacao[h].legislacao) {
-              for (
-                let z = 0;
-                z < this.classe.pca.justificacao[h].legislacao.length;
-                z++
-              ) {
-                await this.$request(
-                  "get",
-                  "/legislacao/" + this.classe.pca.justificacao[h].legislacao[z].legId
-                ).then((response) => {
-                  this.classe.pca.justificacao[h].legislacao[z].tipo = response.data.tipo;
-                  this.classe.pca.justificacao[h].legislacao[z].numero =
-                    response.data.numero;
-                });
+              if (this.classe.df.justificacao[i].legislacao) {
+                for (
+                  let j = 0;
+                  j < this.classe.df.justificacao[i].legislacao.length;
+                  j++
+                ) {
+                  await this.$request(
+                    "get",
+                    "/legislacao/" + this.classe.df.justificacao[i].legislacao[j].legId
+                  ).then((response) => {
+                    this.classe.df.justificacao[i].legislacao[j].tipo =
+                      response.data.tipo;
+                    this.classe.df.justificacao[i].legislacao[j].numero =
+                      response.data.numero;
+                  });
+                }
               }
             }
           }
-        }
-        this.classeCopia = JSON.parse(JSON.stringify(this.classe));
-        this.semaforos.classeLoaded = true;
-      })
-      .catch((error) => {
-        return error;
-      });
+          if (this.classe.pca.justificacao) {
+            for (let h = 0; h < this.classe.pca.justificacao.length; h++) {
+              if (this.classe.pca.justificacao[h].processos) {
+                for (
+                  let z = 0;
+                  z < this.classe.pca.justificacao[h].processos.length;
+                  z++
+                ) {
+                  if (this.classe.pca.justificacao[h].processos[z].procId) {
+                    await this.$request(
+                      "get",
+                      "/classes/" +
+                        this.classe.pca.justificacao[h].processos[z].procId +
+                        "/meta"
+                    ).then((response) => {
+                      this.classe.pca.justificacao[h].processos[z].nome =
+                        response.data.titulo;
+                    });
+                  }
+                }
+              }
+
+              if (this.classe.pca.justificacao[h].legislacao) {
+                for (
+                  let z = 0;
+                  z < this.classe.pca.justificacao[h].legislacao.length;
+                  z++
+                ) {
+                  await this.$request(
+                    "get",
+                    "/legislacao/" + this.classe.pca.justificacao[h].legislacao[z].legId
+                  ).then((response) => {
+                    this.classe.pca.justificacao[h].legislacao[z].tipo =
+                      response.data.tipo;
+                    this.classe.pca.justificacao[h].legislacao[z].numero =
+                      response.data.numero;
+                  });
+                }
+              }
+            }
+          }
+          this.classeCopia = JSON.parse(JSON.stringify(this.classe));
+          this.semaforos.classeLoaded = true;
+        })
+        .catch((error) => {
+          return error;
+        });
   },
 
   watch: {

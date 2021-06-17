@@ -100,15 +100,24 @@ export default {
   }),
 
   created: function () {
-    this.$request("get", "/classes/" + this.idc)
-      .then(async (response) => {
-        this.classe = response.data;
-        this.classeCopia = JSON.parse(JSON.stringify(this.classe));
-        this.semaforos.classeLoaded = true;
-      })
-      .catch((error) => {
-        return error;
-      });
+    if (this.$route.params.idClasse.includes("-"))
+      this.$request("get", `/pedidos/${this.$route.params.idClasse}`)
+        .then((data) => {
+          this.classe = data.data.objeto.dados;
+          this.classeCopia = { ...this.classe };
+          this.semaforos.classeLoaded = true;
+        })
+        .catch((err) => console.log(err));
+    else
+      this.$request("get", "/classes/" + this.idc)
+        .then(async (response) => {
+          this.classe = response.data;
+          this.classeCopia = JSON.parse(JSON.stringify(this.classe));
+          this.semaforos.classeLoaded = true;
+        })
+        .catch((error) => {
+          return error;
+        });
   },
 };
 </script>
