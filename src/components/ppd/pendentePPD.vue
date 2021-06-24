@@ -762,7 +762,7 @@ export default {
             if(this.ppd.arvore[index].avaliacao.decomposicao.length>0){
               let aux = this.ppd.arvore[index].avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
               child = aux.split("#").map(e=> e=({"id": e, "name":e}));
-              alert(child[0]);
+              //alert(child[0]);
             }
           }
           else{
@@ -791,8 +791,8 @@ export default {
       //this.listaLegislacao.push(sistema);
       var index = this.ppd.sistemasInfo.findIndex(e => e.numeroSI === sistema.numeroSI);
       var indexArv = this.ppd.arvore.findIndex(e => e.id === sistema.numeroSI);
-      alert("Si id - ",index);
-      alert(index);
+      //alert("Si id - ",index);
+      //alert(index);
       this.ppd.sistemasInfo.splice(index, 1);
       //this.ppd.listaSistemasInfoAuxiliar.splice(index, 1);
       this.ppd.arvore.splice(indexArv,1);

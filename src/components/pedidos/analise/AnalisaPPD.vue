@@ -334,13 +334,13 @@ export default {
   },
   created() {
     //alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
-    alert(JSON.stringify(this.p.objeto.dados.sistemasInfo))
+    //alert(JSON.stringify(this.p.objeto.dados.sistemasInfo))
     //alert(JSON.stringify(this.p.historico))
 
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );
-    alert(JSON.stringify(this.novoHistorico))
+    //alert(JSON.stringify(this.novoHistorico))
     //Object.keys(this.novoHistorico.entSel).map((k) => {
     //  if (k != "entSel") this.novoHistorico.entSel[k].nota = null;
     //});
