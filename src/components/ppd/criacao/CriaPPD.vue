@@ -523,7 +523,7 @@ export default {
       this.ppd.si.avaliacao.sistemasRelacionados.splice(index, 1);
     },
     guardarSistema: async function() {
-      this.mensagemErroSI = "Ainda lhe falta verificar o(s) seguinte(s) separador(es):\n"
+      this.mensagemErroSI = "Por favor verifique o(s) seguinte(s):"
       if(/*this.validaAll("O campo número do SI",this.ppd.si.numeroSI) &&
         this.validaAll("O campo  nome do SI",this.ppd.si.nomeSI) &&
         this.validaAll("O campo administrador do sistema",this.ppd.si.identificacao.adminSistema) &&
@@ -539,6 +539,7 @@ export default {
         this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
         this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/
         this.$refs.form.validate()
+        && this.ppd.si.numeroSI === parseInt(this.ppd.si.numeroSI, 10)
         && this.ppd.si.identificacao.adminSistema.length > 0
         && this.ppd.si.avaliacao.descricao != ""
         && this.ppd.si.caracterizacao.formatos != ""
@@ -555,7 +556,7 @@ export default {
           caracterizacao: {},
           estrategia: {},
         };
-        alert(JSON.stringify(this.ppd.si.avaliacao))
+        //alert(JSON.stringify(this.ppd.si.avaliacao))
         Object.assign(sistema.identificacao,this.ppd.si.identificacao)
         Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
         Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
@@ -640,19 +641,22 @@ export default {
         this.ppd.si.avaliacao.selecionadosTabelaFL = [];
         await this.consultaFT();
       } else {
-
-          //fazer verificação com os campos todos
+        
+        if(this.ppd.si.numeroSI !== parseInt(this.ppd.si.numeroSI, 10)){
+           this.mensagemErroSI = this.mensagemErroSI.concat("- Número de SI não pode conter letras ")
+        }
+        //  //fazer verificação com os campos todos
         if(this.ppd.si.identificacao.adminSistema.length <= 0){
-          this.mensagemErroSI = this.mensagemErroSI.concat("- Identificação")
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Identificação ")
         }
         if(this.ppd.si.avaliacao.descricao == ""){
-          this.mensagemErroSI = this.mensagemErroSI.concat("- Avaliação ")
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Avaliação ")
         }
         if(this.ppd.si.caracterizacao.formatos == ""){
-          this.mensagemErroSI = this.mensagemErroSI.concat("- Caracterização ")
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Caracterização ")
         }
         if(this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao == ""){
-          this.mensagemErroSI = this.mensagemErroSI.concat("- Estratégia ")
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Estratégia ")
         }
         this.dialog = true;
         this.erroValidacao = true;
@@ -847,7 +851,7 @@ export default {
     },
 
     criaHistorico: async function () {
-      alert(JSON.stringify(this.ppd.geral.entSel))
+      //alert(JSON.stringify(this.ppd.geral.entSel))
       let historico = [
         {
             numeroPPD: {
@@ -899,7 +903,7 @@ export default {
             },
           },
       ]
-      alert(JSON.stringify(historico))
+      //alert(JSON.stringify(historico))
       return historico
     }
 
