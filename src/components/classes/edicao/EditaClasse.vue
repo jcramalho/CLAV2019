@@ -128,7 +128,7 @@ export default {
     PainelOperacoes,
   },
 
-  props: ["idc", "pedido"],
+  props: ["idc"],
 
   data: () => ({
     // Objeto que guarda uma classe
@@ -189,7 +189,14 @@ export default {
   }),
 
   created: function () {
-    if (this.pedido) this.classe = this.pedido;
+    if (this.$route.params.idClasse.includes("-"))
+      this.$request("get", `/pedidos/${this.$route.params.idClasse}`)
+        .then((data) => {
+          this.classe = data.data.objeto.dados;
+          this.classeCopia = { ...this.classe };
+          this.semaforos.classeLoaded = true;
+        })
+        .catch((err) => console.log(err));
     else
       this.$request("get", "/classes/" + this.idc)
         .then(async (response) => {

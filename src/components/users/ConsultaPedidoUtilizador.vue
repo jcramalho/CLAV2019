@@ -216,7 +216,12 @@
           @click="verRelatorio()"
           >Ver Relatório</v-btn
         >
-        <v-btn color="success" rounded class="ml-1" @click="corrigirPedido(pedido)"
+        <v-btn
+          v-if="['Devolvido'].includes(pedido.estado)"
+          color="success"
+          rounded
+          class="ml-1"
+          @click="corrigirPedido(pedido)"
           >Corrigir</v-btn
         >
       </v-card-actions>
@@ -380,7 +385,28 @@ export default {
       this.$router.push(`/users/pedidos/${this.pedido.codigo}/relatorio`);
     },
     corrigirPedido(pedido) {
-      this.$router.push("/classes/editar/" + pedido.codigo);
+      console.log(pedido);
+      switch (pedido.objeto.tipo) {
+        case "Classe_N3":
+        case "Classe_N2":
+        case "Classe_N1":
+          this.$router.push("/classes/editar/" + pedido.codigo);
+          break;
+        case "TS Pluriorganizacional":
+        case "TS Organizacional":
+          break;
+        case "Entidade":
+          this.$router.push("/entidades/editar/" + pedido.codigo);
+          break;
+        case "Tipologia":
+          this.$router.push("/tipologias/editar/" + pedido.codigo);
+          break;
+        case "Legislação":
+          this.$router.push("/legislacao/editar/" + pedido.codigo);
+          break;
+        default:
+          console.log("Tipo desconhecido");
+      }
     },
     calculaValor(estado) {
       let valor = 0;

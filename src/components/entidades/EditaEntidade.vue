@@ -1,173 +1,145 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <!-- Header -->
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading"
-            >Editar Entidade ({{ entidadeOriginal.sigla }} -
-            {{ entidadeOriginal.designacao }})</v-toolbar-title
-          >
-        </v-app-bar>
+  <v-card flat class="pa-3">
+    <!-- Header -->
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="3" align="center" justify="center">
+        <Voltar />
+      </v-col>
+      <v-col cols="12" sm="9" align="center" justify="center">
+        <p class="clav-content-title-1">Alterar Entidade</p>
+        <p class="clav-content-title-2">
+          {{ entidadeOriginal.sigla }} -
+          {{ entidadeOriginal.designacao }}
+        </p>
+      </v-col>
+    </v-row>
 
-        <!-- Content -->
-        <v-card-text class="ma-0 pa-0">
-          <v-stepper v-model="etapa" vertical>
-            <!-- Step 1 -->
-            <v-stepper-step :complete="etapa > 1" step="1" editable>
-              Escolha a operação
-            </v-stepper-step>
+    <!-- Content -->
+    <v-card-text class="ma-0 pa-0">
+      <v-stepper v-model="etapa" vertical>
+        <!-- Step 1 -->
+        <v-stepper-step :complete="etapa > 1" step="1" editable>
+          Escolha a operação
+        </v-stepper-step>
 
-            <v-stepper-content step="1">
-              <div class="ma-4">
-                <v-radio-group v-model="acao" row>
-                  <v-radio label="Editar" value="Alteração"></v-radio>
-                  <v-radio
-                    v-if="entidade.estado === 'Ativa'"
-                    label="Extinguir"
-                    value="Extinção"
-                  ></v-radio>
-                </v-radio-group>
-              </div>
+        <v-stepper-content step="1">
+          <div class="ma-4">
+            <v-radio-group v-model="acao" row>
+              <v-radio label="Editar" value="Alteração"></v-radio>
+              <v-radio
+                v-if="entidade.estado === 'Ativa'"
+                label="Extinguir"
+                value="Extinção"
+              ></v-radio>
+            </v-radio-group>
+          </div>
 
-              <v-btn color="primary" @click="etapa = 2">
-                Continuar
-              </v-btn>
-            </v-stepper-content>
+          <v-btn rounded color="primary" @click="etapa = 2"> Continuar </v-btn>
+        </v-stepper-content>
 
-            <!-- Step 2 -->
-            <v-stepper-step :complete="etapa > 2" step="2">{{
-              acao
-            }}</v-stepper-step>
+        <!-- Step 2 -->
+        <v-stepper-step :complete="etapa > 2" step="2">{{ acao }}</v-stepper-step>
 
-            <v-stepper-content step="2">
-              <div v-if="acao === 'Alteração'">
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">Nome da Entidade</div>
-                  </v-col>
-                  <v-col>
-                    <v-text-field
-                      filled
-                      clearable
-                      label="Nome da Entidade"
-                      color="indigo"
-                      single-line
-                      v-model="entidade.designacao"
-                    />
-                  </v-col>
-                </v-row>
+        <v-stepper-content step="2">
+          <div v-if="acao === 'Alteração'">
+            <Campo nome="Nome da Entidade" color="neutralpurple">
+              <template v-slot:conteudo>
+                <v-text-field
+                  clearable
+                  label="Nome da Entidade"
+                  single-line
+                  hide-details
+                  dense
+                  v-model="entidade.designacao"
+                />
+              </template>
+            </Campo>
+            <Campo nome="Internacional" color="neutralpurple">
+              <template v-slot:conteudo>
+                <v-select
+                  filled
+                  v-model="entidade.internacional"
+                  :items="['Sim', 'Não']"
+                  label="Selecione uma opção"
+                  item-color="indigo"
+                  hide-details
+                  dense
+                />
+              </template>
+            </Campo>
 
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">Internacional</div>
-                  </v-col>
-                  <v-col>
-                    <v-select
-                      filled
-                      v-model="entidade.internacional"
-                      :items="['Sim', 'Não']"
-                      label="Selecione uma opção"
-                      item-color="indigo"
-                      color="indigo"
-                    />
-                  </v-col>
-                </v-row>
+            <Campo nome="SIOE" color="neutralpurple">
+              <template v-slot:conteudo>
+                <v-text-field
+                  clearable
+                  label="SIOE"
+                  single-line
+                  hide-details
+                  dense
+                  v-model="entidade.sioe"
+                  :rules="regraSIOE"
+                ></v-text-field>
+              </template>
+            </Campo>
 
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">SIOE</div>
-                  </v-col>
-                  <v-col>
-                    <v-text-field
-                      filled
-                      clearable
-                      label="SIOE"
-                      color="indigo"
-                      single-line
-                      v-model="entidade.sioe"
-                      :rules="regraSIOE"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+            <Campo nome="Data de criação" color="neutralpurple" class="mb-3">
+              <template v-slot:conteudo>
+                <SelecionarData
+                  :d="entidade.dataCriacao"
+                  :label="'Data: AAAA-MM-DD'"
+                  @dataSelecionada="entidade.dataCriacao = $event"
+                />
+              </template>
+            </Campo>
 
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">Data de criação</div>
-                  </v-col>
-                  <v-col>
-                    <SelecionarData
-                      :d="entidade.dataCriacao"
-                      :label="'Data: AAAA-MM-DD'"
-                      @dataSelecionada="entidade.dataCriacao = $event"
-                    />
-                  </v-col>
-                </v-row>
+            <!-- Blocos expansivos -->
+            <v-expansion-panels>
+              <PainelCLAV
+                titulo="Tipologias de Entidade"
+                icon="mdi-inbox-multiple-outline"
+              >
+                <template v-slot:conteudo>
+                  <DesSelTip
+                    :tipologias="tipSel"
+                    @unselectTipologia="unselectTipologia($event)"
+                  />
 
-                <!-- Blocos expansivos -->
-                <v-expansion-panels>
-                  <v-expansion-panel popout focusable>
-                    <v-expansion-panel-header class="expansion-panel-heading">
-                      <div>Tipologias de Entidade</div>
+                  <hr style="border-top: 1px dashed #dee2f8" />
 
-                      <template v-slot:actions>
-                        <v-icon color="white">expand_more</v-icon>
-                      </template>
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <DesSelTip
-                        :tipologias="tipSel"
-                        @unselectTipologia="unselectTipologia($event)"
-                      />
+                  <SelTip
+                    :tipologiasReady="tipologiasReady"
+                    :tipologias="tipologias"
+                    @selectTipologia="selectTipologia($event)"
+                  />
+                </template>
+              </PainelCLAV>
+            </v-expansion-panels>
+          </div>
 
-                      <hr style="border-top: 1px dashed #dee2f8;" />
+          <Campo v-else nome="Data de extinção" color="neutralpurple" class="mb-3">
+            <template v-slot:conteudo>
+              <SelecionarData
+                :d="entidade.dataExtincao"
+                :label="'Data: AAAA-MM-DD'"
+                @dataSelecionada="entidade.dataExtincao = $event"
+              />
+            </template>
+          </Campo>
+        </v-stepper-content>
+      </v-stepper>
+    </v-card-text>
+    <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+      {{ text }}
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+    </v-snackbar>
 
-                      <SelTip
-                        :tipologiasReady="tipologiasReady"
-                        :tipologias="tipologias"
-                        @selectTipologia="selectTipologia($event)"
-                      />
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </div>
-
-              <div v-else>
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">Data de extinção</div>
-                  </v-col>
-                  <v-col>
-                    <SelecionarData
-                      :d="entidade.dataExtincao"
-                      :label="'Data: AAAA-MM-DD'"
-                      @dataSelecionada="entidade.dataExtincao = $event"
-                    />
-                  </v-col>
-                </v-row>
-              </div>
-            </v-stepper-content>
-          </v-stepper>
-        </v-card-text>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
-        >
-          {{ text }}
-          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
-
-      <PainelOpsEnt
-        v-if="etapa === 2"
-        :e="entidade"
-        :original="entidadeOriginal"
-        :acao="acao"
-      />
-    </v-col>
-  </v-row>
+    <PainelOpsEnt
+      v-if="etapa === 2"
+      :e="entidade"
+      :original="entidadeOriginal"
+      :acao="acao"
+    />
+  </v-card>
 </template>
 
 <script>
@@ -175,6 +147,9 @@ import DesSelTip from "@/components/generic/selecao/DesSelecionarTipologias.vue"
 import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
 import SelecionarData from "@/components/generic/SelecionarData";
+import PainelCLAV from "@/components/generic/PainelCLAV";
+import Campo from "@/components/generic/Campo";
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   props: ["e"],
@@ -183,6 +158,9 @@ export default {
     SelTip,
     PainelOpsEnt,
     SelecionarData,
+    PainelCLAV,
+    Campo,
+    Voltar,
   },
 
   data() {
@@ -205,9 +183,7 @@ export default {
       tipSel: [],
       tipologiasReady: false,
 
-      regraSIOE: [
-        (v) => /^\d+$/.test(v) || "Apenas são aceites caracteres numéricos.",
-      ],
+      regraSIOE: [(v) => /^\d+$/.test(v) || "Apenas são aceites caracteres numéricos."],
 
       snackbar: false,
       text: "",
@@ -216,11 +192,11 @@ export default {
 
   methods: {
     // Vai à API buscar todas as tipologias
-    loadTipologias: async function() {
+    loadTipologias: async function () {
       try {
         let response = await this.$request("get", "/tipologias/");
 
-        this.tipologias = response.data.map(function(item) {
+        this.tipologias = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -234,7 +210,7 @@ export default {
       }
     },
 
-    unselectTipologia: function(tipologia) {
+    unselectTipologia: function (tipologia) {
       // Recoloca a tipologia nos selecionáveis
       this.tipologias.push(tipologia);
       let index = this.tipSel.findIndex((e) => e.id === tipologia.id);
@@ -242,7 +218,7 @@ export default {
       this.entidade.tipologiasSel = this.tipSel;
     },
 
-    selectTipologia: function(tipologia) {
+    selectTipologia: function (tipologia) {
       this.tipSel.push(tipologia);
       this.entidade.tipologiasSel = this.tipSel;
       // Remove dos selecionáveis
@@ -256,7 +232,7 @@ export default {
     },
   },
 
-  created: async function() {
+  created: async function () {
     this.entidade = JSON.parse(JSON.stringify(this.e));
     this.entidadeOriginal = JSON.parse(JSON.stringify(this.e));
 
