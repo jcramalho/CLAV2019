@@ -12,24 +12,24 @@ import Loading from "@/components/generic/Loading";
 export default {
   components: {
     EditaLegislacao,
-    Loading
+    Loading,
   },
 
   data: () => ({
     legislacao: {},
     dadosReady: false,
-    entidades: null
+    entidades: null,
   }),
 
   methods: {
-    loadEntidades: async function() {
+    loadEntidades: async function () {
       try {
         let response = await this.$request("get", "/entidades");
-        this.entidades = response.data.map(function(item) {
+        this.entidades = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
-            id: item.id
+            id: item.id,
           };
         });
       } catch (error) {
@@ -37,61 +37,80 @@ export default {
       }
     },
 
-    preparaLegislacao: async function(leg, proReg) {
+    preparaLegislacao: async function (leg, proReg, flag) {
       try {
         let myLegislacao = {
-          id: leg.id,
-          numero: leg.numero,
-          sumario: leg.sumario,
-          tipo: leg.tipo,
-          data: leg.data,
-          link: leg.link,
-          diplomaFonte: leg.fonte,
-          entidadesSel: JSON.parse(JSON.stringify(leg.entidades)),
-          processosSel: proReg,
-          estado: leg.estado
+          numero: !flag ? leg.numero : leg.numero.dados,
+          sumario: !flag ? leg.sumario : leg.sumario.dados,
+          tipo: !flag ? leg.tipo : leg.tipo.dados,
+          data: !flag ? leg.data : leg.data.dados,
+          link: !flag ? leg.link : leg.link.dados,
+          diplomaFonte: !flag ? leg.fonte : leg.diplomaFonte.dados,
+          entidadesSel: !flag
+            ? JSON.parse(JSON.stringify(leg.entidades))
+            : JSON.parse(JSON.stringify(leg.entidadesSel.dados)),
+          processosSel: !flag ? proReg : proReg.dados,
+          estado: !flag ? leg.estado : false,
         };
+        !flag ? (myLegislacao.id = leg.id) : false;
         return myLegislacao;
       } catch (e) {
         return {};
       }
-    }
+    },
   },
 
-  created: async function() {
-    await this.loadEntidades();
+  created: async function () {
+    if (!this.$route.params.idLegislacao.includes("leg")) {
+      try {
+        let infoLegislacao = await this.$request(
+          "get",
+          `/pedidos/${this.$route.params.idLegislacao}`
+        );
 
-    try {
-      let idLegislacao = this.$route.path.split("/")[3];
+        this.legislacao = await this.preparaLegislacao(
+          infoLegislacao.data.historico[0],
+          infoLegislacao.data.historico[0].processosSel,
+          true
+        );
 
-      let infoLegislacao = await this.$request(
-        "get",
-        "/legislacao/" + idLegislacao
-      );
+        this.dadosReady = true;
+      } catch (e) {
+        return e;
+      }
+    } else {
+      await this.loadEntidades();
 
-      let processosRegula = await this.$request(
-        "get",
-        "/legislacao/" + idLegislacao + "/processos"
-      );
+      try {
+        let idLegislacao = this.$route.path.split("/")[3];
 
-      this.legislacao = await this.preparaLegislacao(
-        infoLegislacao.data,
-        processosRegula.data
-      );
+        let infoLegislacao = await this.$request("get", "/legislacao/" + idLegislacao);
 
-      let newEnts = [];
+        let processosRegula = await this.$request(
+          "get",
+          "/legislacao/" + idLegislacao + "/processos"
+        );
 
-      this.legislacao.entidadesSel.forEach(ent => {
-        let index = this.entidades.findIndex(e => e.sigla === ent.sigla);
-        newEnts.push(this.entidades[index]);
-      });
+        this.legislacao = await this.preparaLegislacao(
+          infoLegislacao.data,
+          processosRegula.data,
+          false
+        );
 
-      this.legislacao.entidadesSel = newEnts;
+        let newEnts = [];
 
-      this.dadosReady = true;
-    } catch (e) {
-      return e;
+        this.legislacao.entidadesSel.forEach((ent) => {
+          let index = this.entidades.findIndex((e) => e.sigla === ent.sigla);
+          newEnts.push(this.entidades[index]);
+        });
+
+        this.legislacao.entidadesSel = newEnts;
+
+        this.dadosReady = true;
+      } catch (e) {
+        return e;
+      }
     }
-  }
+  },
 };
 </script>

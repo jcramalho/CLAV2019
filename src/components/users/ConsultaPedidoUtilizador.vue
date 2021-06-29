@@ -385,7 +385,6 @@ export default {
       this.$router.push(`/users/pedidos/${this.pedido.codigo}/relatorio`);
     },
     corrigirPedido(pedido) {
-      console.log(pedido);
       switch (pedido.objeto.tipo) {
         case "Classe_N3":
         case "Classe_N2":

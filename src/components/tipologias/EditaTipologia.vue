@@ -1,84 +1,71 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <!-- Header -->
-        <v-app-bar color="indigo darken-3" dark>
-          <v-toolbar-title class="card-heading"
-            >Editar tipologia de entidade ({{ tipologiaOriginal.sigla }} -
-            {{ tipologiaOriginal.designacao }})</v-toolbar-title
-          >
-        </v-app-bar>
+  <v-card flat class="pa-3">
+    <!-- Header -->
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="3" align="center" justify="center">
+        <Voltar />
+      </v-col>
+      <v-col cols="12" sm="9" align="center" justify="center">
+        <p class="clav-content-title-1">Alterar Tipologia de Entidade</p>
+        <p class="clav-content-title-2">
+          {{ tipologiaOriginal.sigla }} -
+          {{ tipologiaOriginal.designacao }}
+        </p>
+      </v-col>
+    </v-row>
 
-        <!-- Content -->
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nome da Tipologia</div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="tipologia.designacao"
-                label="Nome da Tipologia"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+    <!-- Content -->
+    <v-card-text>
+      <Campo nome="Nome da Tipologia" color="neutralpurple" class="mb-3">
+        <template v-slot:conteudo>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            hide-details
+            dense
+            v-model="tipologia.designacao"
+          ></v-text-field>
+        </template>
+      </Campo>
 
-          <!-- Blocos expansivos -->
-          <v-expansion-panels>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Entidades
-                </div>
+      <!-- Blocos expansivos -->
+      <v-expansion-panels>
+        <PainelCLAV titulo="Entidades" icon="mdi-home-city-outline">
+          <template v-slot:conteudo>
+            <DesSelEnt
+              :entidades="entSel"
+              tipo="tipologias"
+              @unselectEntidade="unselectEntidade($event)"
+            />
 
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DesSelEnt
-                  :entidades="entSel"
-                  tipo="tipologias"
-                  @unselectEntidade="unselectEntidade($event)"
-                />
+            <hr style="border-top: 1px dashed #dee2f8" />
 
-                <hr style="border-top: 1px dashed #dee2f8;" />
-
-                <SelEnt
-                  :entidadesReady="entidadesReady"
-                  :entidades="entidades"
-                  @selectEntidade="selectEntidade($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-card-text>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
-        >
-          {{ text }}
-          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
-
-      <!-- Painel Operações -->
-      <PainelOpsTip :t="tipologia" :original="tipologiaOriginal" :acao="acao" />
-    </v-col>
-  </v-row>
+            <SelEnt
+              :entidadesReady="entidadesReady"
+              :entidades="entidades"
+              @selectEntidade="selectEntidade($event)"
+            />
+          </template>
+        </PainelCLAV>
+      </v-expansion-panels>
+    </v-card-text>
+    <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+      {{ text }}
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+    </v-snackbar>
+    <!-- Painel Operações -->
+    <PainelOpsTip :t="tipologia" :original="tipologiaOriginal" :acao="acao" />
+  </v-card>
 </template>
 
 <script>
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 import PainelOpsTip from "@/components/tipologias/PainelOperacoesTipologias";
+import PainelCLAV from "@/components/generic/PainelCLAV";
+import Campo from "@/components/generic/Campo";
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   props: ["t"],
@@ -104,15 +91,18 @@ export default {
     DesSelEnt,
     SelEnt,
     PainelOpsTip,
+    PainelCLAV,
+    Campo,
+    Voltar,
   },
 
   methods: {
     // Vai à API buscar todas as entidades
-    loadEntidades: async function() {
+    loadEntidades: async function () {
       try {
         let response = await this.$request("get", "/entidades");
 
-        this.entidades = response.data.map(function(item) {
+        this.entidades = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -126,7 +116,7 @@ export default {
       }
     },
 
-    unselectEntidade: function(entidade) {
+    unselectEntidade: function (entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
       let index = this.entSel.findIndex((e) => e.id === entidade.id);
@@ -134,7 +124,7 @@ export default {
       this.tipologia.entidadesSel = this.entSel;
     },
 
-    selectEntidade: function(entidade) {
+    selectEntidade: function (entidade) {
       this.entSel.push(entidade);
       this.tipologia.entidadesSel = this.entSel;
       // Remove dos selecionáveis
@@ -148,7 +138,7 @@ export default {
     },
   },
 
-  created: async function() {
+  created: async function () {
     this.tipologia = JSON.parse(JSON.stringify(this.t));
     this.tipologiaOriginal = JSON.parse(JSON.stringify(this.t));
 

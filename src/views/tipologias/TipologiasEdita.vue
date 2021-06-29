@@ -21,13 +21,13 @@ export default {
   }),
 
   methods: {
-    preparaTipologia: async function(tip, ent) {
+    preparaTipologia: async function (tip, ent, flag) {
       try {
         let myTipologia = {
-          designacao: tip.designacao,
-          sigla: tip.sigla,
-          estado: tip.estado,
-          entidadesSel: ent,
+          designacao: !flag ? tip.designacao : tip.designacao.dados,
+          sigla: !flag ? tip.sigla : tip.sigla.dados,
+          estado: !flag ? tip.estado : false,
+          entidadesSel: !flag ? ent : ent.dados,
         };
         return myTipologia;
       } catch (e) {
@@ -36,28 +36,45 @@ export default {
     },
   },
 
-  created: async function() {
-    try {
-      let idTipologia = this.$route.path.split("/")[3];
+  created: async function () {
+    if (this.$route.params.idTipologia.includes("-")) {
+      try {
+        let infoTipologia = await this.$request(
+          "get",
+          `/pedidos/${this.$route.params.idTipologia}`
+        );
+        console.log(infoTipologia.data);
+        this.tipologia = await this.preparaTipologia(
+          infoTipologia.data.historico[0],
+          infoTipologia.data.historico[0].entidadesSel,
+          true
+        );
 
-      let infoTipologia = await this.$request(
-        "get",
-        "/tipologias/" + idTipologia
-      );
+        this.dadosReady = true;
+      } catch (e) {
+        return e;
+      }
+    } else {
+      try {
+        let idTipologia = this.$route.path.split("/")[3];
 
-      let entidadesAssociadas = await this.$request(
-        "get",
-        "/tipologias/" + idTipologia + "/elementos"
-      );
+        let infoTipologia = await this.$request("get", "/tipologias/" + idTipologia);
 
-      this.tipologia = await this.preparaTipologia(
-        infoTipologia.data,
-        entidadesAssociadas.data
-      );
+        let entidadesAssociadas = await this.$request(
+          "get",
+          "/tipologias/" + idTipologia + "/elementos"
+        );
 
-      this.dadosReady = true;
-    } catch (e) {
-      return e;
+        this.tipologia = await this.preparaTipologia(
+          infoTipologia.data,
+          entidadesAssociadas.data,
+          false
+        );
+
+        this.dadosReady = true;
+      } catch (e) {
+        return e;
+      }
     }
   },
 };

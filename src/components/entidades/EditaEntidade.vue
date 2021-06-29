@@ -116,7 +116,7 @@
             </v-expansion-panels>
           </div>
 
-          <Campo v-else nome="Data de extinção" color="neutralpurple" class="mb-3">
+          <Campo v-else nome="Data de extinção" color="neutralpurple">
             <template v-slot:conteudo>
               <SelecionarData
                 :d="entidade.dataExtincao"
