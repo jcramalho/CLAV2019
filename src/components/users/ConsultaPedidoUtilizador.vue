@@ -5,10 +5,9 @@
       <v-card-title class="clav-content-title-1">
         Informação sobre o pedido: {{ numeroPedido }}
       </v-card-title>
-
       <v-card-text>
         <v-progress-linear
-          :color="calculaCor(pedido.estado)"
+          :color="cor[pedido.estado ? pedido.estado : 'Default']"
           height="20"
           :value="calculaValor(pedido.estado)"
           buffer-value="100"
@@ -218,10 +217,11 @@
           >Ver Relatório</v-btn
         >
         <v-btn
+          v-if="['Devolvido'].includes(pedido.estado)"
           color="success"
           rounded
           class="ml-1"
-          @click="$router.push('/classes/editar/c' + pedido.objeto.dados.codigo)"
+          @click="corrigirPedido(pedido)"
           >Corrigir</v-btn
         >
       </v-card-actions>
@@ -243,6 +243,7 @@ import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import { mapKeys } from "@/utils/utils";
 import PedidosDevolvidosVue from "../pedidos/PedidosDevolvidos.vue";
 import Campo from "@/components/generic/Campo";
+import { bus } from "../../main";
 
 export default {
   props: ["numeroPedido"],
@@ -259,6 +260,16 @@ export default {
 
   data() {
     return {
+      cor: {
+        Submetido: "blue",
+        Distribuído: "orange",
+        Redistribuído: "orange",
+        Apreciado: "orange",
+        Reapreciado: "orange",
+        Devolvido: "red",
+        Validado: "green",
+        Default: "blue",
+      },
       erros: [],
       erroPedido: false,
       loading: true,
@@ -373,41 +384,29 @@ export default {
     verRelatorio() {
       this.$router.push(`/users/pedidos/${this.pedido.codigo}/relatorio`);
     },
-
-    calculaCor(estado) {
-      let cor = "blue";
-
-      switch (estado) {
-        case "Submetido":
-          cor = "blue";
+    corrigirPedido(pedido) {
+      switch (pedido.objeto.tipo) {
+        case "Classe_N3":
+        case "Classe_N2":
+        case "Classe_N1":
+          this.$router.push("/classes/editar/" + pedido.codigo);
           break;
-
-        case "Distribuído":
-        case "Redistribuído":
-          cor = "orange";
+        case "TS Pluriorganizacional":
+        case "TS Organizacional":
           break;
-
-        case "Apreciado":
-        case "Reapreciado":
-          cor = "orange";
+        case "Entidade":
+          this.$router.push("/entidades/editar/" + pedido.codigo);
           break;
-
-        case "Devolvido":
-          cor = "red";
+        case "Tipologia":
+          this.$router.push("/tipologias/editar/" + pedido.codigo);
           break;
-
-        case "Validado":
-          cor = "green";
+        case "Legislação":
+          this.$router.push("/legislacao/editar/" + pedido.codigo);
           break;
-
         default:
-          cor = "blue";
-          break;
+          console.log("Tipo desconhecido");
       }
-
-      return cor;
     },
-
     calculaValor(estado) {
       let valor = 0;
 

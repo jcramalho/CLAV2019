@@ -1,178 +1,145 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <!-- Header -->
-        <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading"
-            >Editar Diploma ({{ legislacaoOriginal.tipo }} -
-            {{ legislacaoOriginal.numero }})</v-toolbar-title
-          >
-        </v-app-bar>
+  <v-card flat class="pa-3">
+    <!-- Header -->
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="3" align="center" justify="center">
+        <Voltar />
+      </v-col>
+      <v-col cols="12" sm="9" align="center" justify="center">
+        <p class="clav-content-title-1">Alterar Diploma</p>
+        <p class="clav-content-title-2">
+          {{ legislacaoOriginal.tipo }} -
+          {{ legislacaoOriginal.numero }}
+        </p>
+      </v-col>
+    </v-row>
 
-        <!-- Content -->
-        <v-card-text class="ma-0 pa-0">
-          <v-stepper v-model="etapa" vertical>
-            <!-- Step 1 -->
-            <v-stepper-step :complete="etapa > 1" step="1" editable>
-              Escolha a operação
-            </v-stepper-step>
+    <!-- Content -->
+    <v-card-text class="ma-0 pa-0">
+      <v-stepper v-model="etapa" vertical>
+        <!-- Step 1 -->
+        <v-stepper-step :complete="etapa > 1" step="1" editable>
+          Escolha a operação
+        </v-stepper-step>
 
-            <v-stepper-content step="1">
-              <div class="ma-4">
-                <v-radio-group v-model="acao" row>
-                  <v-radio label="Editar" value="Alteração"></v-radio>
-                  <v-radio
-                    v-if="legislacao.estado === 'Ativo'"
-                    label="Revogar"
-                    value="Revogação"
-                  ></v-radio>
-                </v-radio-group>
-              </div>
+        <v-stepper-content step="1">
+          <div class="ma-4">
+            <v-radio-group v-model="acao" row>
+              <v-radio label="Editar" value="Alteração"></v-radio>
+              <v-radio
+                v-if="legislacao.estado === 'Ativo'"
+                label="Revogar"
+                value="Revogação"
+              ></v-radio>
+            </v-radio-group>
+          </div>
 
-              <v-btn color="primary" @click="etapa = 2">
-                Continuar
-              </v-btn>
-            </v-stepper-content>
+          <v-btn rounded color="primary" @click="etapa = 2"> Continuar </v-btn>
+        </v-stepper-content>
 
-            <!-- Step 2 -->
-            <v-stepper-step :complete="etapa > 2" step="2">{{
-              acao
-            }}</v-stepper-step>
+        <!-- Step 2 -->
+        <v-stepper-step :complete="etapa > 2" step="2">{{ acao }}</v-stepper-step>
 
-            <v-stepper-content step="2">
-              <div v-if="acao === 'Alteração'">
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">Sumário</div>
-                  </v-col>
-                  <v-col>
-                    <v-text-field
-                      filled
-                      clearable
-                      color="indigo"
-                      single-line
-                      v-model="legislacao.sumario"
-                      label="Sumário"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+        <v-stepper-content step="2">
+          <div v-if="acao === 'Alteração'">
+            <Campo nome="Sumário" color="neutralpurple">
+              <template v-slot:conteudo>
+                <v-text-field
+                  filled
+                  clearable
+                  single-line
+                  hide-details
+                  dense
+                  v-model="legislacao.sumario"
+                  label="Sumário"
+                ></v-text-field>
+              </template>
+            </Campo>
+            <Campo nome="Link" color="neutralpurple" class="mb-3">
+              <template v-slot:conteudo>
+                <v-text-field
+                  v-model="legislacao.link"
+                  filled
+                  clearable
+                  single-line
+                  hide-details
+                  dense
+                  label="Link"
+                ></v-text-field>
+              </template>
+            </Campo>
 
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">Link</div>
-                  </v-col>
-                  <v-col>
-                    <v-text-field
-                      v-model="legislacao.link"
-                      filled
-                      clearable
-                      color="indigo"
-                      single-line
-                      label="Link"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+            <!-- Blocos expansivos -->
+            <v-expansion-panels>
+              <PainelCLAV titulo="Entidade responsável pela publicação" icon="mdi-bank">
+                <template v-slot:conteudo>
+                  <DesSelEnt
+                    :entidades="entSel"
+                    tipo="legislacao"
+                    @unselectEntidade="unselectEntidade($event)"
+                  />
 
-                <!-- Blocos expansivos -->
-                <v-expansion-panels>
-                  <v-expansion-panel popout focusable>
-                    <v-expansion-panel-header class="expansion-panel-heading">
-                      <div>
-                        Entidade responsável pela publicação
-                      </div>
+                  <hr style="border-top: 1px dashed #dee2f8" />
 
-                      <template v-slot:actions>
-                        <v-icon color="white">expand_more</v-icon>
-                      </template>
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <DesSelEnt
-                        :entidades="entSel"
-                        tipo="legislacao"
-                        @unselectEntidade="unselectEntidade($event)"
-                      />
+                  <SelEnt
+                    :entidadesReady="entidadesReady"
+                    :entidades="entidades"
+                    @selectEntidade="selectEntidade($event)"
+                  />
+                </template>
+              </PainelCLAV>
 
-                      <hr style="border-top: 1px dashed #dee2f8;" />
+              <!-- Segundo bloco expansivo -->
 
-                      <SelEnt
-                        :entidadesReady="entidadesReady"
-                        :entidades="entidades"
-                        @selectEntidade="selectEntidade($event)"
-                      />
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
+              <PainelCLAV
+                titulo="Processos de negócio que regula ou enquadra"
+                icon="mdi-inbox-multiple-outline"
+              >
+                <template v-slot:conteudo
+                  ><DesSelProc
+                    :processos="procSel"
+                    @unselectProcesso="unselectProcesso($event)"
+                  />
 
-                  <!-- Segundo bloco expansivo -->
-                  <v-expansion-panel popout focusable>
-                    <v-expansion-panel-header class="expansion-panel-heading">
-                      <div>
-                        Processos de negócio que regula ou enquadra
-                      </div>
+                  <hr style="border-top: 1px dashed #dee2f8" />
 
-                      <template v-slot:actions>
-                        <v-icon color="white">expand_more</v-icon>
-                      </template>
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                      <DesSelProc
-                        :processos="procSel"
-                        @unselectProcesso="unselectProcesso($event)"
-                      />
+                  <SelProc
+                    :processosReady="processosReady"
+                    :processos="processos"
+                    @selectProcesso="selectProcesso($event)"
+                  />
+                </template>
+              </PainelCLAV>
+            </v-expansion-panels>
+          </div>
 
-                      <hr style="border-top: 1px dashed #dee2f8;" />
+          <Campo v-else nome="Data de revogação" color="neutralpurple" class="mb-3">
+            <template v-slot:conteudo>
+              <SelecionarData
+                :d="legislacao.dataRevogacao"
+                :label="'Data: AAAA-MM-DD'"
+                @dataSelecionada="legislacao.dataRevogacao = $event"
+              />
+            </template>
+          </Campo>
+        </v-stepper-content>
+      </v-stepper>
 
-                      <SelProc
-                        :processosReady="processosReady"
-                        :processos="processos"
-                        @selectProcesso="selectProcesso($event)"
-                      />
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </div>
+      <!-- j  -->
+    </v-card-text>
+    <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+      {{ text }}
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+    </v-snackbar>
 
-              <div v-else>
-                <v-row>
-                  <v-col cols="2">
-                    <div class="info-label">
-                      Data de revogação
-                    </div>
-                  </v-col>
-                  <v-col>
-                    <SelecionarData
-                      :d="legislacao.dataRevogacao"
-                      :label="'Data: AAAA-MM-DD'"
-                      @dataSelecionada="legislacao.dataRevogacao = $event"
-                    />
-                  </v-col>
-                </v-row>
-              </div>
-            </v-stepper-content>
-          </v-stepper>
-
-          <!-- j  -->
-        </v-card-text>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
-        >
-          {{ text }}
-          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
-
-      <!-- Painel Operações -->
-      <PainelOpsLeg
-        v-if="etapa === 2"
-        :l="legislacao"
-        :original="legislacaoOriginal"
-        :acao="acao"
-      />
-    </v-col>
-  </v-row>
+    <!-- Painel Operações -->
+    <PainelOpsLeg
+      v-if="etapa === 2"
+      :l="legislacao"
+      :original="legislacaoOriginal"
+      :acao="acao"
+    />
+  </v-card>
 </template>
 
 <script>
@@ -184,6 +151,9 @@ import DesSelProc from "@/components/generic/selecao/DesSelecionarPNs.vue";
 import SelProc from "@/components/generic/selecao/SelecionarPNs.vue";
 
 import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
+import Voltar from "@/components/generic/Voltar";
+import Campo from "@/components/generic/Campo";
+import PainelCLAV from "@/components/generic/PainelCLAV";
 
 export default {
   props: ["l"],
@@ -195,6 +165,9 @@ export default {
     SelProc,
     PainelOpsLeg,
     SelecionarData,
+    Voltar,
+    Campo,
+    PainelCLAV,
   },
 
   data() {
@@ -235,7 +208,7 @@ export default {
 
   methods: {
     // Vai a API buscar todos os tipos de diplomas legislativos
-    loadTipoDiploma: async function() {
+    loadTipoDiploma: async function () {
       try {
         let response = await this.$request(
           "get",
@@ -251,7 +224,7 @@ export default {
       }
     },
 
-    unselectEntidade: function(entidade) {
+    unselectEntidade: function (entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
       let index = this.entSel.findIndex((e) => e.id === entidade.id);
@@ -259,7 +232,7 @@ export default {
       this.legislacao.entidadesSel = this.entSel;
     },
 
-    selectEntidade: function(entidade) {
+    selectEntidade: function (entidade) {
       this.entSel.push(entidade);
       this.legislacao.entidadesSel = this.entSel;
       // Remove dos selecionáveis
@@ -268,7 +241,7 @@ export default {
     },
 
     // Vai à API buscar todas as entidades
-    loadEntidades: async function() {
+    loadEntidades: async function () {
       try {
         let response = await this.$request("get", "/entidades");
         this.entidades = response.data.map((item) => {
@@ -284,7 +257,7 @@ export default {
       }
     },
 
-    unselectProcesso: function(processo) {
+    unselectProcesso: function (processo) {
       // Recoloca o processo nos selecionáveis
       this.processos.push(processo);
       let index = this.procSel.findIndex((e) => e.id === processo.id);
@@ -292,7 +265,7 @@ export default {
       this.legislacao.processosSel = this.procSel;
     },
 
-    selectProcesso: function(processo) {
+    selectProcesso: function (processo) {
       this.procSel.push(processo);
       this.legislacao.processosSel = this.procSel;
       // Remove dos selecionáveis
@@ -301,10 +274,10 @@ export default {
     },
 
     // Vai à API buscar todas as classes de nivel 3
-    loadClasses: async function() {
+    loadClasses: async function () {
       try {
         let response = await this.$request("get", "/classes?nivel=3");
-        this.processos = response.data.map(function(item) {
+        this.processos = response.data.map(function (item) {
           return {
             codigo: item.codigo,
             titulo: item.titulo,
