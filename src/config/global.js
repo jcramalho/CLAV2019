@@ -1,5 +1,5 @@
-const dominioDefault = "http://clav-test.di.uminho.pt";
-// const dominioDefault = "http://localhost:7779";
+// const dominioDefault = "http://clav-test.di.uminho.pt";
+const dominioDefault = "http://localhost:7779";
 //const dominioDefault = "http://192.168.1.130:7779";
 //const dominioDefault = "http://localhost:8080"; //para o nginx proxy quando a interface é local e está em localhost:8080
 // const dominioDefault = "http://clav.dglab.gov.pt"; //para o nginx proxy quando a interface não é local
