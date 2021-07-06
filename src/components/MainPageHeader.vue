@@ -294,7 +294,7 @@
           </v-btn>
         </template>
         <v-card class="toolbar">
-          <v-app-bar dark flat id="mobile-toolbar" class="toolbar">
+          <v-app-bar flat id="mobile-toolbar" class="toolbar">
             <v-toolbar-title
               v-if="this.$store.state.name == ''"
               @click="goRoute('/')"

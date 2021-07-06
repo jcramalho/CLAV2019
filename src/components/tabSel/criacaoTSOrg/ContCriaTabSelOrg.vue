@@ -4,9 +4,7 @@
     <v-row align="center" justify="center">
       <v-col cols="12" md="3" align="center"> <Voltar /></v-col>
       <v-col cols="12" md="6" align="center">
-        <p class="clav-content-title-1">
-          Nova Tabela de Seleção Organizacional (Continuação)
-        </p>
+        <p class="clav-content-title-1">Nova Tabela de Seleção Organizacional</p>
       </v-col>
       <v-col cols="0" md="3"> </v-col>
     </v-row>
@@ -30,6 +28,7 @@
               fill="#ffffff"
               class="mr-3"
             />
+            <!-- {{ tabelaSelecao }} -->
             {{ tabelaSelecao.idEntidade.split("_")[1] }} -
             {{ tabelaSelecao.designacaoEntidade }}
           </div>
@@ -78,9 +77,7 @@
 
       <v-stepper-content step="2" class="pt-0">
         <v-form ref="nomeTS" :lazy-validation="false" class="px-4">
-          <span class="subtitle-2 pb-3"
-            >Insira a designação para a tabela:</span
-          >
+          <span class="subtitle-2 pb-3">Insira a designação para a tabela:</span>
           <div class="py-2 pl-6 pr-3 mt-2" style="min-height: 50px">
             <v-tooltip top color="info" open-delay="1000">
               <template v-slot:activator="{ on }">
@@ -307,16 +304,13 @@
         </v-card-title>
 
         <v-card-text>
-          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro">
-          </span>
+          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro"> </span>
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="red darken-4" text @click="erroDialog = false">
-            Fechar
-          </v-btn>
+          <v-btn color="red darken-4" text @click="erroDialog = false"> Fechar </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -456,8 +450,7 @@ export default {
       }
     },
     guardaEntidade: async function () {
-      this.tabelaSelecao.designacao =
-        "Tabela de Seleção de " + this.ent.designacao;
+      this.tabelaSelecao.designacao = "Tabela de Seleção de " + this.ent.designacao;
       this.tabelaSelecao.designacaoEntidade = this.ent.designacao;
       this.tabelaSelecao.idEntidade = "ent_" + this.ent.sigla;
       try {
@@ -469,8 +462,7 @@ export default {
     },
     guardaTipologia: function () {
       // id e designação
-      this.tabelaSelecao.designacao =
-        "Tabela de seleção de " + this.tipSel.designacao;
+      this.tabelaSelecao.designacao = "Tabela de seleção de " + this.tipSel.designacao;
       this.tabelaSelecao.designacaoTipologia = this.tipSel.designacao;
       this.tabelaSelecao.idTipologia = this.tipSel.id;
       this.stepNo = this.stepNo + 1;
@@ -500,9 +492,7 @@ export default {
           };
         });
       } catch (e) {
-        console.log(
-          "Erro ao carregar as tipologias da entidade do utilizador: " + e
-        );
+        console.log("Erro ao carregar as tipologias da entidade do utilizador: " + e);
       }
     },
     // Vai à API buscar todas as tipologias
@@ -540,9 +530,7 @@ export default {
         });
         // Retira da lista de todas as tipologias as que já pertencem à entidade selecionada
         for (var i = 0; i < this.tipSel.length; i++) {
-          var index = this.tipologias.findIndex(
-            (e) => e.id === this.tipSel[i].id
-          );
+          var index = this.tipologias.findIndex((e) => e.id === this.tipSel[i].id);
           this.tipologias.splice(index, 1);
         }
       } catch (error) {
@@ -558,10 +546,7 @@ export default {
           this.listaProcessos.processosPreSelecionados = 0;
           this.listaProcessos.procsAselecionar = [];
           this.listaProcessos.procs = [];
-          var response = await this.$request(
-            "get",
-            "/classes?nivel=3&info=completa"
-          );
+          var response = await this.$request("get", "/classes?nivel=3&info=completa");
           for (let i = 0; i < response.data.length; i++) {
             this.listaProcessos.procs.push(response.data[i]);
             this.listaProcessos.procs[i].chave = i;
@@ -578,9 +563,7 @@ export default {
             this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
               i
             ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[
-              i
-            ].exemplosNotasAp = this.listaProcessos.procs[
+            this.listaProcessos.procs[i].exemplosNotasAp = this.listaProcessos.procs[
               i
             ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
             this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
@@ -605,17 +588,12 @@ export default {
         var index;
         for (let j = 0; j < this.listaProcessos.procs.length; j++) {
           if (this.listaProcessos.procs[j].tipoProc != "Processo Comum") {
-            index = this.listaCodigosEsp.indexOf(
-              this.listaProcessos.procs[j].codigo
-            );
-            if (index == -1)
-              this.listaProcessos.procs[j].tipoProc = "Processo Restante";
+            index = this.listaCodigosEsp.indexOf(this.listaProcessos.procs[j].codigo);
+            if (index == -1) this.listaProcessos.procs[j].tipoProc = "Processo Restante";
           }
         }
       } catch (e) {
-        console.log(
-          "Erro ao calcular os processos específicos das entidades: " + e
-        );
+        console.log("Erro ao calcular os processos específicos das entidades: " + e);
       }
     },
     // Carrega os processos específicos da entidade e das tipologias em causa
@@ -623,8 +601,7 @@ export default {
       try {
         if (!this.listaProcEspReady) {
           var url =
-            "/classes?nivel=3&tipo=especifico&ents=" +
-            this.tabelaSelecao.idEntidade;
+            "/classes?nivel=3&tipo=especifico&ents=" + this.tabelaSelecao.idEntidade;
           if (this.tipSel.length || this.tipSel.length) {
             url += "&tips=";
           }
@@ -659,10 +636,7 @@ export default {
       }
     },
     criaHistoricoTS: async function (userBD) {
-      var response = await this.$request(
-        "get",
-        "/classes?nivel=3&info=completa"
-      );
+      var response = await this.$request("get", "/classes?nivel=3&info=completa");
       let historico = [
         {
           designacao: {
@@ -715,15 +689,13 @@ export default {
             nota: null,
           };
           if (p === "pca" || p === "df") {
-            Object.keys(historico[0].ts.classes.dados[i].dados[p].dados).map(
-              (d) => {
-                historico[0].ts.classes.dados[i].dados[p].dados[d] = {
-                  cor: "verde",
-                  dados: historico[0].ts.classes.dados[i].dados[p].dados[d],
-                  nota: null,
-                };
-              }
-            );
+            Object.keys(historico[0].ts.classes.dados[i].dados[p].dados).map((d) => {
+              historico[0].ts.classes.dados[i].dados[p].dados[d] = {
+                cor: "verde",
+                dados: historico[0].ts.classes.dados[i].dados[p].dados[d],
+                nota: null,
+              };
+            });
           }
           if (p == "notasAp") {
             let index = response.data.findIndex((p) => p.codigo == codigo);
@@ -801,9 +773,7 @@ export default {
       );
       procs.map((p) =>
         this.listaProcessos.procsAselecionar.splice(
-          this.listaProcessos.procsAselecionar.findIndex(
-            (c) => c.codigo === p.codigo
-          ),
+          this.listaProcessos.procsAselecionar.findIndex((c) => c.codigo === p.codigo),
           1
         )
       );
@@ -865,10 +835,7 @@ export default {
       // É preciso testar se há um Pendente criado para o apagar
       if (this.pendente._id) {
         try {
-          var response = await this.$request(
-            "delete",
-            "/pendentes/" + this.pendente._id
-          );
+          var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
         } catch (e) {
           console.log("Erro ao remover o pendente na submissão da TS: " + e);
         }
@@ -912,11 +879,7 @@ export default {
           token: this.$store.state.token,
           historico: await this.criaHistoricoTS(userBD),
         };
-        var codigoPedido = await this.$request(
-          "post",
-          "/pedidos",
-          pedidoParams
-        );
+        var codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
         this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
       } catch (error) {
         console.log("Erro ao criar o pedido: " + error);
@@ -953,18 +916,10 @@ export default {
         if (this.pendente._id) {
           pendenteParams._id = this.pendente._id;
           pendenteParams.numInterv = ++this.pendente.numInterv;
-          var response = await this.$request(
-            "put",
-            "/pendentes",
-            pendenteParams
-          );
+          var response = await this.$request("put", "/pendentes", pendenteParams);
         } else {
           pendenteParams.numInterv = 1;
-          var response = await this.$request(
-            "post",
-            "/pendentes",
-            pendenteParams
-          );
+          var response = await this.$request("post", "/pendentes", pendenteParams);
         }
         this.pendente = response.data;
         this.pendenteGuardado = true;
@@ -1029,10 +984,7 @@ export default {
     abortar: async function () {
       if (this.pendente && this.pendente._id) {
         try {
-          var response = await this.$request(
-            "delete",
-            "/pendentes/" + this.pendente._id
-          );
+          var response = await this.$request("delete", "/pendentes/" + this.pendente._id);
         } catch (e) {
           console.log("Erro ao eliminar o pendente: " + e);
         }
@@ -1053,9 +1005,7 @@ export default {
       var fecho = this.fechoTransitivo[processo.codigo];
       !fecho.includes(processo.codigo) ? fecho.push(processo.codigo) : "";
       for (let i = 0; i < fecho.length; i++) {
-        var index = this.listaProcessos.procs.findIndex(
-          (p) => p.codigo == fecho[i]
-        );
+        var index = this.listaProcessos.procs.findIndex((p) => p.codigo == fecho[i]);
         //Só acrescenta processos a selecionar que não tenham sido selecionados antes de guardar o trabalho
         if (
           index != -1 &&
@@ -1066,8 +1016,7 @@ export default {
           this.listaProcessos.procs[index].preSelected++;
           if (this.listaProcessos.procs[index].preSelected == 1) {
             this.listaProcessos.numProcessosPreSelecionados++;
-            this.listaProcessos.procs[index].preSelectedLabel =
-              "Pré-Selecionado";
+            this.listaProcessos.procs[index].preSelectedLabel = "Pré-Selecionado";
           }
         }
       }
@@ -1081,9 +1030,7 @@ export default {
           (p) => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
         );
         if (index != -1) {
-          this.listaProcessos.procs[
-            index
-          ] = this.tabelaSelecao.listaProcessos.procs[i];
+          this.listaProcessos.procs[index] = this.tabelaSelecao.listaProcessos.procs[i];
           if (
             this.tabelaSelecao.listaProcessos.procs[i].dono ||
             this.tabelaSelecao.listaProcessos.procs[i].participante != "NP"
@@ -1105,18 +1052,10 @@ export default {
         formData.append("designacao", this.tabelaSelecao.designacao);
         if (this.tipoTS != "tipologia")
           formData.append("entidade_ts", this.tabelaSelecao.designacaoEntidade);
-        else
-          formData.append(
-            "entidade_ts",
-            this.tabelaSelecao.designacaoTipologia
-          );
+        else formData.append("entidade_ts", this.tabelaSelecao.designacaoTipologia);
         formData.append("tipo_ts", "TS Organizacional");
         formData.append("fonteL", "TS/LC");
-        var response = await this.$request(
-          "post",
-          "/tabelasSelecao/importar",
-          formData
-        );
+        var response = await this.$request("post", "/tabelasSelecao/importar", formData);
         this.listaProcessos.procs = response.data.ts.processos;
         this.importadoFlag = true;
       } catch (e) {
@@ -1127,11 +1066,11 @@ export default {
   },
   created: async function () {
     this.pendente = this.obj;
-    this.participante = this.obj.objeto.participante;
+    this.participante = this.obj.objeto.participante ? this.obj.objeto.participante : [];
     delete this.obj.objeto.participante;
     this.tabelaSelecao = this.obj.objeto;
     this.designacao = this.tabelaSelecao.designacao;
-
+    console.log(this.tabelaSelecao);
     if (this.tabelaSelecao.listaProcessos.importadoFlag) {
       this.importadoFlag = true;
       this.listaProcessos = this.tabelaSelecao.listaProcessos;

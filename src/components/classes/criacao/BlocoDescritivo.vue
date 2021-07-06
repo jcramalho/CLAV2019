@@ -21,6 +21,7 @@
           nome="Descrição"
           infoHeader="Descrição"
           :infoBody="myhelp.Classe.Campos.Descricao"
+          color="neutralpurple"
         >
           <template v-slot:conteudo>
             <v-textarea

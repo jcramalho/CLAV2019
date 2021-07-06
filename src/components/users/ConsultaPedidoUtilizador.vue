@@ -393,6 +393,10 @@ export default {
           break;
         case "TS Pluriorganizacional":
         case "TS Organizacional":
+        case "RADA":
+        case "Auto de Eliminação":
+        case "PPD":
+          this.$router.push("/pendentes/continuar/" + pedido.codigo);
           break;
         case "Entidade":
           this.$router.push("/entidades/editar/" + pedido.codigo);

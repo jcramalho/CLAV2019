@@ -1,17 +1,13 @@
 <template>
   <div>
-    <v-card class="ma-4">
-      <v-app-bar color="expansion-panel-heading" dark>
-        <v-toolbar-title class="card-heading"
-          >Importar Auto de Eliminação</v-toolbar-title
-        >
-      </v-app-bar>
+    <v-card flat class="pa-3">
+      <p class="clav-content-title-1">Importar Auto de Eliminação</p>
       <v-card-text class="panel-body">
         <div class="ma-3">
           A Plataforma CLAV permite a submissão de Autos de Eliminação (AE) através da
           importação de ficheiros. Para tal são disponibilizados dois tipos de formulários
           que devem ser preenchidos previamente offline:
-          <li>
+          <li class="ml-6">
             Um formulário para as classes / séries (veja
             <a
               :href="`${publicPath}documentos/Formulario_auto_importacao_classes_series.csv`"
@@ -19,7 +15,7 @@
               >aqui</a
             >)
           </li>
-          <li>
+          <li class="ml-6">
             um formulário para as agregações simples / unidades de instalação (veja
             <a
               :href="`${publicPath}documentos/Formulario_auto_importacao_agregacoes_UI.csv`"

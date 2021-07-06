@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="center" class="ma-3">
     <v-col cols="12" sm="10" align="center">
       <v-btn
         @click="expandAll"
