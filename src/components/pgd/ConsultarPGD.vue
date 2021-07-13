@@ -164,28 +164,82 @@
               </template>
               <template v-slot:[`item.participantes`]="{ item }">
                 <span
-                  v-if="item.participantes && item.participantes.length === 1"
+                  v-if="
+                    item.participantes &&
+                    objeto.entidades.text.length === 1 &&
+                    item.participantes.findIndex(
+                      (e) => e.entParticipante === objeto.entidades.text[0].id
+                    ) != -1
+                  "
                   ><v-icon>done</v-icon></span
                 >
-                <ol v-else-if="item.participantes">
-                  <li v-for="(p, index) in item.participantes" :key="index">
-                    <a :href="'/entidades/' + p.entParticipante">{{
-                      p.entParticipante.split("ent_")[1]
-                    }}</a>
-                  </li>
+                <ol
+                  class="my-5"
+                  v-else-if="
+                    item.participantes && objeto.entidades.text.length !== 1
+                  "
+                >
+                  <span v-for="(p, index) in item.participantes" :key="index">
+                    <li
+                      v-if="
+                        objeto.entidades.text.some(
+                          (e) => e.id === p.entParticipante
+                        )
+                      "
+                    >
+                      <a
+                        :href="
+                          p.entParticipante.includes('ent_')
+                            ? '/entidades/' + p.entParticipante
+                            : '/tipologias/' + p.entParticipante
+                        "
+                        >{{
+                          p.entParticipante.includes("ent_")
+                            ? p.entParticipante.split("ent_")[1]
+                            : p.entParticipante.split("tip_")[1]
+                        }}</a
+                      >
+                    </li>
+                  </span>
                 </ol>
               </template>
 
               <template v-slot:[`item.donos`]="{ item }">
-                <span v-if="item.donos && item.donos.length === 1">
+                <span
+                  v-if="
+                    item.donos &&
+                    objeto.entidades.text.length === 1 &&
+                    item.donos.findIndex(
+                      (e) => e.entDono === objeto.entidades.text[0].id
+                    ) != -1
+                  "
+                >
                   <v-icon>done</v-icon>
                 </span>
-                <ol v-else-if="item.donos">
-                  <li v-for="(d, index) in item.donos" :key="index">
-                    <a :href="'/entidades/' + d.entDono">{{
-                      d.entDono.split("ent_")[1]
-                    }}</a>
-                  </li>
+                <ol
+                  class="my-5"
+                  v-else-if="item.donos && objeto.entidades.text.length !== 1"
+                >
+                  <span v-for="(d, index) in item.donos" :key="index">
+                    <li
+                      v-if="
+                        objeto.entidades.text.some((e) => e.id === d.entDono)
+                      "
+                    >
+                      <a
+                        :href="
+                          d.entDono.includes('ent_')
+                            ? '/entidades/' + d.entDono
+                            : '/tipologias' + d.entDono
+                        "
+                        >{{
+                          d.entDono.includes("ent_")
+                            ? d.entDono.split("ent_")[1]
+                            : d.entDono.split("tip_")[1]
+                        }}</a
+                      >
+                    </li>
+                  </span>
                 </ol>
               </template>
 

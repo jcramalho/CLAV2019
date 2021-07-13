@@ -5,7 +5,7 @@
       :message="message"
     />
     <ConsultarPGD
-      v-else
+      v-else-if="classes && legislacao"
       :classes="classes"
       :classesTree="classesTree"
       :titulo="titulo"
