@@ -10,6 +10,6 @@ const dominioDefault = "http://clav-test.di.uminho.pt";
 const dominio = process.env.VUE_APP_API_URL || dominioDefault;
 const apiVersion = process.env.VUE_APP_API_VERSION || "v2";
 
-module.exports.interfaceVersion = process.env.VUE_APP_INTERFACE_VERSION || "2021-06-29";
+module.exports.interfaceVersion = process.env.VUE_APP_INTERFACE_VERSION || "2021-07-13";
 
 module.exports.host = dominio + "/" + apiVersion;
