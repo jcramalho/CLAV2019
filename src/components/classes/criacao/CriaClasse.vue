@@ -5,90 +5,8 @@
         <!-- HEADER -->
         <p class="clav-content-title-1">Criar Classe</p>
 
-        <Campo nome="Nível" color="neutralpurple">
-          <template v-slot:conteudo>
-            <v-radio-group v-model="classe.nivel" row hide-details class="mt-1">
-              <v-radio
-                v-for="(n, i) in classeNiveis"
-                :key="i"
-                :label="n.label"
-                :value="n.value"
-                color="blue"
-                :class="{
-                  'mx-auto': $vuetify.breakpoint.smAndDown,
-                }"
-              ></v-radio>
-            </v-radio-group>
-          </template>
-        </Campo>
-
-        <!-- CLASSE PAI -->
-        <Campo
-          v-if="classe.nivel > 1"
-          nome="Classe pai"
-          color="neutralpurple"
-          infoHeader="Classe pai"
-          :infoBody="myhelp.Classe.Campos.Pai"
-        >
-          <template v-slot:conteudo>
-            <v-select
-              class="mt-n5 px-3"
-              item-text="label"
-              item-value="value"
-              v-model="classe.pai.codigo"
-              :items="classesPai"
-              label="Selecione uma classe de nível superior"
-              clearable
-              hide-details
-              single-line
-            />
-          </template>
-        </Campo>
-        <!-- CÓDIGO DA NOVA CLASSE -->
-        <Campo
-          v-if="classe.nivel == 1 || classe.pai.codigo"
-          nome="Código"
-          color="neutralpurple"
-          infoHeader="Código da Classe"
-          :infoBody="myhelp.Classe.Campos.Codigo"
-        >
-          <template v-slot:conteudo>
-            <v-text-field
-              class="mt-n3 px-3"
-              v-model="classe.codigo"
-              label="Código"
-              text
-              hide-details
-              single-line
-              clearable
-              color="blue darken-3"
-            ></v-text-field>
-            <span style="color: var(--v-error-base); font-size: 13px" class="px-3">
-              {{ mensValCodigo }}
-            </span>
-          </template>
-        </Campo>
-        <!-- TÍTULO -->
-        <Campo
-          v-if="classe.nivel == 1 || classe.pai.codigo"
-          nome="Título"
-          color="neutralpurple"
-          infoHeader="Título da Classe"
-          :infoBody="myhelp.Classe.Campos.Titulo"
-        >
-          <template v-slot:conteudo>
-            <v-text-field
-              class="mt-n4 px-3"
-              v-model="classe.titulo"
-              label="Título"
-              text
-              hide-details
-              single-line
-              clearable
-              color="blue darken-3"
-            ></v-text-field>
-          </template>
-        </Campo>
+        <BlocoMeta :c="classe" class="mt-6" />
+        
         <v-expansion-panels flat class="mt-6">
           <!-- DESCRITIVO DA CLASSE -->
           <BlocoDescritivo :c="classe" class="mt-6" />
@@ -184,6 +102,7 @@ const criteriosLabels = require("@/config/labels").criterios;
 import Campo from "@/components/generic/Campo.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
+import BlocoMeta from "@/components/classes/criacao/BlocoMeta.vue";
 import BlocoDescritivo from "@/components/classes/criacao/BlocoDescritivo.vue";
 import BlocoContexto from "@/components/classes/criacao/BlocoContexto.vue";
 
@@ -195,6 +114,7 @@ import PainelOperacoes from "@/components/classes/criacao/PainelOperacoes.vue";
 
 export default {
   components: {
+    BlocoMeta,
     BlocoDescritivo,
     BlocoContexto,
     Subdivisao3Nivel,
@@ -295,13 +215,6 @@ export default {
       4: "ddd.dd.ddd.dd (d - digito)",
     },
 
-    classeNiveis: [
-      { label: "Nível 1", value: "1" },
-      { label: "Nível 2", value: "2" },
-      { label: "Nível 3", value: "3" },
-    ],
-
-    classesPai: [],
     entidadesD: [],
     entidadesP: [],
     listaProcessos: [],
@@ -329,18 +242,10 @@ export default {
   }),
 
   watch: {
-    "classe.pai.codigo": function () {
-      // O código da classe depende da classe pai
-      this.classe.codigo = "";
-      if (this.classe.pai.codigo) this.classe.codigo = this.classe.pai.codigo + ".";
-    },
     "classe.nivel": function () {
       // A classe pai depende do nível
       this.classe.pai.codigo = "";
 
-      if (this.classe.nivel > 1) {
-        this.loadPais();
-      }
       if (this.classe.nivel >= 3 && !this.semaforos.entidadesReady) {
         this.loadEntidades();
       }
@@ -352,26 +257,6 @@ export default {
       }
       if (this.classe.nivel >= 3) {
         this.loadPCA();
-      }
-    },
-
-    "classe.codigo": async function () {
-      try {
-        this.mensValCodigo = "";
-        if (!this.codeFormats[this.classe.nivel].test(this.classe.codigo)) {
-          this.mensValCodigo =
-            "Formato de código inválido! Deve ser: " +
-            this.formatoCodigo[this.classe.nivel];
-        } else if (!this.classe.codigo.includes(this.classe.pai.codigo)) {
-          this.mensValCodigo = "Não pode alterar o código do pai selecionado em cima...";
-        } else {
-          var existe = await this.verificaExistenciaCodigo(this.classe.codigo);
-          if (existe) {
-            this.mensValCodigo = "Código já existente na base de dados...";
-          }
-        }
-      } catch (erro) {
-        return erro;
       }
     },
 
@@ -488,29 +373,6 @@ export default {
   },
 
   methods: {
-    // Carrega os potenciais pais da BD, quando alguém muda o nível para >1....................
-
-    loadPais: async function () {
-      try {
-        var response = await this.$request(
-          "get",
-          "/classes?nivel=" + (this.classe.nivel - 1)
-        );
-        this.classesPai = response.data
-          .map(function (item) {
-            return {
-              label: item.codigo + " - " + item.titulo,
-              value: item.id.split("#c")[1],
-            };
-          })
-          .sort(function (a, b) {
-            return a.label.localeCompare(b.label);
-          });
-      } catch (erro) {
-        return erro;
-      }
-    },
-
     // Carrega as entidades da BD....................
 
     loadEntidades: async function () {
