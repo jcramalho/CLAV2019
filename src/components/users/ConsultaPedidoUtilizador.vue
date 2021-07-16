@@ -389,8 +389,6 @@ export default {
         case "Classe_N3":
         case "Classe_N2":
         case "Classe_N1":
-          this.$router.push("/classes/editar/" + pedido.codigo);
-          break;
         case "TS Pluriorganizacional":
         case "TS Organizacional":
         case "RADA":

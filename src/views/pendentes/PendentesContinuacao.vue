@@ -49,6 +49,9 @@ export default {
     setTipo(tipo) {
       switch (tipo) {
         case "Classe":
+        case "Classe_N3":
+        case "Classe_N2":
+        case "Classe_N1":
           this.tipoClasse = true;
           break;
         case "TS Organizacional":
