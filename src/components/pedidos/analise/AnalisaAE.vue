@@ -553,7 +553,7 @@
       <v-btn
         @click="guardarPedido()"
         rounded
-        class="mt-5 indigo accent-4 white--text"
+        class="mt-5 clav-linear-background accent-4 white--text"
         ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
       >
       <PO

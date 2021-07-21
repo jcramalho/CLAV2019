@@ -362,18 +362,19 @@ export default {
         else this.prazo = (c[0].pca.valores || "") + " Anos";
         if (c[0].pca.notas) this.notasPCA = c[0].pca.notas;
         if (c[0].df.nota) this.notaDF = c[0].df.nota;
-        
+
         if (
           (this.tipo == "TS_LC" || this.tipo == "PGD_LC") &&
-          c[0].df.valor == "CP" 
-        )
+          c[0].df.valor == "CP"
+        ) {
           // Para DF = CP vou buscar a justificação do DF
           var classeLC = await this.$request("get", "/classes/c" + c[0].codigo);
-          
+
           this.justificaDF = classeLC.data.df.justificacao.map((just) => {
             return just.conteudo;
           });
-        
+        }
+
         if (c[0].df.valor === "C") {
           this.df = "Conservação";
           this.ni = "Participante";

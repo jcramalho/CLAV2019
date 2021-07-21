@@ -180,7 +180,9 @@
                           "
                           overlap
                         >
-                          <v-icon @click="abrirNotaDialog('zonaControlo', -1)">
+                          <v-icon
+                            @click="abrirNotaDialog('zonaControlo', index)"
+                          >
                             add_comment
                           </v-icon>
                         </v-badge>
@@ -548,7 +550,7 @@
       <v-btn
         @click="guardarPedido()"
         rounded
-        class="mt-5 indigo accent-4 white--text"
+        class="mt-5 clav-linear-background accent-4 white--text"
         ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
       >
       <PO
@@ -972,18 +974,33 @@ export default {
         if (this.novoHistorico[campo].nota !== undefined)
           this.notaDialog.nota = this.novoHistorico[campo].nota;
       } else {
-        if (this.novoHistorico[campo][index].nota !== undefined)
+        if (
+          campo != "zonaControlo" &&
+          this.novoHistorico[campo][index].nota !== undefined
+        )
           this.notaDialog.nota = this.novoHistorico[campo][index].nota;
+        else {
+          this.notaDialog.nota = this.novoHistorico[campo].dados[index].nota;
+        }
       }
     },
 
     adicionarNota() {
-      if (this.notaDialog.index == -1) {
+      if (
+        this.notaDialog.index == -1 ||
+        this.notaDialog.campo != "zonaControlo"
+      ) {
         this.novoHistorico[this.notaDialog.campo].nota = this.notaDialog.nota;
-      } else
-        this.novoHistorico[this.notaDialog.campo][
-          this.notaDialog.index
-        ].nota = this.notaDialog.nota;
+      } else {
+        if (this.notaDialog.campo != "zonaControlo")
+          this.novoHistorico[this.notaDialog.campo][
+            this.notaDialog.index
+          ].nota = this.notaDialog.nota;
+        else
+          this.novoHistorico[this.notaDialog.campo].dados[
+            this.notaDialog.index
+          ].nota = this.notaDialog.nota;
+      }
 
       this.notaDialog = {
         visivel: false,
