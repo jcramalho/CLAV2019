@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row style="margin-top: 16px">
     <v-col cols="3">
       <div class="info-label">{{ label }}</div>
     </v-col>

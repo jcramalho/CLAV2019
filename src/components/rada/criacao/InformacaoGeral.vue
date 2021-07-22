@@ -25,7 +25,7 @@
             :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RADA.entRes"
             :items="entidadesProcessadas"
-            placeholder="Selecione uma ou mais entidades."
+            label="Selecione uma ou mais entidades."
             chips
             multiple
             solo

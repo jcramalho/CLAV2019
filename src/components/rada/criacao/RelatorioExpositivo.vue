@@ -26,7 +26,7 @@
               :items="entidadesProcessadas"
               item-text="entidade"
               item-value="entidade"
-              placeholder="Selecione uma ou mais entidades."
+              label="Selecione uma ou mais entidades."
               multiple
               solo
             >
@@ -60,7 +60,7 @@
             :items="tipologias"
             item-text="tipologia"
             item-value="tipologia"
-            placeholder="Selecione a Tipologia de entidade"
+            label="Selecione a Tipologia de entidade"
             solo
             :disabled="produtoraTipologiaClasse(RE.tipologiasProd)"
             chips
@@ -141,7 +141,7 @@
                   solo
                   name="input-7-4"
                   v-model="RE.hist_admin"
-                  placeholder="História administrativa/biográfica"
+                  label="História administrativa/biográfica"
                   :rules="basicRule"
                 ></v-textarea>
               </v-col>
@@ -155,7 +155,7 @@
                   solo
                   name="input-7-4"
                   v-model="RE.hist_cust"
-                  placeholder="História custodial"
+                  label="História custodial"
                   :rules="basicRule"
                 ></v-textarea>
               </v-col>
@@ -176,7 +176,7 @@
                   solo
                   name="input-7-4"
                   v-model="RE.sist_org"
-                  placeholder="Sistema de organização"
+                  label="Sistema de organização"
                   :rules="basicRule"
                 ></v-textarea>
               </v-col>
@@ -197,7 +197,7 @@
                   solo
                   name="input-7-4"
                   v-model="RE.localizacao"
-                  placeholder="Localização"
+                  label="Localização"
                   :rules="basicRule"
                 ></v-textarea>
               </v-col>
@@ -211,7 +211,7 @@
                   solo
                   name="input-7-4"
                   v-model="RE.est_conser"
-                  placeholder="Estado de conservação"
+                  label="Estado de conservação"
                   :rules="basicRule"
                 ></v-textarea>
               </v-col>

@@ -33,11 +33,11 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row v-if="!!TS.classes[0]">
-      <v-col xs="11" sm="11">
+    <v-row v-if="!!TS.classes[0]" align-content="center" justify="middle">
+      <v-col cols="11">
         <v-text-field v-model="search" label="Pesquise a classe" clearable append-icon="search"></v-text-field>
       </v-col>
-      <v-col xs="1" sm="1">
+      <v-col cols="1" style="position: relative; left:-5px" align-self="center">
         <v-tooltip top>
           <template v-slot:activator="{ on }">
             <v-switch
