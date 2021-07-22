@@ -15,8 +15,6 @@
           <BlocoContexto
             :c="classe"
             :semaforos="semaforos"
-            :donos="entidadesD"
-            :participantes="entidadesP"
             :procRel="listaProcessos"
             :legs="listaLegislacao"
             v-if="classe.nivel == 3"
@@ -215,8 +213,6 @@ export default {
       4: "ddd.dd.ddd.dd (d - digito)",
     },
 
-    entidadesD: [],
-    entidadesP: [],
     listaProcessos: [],
     listaLegislacao: [],
 
@@ -226,7 +222,6 @@ export default {
     semaforos: {
       paisReady: false,
       classesReady: false,
-      entidadesReady: false,
       legislacaoReady: false,
       pcaFormasContagemReady: false,
       pcaSubFormasContagemReady: false,
@@ -246,9 +241,6 @@ export default {
       // A classe pai depende do nível
       this.classe.pai.codigo = "";
 
-      if (this.classe.nivel >= 3 && !this.semaforos.entidadesReady) {
-        this.loadEntidades();
-      }
       if (this.classe.nivel >= 3 && !this.semaforos.classesReady) {
         this.loadProcessos();
       }
@@ -373,46 +365,6 @@ export default {
   },
 
   methods: {
-    // Carrega as entidades da BD....................
-
-    loadEntidades: async function () {
-      try {
-        var response = await this.$request("get", "/entidades");
-        this.entidadesD = response.data.map(function (item) {
-          return {
-            selected: false,
-            id: item.id,
-            sigla: item.sigla,
-            designacao: item.designacao,
-            tipo: "Entidade",
-            intervencao: "Indefinido",
-            estado: item.estado,
-          };
-        });
-        response = await this.$request("get", "/tipologias");
-        this.entidadesD = await this.entidadesD.concat(
-          response.data.map(function (item) {
-            return {
-              selected: false,
-              id: item.id,
-              sigla: item.sigla,
-              designacao: item.designacao,
-              tipo: "Tipologia",
-              intervencao: "Indefinido",
-            };
-          })
-        );
-        await this.entidadesD.sort(function (a, b) {
-          return a.sigla.localeCompare(b.sigla);
-        });
-
-        this.entidadesP = JSON.parse(JSON.stringify(this.entidadesD));
-        this.semaforos.entidadesReady = true;
-      } catch (erro) {
-        return erro;
-      }
-    },
-
     // Carrega os Processos da BD....................
 
     loadProcessos: async function () {

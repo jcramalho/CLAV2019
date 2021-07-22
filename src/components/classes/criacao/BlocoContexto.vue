@@ -35,8 +35,8 @@
 
         <DonosNew
           @newEntidade="newEntidade($event, c.donos)"
-          :entidadesReady="semaforos.entidadesReady"
-          :entidades="donos"
+          :entidadesReady="entidadesReady"
+          :entidades="entidadesD"
         />
 
         <v-snackbar v-model="erroEntidadeDuplicada" :color="'error'" :timeout="60000">
@@ -59,8 +59,8 @@
         </v-row>
 
         <DonosSelect
-          :entidadesReady="semaforos.entidadesReady"
-          :entidades="donos"
+          :entidadesReady="entidadesReady"
+          :entidades="entidadesD"
           @selectEntidade="selectEntidade($event)"
         />
 
@@ -77,15 +77,15 @@
 
           <ParticipantesNew
             @newEntidade="newEntidade($event, c.participantes)"
-            :entidadesReady="semaforos.entidadesReady"
-            :entidades="participantes"
+            :entidadesReady="entidadesReady"
+            :entidades="entidadesP"
           />
 
           <hr style="border-top: 1px dashed #dee2f8" />
 
           <ParticipantesSelect
-            :entidadesReady="semaforos.entidadesReady"
-            :entidades="participantes"
+            :entidadesReady="entidadesReady"
+            :entidades="entidadesP"
             @selectParticipante="selectParticipante($event)"
           />
           <v-snackbar
@@ -171,7 +171,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
 export default {
-  props: ["c", "semaforos", "donos", "participantes", "procRel", "legs"],
+  props: ["c", "semaforos", "procRel", "legs"],
 
   components: {
     DonosOps,
@@ -195,6 +195,10 @@ export default {
     return {
       myhelp: help,
 
+      entidadesD: [],
+      entidadesP: [],
+      entidadesReady: false,
+
       erroEntidadeDuplicada: false,
       mensagemEntidadeDuplicada: "Entidade duplicada! Não será adicionada.",
 
@@ -214,13 +218,55 @@ export default {
     };
   },
 
+  created: function() {
+    this.loadEntidades();
+  },
+
   methods: {
+    loadEntidades: async function () {
+      try {
+        var response = await this.$request("get", "/entidades");
+        this.entidadesD = response.data.map(function (item) {
+          return {
+            selected: false,
+            id: item.id,
+            sigla: item.sigla,
+            designacao: item.designacao,
+            tipo: "Entidade",
+            intervencao: "Indefinido",
+            estado: item.estado,
+          };
+        });
+        response = await this.$request("get", "/tipologias");
+        this.entidadesD = await this.entidadesD.concat(
+          response.data.map(function (item) {
+            return {
+              selected: false,
+              id: item.id,
+              sigla: item.sigla,
+              designacao: item.designacao,
+              tipo: "Tipologia",
+              intervencao: "Indefinido",
+            };
+          })
+        );
+        await this.entidadesD.sort(function (a, b) {
+          return a.sigla.localeCompare(b.sigla);
+        });
+
+        this.entidadesP = JSON.parse(JSON.stringify(this.entidadesD));
+        this.entidadesReady = true;
+      } catch (erro) {
+        return erro;
+      }
+    },
+
     unselectEntidade: function (entidade) {
       // Recoloca a entidade nos selecionáveis
       if (entidade.estado && entidade.estado != "Nova") {
-        this.donos.push(entidade);
+        this.entidadesD.push(entidade);
       } else if (!entidade.estado) {
-        this.donos.push(entidade);
+        this.entidadesD.push(entidade);
       }
       var index = this.c.donos.findIndex((e) => e.id === entidade.id);
       this.c.donos.splice(index, 1);
@@ -229,8 +275,8 @@ export default {
     selectEntidade: function (entidade) {
       this.c.donos.push(entidade);
       // Remove dos selecionáveis
-      var index = this.donos.findIndex((e) => e.id === entidade.id);
-      this.donos.splice(index, 1);
+      var index = this.entidadesD.findIndex((e) => e.id === entidade.id);
+      this.entidadesD.splice(index, 1);
     },
 
     newEntidade: function (entidade, lista) {
@@ -246,7 +292,7 @@ export default {
     unselectParticipante: function (entidade) {
       entidade.intervencao = "Indefinido";
       // Recoloca a entidade nos selecionáveis
-      this.participantes.push(entidade);
+      this.entidadesP.push(entidade);
       var index = this.c.participantes.findIndex((e) => e.id === entidade.id);
       this.c.participantes.splice(index, 1);
     },
@@ -255,6 +301,8 @@ export default {
       if (entidade.intervencao == "Indefinido") this.erroIntervencaoIndefinida = true;
       else {
         this.c.participantes.push(entidade);
+        var index = this.entidadesP.findIndex((e) => e.id === entidade.id);
+        this.entidadesP.splice(index, 1);
       }
     },
 

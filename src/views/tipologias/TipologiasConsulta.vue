@@ -18,6 +18,10 @@
 import Consulta from "@/components/generic/Consulta.vue";
 import Loading from "@/components/generic/Loading";
 
+import {
+  comparaSigla
+} from "@/utils/utils";
+
 export default {
   components: {
     Consulta,
@@ -76,6 +80,7 @@ export default {
       );
 
       this.entidades = entidades.data;
+      this.entidades.sort(comparaSigla);
 
       this.processosDono.sort((a, b) => (a.codigo > b.codigo ? 1 : -1));
       this.processosParticipa.Apreciador.sort((a, b) =>

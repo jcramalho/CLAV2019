@@ -18,6 +18,10 @@
 import Consulta from "@/components/generic/Consulta.vue";
 import Loading from "@/components/generic/Loading";
 
+import {
+  comparaSigla
+} from "@/utils/utils";
+
 export default {
   components: {
     Consulta,
@@ -117,6 +121,7 @@ export default {
         "/entidades/" + this.idEntidade + "/tipologias"
       );
       this.tipologias = tipologias.data;
+      this.tipologias.sort(comparaSigla);
 
       // Processos em que a entidade participa como dono
       var processosDono = await this.$request(
