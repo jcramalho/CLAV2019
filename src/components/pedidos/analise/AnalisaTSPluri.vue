@@ -246,7 +246,7 @@
         <v-btn
           @click="guardarPedido()"
           rounded
-          class="mt-5 indigo accent-4 white--text"
+          class="mt-5 clav-linear-background accent-4 white--text"
           ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
         >
         <PO
@@ -554,7 +554,7 @@ export default {
     this.json = JSON.stringify(this.p, null, 2);
   },
   created() {
-    alert(JSON.stringify(this.p.objeto.dados.entidades))
+    //alert(JSON.stringify(this.p.objeto.dados.entidades));
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );

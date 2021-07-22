@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ p }}
     <v-card flat class="ma-1">
       <ValidaCampo
         :dadosOriginais="p.objeto.dados.ts"
@@ -244,7 +243,7 @@
         <v-btn
           @click="guardarPedido()"
           rounded
-          class="mt-5 indigo accent-4 white--text"
+          class="mt-5 clav-linear-background accent-4 white--text"
           ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
         >
         <PO

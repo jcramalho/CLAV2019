@@ -466,7 +466,7 @@ export default {
     tsRada: [],
     numInterv: 0,
     _id: null,
-    tipo: "TS_LC",
+    tipo: "",
     donos: [],
     steps: 1,
     erro: null,
@@ -490,35 +490,11 @@ export default {
       this.auto.fundo.push(
         user_entidade.data.sigla + " - " + user_entidade.data.designacao
       );
-
-      var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
-      this.portariaLC = await this.prepararLeg(response.data);
-      var response2 = await this.$request("get", "/pgd");
-      this.portaria = await this.prepararLeg(response2.data);
-      var response3 = await this.$request("get", "/legislacao?fonte=RADA");
-      this.portariaRada = await this.prepararLeg(response3.data);
-      var response5 = await this.$request("get", "/tabelasSelecao");
-      this.tabelasSelecao = response5.data.map((ts) => {
-        return {
-          titulo: ts.numLeg + " - " + ts.designacao,
-          codigo: ts.id.split("clav#")[1],
-        };
-      });
-
-      var response4 = await this.$request("get", "/rada");
-      this.tsRada = response4.data;
-
-      var response5 = await this.$request("get", "/rada/old");
-      this.tsRada.concat(response5.data);
     } catch (e) {
-      this.auto.fundo = [];
-      this.portariaLC = [];
-      this.portaria = [];
-      this.portariaRada = [];
-      this.tabelasSelecao = [];
-      this.tsRada = [];
+      console.log("Erro ao carregar a informação inicial: " + e);
     }
   },
+
   methods: {
     eliminarAE: async function () {
       if (this._id) this.$request("delete", "/pendentes/" + this._id);
@@ -889,8 +865,41 @@ export default {
     },
   },
   watch: {
-    tipo: function () {
-      this.auto.legislacao = null;
+    tipo: async function () {
+      try {
+        this.auto.legislacao = null;
+        if (this.tipo == "TS_LC") {
+          var response = await this.$request("get", "/tabelasSelecao");
+          this.tabelasSelecao = response.data.map((ts) => {
+            return {
+              titulo: ts.designacao,
+              codigo: ts.id.split("clav#")[1],
+            };
+          });
+        }
+        if (this.tipo == "PGD_LC") {
+          var response = await this.$request("get", "/pgd/lc");
+          this.portariaLC = await this.prepararLeg(response.data);
+        }
+        if (this.tipo == "PGD") {
+          var response = await this.$request("get", "/pgd");
+          this.portaria = await this.prepararLeg(response.data);
+        }
+        if (this.tipo == "RADA") {
+          var response = await this.$request("get", "/legislacao?fonte=RADA");
+          this.portariaRada = await this.prepararLeg(response.data);
+        } else {
+          var response = await this.$request("get", "/rada");
+          this.tsRada = response.data;
+        }
+      } catch (e) {
+        this.portariaLC = [];
+        this.portaria = [];
+        this.portariaRada = [];
+        this.tabelasSelecao = [];
+        this.tsRada = [];
+        console.log("Erro ao carregar a informação inicial: " + e);
+      }
     },
   },
 };
