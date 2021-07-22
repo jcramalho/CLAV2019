@@ -1,8 +1,10 @@
 <template>
   <v-card>
-    <v-card-title class="indigo darken-4 white--text"
-      >Criar Relatório de Avaliação de Documentação Acumulada</v-card-title
-    >
+    <v-row align="center">
+      <v-col cols="12" align="center" justify="center">
+        <p class="clav-content-title-1">Criar Relatório de Avaliação de Documentação Acumulada</p>
+      </v-col>
+    </v-row>
     <v-card-text style="height: 100%">
       <br />
       <v-alert
