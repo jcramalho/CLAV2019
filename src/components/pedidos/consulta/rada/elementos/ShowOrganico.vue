@@ -4,7 +4,7 @@
       <v-card-title class="indigo darken-4 white--text">
         <b>{{ "Área orgânico-funcional: " + treeview_object.titulo }}</b>
       </v-card-title>
-      <v-card-text>
+      <v-card-text style="margin-top: 16px">
         <RADAEntry label="Código" :value="organico.codigo" /> 
         <RADAEntry label="Título" :value="organico.titulo" />
         <RADAEntry label="Descrição" :value="organico.descricao" />

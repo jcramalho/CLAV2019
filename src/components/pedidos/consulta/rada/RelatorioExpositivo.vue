@@ -18,8 +18,8 @@
     <RADAEntry label="Data inicial da documentação" :value="RE.dataInicial" />
     <RADAEntry label="Data final da documentação" :value="RE.dataFinal" />
     <div v-if="!!RE.dimSuporte.nSeries">
-      <v-card flat outlined>
-        <div class="info-label">Dimensão e Suporte</div>
+      <v-card flat outlined style="margin: 8px 0px">
+        <div class="dimSup">Dimensão e Suporte</div>
         <v-card-text>
           <RADAEntryDouble
             :value_1="RE.dimSuporte.nSeries"
@@ -80,5 +80,15 @@ export default {
 
 .panel-custom .panel-default:hover {
   border-color: #8c9eff;
+}
+
+.dimSup {
+  color: #1a237e;
+  padding: 6px;
+  font-weight: 400;
+  height: auto;
+  width: 100%;
+  background-color: #dee2f8;
+  font-weight: bold;
 }
 </style>

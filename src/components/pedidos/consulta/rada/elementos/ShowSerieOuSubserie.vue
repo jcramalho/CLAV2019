@@ -4,7 +4,7 @@
       <v-card-title class="indigo darken-4 white--text">
         <b>{{ treeview_object.tipo + ": " + treeview_object.titulo }}</b>
       </v-card-title>
-      <v-card-text>
+      <v-card-text style="margin-top: 16px">
         <RADAEntry label="Código" :value="classe.codigo" />
         <RADAEntry label="Titulo" :value="classe.titulo" />
         <RADAEntry label="Descrição" :value="classe.descricao" />
@@ -29,7 +29,7 @@
           label_2="Tipo de série"
           :value_2="classe.tSerie"
         />
-        <v-card outlined v-if="classe.tipo != 'Subsérie'">
+        <v-card outlined v-if="classe.tipo != 'Subsérie'" style="margin: 8px 0px">
           <RADAEntryDouble
             v-for="(valores, i) in classe.suporte_e_medicao"
             :key="i"
@@ -113,7 +113,7 @@
             <v-expansion-panel-content>
               <br />
               <v-card outlined>
-                <div class="info-label">Prazo de conservação administrativa</div>
+                <div class="dimSup">Prazo de conservação administrativa</div>
                 <v-card-text>
                   <RADAEntry v-if="!!classe.pca" label="PCA" :value="classe.pca" />
                   <RADAEntry
@@ -153,7 +153,7 @@
               </v-card>
               <br />
               <v-card outlined>
-                <div class="info-label">Destino final</div>
+                <div class="dimSup">Destino final</div>
                 <v-card-text>
                   <RADAEntry v-if="!!classe.df" label="DF" :value="classe.df" />
                   <RADAEntry v-if="!!classe.notaDF" label="Notas ao DF" :value="classe.notaDF" />
@@ -343,5 +343,15 @@ export default {
 
 .panel-custom .panel-default:hover {
   border-color: #8c9eff;
+}
+
+.dimSup {
+  color: #1a237e;
+  padding: 6px;
+  font-weight: 400;
+  height: auto;
+  width: 100%;
+  background-color: #dee2f8;
+  font-weight: bold;
 }
 </style>

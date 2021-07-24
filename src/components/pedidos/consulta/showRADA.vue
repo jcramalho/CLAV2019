@@ -4,9 +4,10 @@
       v-if="!!p.pedidos_dependentes[0]"
       :pedidos="p.pedidos_dependentes"
     />
+    <br>
     <v-row>
       <v-col>
-        <v-stepper v-model="e1" vertical elevation="6">
+        <v-stepper v-model="e1" vertical elevation="6" style="background-color: #f3f7fc">
           <br />
           <v-tooltip
             v-if="

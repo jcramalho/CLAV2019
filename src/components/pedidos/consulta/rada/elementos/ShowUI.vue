@@ -4,7 +4,7 @@
       <v-card-title class="indigo darken-4 white--text">
         <b>Unidade de Instalação: {{ UI.codigo + " - " + UI.titulo }}</b>
       </v-card-title>
-      <v-card-text>
+      <v-card-text style="margin-top: 16px">
         <RADAEntry label="Código" :value="UI.codigo" />
         <RADAEntry label="Título" :value="UI.titulo" />
         <RADAEntry v-if="!!UI.codCota" label="Cota" :value="UI.codCota" />

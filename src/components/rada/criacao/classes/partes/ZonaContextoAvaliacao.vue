@@ -11,6 +11,7 @@
         :tipos="tipos"
       />
     </div>
+    <br>
     <RelacoesEntidades :newSerie="newSerie" :classes="classes" :formaContagem="formaContagem" />
   </div>
 </template>
