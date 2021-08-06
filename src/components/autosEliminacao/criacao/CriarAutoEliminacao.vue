@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="ma-4">
-      <v-app-bar color="expansion-panel-heading" dark>
+      <v-app-bar class="clav-linear-background white--text">
         <v-toolbar-title class="card-heading"
           >Novo Auto de Eliminação</v-toolbar-title
         >

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="ma-4">
-      <v-app-bar color="expansion-panel-heading" dark>
+      <v-app-bar class="clav-linear-background white--text">
         <v-toolbar-title class="card-heading"
           >Continuar Auto de Eliminação</v-toolbar-title
         >
@@ -13,6 +13,7 @@
             Seleção de fonte e fundo
             <span v-if="steps > 1">
               <v-chip
+                v-if="!!auto.legislacao"
                 class="ma-2"
                 color="indigo darken-4"
                 text-color="white"
@@ -341,6 +342,7 @@ export default {
       this.tipo = this.auto.tipo;
 
       this.filtrarDonos();
+
       this.pendenteID = this.obj._id;
     } catch (e) {
       this.portariaLC = [];
@@ -532,7 +534,12 @@ export default {
         this.donos = this.donos.filter((e) => !e.includes(f));
 
         for (var zc of this.auto.zonaControlo) {
-          zc.dono = zc.dono.filter((e) => !e.includes(f));
+          zc.dono =
+            this.tipo != "RADA_CLAV" &&
+            this.tipo != "RADA" &&
+            this.tipo != "PGD"
+              ? zc.dono.filter((e) => !e.includes(f))
+              : "";
         }
       }
 
@@ -556,13 +563,13 @@ export default {
         this.tipo == "RADA"
       ) {
         var response = await this.$request("get", "/legislacao");
-
         var legAux = this.auto.legislacao.split(" - ");
         legAux = legAux[0].split(" ");
         var indLeg = legAux.length - 1;
+        var autoAux = this.auto.legislacao.split(" ");
 
         var leg = response.data.filter(
-          (l) => l.numero == this.auto.legislacao.split(" ")[indLeg]
+          (l) => l.numero === autoAux[indLeg] && l.tipo === autoAux[0]
         );
 
         if (this.tipo == "PGD")
@@ -634,6 +641,16 @@ export default {
         this.classes = [];
         this.classesCompletas = [];
       }
+    },
+    validaPCAeDF: function (classe) {
+      if (
+        (!classe.pca.valores || classe.pca.valores == "NE") &&
+        !classe.pca.notas
+      )
+        return false;
+      else if ((!classe.df.valor || classe.df.valor == "NE") && !classe.df.nota)
+        return false;
+      else return true;
     },
   },
 };
