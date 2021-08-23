@@ -62,7 +62,18 @@
               <td class="subheading">
                 {{ item.data.split("T")[0] }}
               </td>
-              <td class="subheading">{{ item.responsavel }}</td>
+              <td class="subheading">
+                <div>
+                  {{
+                    item.proximoResponsavel
+                      ? item.proximoResponsavel.nome
+                      : item.responsavel
+                  }}
+                </div>
+                <div class="text-caption">
+                  {{ item.proximoResponsavel ? item.proximoResponsavel.email : "" }}
+                </div>
+              </td>
               <td class="subheading">
                 {{ item.despacho }}
               </td>
