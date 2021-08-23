@@ -6,7 +6,7 @@
         <Voltar />
       </v-col>
       <v-col cols="12" sm="9" align="center" justify="center">
-        <p class="clav-content-title-1">Alterar Diploma</p>
+        <p class="clav-content-title-1">Ressubmeter Diploma</p>
         <p class="clav-content-title-2">
           {{ legislacaoOriginal.tipo }} -
           {{ legislacaoOriginal.numero }}
@@ -15,116 +15,180 @@
     </v-row>
 
     <!-- Content -->
-    <v-card-text class="ma-0 pa-0">
-      <v-stepper v-model="etapa" vertical>
-        <!-- Step 1 -->
-        <v-stepper-step :complete="etapa > 1" step="1" editable>
-          Escolha a operação
-        </v-stepper-step>
 
-        <v-stepper-content step="1">
-          <div class="ma-4">
-            <v-radio-group v-model="acao" row>
-              <v-radio label="Editar" value="Alteração"></v-radio>
-              <v-radio
-                v-if="legislacao.estado === 'Ativo'"
-                label="Revogar"
-                value="Revogação"
-              ></v-radio>
-            </v-radio-group>
-          </div>
+    <v-card-text>
+      <Campo
+        nome="Tipo de diploma"
+        infoHeader="Tipo de diploma"
+        :infoBody="myhelp.Legislacao.Campos.Tipo"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-select
+            filled
+            item-color="indigo"
+            color="indigo"
+            v-model="legislacao.tipo"
+            :items="tiposDiploma"
+            label="Selecione uma opção"
+            hide-details
+            dense
+          />
+        </template>
+      </Campo>
+      <Campo
+        nome="Número de diploma"
+        infoHeader="Número de diploma"
+        :infoBody="myhelp.Legislacao.Campos.Numero"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-text-field
+            filled
+            label="Número do diploma"
+            clearable
+            color="indigo"
+            single-line
+            v-model="legislacao.numero"
+            dense
+            hide-details
+          ></v-text-field>
+        </template>
+      </Campo>
 
-          <v-btn rounded color="primary" @click="etapa = 2"> Continuar </v-btn>
-        </v-stepper-content>
+      <Campo
+        nome="Data do diploma"
+        infoHeader="Data do diploma"
+        :infoBody="myhelp.Legislacao.Campos.Data"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <SelecionarData
+            :d="legislacao.data"
+            :label="'Data: AAAA-MM-DD'"
+            @dataSelecionada="legislacao.data = $event"
+          />
+        </template>
+      </Campo>
 
-        <!-- Step 2 -->
-        <v-stepper-step :complete="etapa > 2" step="2">{{ acao }}</v-stepper-step>
+      <Campo
+        nome="Sumário"
+        infoHeader="Sumário"
+        :infoBody="myhelp.Legislacao.Campos.Sumário"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-text-field
+            filled
+            label="Sumário"
+            clearable
+            color="indigo"
+            single-line
+            v-model="legislacao.sumario"
+            hide-details
+            dense
+          ></v-text-field>
+        </template>
+      </Campo>
 
-        <v-stepper-content step="2">
-          <div v-if="acao === 'Alteração'">
-            <Campo nome="Sumário" color="neutralpurple">
-              <template v-slot:conteudo>
-                <v-text-field
-                  filled
-                  clearable
-                  single-line
-                  hide-details
-                  dense
-                  v-model="legislacao.sumario"
-                  label="Sumário"
-                ></v-text-field>
-              </template>
-            </Campo>
-            <Campo nome="Link" color="neutralpurple" class="mb-3">
-              <template v-slot:conteudo>
-                <v-text-field
-                  v-model="legislacao.link"
-                  filled
-                  clearable
-                  single-line
-                  hide-details
-                  dense
-                  label="Link"
-                ></v-text-field>
-              </template>
-            </Campo>
+      <Campo
+        nome="Link"
+        infoHeader="Link"
+        :infoBody="myhelp.Legislacao.Campos.Link"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-text-field
+            v-model="legislacao.link"
+            filled
+            label="Link"
+            clearable
+            color="indigo"
+            single-line
+            hide-details
+            dense
+          ></v-text-field>
+        </template>
+      </Campo>
 
-            <!-- Blocos expansivos -->
-            <v-expansion-panels>
-              <PainelCLAV titulo="Entidade responsável pela publicação" icon="mdi-bank">
-                <template v-slot:conteudo>
-                  <DesSelEnt
-                    :entidades="entSel"
-                    tipo="legislacao"
-                    @unselectEntidade="unselectEntidade($event)"
-                  />
+      <Campo
+        nome="Tipo de fonte de legitimação"
+        infoHeader="Tipo de fonte de legitimação"
+        :infoBody="myhelp.Legislacao.Campos.FonteLegitimacao"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-select
+            filled
+            label="Selecione uma opção"
+            item-color="indigo"
+            color="indigo"
+            v-model="legislacao.diplomaFonte"
+            :items="diplomaFonteTipo"
+            dense
+            hide-details
+          />
+        </template>
+      </Campo>
 
-                  <hr style="border-top: 1px dashed #dee2f8" />
+      <Campo
+        nome="Data de revogação"
+        infoHeader="Data de revogação"
+        :infoBody="myhelp.Legislacao.Campos.DataRevogacao"
+        color="neutralpurple"
+        class="mb-2"
+      >
+        <template v-slot:conteudo>
+          <SelecionarData
+            :d="legislacao.dataRevogacao"
+            :label="'Data: AAAA-MM-DD'"
+            @dataSelecionada="legislacao.dataRevogacao = $event"
+          />
+        </template>
+      </Campo>
 
-                  <SelEnt
-                    :entidadesReady="entidadesReady"
-                    :entidades="entidades"
-                    @selectEntidade="selectEntidade($event)"
-                  />
-                </template>
-              </PainelCLAV>
+      <!-- Blocos expansivos -->
+      <v-expansion-panels>
+        <PainelCLAV titulo="Entidade responsável pela publicação" icon="mdi-bank">
+          <template v-slot:conteudo>
+            <DesSelEnt
+              :entidades="entSel"
+              tipo="legislacao"
+              @unselectEntidade="unselectEntidade($event)"
+            />
 
-              <!-- Segundo bloco expansivo -->
+            <hr style="border-top: 1px dashed #dee2f8" />
 
-              <PainelCLAV
-                titulo="Processos de negócio que regula ou enquadra"
-                icon="mdi-inbox-multiple-outline"
-              >
-                <template v-slot:conteudo
-                  ><DesSelProc
-                    :processos="procSel"
-                    @unselectProcesso="unselectProcesso($event)"
-                  />
+            <SelEnt
+              :entidadesReady="entidadesReady"
+              :entidades="entidades"
+              @selectEntidade="selectEntidade($event)"
+            />
+          </template>
+        </PainelCLAV>
 
-                  <hr style="border-top: 1px dashed #dee2f8" />
+        <!-- Segundo bloco expansivo -->
 
-                  <SelProc
-                    :processosReady="processosReady"
-                    :processos="processos"
-                    @selectProcesso="selectProcesso($event)"
-                  />
-                </template>
-              </PainelCLAV>
-            </v-expansion-panels>
-          </div>
+        <PainelCLAV
+          titulo="Processos de negócio que regula ou enquadra"
+          icon="mdi-inbox-multiple-outline"
+        >
+          <template v-slot:conteudo
+            ><DesSelProc
+              :processos="procSel"
+              @unselectProcesso="unselectProcesso($event)"
+            />
 
-          <Campo v-else nome="Data de revogação" color="neutralpurple" class="mb-3">
-            <template v-slot:conteudo>
-              <SelecionarData
-                :d="legislacao.dataRevogacao"
-                :label="'Data: AAAA-MM-DD'"
-                @dataSelecionada="legislacao.dataRevogacao = $event"
-              />
-            </template>
-          </Campo>
-        </v-stepper-content>
-      </v-stepper>
+            <hr style="border-top: 1px dashed #dee2f8" />
 
+            <SelProc
+              :processosReady="processosReady"
+              :processos="processos"
+              @selectProcesso="selectProcesso($event)"
+            />
+          </template>
+        </PainelCLAV>
+      </v-expansion-panels>
       <!-- j  -->
     </v-card-text>
     <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
@@ -134,10 +198,10 @@
 
     <!-- Painel Operações -->
     <PainelOpsLeg
-      v-if="etapa === 2"
       :l="legislacao"
       :original="legislacaoOriginal"
       :acao="acao"
+      :pedido="l"
     />
   </v-card>
 </template>
@@ -154,17 +218,18 @@ import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
 import Voltar from "@/components/generic/Voltar";
 import Campo from "@/components/generic/Campo";
 import PainelCLAV from "@/components/generic/PainelCLAV";
+const help = require("@/config/help").help;
 
 export default {
   props: ["l"],
 
   components: {
+    SelecionarData,
     DesSelEnt,
     SelEnt,
     DesSelProc,
     SelProc,
     PainelOpsLeg,
-    SelecionarData,
     Voltar,
     Campo,
     PainelCLAV,
@@ -172,7 +237,7 @@ export default {
 
   data() {
     return {
-      etapa: 1,
+      myhelp: help,
       legislacao: {
         numero: "",
         sumario: "",
@@ -183,8 +248,9 @@ export default {
         entidadesSel: [],
         processosSel: [],
       },
+      diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
       legislacaoOriginal: {},
-      acao: "Alteração",
+      acao: "Criação",
 
       tiposDiploma: [],
 
@@ -297,8 +363,9 @@ export default {
   },
 
   async created() {
-    this.legislacao = JSON.parse(JSON.stringify(this.l));
-    this.legislacaoOriginal = JSON.parse(JSON.stringify(this.l));
+    this.legislacao = JSON.parse(JSON.stringify(this.l.objeto.dados));
+    this.legislacaoOriginal = JSON.parse(JSON.stringify(this.l.objeto.dados));
+    this.acao = this.l.objeto.acao;
 
     await this.loadTipoDiploma();
     await this.loadEntidades();

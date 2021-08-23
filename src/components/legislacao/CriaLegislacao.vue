@@ -124,6 +124,7 @@
         infoHeader="Data de revogação"
         :infoBody="myhelp.Legislacao.Campos.DataRevogacao"
         color="neutralpurple"
+        class="mb-2"
       >
         <template v-slot:conteudo>
           <SelecionarData
@@ -203,7 +204,6 @@ import SelProc from "@/components/generic/selecao/SelecionarPNs.vue";
 
 import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
 
-import InfoBox from "@/components/generic/infoBox.vue";
 import Campo from "@/components/generic/Campo.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 const help = require("@/config/help").help;
@@ -257,7 +257,6 @@ export default {
     SelProc,
     PainelOpsLeg,
     SelecionarData,
-    InfoBox,
     Campo,
     PainelCLAV,
   },

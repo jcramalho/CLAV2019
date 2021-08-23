@@ -1,6 +1,8 @@
 <template>
   <div>
     <RessubmissaoEntidade v-if="objLoaded && tipoEntidade" :e="pedido" />
+    <RessubmissaoTipologia v-if="objLoaded && tipoTipologia" :t="pedido" />
+    <RessubmissaoLegislacao v-if="objLoaded && tipoLegislacao" :l="pedido" />
     <v-alert v-else type="warning">
       Por algum motivo não foi possível carregar o trabalho pretendido. Contacte o
       administrador.
@@ -10,10 +12,14 @@
 
 <script>
 import RessubmissaoEntidade from "@/components/entidades/RessubmissaoEntidade";
+import RessubmissaoTipologia from "@/components/tipologias/RessubmissaoTipologia";
+import RessubmissaoLegislacao from "@/components/legislacao/RessubmissaoLegislacao";
 
 export default {
   components: {
     RessubmissaoEntidade,
+    RessubmissaoTipologia,
+    RessubmissaoLegislacao,
   },
 
   data: () => ({

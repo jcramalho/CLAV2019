@@ -6,7 +6,7 @@
         <Voltar />
       </v-col>
       <v-col cols="12" sm="9" align="center" justify="center">
-        <p class="clav-content-title-1">Corrigir Entidade</p>
+        <p class="clav-content-title-1">Ressubmeter Entidade</p>
         <p class="clav-content-title-2">
           {{ entidadeOriginal.sigla }} -
           {{ entidadeOriginal.designacao }}

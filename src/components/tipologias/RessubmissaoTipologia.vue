@@ -6,7 +6,7 @@
         <Voltar />
       </v-col>
       <v-col cols="12" sm="9" align="center" justify="center">
-        <p class="clav-content-title-1">Alterar Tipologia de Entidade</p>
+        <p class="clav-content-title-1">Ressubmeter Tipologia de Entidade</p>
         <p class="clav-content-title-2">
           {{ tipologiaOriginal.sigla }} -
           {{ tipologiaOriginal.designacao }}
@@ -25,6 +25,19 @@
             hide-details
             dense
             v-model="tipologia.designacao"
+          ></v-text-field>
+        </template>
+      </Campo>
+
+      <Campo nome="Sigla" color="neutralpurple" class="mb-3">
+        <template v-slot:conteudo>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            hide-details
+            dense
+            v-model="tipologia.sigla"
           ></v-text-field>
         </template>
       </Campo>
@@ -55,7 +68,7 @@
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
     <!-- Painel Operações -->
-    <PainelOpsTip :t="tipologia" :original="tipologiaOriginal" :acao="acao" />
+    <PainelOpsTip :t="tipologia" :original="tipologiaOriginal" :pedido="t" :acao="acao" />
   </v-card>
 </template>
 
@@ -77,7 +90,7 @@ export default {
       entidadesSel: [],
     },
     tipologiaOriginal: {},
-    acao: "Alteração",
+    acao: "Criação",
 
     // Para o seletor
     entidades: [],
@@ -139,8 +152,9 @@ export default {
   },
 
   created: async function () {
-    this.tipologia = JSON.parse(JSON.stringify(this.t));
-    this.tipologiaOriginal = JSON.parse(JSON.stringify(this.t));
+    this.tipologia = JSON.parse(JSON.stringify(this.t.objeto.dados));
+    this.tipologiaOriginal = JSON.parse(JSON.stringify(this.t.objeto.dados));
+    this.acao = this.t.objeto.acao;
 
     await this.loadEntidades();
 

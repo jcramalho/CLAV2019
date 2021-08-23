@@ -119,7 +119,7 @@
     <ShowDefault v-else :p="Pedido" />
 
     <v-row>
-      <v-col cols="3" align="left">
+      <v-col align="left">
         <Voltar />
       </v-col>
       <v-spacer></v-spacer>
@@ -131,7 +131,6 @@
             Pedido.estado === 'Reapreciado') &&
           temPermissaoSubstituirResponsavel()
         "
-        cols="3"
         align="center"
       >
         <v-btn color="primary" @click="substituirResponsavelDialog = true" rounded
@@ -145,7 +144,6 @@
           Pedido.estado === 'Em Despacho' ||
           Pedido.estado === 'Devolvido para validação'
         "
-        cols="3"
         align="center"
       >
         <v-btn color="primary" @click="reapreciarDialog = true" rounded
