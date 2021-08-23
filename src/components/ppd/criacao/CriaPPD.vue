@@ -539,7 +539,7 @@ export default {
         this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
         this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/
         this.$refs.form.validate()
-        && this.ppd.si.numeroSI === parseInt(this.ppd.si.numeroSI, 10)
+        && !isNaN(this.ppd.si.numeroSI)
         && this.ppd.si.identificacao.adminSistema.length > 0
         && this.ppd.si.avaliacao.descricao != ""
         && this.ppd.si.caracterizacao.formatos != ""
@@ -642,7 +642,7 @@ export default {
         await this.consultaFT();
       } else {
         
-        if(this.ppd.si.numeroSI !== parseInt(this.ppd.si.numeroSI, 10)){
+        if(isNaN(this.ppd.si.numeroSI)){
            this.mensagemErroSI = this.mensagemErroSI.concat("- Número de SI não pode conter letras ")
         }
         //  //fazer verificação com os campos todos
