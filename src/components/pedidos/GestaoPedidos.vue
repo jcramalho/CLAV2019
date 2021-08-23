@@ -224,7 +224,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
 
-        const estado = "Devolvido";
+        let estado = "Devolvido";
 
         let dadosUtilizador = this.$verifyTokenUser();
 

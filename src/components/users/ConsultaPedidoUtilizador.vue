@@ -385,29 +385,7 @@ export default {
       this.$router.push(`/users/pedidos/${this.pedido.codigo}/relatorio`);
     },
     corrigirPedido(pedido) {
-      switch (pedido.objeto.tipo) {
-        case "Classe_N3":
-        case "Classe_N2":
-        case "Classe_N1":
-        case "TS Pluriorganizacional":
-        case "TS Organizacional":
-        case "RADA":
-        case "Auto de Eliminação":
-        case "PPD":
-          this.$router.push("/pendentes/continuar/" + pedido.codigo);
-          break;
-        case "Entidade":
-          this.$router.push("/entidades/editar/" + pedido.codigo);
-          break;
-        case "Tipologia":
-          this.$router.push("/tipologias/editar/" + pedido.codigo);
-          break;
-        case "Legislação":
-          this.$router.push("/legislacao/editar/" + pedido.codigo);
-          break;
-        default:
-          console.log("Tipo desconhecido");
-      }
+      this.$router.push("/ressubmissao/" + pedido.codigo);
     },
     calculaValor(estado) {
       let valor = 0;

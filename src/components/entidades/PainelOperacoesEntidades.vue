@@ -60,8 +60,8 @@
           <v-card-title>Erros detetados na validação</v-card-title>
           <v-card-text>
             <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
+              Há erros de validação. Selecione "Validar" para ver extamente quais e
+              proceder à sua correção.
             </p>
           </v-card-text>
           <v-card-actions>
@@ -80,9 +80,7 @@
           <v-card-text>
             <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
-            <p>
-              Confirme a decisão para ser reencaminhado para a página principal.
-            </p>
+            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
@@ -98,12 +96,7 @@
     </v-row>
 
     <v-row>
-      <v-snackbar
-        v-model="loginErrorSnackbar"
-        :timeout="8000"
-        color="error"
-        :top="true"
-      >
+      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
@@ -164,8 +157,7 @@ export default {
         try {
           let existeDesignacao = await this.$request(
             "get",
-            "/entidades/designacao?valor=" +
-              encodeURIComponent(this.e.designacao)
+            "/entidades/designacao?valor=" + encodeURIComponent(this.e.designacao)
           );
           if (existeDesignacao.data) numeroErros++;
         } catch (err) {
@@ -208,8 +200,7 @@ export default {
 
       // Data de Extinção
       if (!eNUV(this.e.dataCriacao) && !eNUV(this.e.dataExtincao)) {
-        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao))
-          numeroErros++;
+        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) numeroErros++;
       }
 
       return numeroErros;
@@ -225,8 +216,7 @@ export default {
         try {
           let existeDesignacao = await this.$request(
             "get",
-            "/entidades/designacao?valor=" +
-              encodeURIComponent(dados.designacao)
+            "/entidades/designacao?valor=" + encodeURIComponent(dados.designacao)
           );
           if (existeDesignacao.data) {
             numeroErros++;
@@ -343,15 +333,10 @@ export default {
               historico: historico,
             };
 
-            if (this.original !== undefined)
-              pedidoParams.objetoOriginal = this.original;
+            if (this.original !== undefined) pedidoParams.objetoOriginal = this.original;
             else pedidoParams.objetoOriginal = dataObj;
 
-            const codigoPedido = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
+            const codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
 
             this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
           } else {
@@ -366,16 +351,16 @@ export default {
       }
     },
 
-    criacaoPendenteTerminada: function() {
+    criacaoPendenteTerminada: function () {
       this.$router.push("/");
     },
 
     // Cancela a criação da Entidade
-    eliminarEntidade: function() {
+    eliminarEntidade: function () {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoEntidade: function() {
+    cancelarCriacaoEntidade: function () {
       this.$router.push("/");
     },
   },

@@ -1,6 +1,6 @@
 <template>
-  <v-card class="mt-4">
-    <v-card-title class="indigo darken-4 white--text title">
+  <v-card class="my-4">
+    <v-card-title class="clav-linear-background white--text">
       {{ p.objeto.acao }} da Entidade
 
       <v-spacer />
@@ -8,14 +8,12 @@
       <v-tooltip
         v-if="
           temPermissaoConsultarHistorico() &&
-            !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
+          !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
         "
         bottom
       >
         <template v-slot:activator="{ on }">
-          <v-icon @click="verHistorico()" color="white" v-on="on">
-            history
-          </v-icon>
+          <v-icon @click="verHistorico()" color="white" v-on="on"> history </v-icon>
         </template>
         <span>Ver histórico de alterações...</span>
       </v-tooltip>
@@ -35,22 +33,22 @@
       </span>
 
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row
+        <!-- Tipologias -->
+        <Campo
           v-if="
             (p.objeto.acao === 'Criação' && campo === 'sigla') ||
-              (campo !== 'sigla' &&
-                campo !== 'estado' &&
-                info !== '' &&
-                info !== null &&
-                info !== undefined)
+            (campo !== 'sigla' &&
+              campo !== 'estado' &&
+              info !== '' &&
+              info !== null &&
+              info !== undefined)
           "
+          :nome="transformaKeys(campo)"
+          color="neutralpurple"
+          class="pt-2"
         >
-          <v-col cols="2">
-            <div class="info-descricao">{{ transformaKeys(campo) }}</div>
-          </v-col>
-
-          <v-col>
-            <div v-if="!(info instanceof Array)" class="info-conteudo">
+          <template v-slot:conteudo>
+            <div v-if="!(info instanceof Array)">
               {{ info }}
             </div>
 
@@ -59,23 +57,17 @@
                 v-if="campo === 'tipologiasSel'"
                 :headers="tipologiasHeaders"
                 :items="info"
-                class="elevation-1"
                 :footer-props="footerProps"
               >
                 <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
-                  >
+                  <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined>
                     Nenhuma tipologia selecionada...
                   </v-alert>
                 </template>
               </v-data-table>
             </div>
-          </v-col>
-        </v-row>
+          </template>
+        </Campo>
       </div>
     </v-card-text>
   </v-card>
@@ -84,10 +76,13 @@
 <script>
 import { mapKeys } from "@/utils/utils";
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
+import Campo from "@/components/generic/Campo";
 
 export default {
   props: ["p"],
-
+  components: {
+    Campo,
+  },
   data() {
     return {
       tipologiasHeaders: [

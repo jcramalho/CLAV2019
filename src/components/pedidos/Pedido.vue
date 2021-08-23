@@ -23,22 +23,12 @@
         <span>{{ Pedido.data.split("T")[0] }}</span>
       </template>
     </Campo>
-    <Campo
-      nome="Entidade"
-      infoHeader="Entidade do Pedido"
-      color="neutralpurple"
-    >
+    <Campo nome="Entidade" infoHeader="Entidade do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
-        <span>{{
-          Pedido.entidade ? Pedido.entidade.split("_")[1] : "a carregar"
-        }}</span>
+        <span>{{ Pedido.entidade ? Pedido.entidade.split("_")[1] : "a carregar" }}</span>
       </template>
     </Campo>
-    <Campo
-      nome="Criado Por"
-      infoHeader="Criador do Pedido"
-      color="neutralpurple"
-    >
+    <Campo nome="Criado Por" infoHeader="Criador do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
         <span>{{ Pedido.criadoPor }}</span>
       </template>
@@ -82,19 +72,11 @@
       </v-card-text>
     </v-card>
 
-    <ShowTSPluri
-      v-if="Pedido.objeto.tipo == 'TS Pluriorganizacional'"
-      :p="Pedido"
-    />
-    <ShowTSOrg
-      v-else-if="Pedido.objeto.tipo == 'TS Organizacional'"
-      :p="Pedido"
-    />
+    <ShowTSPluri v-if="Pedido.objeto.tipo == 'TS Pluriorganizacional'" :p="Pedido" />
+    <ShowTSOrg v-else-if="Pedido.objeto.tipo == 'TS Organizacional'" :p="Pedido" />
     <ShowClasse v-else-if="Pedido.objeto.tipo == 'Classe'" :p="Pedido" />
     <ShowClasseL1
-      v-else-if="
-        Pedido.objeto.tipo == 'Classe_N1' || Pedido.objeto.tipo == 'Classe_N2'
-      "
+      v-else-if="Pedido.objeto.tipo == 'Classe_N1' || Pedido.objeto.tipo == 'Classe_N2'"
       :p="Pedido"
       @verHistorico="verHistorico()"
     />
@@ -106,8 +88,7 @@
     <ShowRADA v-else-if="Pedido.objeto.tipo == 'RADA'" :p="Pedido" />
     <ShowAE
       v-else-if="
-        Pedido.objeto.tipo.includes('AE ') ||
-        Pedido.objeto.tipo == 'Auto de Eliminação'
+        Pedido.objeto.tipo.includes('AE ') || Pedido.objeto.tipo == 'Auto de Eliminação'
       "
       :p="Pedido"
     />
@@ -142,10 +123,7 @@
         cols="3"
         align="center"
       >
-        <v-btn
-          color="primary"
-          @click="substituirResponsavelDialog = true"
-          rounded
+        <v-btn color="primary" @click="substituirResponsavelDialog = true" rounded
           >Substituir Responsável</v-btn
         >
       </v-col>
@@ -218,10 +196,7 @@ import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import { filtraNivel } from "@/utils/permissoes";
-import {
-  NIVEIS_SUBSTITUIR_RESPONSAVEL,
-  NIVEIS_ANALISAR_PEDIDO,
-} from "@/utils/consts";
+import { NIVEIS_SUBSTITUIR_RESPONSAVEL, NIVEIS_ANALISAR_PEDIDO } from "@/utils/consts";
 
 export default {
   props: ["idp"],

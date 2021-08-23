@@ -1,12 +1,6 @@
 <template>
   <div>
-    <ContinuaClasse v-if="objLoaded && tipoClasse" :obj="objeto" />
-    <ContinuaTSOrg v-else-if="objLoaded && tipoTSOrg" :obj="objeto" />
-    <ContinuaTSPluri v-else-if="objLoaded && tipoTSPluri" :obj="objeto" />
-    <ContinuaAutoEliminacao v-else-if="objLoaded && tipoAE" :obj="objeto" />
-    <ContinuaRADA v-else-if="objLoaded && tipoRADA" :obj="objeto" />
-    <ContinuaPPD v-else-if="objLoaded && tipoPPD" :obj="objeto" />
-    <ContinuaPendente v-else-if="objLoaded" :obj="objeto" />
+    <RessubmissaoEntidade v-if="objLoaded && tipoEntidade" :e="objeto" />
     <v-alert v-else type="warning">
       Por algum motivo não foi possível carregar o trabalho pretendido. Contacte o
       administrador.
@@ -15,23 +9,11 @@
 </template>
 
 <script>
-import ContinuaClasse from "@/components/classes/criacao/ContinuaClasse"; // @ is an alias to /src
-import ContinuaPendente from "@/components/pendentes/ContinuaPendente";
-import ContinuaTSOrg from "@/components/tabSel/criacaoTSOrg/ContCriaTabSelOrg";
-import ContinuaTSPluri from "@/components/tabSel/criacaoTSPluri/ContCriaTabSelPluri";
-import ContinuaAutoEliminacao from "@/components/autosEliminacao/criacao/ContinuarAutoEliminacao";
-import ContinuaRADA from "@/components/rada/pendenteRada";
-import ContinuaPPD from "@/components/ppd/pendentePPD";
+import RessubmissaoEntidade from "@/components/entidades/RessubmissaoEntidade";
 
 export default {
   components: {
-    ContinuaPendente,
-    ContinuaClasse,
-    ContinuaTSOrg,
-    ContinuaTSPluri,
-    ContinuaAutoEliminacao,
-    ContinuaRADA,
-    ContinuaPPD,
+    RessubmissaoEntidade,
   },
 
   data: () => ({
@@ -43,6 +25,9 @@ export default {
     tipoAE: false,
     tipoRADA: false,
     tipoPPD: false,
+    tipoEntidade: false,
+    tipoTipologia: false,
+    tipoLegislacao: false,
   }),
 
   methods: {
@@ -71,6 +56,15 @@ export default {
           break;
         case "PPD":
           this.tipoPPD = true;
+          break;
+        case "Entidade":
+          this.tipoEntidade = true;
+          break;
+        case "Tipologia":
+          this.tipoTipologia = true;
+          break;
+        case "Legislação":
+          this.tipoLegislacao = true;
           break;
         default:
           "";
@@ -106,8 +100,9 @@ export default {
     if (this.$route.params.idPendente.includes("-")) {
       this.$request("get", `/pedidos/${this.$route.params.idPendente}`)
         .then((data) => {
-          this.objeto = this.buildPendente(data.data);
-          this.setTipo(this.objeto.tipo);
+          console.log(data.data);
+          this.objeto = data.data;
+          this.setTipo(this.objeto.objeto.tipo);
 
           this.objLoaded = true;
         })

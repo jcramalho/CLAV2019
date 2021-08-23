@@ -507,6 +507,12 @@ export default new Router({
       component: () => import("./views/pedidos/PedidosNovos.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos" }
     },
+    {
+      path: "/ressubmissao/:idPendente",
+      name: "continuaPendente",
+      component: () => import("./views/pedidos/PedidosRessubmissao.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+    },
     // Routes dos pendentes (trabalho guardado)
     {
       path: "/pendentes",
