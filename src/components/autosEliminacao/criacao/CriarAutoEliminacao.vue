@@ -1,16 +1,9 @@
 <template>
   <div>
-<<<<<<< HEAD
     <v-card class="ma-4">
       <v-app-bar class="clav-linear-background white--text">
-        <v-toolbar-title class="card-heading"
-          >Novo Auto de Eliminação</v-toolbar-title
-        >
+        <v-toolbar-title class="card-heading">Novo Auto de Eliminação</v-toolbar-title>
       </v-app-bar>
-=======
-    <v-card flat class="pa-3">
-      <p class="clav-content-title-1">Novo Auto de Eliminação</p>
->>>>>>> 7b7dbb2c (devolver rada, ts org, ppd. design exportação)
 
       <v-card-text>
         <v-stepper v-model="steps" vertical>
