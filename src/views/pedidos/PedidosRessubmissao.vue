@@ -1,6 +1,6 @@
 <template>
   <div>
-    <RessubmissaoEntidade v-if="objLoaded && tipoEntidade" :e="objeto" />
+    <RessubmissaoEntidade v-if="objLoaded && tipoEntidade" :e="pedido" />
     <v-alert v-else type="warning">
       Por algum motivo não foi possível carregar o trabalho pretendido. Contacte o
       administrador.
@@ -17,7 +17,7 @@ export default {
   },
 
   data: () => ({
-    objeto: {},
+    pedido: {},
     objLoaded: false,
     tipoClasse: false,
     tipoTSOrg: false,
@@ -70,55 +70,16 @@ export default {
           "";
       }
     },
-    buildObject(obj, newPendente) {
-      switch (obj.tipo) {
-        case "TS Organizacional":
-          newPendente.objeto = obj.dados.ts;
-          break;
-        case "RADA":
-          newPendente.objeto = { rada: obj.dados };
-          break;
-        default:
-          newPendente.objeto = obj.dados;
-      }
-      return newPendente;
-    },
-    buildPendente(data) {
-      var newPendente = {
-        numInterv: 1,
-        acao: data.objeto.acao,
-        tipo: data.objeto.tipo,
-        criadoPor: data.criadoPor,
-        entidade: data.entidade,
-        dataCriacao: data.data,
-        dataAtualizacao: new Date(),
-      };
-      return this.buildObject(data.objeto, newPendente);
-    },
   },
   created: function () {
-    if (this.$route.params.idPendente.includes("-")) {
-      this.$request("get", `/pedidos/${this.$route.params.idPendente}`)
-        .then((data) => {
-          console.log(data.data);
-          this.objeto = data.data;
-          this.setTipo(this.objeto.objeto.tipo);
+    this.$request("get", `/pedidos/${this.$route.params.idPendente}`)
+      .then((data) => {
+        this.pedido = data.data;
+        this.setTipo(this.pedido.objeto.tipo);
 
-          this.objLoaded = true;
-        })
-        .catch((err) => console.log(err));
-    } else {
-      this.$request("get", "/pendentes/" + this.$route.params.idPendente)
-        .then((response) => {
-          this.objeto = response.data;
-          this.setTipo(this.objeto.tipo);
-
-          this.objLoaded = true;
-        })
-        .catch((error) => {
-          return error;
-        });
-    }
+        this.objLoaded = true;
+      })
+      .catch((err) => console.log(err));
   },
 };
 </script>

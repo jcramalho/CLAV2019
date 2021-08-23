@@ -63,7 +63,13 @@
               <span>Ver Pedido</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="4" v-if="temPermissaoDistribuir() && item.estado === 'Submetido'">
+          <v-col
+            cols="4"
+            v-if="
+              temPermissaoDistribuir() &&
+              (item.estado === 'Submetido') | (item.estado === 'Ressubmetido')
+            "
+          >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" small icon @click="$emit('distribuir', item)">
@@ -79,7 +85,13 @@
               <span>Distribuir Pedido</span>
             </v-tooltip>
           </v-col>
-          <v-col cols="4" v-if="temPermissaoDevolver() && item.estado === 'Submetido'">
+          <v-col
+            cols="4"
+            v-if="
+              temPermissaoDevolver() &&
+              (item.estado === 'Submetido' || item.estado === 'Ressubmetido')
+            "
+          >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" small icon @click="$emit('devolver', item)">

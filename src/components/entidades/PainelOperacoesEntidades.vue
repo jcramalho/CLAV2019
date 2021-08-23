@@ -123,7 +123,7 @@ import {
 } from "@/utils/validadores";
 
 export default {
-  props: ["e", "acao", "original"],
+  props: ["e", "acao", "original", "pedido"],
 
   components: {
     ValidarEntidadeInfoBox,
@@ -321,24 +321,28 @@ export default {
                 "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
               );
 
-            let userBD = this.$verifyTokenUser();
+            if (this.pedido) this.ressubmeterPedido();
+            else {
+              let userBD = this.$verifyTokenUser();
 
-            let pedidoParams = {
-              tipoPedido: this.acao,
-              tipoObjeto: "Entidade",
-              novoObjeto: dataObj,
-              user: { email: userBD.email },
-              entidade: userBD.entidade,
-              token: this.$store.state.token,
-              historico: historico,
-            };
+              let pedidoParams = {
+                tipoPedido: this.acao,
+                tipoObjeto: "Entidade",
+                novoObjeto: dataObj,
+                user: { email: userBD.email },
+                entidade: userBD.entidade,
+                token: this.$store.state.token,
+                historico: historico,
+              };
 
-            if (this.original !== undefined) pedidoParams.objetoOriginal = this.original;
-            else pedidoParams.objetoOriginal = dataObj;
+              if (this.original !== undefined)
+                pedidoParams.objetoOriginal = this.original;
+              else pedidoParams.objetoOriginal = dataObj;
 
-            const codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
+              const codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
 
-            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+              this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+            }
           } else {
             this.errosValidacao = true;
           }
@@ -348,6 +352,32 @@ export default {
           this.erros.push(err.message);
           this.erroDialog = true;
         }
+      }
+    },
+
+    async ressubmeterPedido() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let estado = "Ressubmetido";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: "Ressubmissão",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.$router.push(`/pedidos/submissao/${pedido.codigo}`);
+      } catch (e) {
+        console.log(e);
       }
     },
 

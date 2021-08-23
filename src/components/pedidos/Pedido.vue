@@ -250,6 +250,7 @@ export default {
       var value = "Sem categoria";
       switch (this.Pedido.estado) {
         case "Submetido":
+        case "Ressubmetido":
           value = "Pedidos Novos";
           break;
         case "Redistribuído":

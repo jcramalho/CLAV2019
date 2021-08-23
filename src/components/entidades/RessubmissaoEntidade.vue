@@ -93,19 +93,7 @@
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
 
-    <v-row justify="space-between">
-      <v-col> </v-col>
-      <v-col>
-        <v-btn
-          rounded
-          class="clav-linear-background white--text"
-          @click="ressubmeterPedido"
-          >Ressubmeter</v-btn
-        >
-      </v-col>
-      <v-col> </v-col>
-    </v-row>
-    <PainelOpsEnt :e="entidade" :original="entidadeOriginal" :acao="acao" />
+    <PainelOpsEnt :e="entidade" :original="entidadeOriginal" :pedido="e" :acao="acao" />
   </v-card>
 </template>
 
@@ -143,7 +131,7 @@ export default {
         tipologiasSel: [],
       },
       entidadeOriginal: {},
-      acao: "Ressubmissão",
+      acao: "Criação",
 
       // Para o seletor de processos
       tipologias: [],
@@ -158,31 +146,6 @@ export default {
   },
 
   methods: {
-    async ressubmeterPedido() {
-      try {
-        let pedido = JSON.parse(JSON.stringify(this.e));
-        console.log(pedido);
-        let estado = "Ressubmetido";
-
-        let dadosUtilizador = this.$verifyTokenUser();
-
-        pedido.estado = estado;
-
-        const novaDistribuicao = {
-          estado: estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-          despacho: "Ressubmissão",
-        };
-
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao,
-        });
-      } catch (e) {
-        console.log(e);
-      }
-    },
     // Vai à API buscar todas as tipologias
     loadTipologias: async function () {
       try {
@@ -225,10 +188,9 @@ export default {
   },
 
   created: async function () {
-    console.log(this.e);
-    this.entidade = JSON.parse(JSON.stringify(this.e.objeto));
-    this.entidadeOriginal = JSON.parse(JSON.stringify(this.e.objeto));
-    this.acao = this.e.acao;
+    this.entidade = JSON.parse(JSON.stringify(this.e.objeto.dados));
+    this.entidadeOriginal = JSON.parse(JSON.stringify(this.e.objeto.dados));
+    this.acao = this.e.objeto.acao;
 
     await this.loadTipologias();
 

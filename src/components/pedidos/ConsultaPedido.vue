@@ -3,7 +3,7 @@
     <ShowPedido :p="selectedPedido" :etapaPedido="etapaPedido" />
   </div>
 
-  <div v-else style="text-align:center;" class="mt-4">
+  <div v-else style="text-align: center" class="mt-4">
     <p>A carregar informação...</p>
     <v-progress-circular indeterminate size="100" width="10" color="blue" />
   </div>
@@ -23,7 +23,7 @@ export default {
     pedidoLoaded: false,
   }),
 
-  mounted: function() {
+  mounted: function () {
     this.$request("get", "/pedidos/" + this.idp)
       .then((response) => {
         const pedido = response.data;
@@ -31,6 +31,7 @@ export default {
 
         switch (pedido.estado) {
           case "Submetido":
+          case "Ressubemetido":
             this.etapaPedido = "Pedidos Novos";
             break;
           case "Distribuído":
@@ -55,7 +56,7 @@ export default {
             break;
         }
 
-        this.$emit('pedido_original', this.selectedPedido)
+        this.$emit("pedido_original", this.selectedPedido);
         this.pedidoLoaded = true;
       })
       .catch((error) => {

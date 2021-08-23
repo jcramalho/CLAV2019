@@ -7,7 +7,10 @@
       <v-tooltip
         v-if="
           temPermissaoConsultarHistorico() &&
-          !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
+          !(
+            p.objeto.acao === 'Criação' &&
+            (p.estado === 'Submetido' || p.estado === 'Ressubmetido')
+          )
         "
         bottom
       >

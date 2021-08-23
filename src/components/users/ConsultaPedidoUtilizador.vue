@@ -34,7 +34,13 @@
               {{ pedido.estado }}
               <v-icon right>assignment_late</v-icon>
             </v-chip>
-            <v-chip v-else-if="pedido.estado === 'Submetido'" outlined color="blue">
+            <v-chip
+              v-else-if="
+                pedido.estado === 'Submetido' || pedido.estado === 'Ressubmetido'
+              "
+              outlined
+              color="blue"
+            >
               {{ pedido.estado }}
               <v-icon right>send</v-icon>
             </v-chip>
@@ -262,6 +268,7 @@ export default {
     return {
       cor: {
         Submetido: "blue",
+        Ressubmetido: "grey",
         Distribuído: "orange",
         Redistribuído: "orange",
         Apreciado: "orange",
@@ -392,6 +399,7 @@ export default {
 
       switch (estado) {
         case "Submetido":
+        case "Ressubmetido":
           valor = (100 / 4) * 1;
           break;
 

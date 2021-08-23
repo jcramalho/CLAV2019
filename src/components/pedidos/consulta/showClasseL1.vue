@@ -8,14 +8,15 @@
       <v-tooltip
         v-if="
           temPermissaoConsultarHistorico() &&
-            !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
+          !(
+            p.objeto.acao === 'Criação' &&
+            (p.estado === 'Submetido' || p.estado === 'Ressubmetido')
+          )
         "
         bottom
       >
         <template v-slot:activator="{ on }">
-          <v-icon @click="verHistorico()" color="white" v-on="on">
-            history
-          </v-icon>
+          <v-icon @click="verHistorico()" color="white" v-on="on"> history </v-icon>
         </template>
         <span>Ver histórico de alterações...</span>
       </v-tooltip>
@@ -42,24 +43,15 @@
                 :footer-props="footerProps"
               >
                 <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
-                  >
+                  <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined>
                     Nenhuma Nota selecionada...
                   </v-alert>
                 </template>
 
                 <template v-slot:item.sigla="{ item }">
-                  <v-badge
-                    v-if="novoItemAdicionado(item, campo)"
-                    right
-                    dot
-                    inline
-                    >{{ item.sigla }}</v-badge
-                  >
+                  <v-badge v-if="novoItemAdicionado(item, campo)" right dot inline>{{
+                    item.sigla
+                  }}</v-badge>
 
                   <span v-else>
                     {{ item.sigla }}
@@ -96,7 +88,7 @@ export default {
   props: ["p"],
 
   components: {
-    Campo
+    Campo,
   },
 
   created() {
@@ -106,7 +98,7 @@ export default {
       { campo: "Título", conteudo: this.p.objeto.dados.titulo },
       { campo: "Descrição", conteudo: this.p.objeto.dados.descricao },
       { campo: "Notas de Aplicação", conteudo: this.p.objeto.dados.notasAp },
-      { campo: "Notas de Exclusão", conteudo: this.p.objeto.dados.notasEx }
+      { campo: "Notas de Exclusão", conteudo: this.p.objeto.dados.notasEx },
     ];
   },
 
@@ -117,8 +109,8 @@ export default {
       footerProps: {
         "items-per-page-text": "Notas por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas"
-      }
+        "items-per-page-all-text": "Todas",
+      },
     };
   },
 
@@ -129,8 +121,8 @@ export default {
 
     verHistorico() {
       this.$emit("verHistorico");
-    }
-  }
+    },
+  },
 };
 </script>
 

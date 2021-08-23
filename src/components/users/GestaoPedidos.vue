@@ -55,6 +55,10 @@
               {{ item.estado }}
               <v-icon right>send</v-icon>
             </v-chip>
+            <v-chip v-else-if="item.estado === 'Ressubmetido'" outlined color="grey">
+              {{ item.estado }}
+              <v-icon right>send</v-icon>
+            </v-chip>
 
             <v-chip v-else outlined color="orange">
               {{ item.estado }}
