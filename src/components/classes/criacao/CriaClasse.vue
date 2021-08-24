@@ -6,7 +6,7 @@
         <p class="clav-content-title-1">Criar Classe</p>
 
         <BlocoMeta :c="classe" class="mt-6" />
-        
+
         <v-expansion-panels flat class="mt-6">
           <!-- DESCRITIVO DA CLASSE -->
           <BlocoDescritivo :c="classe" class="mt-6" />

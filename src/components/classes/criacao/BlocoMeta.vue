@@ -1,92 +1,92 @@
 <template>
   <!-- BLOCO DE METAINFORMAÇÃO -->
   <div>
-      <!-- Nível -->
-      <Campo nome="Nível" color="neutralpurple">
-          <template v-slot:conteudo>
-            <v-radio-group v-model="c.nivel" row hide-details class="mt-1">
-              <v-radio
-                v-for="(n, i) in classeNiveis"
-                :key="i"
-                :label="n.label"
-                :value="n.value"
-                color="blue"
-                :class="{
-                  'mx-auto': $vuetify.breakpoint.smAndDown,
-                }"
-              ></v-radio>
-            </v-radio-group>
-          </template>
-        </Campo>
+    <!-- Nível -->
+    <Campo nome="Nível" color="neutralpurple">
+      <template v-slot:conteudo>
+        <v-radio-group v-model="c.nivel" row hide-details class="mt-1">
+          <v-radio
+            v-for="(n, i) in classeNiveis"
+            :key="i"
+            :label="n.label"
+            :value="n.value"
+            color="blue"
+          ></v-radio>
+        </v-radio-group>
+      </template>
+    </Campo>
 
-        <!-- CLASSE PAI -->
-        <Campo
-          v-if="c.nivel > 1"
-          nome="Classe pai"
-          color="neutralpurple"
-          infoHeader="Classe pai"
-          :infoBody="myhelp.Classe.Campos.Pai"
-        >
-          <template v-slot:conteudo>
-            <v-select
-              class="mt-n5 px-3"
-              item-text="label"
-              item-value="value"
-              v-model="c.pai.codigo"
-              :items="classesPai"
-              label="Selecione uma classe de nível superior"
-              clearable
-              hide-details
-              single-line
-            />
-          </template>
-        </Campo>
+    <!-- CLASSE PAI -->
+    <Campo
+      v-if="c.nivel > 1"
+      nome="Classe pai"
+      color="neutralpurple"
+      infoHeader="Classe pai"
+      :infoBody="myhelp.Classe.Campos.Pai"
+    >
+      <template v-slot:conteudo>
+        <v-select
+          class="mt-n5 px-3"
+          item-text="label"
+          item-value="value"
+          v-model="c.pai.codigo"
+          :items="classesPai"
+          label="Selecione uma classe de nível superior"
+          clearable
+          hide-details
+          single-line
+        />
+      </template>
+    </Campo>
 
-        <!-- CÓDIGO DA NOVA CLASSE -->
-        <Campo
-          v-if="c.nivel == 1 || c.pai.codigo"
-          nome="Código"
-          color="neutralpurple"
-          infoHeader="Código da Classe"
-          :infoBody="myhelp.Classe.Campos.Codigo"
+    <!-- CÓDIGO DA NOVA CLASSE -->
+    <Campo
+      v-if="c.nivel == 1 || c.pai.codigo"
+      nome="Código"
+      color="neutralpurple"
+      infoHeader="Código da Classe"
+      :infoBody="myhelp.Classe.Campos.Codigo"
+    >
+      <template v-slot:conteudo>
+        <v-text-field
+          class="mt-n4 px-3"
+          v-model="c.codigo"
+          label="Código"
+          text
+          hide-details
+          single-line
+          clearable
+        ></v-text-field>
+        <span
+          v-if="mensValCodigo"
+          style="color: var(--v-error-base); font-size: 13px"
+          class="px-3"
         >
-          <template v-slot:conteudo>
-            <v-text-field
-              class="mt-n3 px-3"
-              v-model="c.codigo"
-              label="Código"
-              text
-              hide-details
-              single-line
-              clearable
-              color="blue darken-3"
-            ></v-text-field>
-            <span style="color: var(--v-error-base); font-size: 13px" class="px-3">
-              {{ mensValCodigo }}
-            </span>
-          </template>
-        </Campo>
-        <!-- TÍTULO -->
-        <Campo
-          v-if="c.nivel == 1 || c.pai.codigo"
-          nome="Título"
-          color="neutralpurple"
-          infoHeader="Título da Classe"
-          :infoBody="myhelp.Classe.Campos.Titulo"
-        >
-          <template v-slot:conteudo>
-            <v-text-field
-              class="mt-n4 px-3"
-              v-model="c.titulo"
-              label="Título"
-              text
-              hide-details
-              single-line
-              clearable
-              color="blue darken-3"
-            ></v-text-field>
-          </template>
-        </Campo>
+          {{ mensValCodigo }}
+        </span>
+      </template>
+    </Campo>
+
+    <!-- TÍTULO -->
+    <Campo
+      v-if="c.nivel == 1 || c.pai.codigo"
+      nome="Título"
+      color="neutralpurple"
+      infoHeader="Título da Classe"
+      :infoBody="myhelp.Classe.Campos.Titulo"
+    >
+      <template v-slot:conteudo>
+        <v-text-field
+          class="mt-n4 px-3"
+          v-model="c.titulo"
+          label="Título"
+          text
+          hide-details
+          single-line
+          clearable
+        ></v-text-field>
+      </template>
+    </Campo>
   </div>
 </template>
 
@@ -100,7 +100,7 @@ export default {
   props: ["c"],
 
   components: {
-    Campo
+    Campo,
   },
 
   data() {
@@ -112,6 +112,7 @@ export default {
         { label: "Nível 3", value: "3" },
       ],
       classesPai: [],
+      mensValCodigo: "",
     };
   },
 
@@ -136,8 +137,7 @@ export default {
         this.mensValCodigo = "";
         if (!this.codeFormats[this.c.nivel].test(this.c.codigo)) {
           this.mensValCodigo =
-            "Formato de código inválido! Deve ser: " +
-            this.formatoCodigo[this.c.nivel];
+            "Formato de código inválido! Deve ser: " + this.formatoCodigo[this.c.nivel];
         } else if (!this.c.codigo.includes(this.c.pai.codigo)) {
           this.mensValCodigo = "Não pode alterar o código do pai selecionado em cima...";
         } else {
@@ -150,17 +150,13 @@ export default {
         return erro;
       }
     },
-
   },
 
   methods: {
     // Carrega os potenciais pais da BD, quando alguém muda o nível para >1....................
     loadPais: async function () {
       try {
-        var response = await this.$request(
-          "get",
-          "/classes?nivel=" + (this.c.nivel - 1)
-        );
+        var response = await this.$request("get", "/classes?nivel=" + (this.c.nivel - 1));
         this.classesPai = response.data
           .map(function (item) {
             return {
@@ -175,49 +171,8 @@ export default {
         return erro;
       }
     },
-  }
+  },
 };
 </script>
 
-<style scoped>
-.info-label {
-  color: #1a237e !important;
-  padding: 8px;
-  width: 100%;
-  background-color: #dee2f8;
-  font-weight: bold;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 6px;
-  text-align: center;
-}
-.info-content {
-  padding: 5px;
-  width: 100%;
-  background-color: #f1f6f8 !important;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 10px;
-}
-.separador {
-  color: white;
-  font-weight: 400;
-  padding: 5px;
-  margin: 5px;
-  width: 100%;
-  min-height: 55px;
-  background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
-  font-size: 14pt;
-  font-weight: bold;
-  border-radius: 10px 10px 0 0;
-}
-#expanded-content {
-  margin-left: 5px;
-  margin-top: -1.1rem;
-  border: 1px solid #dee2f8;
-  border-radius: 0 0 10px 10px;
-  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
-}
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-</style>
+<style scoped></style>
