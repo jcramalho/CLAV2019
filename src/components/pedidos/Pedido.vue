@@ -23,22 +23,12 @@
         <span>{{ Pedido.data.split("T")[0] }}</span>
       </template>
     </Campo>
-    <Campo
-      nome="Entidade"
-      infoHeader="Entidade do Pedido"
-      color="neutralpurple"
-    >
+    <Campo nome="Entidade" infoHeader="Entidade do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
-        <span>{{
-          Pedido.entidade ? Pedido.entidade.split("_")[1] : "a carregar"
-        }}</span>
+        <span>{{ Pedido.entidade ? Pedido.entidade.split("_")[1] : "a carregar" }}</span>
       </template>
     </Campo>
-    <Campo
-      nome="Criado Por"
-      infoHeader="Criador do Pedido"
-      color="neutralpurple"
-    >
+    <Campo nome="Criado Por" infoHeader="Criador do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
         <span>{{ Pedido.criadoPor }}</span>
       </template>
@@ -72,7 +62,18 @@
               <td class="subheading">
                 {{ item.data.split("T")[0] }}
               </td>
-              <td class="subheading">{{ item.responsavel }}</td>
+              <td class="subheading">
+                <div>
+                  {{
+                    item.proximoResponsavel
+                      ? item.proximoResponsavel.nome
+                      : item.responsavel
+                  }}
+                </div>
+                <div class="text-caption">
+                  {{ item.proximoResponsavel ? item.proximoResponsavel.email : "" }}
+                </div>
+              </td>
               <td class="subheading">
                 {{ item.despacho }}
               </td>
@@ -82,19 +83,11 @@
       </v-card-text>
     </v-card>
 
-    <ShowTSPluri
-      v-if="Pedido.objeto.tipo == 'TS Pluriorganizacional'"
-      :p="Pedido"
-    />
-    <ShowTSOrg
-      v-else-if="Pedido.objeto.tipo == 'TS Organizacional'"
-      :p="Pedido"
-    />
+    <ShowTSPluri v-if="Pedido.objeto.tipo == 'TS Pluriorganizacional'" :p="Pedido" />
+    <ShowTSOrg v-else-if="Pedido.objeto.tipo == 'TS Organizacional'" :p="Pedido" />
     <ShowClasse v-else-if="Pedido.objeto.tipo == 'Classe'" :p="Pedido" />
     <ShowClasseL1
-      v-else-if="
-        Pedido.objeto.tipo == 'Classe_N1' || Pedido.objeto.tipo == 'Classe_N2'
-      "
+      v-else-if="Pedido.objeto.tipo == 'Classe_N1' || Pedido.objeto.tipo == 'Classe_N2'"
       :p="Pedido"
       @verHistorico="verHistorico()"
     />
@@ -106,8 +99,7 @@
     <ShowRADA v-else-if="Pedido.objeto.tipo == 'RADA'" :p="Pedido" />
     <ShowAE
       v-else-if="
-        Pedido.objeto.tipo.includes('AE ') ||
-        Pedido.objeto.tipo == 'Auto de Eliminação'
+        Pedido.objeto.tipo.includes('AE ') || Pedido.objeto.tipo == 'Auto de Eliminação'
       "
       :p="Pedido"
     />
@@ -127,7 +119,7 @@
     <ShowDefault v-else :p="Pedido" />
 
     <v-row>
-      <v-col cols="3" align="left">
+      <v-col align="left">
         <Voltar />
       </v-col>
       <v-spacer></v-spacer>
@@ -139,13 +131,9 @@
             Pedido.estado === 'Reapreciado') &&
           temPermissaoSubstituirResponsavel()
         "
-        cols="3"
         align="center"
       >
-        <v-btn
-          color="primary"
-          @click="substituirResponsavelDialog = true"
-          rounded
+        <v-btn color="primary" @click="substituirResponsavelDialog = true" rounded
           >Substituir Responsável</v-btn
         >
       </v-col>
@@ -156,7 +144,6 @@
           Pedido.estado === 'Em Despacho' ||
           Pedido.estado === 'Devolvido para validação'
         "
-        cols="3"
         align="center"
       >
         <v-btn color="primary" @click="reapreciarDialog = true" rounded
@@ -218,10 +205,7 @@ import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import { filtraNivel } from "@/utils/permissoes";
-import {
-  NIVEIS_SUBSTITUIR_RESPONSAVEL,
-  NIVEIS_ANALISAR_PEDIDO,
-} from "@/utils/consts";
+import { NIVEIS_SUBSTITUIR_RESPONSAVEL, NIVEIS_ANALISAR_PEDIDO } from "@/utils/consts";
 
 export default {
   props: ["idp"],
@@ -275,6 +259,7 @@ export default {
       var value = "Sem categoria";
       switch (this.Pedido.estado) {
         case "Submetido":
+        case "Ressubmetido":
           value = "Pedidos Novos";
           break;
         case "Redistribuído":

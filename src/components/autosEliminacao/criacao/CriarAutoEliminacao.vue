@@ -2,9 +2,7 @@
   <div>
     <v-card class="ma-4">
       <v-app-bar class="clav-linear-background white--text">
-        <v-toolbar-title class="card-heading"
-          >Novo Auto de Eliminação</v-toolbar-title
-        >
+        <v-toolbar-title class="card-heading">Novo Auto de Eliminação</v-toolbar-title>
       </v-app-bar>
 
       <v-card-text>
@@ -12,16 +10,9 @@
           <v-stepper-step :complete="steps > 1" step="1">
             Seleção de fonte e fundo
             <span v-if="steps > 1">
-              <v-chip
-                class="ma-2"
-                color="indigo darken-4"
-                text-color="white"
-                label
-              >
+              <v-chip class="ma-2" color="indigo darken-4" text-color="white" label>
                 <v-icon left>description</v-icon>
-                <span v-if="auto.legislacao">{{
-                  auto.legislacao.split(" - ")[0]
-                }}</span>
+                <span v-if="auto.legislacao">{{ auto.legislacao.split(" - ")[0] }}</span>
               </v-chip>
             </span>
             <span v-if="steps > 1">
@@ -45,12 +36,7 @@
                 <div class="info-label">Fonte de legitimação</div>
               </v-col>
               <v-col>
-                <v-radio-group
-                  row
-                  v-model="tipo"
-                  :mandatory="true"
-                  :disabled="steps > 1"
-                >
+                <v-radio-group row v-model="tipo" :mandatory="true" :disabled="steps > 1">
                   <v-radio value="TS_LC">
                     <template v-slot:label>
                       <div class="mt-2">
@@ -190,6 +176,7 @@
               class="ma-2"
               color="indigo darken-4"
               dark
+              rounded
               @click="
                 filtrarDonos();
                 steps = 2;
@@ -205,10 +192,7 @@
           >
 
           <v-stepper-content step="2">
-            <Loading
-              v-if="classes.length == 0"
-              :message="'Fonte de Legitimação'"
-            />
+            <Loading v-if="classes.length == 0" :message="'Fonte de Legitimação'" />
             <div class="mt-5" v-else>
               <!-- Adicionar Zona Controlo -->
               <AdicionarZonaControlo
@@ -237,9 +221,7 @@
                 dark
                 @click="guardarTrabalho"
                 :disabled="
-                  !auto.legislacao ||
-                  !auto.fundo ||
-                  auto.zonaControlo.length == 0
+                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
                 >Guardar Trabalho <v-icon right>save</v-icon></v-btn
@@ -250,9 +232,7 @@
                 dark
                 @click="continuarDepois"
                 :disabled="
-                  !auto.legislacao ||
-                  !auto.fundo ||
-                  auto.zonaControlo.length == 0
+                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
                 >Continuar Depois <v-icon right>save</v-icon></v-btn
@@ -263,9 +243,7 @@
                 dark
                 @click="successDialog = true"
                 :disabled="
-                  !auto.legislacao ||
-                  !auto.fundo ||
-                  auto.zonaControlo.length == 0
+                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
                 >Submeter</v-btn
@@ -277,9 +255,7 @@
                 dark
                 @click="eliminar = true"
                 :disabled="
-                  !auto.legislacao ||
-                  !auto.fundo ||
-                  auto.zonaControlo.length == 0
+                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
                 >Eliminar</v-btn
@@ -296,18 +272,16 @@
         >
 
         <v-card-text>
-          Caso pretenda finalizar o mesmo e submeter o Auto de Eliminação,
-          selecione "Confirmar". Caso ainda pretenda realizar alguma alteração
-          ao AE, clique em "Voltar".
+          Caso pretenda finalizar o mesmo e submeter o Auto de Eliminação, selecione
+          "Confirmar". Caso ainda pretenda realizar alguma alteração ao AE, clique em
+          "Voltar".
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-4" text @click="successDialog = false"
-            >Voltar</v-btn
-          >
+          <v-btn color="red darken-4" text @click="successDialog = false">Voltar</v-btn>
           <v-btn
             color="green darken-4"
             text
@@ -327,17 +301,15 @@
         >
 
         <v-card-text>
-          Esta ação elimina toda a informação do auto de eliminação, tem a
-          certeza que deseja continuar?.
+          Esta ação elimina toda a informação do auto de eliminação, tem a certeza que
+          deseja continuar?.
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-4" text @click="eliminar = false"
-            >Cancelar</v-btn
-          >
+          <v-btn color="green darken-4" text @click="eliminar = false">Cancelar</v-btn>
           <v-btn
             color="red darken-4"
             text
@@ -357,24 +329,17 @@
     <v-dialog v-model="erroDialog" width="750" persistent>
       <v-card outlined>
         <v-card-title class="red darken-4 title white--text" dark
-          >Não foi possível criar o pedido de criação de auto de
-          eliminação</v-card-title
+          >Não foi possível criar o pedido de criação de auto de eliminação</v-card-title
         >
 
         <v-card-text>
-          <span
-            class="subtitle-1"
-            style="white-space: pre-wrap"
-            v-html="erro"
-          ></span>
+          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro"></span>
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="red darken-4" text @click="erroDialog = false"
-            >Fechar</v-btn
-          >
+          <v-btn color="red darken-4" text @click="erroDialog = false">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -385,8 +350,7 @@
         <v-card-text>
           <div>
             <strong>
-              Os seus dados foram guardados para que possa retomar o trabalho
-              mais tarde.
+              Os seus dados foram guardados para que possa retomar o trabalho mais tarde.
             </strong>
           </div>
 
@@ -425,9 +389,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="green darken-1" dark @click="$router.push('/')"
-            >Fechar</v-btn
-          >
+          <v-btn color="green darken-1" dark @click="$router.push('/')">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -482,10 +444,7 @@ export default {
   created: async function () {
     try {
       var user = this.$verifyTokenUser();
-      let user_entidade = await this.$request(
-        "get",
-        "/entidades/" + user.entidade
-      );
+      let user_entidade = await this.$request("get", "/entidades/" + user.entidade);
 
       this.auto.fundo.push(
         user_entidade.data.sigla + " - " + user_entidade.data.designacao
@@ -527,17 +486,12 @@ export default {
         ) {
           this.erroDialog = true;
           this.erro =
-            "Dono do PN não preenchido em " +
-            zc.codigo +
-            " - " +
-            zc.titulo +
-            ".\n";
+            "Dono do PN não preenchido em " + zc.codigo + " - " + zc.titulo + ".\n";
         }
       }
       if (this.erro === "") {
         if (this.tipo == "TS_LC" || this.tipo == "RADA_CLAV") {
-          this.auto.referencial =
-            this.auto.legislacao + "#" + this.auto.referencial;
+          this.auto.referencial = this.auto.legislacao + "#" + this.auto.referencial;
           delete this.auto["legislacao"];
         }
         var user = this.$verifyTokenUser();
@@ -558,11 +512,7 @@ export default {
 
         pedidoParams.objetoOriginal = this.auto;
 
-        const codigoPedido = await this.$request(
-          "post",
-          "/pedidos",
-          pedidoParams
-        );
+        const codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
         if (this._id) this.$request("delete", "/pendentes/" + this._id);
         this.$router.push("/pedidos/submissao/" + codigoPedido.data);
       }
@@ -588,11 +538,7 @@ export default {
               user: { email: userBD.email },
               token: this.$store.state.token,
             };
-            response = await this.$request(
-              "post",
-              "/pendentes",
-              pendenteParams
-            );
+            response = await this.$request("post", "/pendentes", pendenteParams);
           } else {
             var pendenteParams = {
               _id: this._id,
@@ -637,11 +583,7 @@ export default {
               user: { email: userBD.email },
               token: this.$store.state.token,
             };
-            response = await this.$request(
-              "post",
-              "/pendentes",
-              pendenteParams
-            );
+            response = await this.$request("post", "/pendentes", pendenteParams);
           } else {
             var pendenteParams = {
               _id: this._id,
@@ -697,10 +639,7 @@ export default {
       }
     },
     validaPCAeDF: function (classe) {
-      if (
-        (!classe.pca.valores || classe.pca.valores == "NE") &&
-        !classe.pca.notas
-      )
+      if ((!classe.pca.valores || classe.pca.valores == "NE") && !classe.pca.notas)
         return false;
       else if ((!classe.df.valor || classe.df.valor == "NE") && !classe.df.nota)
         return false;
@@ -770,17 +709,11 @@ export default {
               pca: { valores: c.pca.valores, notas: c.pca.nota || "" },
             };
           });
-        this.classesCompletas = this.classesCompletas.filter((c) =>
-          this.validaPCAeDF(c)
-        );
+        this.classesCompletas = this.classesCompletas.filter((c) => this.validaPCAeDF(c));
         this.classes = this.classesCompletas.map((c) => {
           return c.codigo + " - " + c.titulo;
         });
-      } else if (
-        this.tipo == "PGD" ||
-        this.tipo == "PGD_LC" ||
-        this.tipo == "RADA"
-      ) {
+      } else if (this.tipo == "PGD" || this.tipo == "PGD_LC" || this.tipo == "RADA") {
         var response = await this.$request("get", "/legislacao");
         var legAux = this.auto.legislacao.split(" - ");
         legAux = legAux[0].split(" ");
@@ -794,15 +727,8 @@ export default {
         if (this.tipo == "PGD")
           var response2 = await this.$request("get", "/pgd/pgd_" + leg[0].id);
         else if (this.tipo == "PGD_LC")
-          var response2 = await this.$request(
-            "get",
-            "/pgd/pgd_lc_" + leg[0].id
-          );
-        else
-          var response2 = await this.$request(
-            "get",
-            "/rada/old/tsRada_" + leg[0].id
-          );
+          var response2 = await this.$request("get", "/pgd/pgd_lc_" + leg[0].id);
+        else var response2 = await this.$request("get", "/rada/old/tsRada_" + leg[0].id);
 
         this.classesCompletas = response2.data
           .filter((c) => c.nivel > 2)
@@ -818,13 +744,9 @@ export default {
             };
           });
 
-        this.classesCompletas = this.classesCompletas.filter((c) =>
-          this.validaPCAeDF(c)
-        );
+        this.classesCompletas = this.classesCompletas.filter((c) => this.validaPCAeDF(c));
         if (this.tipo == "PGD" || this.tipo == "RADA")
-          this.classesCompletas = this.classesCompletas.filter(
-            (c) => c.df.valor != "C"
-          );
+          this.classesCompletas = this.classesCompletas.filter((c) => c.df.valor != "C");
 
         this.classes = this.classesCompletas.map((c) => {
           if (c.codigo && c.referencia)
@@ -833,10 +755,7 @@ export default {
           else if (c.referencia) return "" + c.referencia + " - " + c.titulo;
         });
       } else if (this.tipo == "RADA_CLAV") {
-        var response = await this.$request(
-          "get",
-          "/rada/" + this.auto.referencial
-        );
+        var response = await this.$request("get", "/rada/" + this.auto.referencial);
         this.classesCompletas = response.data.tsRada
           .filter((c) => c.df && c.pca)
           .map((c) => {
@@ -849,9 +768,7 @@ export default {
               pca: { valores: c.pca.pca, notas: c.pca.notaPCA },
             };
           });
-        this.classesCompletas = this.classesCompletas.filter(
-          (c) => c.df.valor != "C"
-        );
+        this.classesCompletas = this.classesCompletas.filter((c) => c.df.valor != "C");
         this.classes = this.classesCompletas.map((c) => {
           if (c.codigo && c.referencia)
             return "" + c.codigo + " - " + c.referencia + " - " + c.titulo;

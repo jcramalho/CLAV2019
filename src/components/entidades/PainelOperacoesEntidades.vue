@@ -60,8 +60,8 @@
           <v-card-title>Erros detetados na validação</v-card-title>
           <v-card-text>
             <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
+              Há erros de validação. Selecione "Validar" para ver extamente quais e
+              proceder à sua correção.
             </p>
           </v-card-text>
           <v-card-actions>
@@ -80,9 +80,7 @@
           <v-card-text>
             <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
-            <p>
-              Confirme a decisão para ser reencaminhado para a página principal.
-            </p>
+            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
@@ -98,12 +96,7 @@
     </v-row>
 
     <v-row>
-      <v-snackbar
-        v-model="loginErrorSnackbar"
-        :timeout="8000"
-        color="error"
-        :top="true"
-      >
+      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
@@ -130,7 +123,7 @@ import {
 } from "@/utils/validadores";
 
 export default {
-  props: ["e", "acao", "original"],
+  props: ["e", "acao", "original", "pedido"],
 
   components: {
     ValidarEntidadeInfoBox,
@@ -164,8 +157,7 @@ export default {
         try {
           let existeDesignacao = await this.$request(
             "get",
-            "/entidades/designacao?valor=" +
-              encodeURIComponent(this.e.designacao)
+            "/entidades/designacao?valor=" + encodeURIComponent(this.e.designacao)
           );
           if (existeDesignacao.data) numeroErros++;
         } catch (err) {
@@ -208,8 +200,7 @@ export default {
 
       // Data de Extinção
       if (!eNUV(this.e.dataCriacao) && !eNUV(this.e.dataExtincao)) {
-        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao))
-          numeroErros++;
+        if (new Date(this.e.dataCriacao) >= new Date(this.e.dataExtincao)) numeroErros++;
       }
 
       return numeroErros;
@@ -225,8 +216,7 @@ export default {
         try {
           let existeDesignacao = await this.$request(
             "get",
-            "/entidades/designacao?valor=" +
-              encodeURIComponent(dados.designacao)
+            "/entidades/designacao?valor=" + encodeURIComponent(dados.designacao)
           );
           if (existeDesignacao.data) {
             numeroErros++;
@@ -331,29 +321,28 @@ export default {
                 "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
               );
 
-            let userBD = this.$verifyTokenUser();
+            if (this.pedido) this.ressubmeterPedido();
+            else {
+              let userBD = this.$verifyTokenUser();
 
-            let pedidoParams = {
-              tipoPedido: this.acao,
-              tipoObjeto: "Entidade",
-              novoObjeto: dataObj,
-              user: { email: userBD.email },
-              entidade: userBD.entidade,
-              token: this.$store.state.token,
-              historico: historico,
-            };
+              let pedidoParams = {
+                tipoPedido: this.acao,
+                tipoObjeto: "Entidade",
+                novoObjeto: dataObj,
+                user: { email: userBD.email },
+                entidade: userBD.entidade,
+                token: this.$store.state.token,
+                historico: historico,
+              };
 
-            if (this.original !== undefined)
-              pedidoParams.objetoOriginal = this.original;
-            else pedidoParams.objetoOriginal = dataObj;
+              if (this.original !== undefined)
+                pedidoParams.objetoOriginal = this.original;
+              else pedidoParams.objetoOriginal = dataObj;
 
-            const codigoPedido = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
+              const codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
 
-            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+              this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+            }
           } else {
             this.errosValidacao = true;
           }
@@ -366,37 +355,46 @@ export default {
       }
     },
 
-    criacaoPendenteTerminada: function() {
+    async ressubmeterPedido() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let estado = "Ressubmetido";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: "Ressubmissão",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.$router.push(`/pedidos/submissao/${pedido.codigo}`);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    criacaoPendenteTerminada: function () {
       this.$router.push("/");
     },
 
     // Cancela a criação da Entidade
-    eliminarEntidade: function() {
+    eliminarEntidade: function () {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoEntidade: function() {
+    cancelarCriacaoEntidade: function () {
       this.$router.push("/");
     },
   },
 };
 </script>
 
-<style scoped>
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
-}
-</style>
+<style scoped></style>

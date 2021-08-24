@@ -35,6 +35,24 @@
                           <p class="text-caption">
                             {{
                               [
+                                "Domingo",
+                                "Segunda",
+                                "Terça",
+                                "Quarta",
+                                "Quinta",
+                                "Sexta",
+                                "Sábado",
+                              ][new Date(item.data).getDay()]
+                            }},
+                            {{
+                              new Date(item.data).getDate().toLocaleString("en-US", {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false,
+                              })
+                            }}
+                            de
+                            {{
+                              [
                                 "Janeiro",
                                 "Fevereiro",
                                 "Março",
@@ -49,19 +67,17 @@
                                 "Dezembro",
                               ][new Date(item.data).getMonth()]
                             }}
-                            {{ new Date(item.data).getDate() }},
+                            de {{ new Date(item.data).getFullYear() }},
                             {{
-                              [
-                                "Domingo",
-                                "Segunda",
-                                "Terça",
-                                "Quarta",
-                                "Quinta",
-                                "Sexta",
-                                "Sábado",
-                              ][new Date(item.data).getDay()]
-                            }}, {{ new Date(item.data).getHours() }}:{{
-                              new Date(item.data).getMinutes()
+                              new Date(item.data).getHours().toLocaleString("en-US", {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false,
+                              })
+                            }}:{{
+                              new Date(item.data).getMinutes().toLocaleString("en-US", {
+                                minimumIntegerDigits: 2,
+                                useGrouping: false,
+                              })
                             }}H
                           </p>
                         </v-col>

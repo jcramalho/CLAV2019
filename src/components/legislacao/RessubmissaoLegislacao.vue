@@ -1,8 +1,21 @@
 <template>
   <v-card flat class="pa-3">
-    <p class="clav-content-title-1">Novo Diploma</p>
+    <!-- Header -->
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="3" align="center" justify="center">
+        <Voltar />
+      </v-col>
+      <v-col cols="12" sm="9" align="center" justify="center">
+        <p class="clav-content-title-1">Ressubmeter Diploma</p>
+        <p class="clav-content-title-2">
+          {{ legislacaoOriginal.tipo }} -
+          {{ legislacaoOriginal.numero }}
+        </p>
+      </v-col>
+    </v-row>
 
     <!-- Content -->
+
     <v-card-text>
       <Campo
         nome="Tipo de diploma"
@@ -23,7 +36,6 @@
           />
         </template>
       </Campo>
-
       <Campo
         nome="Número de diploma"
         infoHeader="Número de diploma"
@@ -137,12 +149,7 @@
 
       <!-- Blocos expansivos -->
       <v-expansion-panels>
-        <PainelCLAV
-          titulo="Entidade responsável pela publicação"
-          icon="mdi-bank"
-          infoHeader="Selecionar entidades"
-          :infoBody="myhelp.Tipologias.Campos.Entidades"
-        >
+        <PainelCLAV titulo="Entidade responsável pela publicação" icon="mdi-bank">
           <template v-slot:conteudo>
             <DesSelEnt
               :entidades="entSel"
@@ -164,12 +171,10 @@
 
         <PainelCLAV
           titulo="Processos de negócio que regula ou enquadra"
-          icon="mdi-file-multiple"
-          infoHeader="Selecionar processos"
-          :infoBody="myhelp.Tipologias.Campos.ProcessosRegulados"
+          icon="mdi-inbox-multiple-outline"
         >
-          <template v-slot:conteudo>
-            <DesSelProc
+          <template v-slot:conteudo
+            ><DesSelProc
               :processos="procSel"
               @unselectProcesso="unselectProcesso($event)"
             />
@@ -184,13 +189,20 @@
           </template>
         </PainelCLAV>
       </v-expansion-panels>
-      <!-- Painel Operações -->
-      <PainelOpsLeg :l="legislacao" :acao="'Criação'" />
+      <!-- j  -->
     </v-card-text>
     <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
       {{ text }}
       <v-btn text @click="fecharSnackbar">Fechar</v-btn>
     </v-snackbar>
+
+    <!-- Painel Operações -->
+    <PainelOpsLeg
+      :l="legislacao"
+      :original="legislacaoOriginal"
+      :acao="acao"
+      :pedido="l"
+    />
   </v-card>
 </template>
 
@@ -203,12 +215,26 @@ import DesSelProc from "@/components/generic/selecao/DesSelecionarPNs.vue";
 import SelProc from "@/components/generic/selecao/SelecionarPNs.vue";
 
 import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
-
-import Campo from "@/components/generic/Campo.vue";
-import PainelCLAV from "@/components/generic/PainelCLAV.vue";
+import Voltar from "@/components/generic/Voltar";
+import Campo from "@/components/generic/Campo";
+import PainelCLAV from "@/components/generic/PainelCLAV";
 const help = require("@/config/help").help;
 
 export default {
+  props: ["l"],
+
+  components: {
+    SelecionarData,
+    DesSelEnt,
+    SelEnt,
+    DesSelProc,
+    SelProc,
+    PainelOpsLeg,
+    Voltar,
+    Campo,
+    PainelCLAV,
+  },
+
   data() {
     return {
       myhelp: help,
@@ -218,47 +244,32 @@ export default {
         tipo: "",
         data: "",
         link: "",
-        diplomaFonte: "Não especificada",
         dataRevogacao: "",
-        estado: "Ativo",
         entidadesSel: [],
         processosSel: [],
       },
+      diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
+      legislacaoOriginal: {},
+      acao: "Criação",
 
       tiposDiploma: [],
-
-      diplomaFonteTipo: ["Não especificada", "PGD", "PGD/LC", "RADA"],
 
       // Para o seletor de entidades
       entidades: [],
       entSel: [],
       entidadesReady: false,
 
+      tipoReady: true,
+
       // Para o seletor de processos
       processos: [],
       procSel: [],
       processosReady: false,
 
-      // regras para submissão
-      regraNumero: [
-        (v) => /[0-9]+(-\w)?\/[0-9]+$/.test(v) || "Este campo está no formato errado.",
-      ],
-
       // para mostrar mensagens de erro
       snackbar: false,
       text: "",
     };
-  },
-
-  components: {
-    DesSelEnt,
-    SelEnt,
-    DesSelProc,
-    SelProc,
-    PainelOpsLeg,
-    SelecionarData,
-    Campo,
-    PainelCLAV,
   },
 
   methods: {
@@ -273,6 +284,7 @@ export default {
           this.tiposDiploma[i] = response.data[i].termo;
         }
         this.tiposDiploma.sort();
+        this.tipoReady = false;
       } catch (error) {
         return error;
       }
@@ -298,7 +310,7 @@ export default {
     loadEntidades: async function () {
       try {
         let response = await this.$request("get", "/entidades");
-        this.entidades = response.data.map(function (item) {
+        this.entidades = response.data.map((item) => {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -335,7 +347,7 @@ export default {
           return {
             codigo: item.codigo,
             titulo: item.titulo,
-            id: item.codigo,
+            id: item.id.split("#")[1],
           };
         });
         this.processosReady = true;
@@ -350,27 +362,51 @@ export default {
     },
   },
 
-  created: function () {
-    this.loadTipoDiploma();
-    this.loadEntidades();
-    this.loadClasses();
+  async created() {
+    this.legislacao = JSON.parse(JSON.stringify(this.l.objeto.dados));
+    this.legislacaoOriginal = JSON.parse(JSON.stringify(this.l.objeto.dados));
+    this.acao = this.l.objeto.acao;
+
+    await this.loadTipoDiploma();
+    await this.loadEntidades();
+    await this.loadClasses();
+
+    try {
+      if (this.legislacao.entidadesSel.length != 0) {
+        this.legislacao.entidadesSel.forEach((ent) => {
+          this.entSel.push(ent);
+
+          // Remove dos selecionáveis
+          let index = this.entidades.findIndex((e) => {
+            return e.id === ent.id;
+          });
+          this.entidades.splice(index, 1);
+        });
+      }
+    } catch (e) {
+      this.text = "Erro ao carregar os dados, por favor tente novamente";
+      this.snackbar = true;
+    }
+
+    try {
+      if (this.legislacao.processosSel.length != 0) {
+        this.legislacao.processosSel.forEach((proc) => {
+          this.procSel.push(proc);
+
+          // Remove dos selecionáveis
+          let index = this.processos.findIndex((p) => p.id === proc.id);
+          this.processos.splice(index, 1);
+        });
+      }
+    } catch (e) {
+      this.text = "Erro ao carregar os dados, por favor tente novamente";
+      this.snackbar = true;
+    }
   },
 };
 </script>
 
 <style scoped>
-.separador {
-  color: white;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #1a237e;
-  font-size: 14pt;
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
 .expansion-panel-heading {
   background-color: #283593 !important;
   color: #fff;

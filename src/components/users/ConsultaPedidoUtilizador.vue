@@ -34,7 +34,13 @@
               {{ pedido.estado }}
               <v-icon right>assignment_late</v-icon>
             </v-chip>
-            <v-chip v-else-if="pedido.estado === 'Submetido'" outlined color="blue">
+            <v-chip
+              v-else-if="
+                pedido.estado === 'Submetido' || pedido.estado === 'Ressubmetido'
+              "
+              outlined
+              color="blue"
+            >
               {{ pedido.estado }}
               <v-icon right>send</v-icon>
             </v-chip>
@@ -262,6 +268,7 @@ export default {
     return {
       cor: {
         Submetido: "blue",
+        Ressubmetido: "grey",
         Distribuído: "orange",
         Redistribuído: "orange",
         Apreciado: "orange",
@@ -385,33 +392,14 @@ export default {
       this.$router.push(`/users/pedidos/${this.pedido.codigo}/relatorio`);
     },
     corrigirPedido(pedido) {
-      switch (pedido.objeto.tipo) {
-        case "Classe_N3":
-        case "Classe_N2":
-        case "Classe_N1":
-          this.$router.push("/classes/editar/" + pedido.codigo);
-          break;
-        case "TS Pluriorganizacional":
-        case "TS Organizacional":
-          break;
-        case "Entidade":
-          this.$router.push("/entidades/editar/" + pedido.codigo);
-          break;
-        case "Tipologia":
-          this.$router.push("/tipologias/editar/" + pedido.codigo);
-          break;
-        case "Legislação":
-          this.$router.push("/legislacao/editar/" + pedido.codigo);
-          break;
-        default:
-          console.log("Tipo desconhecido");
-      }
+      this.$router.push("/ressubmissao/" + pedido.codigo);
     },
     calculaValor(estado) {
       let valor = 0;
 
       switch (estado) {
         case "Submetido":
+        case "Ressubmetido":
           valor = (100 / 4) * 1;
           break;
 

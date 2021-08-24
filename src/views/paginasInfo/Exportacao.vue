@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <p class="clav-content-title-1">Exportação de Dados</p>
-        <div class="clav-info-content">
+        <div class="clav-info-content mx-15">
           <v-tooltip top color="info" open-delay="500">
             <template v-slot:activator="{ on }">
               <v-autocomplete
@@ -19,7 +19,7 @@
                 single-line
                 required
                 clearable
-                color="blue darken-3"
+                color="primary"
                 @change="
                   queriesSel = {};
                   id = '';
@@ -33,68 +33,61 @@
             </span>
           </v-tooltip>
         </div>
-        <div v-if="tipo" class="px-5">
-          <v-div v-if="tipo ? tipo.path.includes('/') : false">
-            <div
-              :class="{
-                'px-3': $vuetify.breakpoint.mdAndUp,
-              }"
-              class="separador"
-            >
-              <v-icon dark>{{ paramsIcon }}</v-icon>
-              <span> Parâmetros do pedido </span>
-            </div>
-            <div>
-              <v-row>
-                <v-col cols="12" lg="2">
-                  <div class="info-label">Identificador</div>
-                </v-col>
-                <v-col cols="12" lg="10">
+        <TogglePanelsCLAV
+          :n="tipo ? (tipo.path.includes('/') ? 2 : 1) : 0"
+          @alternar="panelsArr = $event"
+        >
+        </TogglePanelsCLAV>
+        <v-expansion-panels v-if="tipo" v-model="panelsArr" multiple>
+          <PainelCLAV
+            v-if="tipo ? tipo.path.includes('/') : false"
+            titulo="Parâmetros do pedido"
+          >
+            <template v-slot:icon>
+              <v-icon color="secondary">{{ paramsIcon }}</v-icon>
+            </template>
+            <template v-slot:conteudo>
+              <Campo nome="Identificador" color="neutralpurple">
+                <template v-slot:conteudo>
                   <v-form ref="id">
                     <v-autocomplete
-                      :items="this[singToPlu(tipo.filename)]"
+                      :items="[singToPlu(tipo.filename)]"
                       label="Identificador"
+                      hide-details
+                      dense
                       v-model="id"
                       :rules="regraId"
                       required
                     >
                     </v-autocomplete>
                   </v-form>
-                </v-col>
-              </v-row>
-            </div>
-          </v-div>
+                </template>
+              </Campo>
+            </template>
+          </PainelCLAV>
 
-          <div>
-            <div
-              :class="{
-                'px-3': $vuetify.breakpoint.mdAndUp,
-              }"
-              class="separador"
-            >
-              <v-icon dark>{{ exportIcon }}</v-icon>
-              Defina as query strings a usar na exportação
-            </div>
-            <div v-for="(querystring, key) in queryStrings[tipo.filename]" :key="key">
-              <v-row>
-                <v-col cols="12" lg="2" class="d-flex justify-center">
-                  <div class="info-label">
-                    {{ querystring.label }}
-                    <InfoBox
-                      :header="querystring.label"
-                      :text="querystring.desc"
-                      helpColor="indigo darken-4"
-                      dialogColor="#E0F2F1"
-                    />
-                  </div>
-                </v-col>
-                <v-col cols="12" lg="10">
+          <PainelCLAV titulo="Defina as query strings a usar na exportação">
+            <template v-slot:icon>
+              <v-icon color="secondary">{{ exportIcon }}</v-icon>
+            </template>
+            <template v-slot:conteudo>
+              <Campo
+                v-for="(querystring, key) in queryStrings[tipo.filename]"
+                :key="key"
+                :nome="querystring.label"
+                :infoHeader="querystring.label"
+                :infoBody="querystring.desc"
+                color="neutralpurple"
+              >
+                <template v-slot:conteudo>
                   <span v-if="querystring.enum.length > 0">
                     <v-autocomplete
                       :items="querystring.enum"
                       :label="querystring.label"
                       v-model="queriesSel[key]"
                       :multiple="querystring.multiple"
+                      hide-details
+                      dense
                     >
                     </v-autocomplete>
                   </span>
@@ -104,41 +97,25 @@
                       v-model="queriesSel[key]"
                       :label="querystring.label"
                       type="text"
+                      hide-details
+                      dense
                     />
                   </span>
-                </v-col>
-              </v-row>
-            </div>
-            <v-row>
-              <v-col align="center">
-                <v-btn
-                  @click="cancelar"
-                  rounded
-                  class="white--text clav-linear-background"
-                >
-                  <unicon
-                    name="arrow-back-icon"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20.71 37.261"
-                    fill="#ffffff"
-                  />
-                  <p class="ml-2">Voltar</p>
-                </v-btn>
-              </v-col>
-              <v-col align="center">
-                <v-btn
-                  @click="executar"
-                  rounded
-                  class="white--text clav-linear-background"
-                >
-                  <v-icon dark>{{ exportIcon }}</v-icon>
-                  <span class="ml-3"> Exportar </span>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </div>
-        </div>
+                </template>
+              </Campo>
+            </template>
+          </PainelCLAV>
+        </v-expansion-panels>
+        <v-row>
+          <v-spacer></v-spacer>
+          <v-col v-if="tipo" align="center">
+            <v-btn @click="executar" rounded class="white--text clav-linear-background">
+              <v-icon dark>{{ exportIcon }}</v-icon>
+              <span class="ml-3"> Exportar </span>
+            </v-btn>
+          </v-col>
+          <v-spacer></v-spacer>
+        </v-row>
         <v-alert :value="text != ''" :type="alertType">
           {{ text }}
         </v-alert>
@@ -148,7 +125,10 @@
 </template>
 
 <script>
-import InfoBox from "@/components/generic/infoBox.vue";
+import PainelCLAV from "@/components/generic/PainelCLAV.vue";
+import Campo from "@/components/generic/Campo";
+import TogglePanelsCLAV from "@/components/generic/TogglePanelsCLAV";
+
 const lhost = require("@/config/global").host;
 var iconv = require("iconv-lite");
 import { mdiTextBoxSearchOutline } from "@mdi/js";
@@ -156,6 +136,12 @@ import { mdiCloudPrintOutline } from "@mdi/js";
 
 export default {
   name: "exportacao",
+
+  components: {
+    PainelCLAV,
+    Campo,
+    TogglePanelsCLAV,
+  },
   data: () => {
     let fs = {
       label: "Formato de saída",
@@ -212,6 +198,7 @@ export default {
       multiple: false,
     };
     return {
+      panelsArr: [],
       classes: [],
       entidades: [],
       tipologias: [],
@@ -555,10 +542,6 @@ export default {
       paramsIcon: mdiTextBoxSearchOutline,
       exportIcon: mdiCloudPrintOutline,
     };
-  },
-
-  components: {
-    InfoBox,
   },
 
   mounted: async function () {

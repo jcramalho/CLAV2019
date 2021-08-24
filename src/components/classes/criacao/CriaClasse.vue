@@ -6,7 +6,7 @@
         <p class="clav-content-title-1">Criar Classe</p>
 
         <BlocoMeta :c="classe" class="mt-6" />
-        
+
         <v-expansion-panels flat class="mt-6">
           <!-- DESCRITIVO DA CLASSE -->
           <BlocoDescritivo :c="classe" class="mt-6" />
@@ -93,11 +93,9 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
-import Campo from "@/components/generic/Campo.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
 import BlocoMeta from "@/components/classes/criacao/BlocoMeta.vue";
@@ -120,7 +118,6 @@ export default {
     DecisaoSemSubDF,
     Subclasses4Nivel,
     PainelOperacoes,
-    Campo,
     PainelCLAV,
   },
 

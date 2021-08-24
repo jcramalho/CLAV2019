@@ -7,7 +7,10 @@
       <v-tooltip
         v-if="
           temPermissaoConsultarHistorico() &&
-          !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
+          !(
+            p.objeto.acao === 'Criação' &&
+            (p.estado === 'Submetido' || p.estado === 'Ressubmetido')
+          )
         "
         bottom
       >
@@ -18,7 +21,7 @@
       </v-tooltip>
     </v-card-title>
 
-    <v-card-text>
+    <v-card-text class="mb-2 pt-2">
       <span v-if="p.objeto.acao !== 'Criação'">
         <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
           <span>

@@ -213,7 +213,7 @@ export default {
     ErroDialog,
     VerHistorico,
     DevolverPedido,
-    ShowPPD
+    ShowPPD,
   },
 
   data() {
@@ -244,7 +244,7 @@ export default {
 
   async created() {
     console.log(JSON.stringify(this.p));
-    if (this.p.estado !== "Submetido") {
+    if (this.p.estado !== "Submetido" && this.p.estado !== "Ressubmetido") {
       this.erroDialog.visivel = true;
       this.erroDialog.mensagem = "Este pedido não se encontra neste estado.";
     }

@@ -5,8 +5,7 @@
         <p class="clav-content-title-1">Gestão de Pedidos</p>
       </v-col>
     </v-row>
-    <TogglePanelsCLAV :n="panelsArrItems" @alternar="panelsArr = $event">
-    </TogglePanelsCLAV>
+    <TogglePanelsCLAV :n="panelsArrItems" @alternar="panelsArr = $event" />
     <v-expansion-panels v-model="panelsArr" multiple>
       <PainelCLAV
         v-for="estado in estados"
@@ -169,7 +168,9 @@ export default {
       this.$request("get", "/pedidos/meta")
         .then((data) => {
           var pedidos = data.data;
-          this.estados[0].pedidos = pedidos.filter((p) => p.estado === "Submetido");
+          this.estados[0].pedidos = pedidos.filter(
+            (p) => p.estado === "Submetido" || p.estado === "Ressubmetido"
+          );
           this.estados[1].pedidos = pedidos.filter((p) => {
             if (p.estado === "Distribuído" || p.estado === "Redistribuído") return p;
           });
@@ -224,7 +225,7 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
 
-        const estado = "Devolvido";
+        let estado = "Devolvido";
 
         let dadosUtilizador = this.$verifyTokenUser();
 

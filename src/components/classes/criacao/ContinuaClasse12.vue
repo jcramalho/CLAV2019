@@ -4,7 +4,9 @@
       <!-- HEADER -->
       <v-card>
         <v-app-bar color="indigo darken-4" dark>
-          <v-toolbar-title class="card-heading">Nova Classe (continuação do trabalho guardado)</v-toolbar-title>
+          <v-toolbar-title class="card-heading"
+            >Nova Classe (continuação do trabalho guardado)</v-toolbar-title
+          >
         </v-app-bar>
 
         <v-card-text>
@@ -24,10 +26,7 @@
             <v-col cols="2">
               <div class="info-label">
                 Código:
-                <InfoBox
-                  header="Código da Classe"
-                  :text="myhelp.Classe.Campos.Codigo"
-                />
+                <InfoBox header="Código da Classe" :text="myhelp.Classe.Campos.Codigo" />
               </div>
             </v-col>
             <v-col>
@@ -42,10 +41,7 @@
             <v-col cols="2">
               <div class="info-label">
                 Título:
-                <InfoBox
-                  header="Título da Classe"
-                  :text="myhelp.Classe.Campos.Titulo"
-                />
+                <InfoBox header="Título da Classe" :text="myhelp.Classe.Campos.Titulo" />
               </div>
             </v-col>
             <v-col>
@@ -94,7 +90,7 @@ export default {
   components: {
     BlocoDescritivo,
     InfoBox,
-    PainelOperacoesCont
+    PainelOperacoesCont,
   },
 
   data: () => ({
@@ -114,13 +110,13 @@ export default {
     loginErrorSnackbar: false,
 
     loginErrorMessage: "Precisa de fazer login para criar a Classe!",
-    mensValCodigo: ""
+    mensValCodigo: "",
   }),
 
-  created: async function() {
+  created: async function () {
     this.classe = this.obj.objeto;
     this.pendenteID = this.obj._id;
-  }
+  },
 };
 </script>
 
@@ -134,13 +130,6 @@ export default {
   font-weight: bold;
   margin: 5px;
   border-radius: 3px;
-}
-
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
 }
 
 .card-heading {

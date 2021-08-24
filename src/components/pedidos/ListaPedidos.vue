@@ -35,7 +35,10 @@
               </td>
               <td>
                 <v-btn
-                  v-if="props.item.estado == 'Submetido'"
+                  v-if="
+                    (props.item.estado == 'Submetido') |
+                      (props.item.estado == 'Ressubmetido')
+                  "
                   color="blue"
                   dark
                   rounded
