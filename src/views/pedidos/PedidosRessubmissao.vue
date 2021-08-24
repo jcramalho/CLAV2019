@@ -1,22 +1,21 @@
 <template>
   <div>
+    <RessubmissaoClasse v-if="objLoaded && tipoClasse" :c="pedido" />
     <RessubmissaoEntidade v-if="objLoaded && tipoEntidade" :e="pedido" />
     <RessubmissaoTipologia v-if="objLoaded && tipoTipologia" :t="pedido" />
     <RessubmissaoLegislacao v-if="objLoaded && tipoLegislacao" :l="pedido" />
-    <v-alert v-else type="warning">
-      Por algum motivo não foi possível carregar o trabalho pretendido. Contacte o
-      administrador.
-    </v-alert>
   </div>
 </template>
 
 <script>
+import RessubmissaoClasse from "@/components/classes/ressubmissao/RessubmissaoClasse";
 import RessubmissaoEntidade from "@/components/entidades/RessubmissaoEntidade";
 import RessubmissaoTipologia from "@/components/tipologias/RessubmissaoTipologia";
 import RessubmissaoLegislacao from "@/components/legislacao/RessubmissaoLegislacao";
 
 export default {
   components: {
+    RessubmissaoClasse,
     RessubmissaoEntidade,
     RessubmissaoTipologia,
     RessubmissaoLegislacao,

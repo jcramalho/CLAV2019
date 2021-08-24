@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mt-2">
+  <v-card class="my-2">
     <v-card-title class="clav-linear-background white--text">
       {{ p.objeto.acao }} da Classe
 
@@ -22,7 +22,7 @@
       </v-tooltip>
     </v-card-title>
 
-    <v-card-text>
+    <v-card-text class="pt-2">
       <Campo
         v-for="c in classeInfo"
         :key="c.campo"

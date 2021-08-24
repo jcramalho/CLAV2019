@@ -139,7 +139,7 @@
 import ValidaClasseInfoBox from "@/components/classes/criacao/validaClasseInfoBox.vue";
 
 export default {
-  props: ["o"],
+  props: ["o", "pedido"],
   components: {
     ValidaClasseInfoBox,
   },
@@ -608,27 +608,56 @@ export default {
         } else {
           var erros = await this.validarClasse2();
           if (erros == 0) {
-            var userBD = this.$verifyTokenUser();
-            var pedidoParams = {
-              tipoPedido: "Criação",
-              tipoObjeto: "Classe_N" + this.c.nivel,
-              novoObjeto: this.c,
-              user: { email: userBD.email },
-              entidade: userBD.entidade,
-              token: this.$store.state.token,
-              historico: [],
-            };
+            if (this.pedido) this.ressubmeterPedido();
+            else {
+              var userBD = this.$verifyTokenUser();
+              var pedidoParams = {
+                tipoPedido: "Criação",
+                tipoObjeto: "Classe_N" + this.c.nivel,
+                novoObjeto: this.c,
+                user: { email: userBD.email },
+                entidade: userBD.entidade,
+                token: this.$store.state.token,
+                historico: [],
+              };
 
-            var response = await this.$request("post", "/pedidos", pedidoParams);
-            this.$router.push(`/pedidos/submissao/${response.data}`);
-            // this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
-            // this.dialogClasseCriada = true;
+              var response = await this.$request("post", "/pedidos", pedidoParams);
+              this.$router.push(`/pedidos/submissao/${response.data}`);
+              // this.mensagemPedidoCriadoOK += JSON.stringify(response.data);
+              // this.dialogClasseCriada = true;
+            }
           } else {
             this.errosValidacao = true;
           }
         }
       } catch (error) {
         return error;
+      }
+    },
+
+    async ressubmeterPedido() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let estado = "Ressubmetido";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: "Ressubmissão",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.$router.push(`/pedidos/submissao/${pedido.codigo}`);
+      } catch (e) {
+        console.log(e);
       }
     },
 
