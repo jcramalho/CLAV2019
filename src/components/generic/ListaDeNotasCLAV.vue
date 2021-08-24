@@ -1,16 +1,18 @@
 <template>
   <Campo :nome="nome" :infoHeader="infoHeader" :infoBody="infoBody" color="neutralpurple">
     <template v-slot:lateral>
-      <v-btn small color="success" rounded @click="insereNovaNota(objeto.notasAp, 'na')">
+      <v-btn small color="success" rounded @click="insereNovaNota(lista)">
         Nota de aplicação
         <v-icon right>add_circle_outline</v-icon>
       </v-btn>
     </template>
     <template v-slot:conteudo>
-      <v-row v-for="(nota, index) in objeto.notasAp" :key="index">
+      <v-alert v-if="!lista.length" color="warning" border="left">Sem notas</v-alert>
+
+      <v-row v-else v-for="(nota, index) in lista" :key="index">
         <v-col>
           <v-textarea
-            v-model="nota.nota"
+            v-model="nota[campo]"
             auto-grow
             solo
             label="Nota de Aplicação"
@@ -19,7 +21,7 @@
           <v-row>
             <v-spacer />
             <v-col align="right">
-              <v-btn color="error" rounded @click="objeto.notasAp.splice(index, 1)">
+              <v-btn color="error" rounded @click="lista.splice(index, 1)">
                 Remover
                 <v-icon dark right>remove_circle_outline</v-icon>
               </v-btn>
@@ -56,18 +58,16 @@
 <script>
 import Campo from "@/components/generic/Campo";
 const nanoid = require("nanoid");
-const help = require("@/config/help").help;
 
 export default {
   name: "ListaDeNotasCLAV",
-  props: ["nome", "infoHeader", "infoBody", "objeto"],
+  props: ["nome", "infoHeader", "infoBody", "objeto", "tipo"],
   components: {
     Campo,
   },
   created() {},
   data() {
     return {
-      myhelp: help,
       vaziaFlag: false,
       duplicadaFlag: false,
       mensagemNotaVazia:
@@ -76,11 +76,40 @@ export default {
         "A última nota introduzida é um duplicado de outra já introduzida previamente!",
     };
   },
+  computed: {
+    lista() {
+      switch (this.tipo) {
+        case "na":
+          return this.objeto.notasAp;
+        case "exna":
+          return this.objeto.exemplosNotasAp;
+        case "ne":
+          return this.objeto.notasEx;
+        case "ti":
+          return this.objeto.termosInd;
+        default:
+          return [];
+      }
+    },
+    campo() {
+      switch (this.tipo) {
+        case "na":
+        case "ne":
+          return "nota";
+        case "exna":
+          return "exemplo";
+        case "ti":
+          return "termo";
+        default:
+          return [];
+      }
+    },
+  },
   methods: {
     notaDuplicada: function (notas) {
       if (notas.length > 1) {
-        var lastNota = notas[notas.length - 1].nota;
-        var duplicados = notas.filter((n) => n.nota == lastNota);
+        var lastNota = notas[notas.length - 1][this.campo];
+        var duplicados = notas.filter((n) => n[this.campo] == lastNota);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -89,13 +118,15 @@ export default {
       }
     },
 
-    insereNovaNota: async function (notas, tipo) {
-      if (notas.length > 0 && notas[notas.length - 1].nota == "") {
+    insereNovaNota: async function (notas) {
+      if (notas.length > 0 && notas[notas.length - 1][this.campo] == "") {
         this.vaziaFlag = true;
       } else if (this.notaDuplicada(notas)) {
         this.duplicadaFlag = true;
       } else {
-        var n = { id: tipo + "_" + nanoid(), nota: "" };
+        var n = { id: this.tipo + "_" + nanoid() };
+        n[this.campo] = "";
+        if (this.tipo === "ti") n.existe = false;
         notas.push(n);
       }
     },

@@ -36,37 +36,47 @@
           </template>
         </Campo>
 
-        <ListaDeNotasCLAV nome="Notas de Aplicação" :objeto="c"></ListaDeNotasCLAV>
-        <hr style="border-top: 1px dashed #dee2f8" />
+        <ListaDeNotasCLAV
+          nome="Notas de Aplicação"
+          infoHeader="Notas de Aplicação"
+          :infoBody="myhelp.Classe.Campos.NotasAp"
+          :objeto="c"
+          tipo="na"
+        ></ListaDeNotasCLAV>
 
-        <BlocoDescritivoNotasAp :c="c" />
+        <ListaDeNotasCLAV
+          v-if="c.nivel > 2"
+          nome="Exemplo(s) de Nota(s) de Aplicação"
+          infoHeader="Exemplo(s) de Nota(s) de Aplicação"
+          :infoBody="myhelp.Classe.Campos.ExemplosNotasAp"
+          :objeto="c"
+          tipo="exna"
+        ></ListaDeNotasCLAV>
 
-        <div v-if="c.nivel > 2">
-          <hr style="border-top: 1px dashed #dee2f8" />
-          <BlocoDescritivoExemplosNotasAp :c="c" />
-        </div>
+        <ListaDeNotasCLAV
+          nome="Notas de Exclusão"
+          infoHeader="Notas de Exclusão"
+          :infoBody="myhelp.Classe.Campos.NotasEx"
+          :objeto="c"
+          tipo="ne"
+        ></ListaDeNotasCLAV>
 
-        <hr style="border-top: 1px dashed #dee2f8" />
-
-        <BlocoDescritivoNotasEx :c="c" />
-
-        <div v-if="c.nivel == 3 && !c.temSubclasses4Nivel">
-          <hr style="border-top: 1px dashed #dee2f8" />
-          <TermosIndiceOps :c="c" />
-        </div>
+        <ListaDeNotasCLAV
+          v-if="c.nivel == 3 && !c.temSubclasses4Nivel"
+          nome="Termos de Índice"
+          infoHeader="Termos de Índice"
+          :infoBody="myhelp.Classe.Campos.TermosIndice"
+          :objeto="c"
+          tipo="ti"
+        ></ListaDeNotasCLAV>
       </v-expansion-panel-content>
     </template>
   </PainelCLAV>
 </template>
 
 <script>
-const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
-import BlocoDescritivoNotasAp from "@/components/classes/criacao/BlocoDescritivoNotasAp.vue";
-import BlocoDescritivoExemplosNotasAp from "@/components/classes/criacao/BlocoDescritivoExemplosNotasAp.vue";
-import BlocoDescritivoNotasEx from "@/components/classes/criacao/BlocoDescritivoNotasEx.vue";
-import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
 import Campo from "@/components/generic/Campo.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 import ListaDeNotasCLAV from "@/components/generic/ListaDeNotasCLAV.vue";
@@ -75,10 +85,6 @@ export default {
   props: ["c"],
 
   components: {
-    BlocoDescritivoNotasAp,
-    BlocoDescritivoExemplosNotasAp,
-    BlocoDescritivoNotasEx,
-    TermosIndiceOps,
     Campo,
     PainelCLAV,
     ListaDeNotasCLAV,

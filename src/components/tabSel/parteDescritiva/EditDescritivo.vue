@@ -31,15 +31,30 @@
 
             <hr style="border-top: 1px dashed #dee2f8" />
 
-            <BlocoDescritivoExemplosNotasAp :c="proc" />
+            <ListaDeNotasCLAV
+              nome="Exemplo(s) de Nota(s) de Aplicação"
+              infoHeader="Exemplo(s) de Nota(s) de Aplicação"
+              :infoBody="myhelp.Classe.Campos.ExemplosNotasAp"
+              :objeto="proc"
+              tipo="exna"
+            ></ListaDeNotasCLAV>
 
-            <hr style="border-top: 1px dashed #dee2f8" />
+            <ListaDeNotasCLAV
+              nome="Notas de Exclusão"
+              infoHeader="Notas de Exclusão"
+              :infoBody="myhelp.Classe.Campos.NotasEx"
+              :objeto="proc"
+              tipo="ne"
+            ></ListaDeNotasCLAV>
 
-            <BlocoDescritivoNotasEx :c="proc" />
-
-            <hr style="border-top: 1px dashed #dee2f8" />
-
-            <TermosIndiceOps :c="proc" v-if="!p.temSubclasses4Nivel" />
+            <ListaDeNotasCLAV
+              v-if="!p.temSubclasses4Nivel"
+              nome="Termos de Índice"
+              infoHeader="Termos de Índice"
+              :infoBody="myhelp.Classe.Campos.TermosIndice"
+              :objeto="proc"
+              tipo="ti"
+            ></ListaDeNotasCLAV>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -64,9 +79,7 @@
                 <li v-for="(item, index) in errors" :key="index">
                   <span
                     :class="
-                      item.value === true || item.value.length > 0
-                        ? 'red--text'
-                        : ''
+                      item.value === true || item.value.length > 0 ? 'red--text' : ''
                     "
                     >{{ item.text }}
                     <ul v-if="item.value.length > 0">
@@ -81,12 +94,7 @@
           </div>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="red darken-4"
-              text
-              dark
-              rounded
-              @click="errorDialog = false"
+            <v-btn color="red darken-4" text dark rounded @click="errorDialog = false"
               >Voltar</v-btn
             >
           </v-card-actions>
@@ -97,23 +105,19 @@
 </template>
 
 <script>
+const help = require("@/config/help").help;
 import BlocoDescritivoNotasAp from "@/components/tabSel/parteDescritiva/NotasAp.vue";
-import BlocoDescritivoExemplosNotasAp from "@/components/classes/criacao/BlocoDescritivoExemplosNotasAp.vue";
-import BlocoDescritivoNotasEx from "@/components/classes/criacao/BlocoDescritivoNotasEx.vue";
-import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
 
 export default {
   props: ["p"],
 
   components: {
     BlocoDescritivoNotasAp,
-    BlocoDescritivoExemplosNotasAp,
-    BlocoDescritivoNotasEx,
-    TermosIndiceOps,
   },
 
   data: function () {
     return {
+      myhelp: help,
       errors: [],
       errorDialog: false,
       dialog: false,
@@ -143,9 +147,7 @@ export default {
     exemploDuplicado: function (exemplos) {
       if (exemplos.length > 1) {
         for (let lastExemplo of exemplos) {
-          var duplicados = exemplos.filter(
-            (e) => e.exemplo == lastExemplo.exemplo
-          );
+          var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo.exemplo);
           if (duplicados.length > 1) {
             return true;
           }
@@ -211,9 +213,9 @@ export default {
         for (let nota of this.proc.notasAp) {
           var existeNotaAp = await this.$request(
             "get",
-            `/notasAp/notaAp?classe=c${
-              this.proc.codigo
-            }&valor=${encodeURIComponent(nota.nota)}`
+            `/notasAp/notaAp?classe=c${this.proc.codigo}&valor=${encodeURIComponent(
+              nota.nota
+            )}`
           );
           existeNotaAp.data ? aux.push(nota.nota) : "";
         }
