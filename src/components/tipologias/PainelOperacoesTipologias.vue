@@ -300,7 +300,9 @@ export default {
     },
 
     cancelarCriacaoTipologia: function () {
-      this.$router.push("/");
+      this.$request("delete", "/pedidos/" + this.pedido.codigo)
+        .then(() => this.$router.push("/"))
+        .catch((err) => console.error(err));
     },
   },
 };
