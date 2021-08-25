@@ -5,46 +5,7 @@
       <!-- HEADER -->
       <p class="clav-content-title-1">Nova Classe (continuação do trabalho guardado)</p>
       
-      <Campo nome="Nível" color="neutralpurple">
-          <template v-slot:conteudo>
-            <div class="info-content">
-                {{ classe.nivel }}
-              </div>
-          </template>
-        </Campo>
-
-        <Campo 
-          nome="Código" 
-          color="neutralpurple"
-          infoHeader="Código da Classe"
-          :infoBody="myhelp.Classe.Campos.Codigo">
-          <template v-slot:conteudo>
-            <div class="info-content">
-                {{ classe.codigo }}
-              </div>
-          </template>
-        </Campo>
-
-        <!-- TÍTULO -->
-        <Campo
-          nome="Título"
-          color="neutralpurple"
-          infoHeader="Título da Classe"
-          :infoBody="myhelp.Classe.Campos.Titulo"
-        >
-          <template v-slot:conteudo>
-            <v-text-field
-              class="mt-n4 px-3"
-              v-model="classe.titulo"
-              label="Título"
-              text
-              hide-details
-              single-line
-              clearable
-              color="blue darken-3"
-            ></v-text-field>
-          </template>
-        </Campo>
+      <BlocoMeta :c="classe" class="mt-6" />
           
           <v-expansion-panels flat class="mt-6">
             <!-- DESCRITIVO DA CLASSE -->
@@ -143,6 +104,7 @@ import Campo from "@/components/generic/Campo.vue";
 import InfoBox from "@/components/generic/infoBox.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
+import BlocoMeta from "@/components/classes/criacao/BlocoMeta.vue";
 import BlocoDescritivo from "@/components/classes/criacao/BlocoDescritivo.vue";
 import BlocoContexto from "@/components/classes/criacao/BlocoContexto.vue";
 
@@ -156,6 +118,7 @@ export default {
   props: ["obj"],
 
   components: {
+    BlocoMeta,
     BlocoDescritivo,
     BlocoContexto,
     Subdivisao3Nivel,
