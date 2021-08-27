@@ -33,6 +33,11 @@
           </v-col>
         </v-row>
 
+        <DonosSelect
+          :entidadesReady="entidadesReady"
+          :entidades="entidadesD"
+          @selectEntidade="selectEntidade($event)"
+        />
         <DonosNew
           @newEntidade="newEntidade($event, c.donos)"
           :entidadesReady="entidadesReady"
@@ -52,18 +57,6 @@
           </v-btn>
         </v-snackbar>
 
-        <v-row>
-          <v-col>
-            <hr style="border-top: 1px dashed #dee2f8" />
-          </v-col>
-        </v-row>
-
-        <DonosSelect
-          :entidadesReady="entidadesReady"
-          :entidades="entidadesD"
-          @selectEntidade="selectEntidade($event)"
-        />
-
         <hr style="border-top: 2px dashed #dee2f8" />
 
         <!-- PARTICIPANTES -->
@@ -71,14 +64,6 @@
           <ParticipantesOps
             :entidades="c.participantes"
             @unselectParticipante="unselectParticipante($event)"
-          />
-
-          <hr style="border-top: 1px dashed #dee2f8" />
-
-          <ParticipantesNew
-            @newEntidade="newEntidade($event, c.participantes)"
-            :entidadesReady="entidadesReady"
-            :entidades="entidadesP"
           />
 
           <hr style="border-top: 1px dashed #dee2f8" />
@@ -104,6 +89,14 @@
               />
             </v-btn>
           </v-snackbar>
+
+          <hr style="border-top: 1px dashed #dee2f8" />
+
+          <ParticipantesNew
+            @newEntidade="newEntidade($event, c.participantes)"
+            :entidadesReady="entidadesReady"
+            :entidades="entidadesP"
+          />
 
           <hr style="border-top: 2px dashed #dee2f8" />
         </div>
@@ -151,7 +144,6 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
 import DonosOps from "@/components/classes/criacao/DonosOps.vue";
@@ -167,7 +159,6 @@ import LegislacaoNew from "@/components/classes/criacao/LegislacaoNew.vue";
 import LegislacaoSelect from "@/components/classes/criacao/LegislacaoSelect.vue";
 import BlocoContextoSelTipoProcesso from "@/components/classes/criacao/BlocoContextoSelTipoProcesso.vue";
 import BlocoContextoSelTransversalidade from "@/components/classes/criacao/BlocoContextoSelTransversalidade.vue";
-import InfoBox from "@/components/generic/infoBox.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
 export default {
@@ -187,7 +178,6 @@ export default {
     LegislacaoSelect,
     BlocoContextoSelTipoProcesso,
     BlocoContextoSelTransversalidade,
-    InfoBox,
     PainelCLAV,
   },
 
@@ -218,7 +208,7 @@ export default {
     };
   },
 
-  created: function() {
+  created: function () {
     this.loadEntidades();
   },
 
