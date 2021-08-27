@@ -137,7 +137,7 @@
 
               <!-- Processos -->
               <Campo
-                v-else-if="campo === 'processosSel'"
+                v-else-if="(campo === 'processosSel') && (info.length > 0)"
                 :nome="transformaKeys(campo)"
                 color="neutralpurple"
               >
@@ -156,9 +156,11 @@
                 </template>
               </Campo>
 
-              <!-- Tipologias -->
+              <!-- Tipologias:
+                      - só mostra se houver pelo menos uma -->
+              
               <Campo
-                v-else-if="campo === 'tipologiasSel'"
+                v-else-if="(campo === 'tipologiasSel') && (info.length > 0)"
                 :nome="transformaKeys(campo)"
                 color="neutralpurple"
               >
@@ -180,7 +182,7 @@
               <!-- Notas de Aplicaçao/Exclusao -->
 
               <Campo
-                v-else-if="campo === 'notasAp' || campo === 'notasEx'"
+                v-else-if="(campo === 'notasAp' || campo === 'notasEx') && (info.length > 0)"
                 :nome="transformaKeys(campo)"
                 color="neutralpurple"
               >

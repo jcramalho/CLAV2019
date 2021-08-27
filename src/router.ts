@@ -610,7 +610,7 @@ export default new Router({
       meta: { levels: [6, 7] }
     },
     {
-      path: "/users/pedidos",
+      path: "/",
       name: "pedidosUtilizador",
       component: () => import("./views/users/GestaoPedidos.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Gestão de Pedidos" }
