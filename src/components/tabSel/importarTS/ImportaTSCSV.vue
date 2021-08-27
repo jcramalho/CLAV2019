@@ -719,32 +719,40 @@ export default {
             }
           }
         } catch (e) {
-          if (e.response.data.entidades) {
-            this.loading = false;
-            this.entidadesFalta = e.response.data.entidades;
-            this.acrescenta = e.response.data.acrescenta;
-            if (e.response.data.acrescenta) {
-              this.dialogConfirmacao = {
-                visivel: true,
-                mensagem: e.response.data.message,
-              };
-            } else {
-              this.dialogConfirmacao = {
-                visivel: true,
-                mensagem: e.response.data.message,
-              };
-            }
-          } else if (e.response.data.some((err) => !!err.file)) {
-            if (this.multImport) {
-              this.multImportList = this.multImportList.concat(e.response.data);
+          if (e) {
+            if (e.response.data.entidades) {
+              this.loading = false;
+              this.entidadesFalta = e.response.data.entidades;
+              this.acrescenta = e.response.data.acrescenta;
+              if (e.response.data.acrescenta) {
+                this.dialogConfirmacao = {
+                  visivel: true,
+                  mensagem: e.response.data.message,
+                };
+              } else {
+                this.dialogConfirmacao = {
+                  visivel: true,
+                  mensagem: e.response.data.message,
+                };
+              }
+            } else if (e.response.data.some((err) => !!err.file)) {
+              if (this.multImport) {
+                this.multImportList = this.multImportList.concat(
+                  e.response.data
+                );
+              } else {
+                this.loading = false;
+                this.erro = e.response.data;
+                this.erroDialog = true;
+              }
             } else {
               this.loading = false;
-              this.erro = e.response.data;
+              this.erro = e.response.data[0].msg || e.response.data;
               this.erroDialog = true;
             }
           } else {
             this.loading = false;
-            this.erro = e.response.data[0].msg || e.response.data;
+            this.erro = "Erro interno";
             this.erroDialog = true;
           }
         }
