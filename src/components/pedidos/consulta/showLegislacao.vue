@@ -1,27 +1,27 @@
 <template>
   <v-card class="mt-4">
-    <v-card-title class="indigo darken-4 white--text title">
+    <v-card-title class="clav-linear-background white--text">
       {{ p.objeto.acao }} da Legislação
-
       <v-spacer />
 
       <v-tooltip
         v-if="
           temPermissaoConsultarHistorico() &&
-            !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
+          !(
+            p.objeto.acao === 'Criação' &&
+            (p.estado === 'Submetido' || p.estado === 'Ressubmetido')
+          )
         "
         bottom
       >
         <template v-slot:activator="{ on }">
-          <v-icon @click="verHistorico()" color="white" v-on="on">
-            history
-          </v-icon>
+          <v-icon @click="verHistorico()" color="white" v-on="on"> history </v-icon>
         </template>
         <span>Ver histórico de alterações...</span>
       </v-tooltip>
     </v-card-title>
 
-    <v-card-text>
+    <v-card-text class="mb-2 pt-2">
       <span v-if="p.objeto.acao !== 'Criação'">
         <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
           <span>
@@ -36,22 +36,16 @@
       </span>
 
       <!-- Aviso quando a legislação foi criada a partir de um RADA -->
-      <div v-for="(info, campo) in dados" :key="campo">
-        <v-row
-          v-if="
-            campo !== 'estado' &&
-              info !== '' &&
-              info !== null &&
-              info !== undefined
-          "
-        >
-          <v-col cols="2">
-            <div class="info-descricao">{{ transformaKeys(campo) }}</div>
-          </v-col>
-
-          <v-col>
-            <div v-if="!(info instanceof Array)" class="info-conteudo">
-              {{ info }}
+      <Campo
+        v-for="(info, campo) in dados"
+        :key="campo"
+        :nome="transformaKeys(campo)"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <div>
+            <div v-if="!(info instanceof Array)">
+              {{ info ? info : "O campo encontra-se vazio." }}
             </div>
 
             <div v-else>
@@ -59,16 +53,10 @@
                 v-if="campo == 'entidadesSel'"
                 :headers="entidadesHeaders"
                 :items="info"
-                class="elevation-1"
                 :footer-props="footerPropsEntidades"
               >
                 <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
-                  >
+                  <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined>
                     Nenhuma entidade selecionada...
                   </v-alert>
                 </template>
@@ -78,35 +66,33 @@
                 v-else-if="campo == 'processosSel'"
                 :headers="processosHeaders"
                 :items="info"
-                class="elevation-1"
                 :footer-props="footerPropsProcessos"
               >
                 <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
-                  >
+                  <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined>
                     Nenhum processo selecionado...
                   </v-alert>
                 </template>
               </v-data-table>
             </div>
-          </v-col>
-        </v-row>
-      </div>
+          </div>
+        </template>
+      </Campo>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 import { mapKeys } from "@/utils/utils";
+import Campo from "@/components/generic/Campo";
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
 export default {
   props: ["p"],
 
+  components: {
+    Campo,
+  },
   data() {
     return {
       entidadesHeaders: [

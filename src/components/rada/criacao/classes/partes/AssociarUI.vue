@@ -2,13 +2,13 @@
   <div>
     <v-row>
       <v-col md="3" sm="3">
-        <div class="info-label">Unidades de Instalação</div>
+        <div class="info-label">Unidades de instalação</div>
       </v-col>
       <v-col md="9" sm="9" xs="12">
         <v-combobox
           v-model="newSerie.UIs"
           :items="getCodigos"
-          label="Unidades de Instalação"
+          label="Unidades de instalação"
           clearable
           multiple
           item-text="searchField"

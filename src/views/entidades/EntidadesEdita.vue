@@ -21,23 +21,23 @@ export default {
   }),
 
   methods: {
-    preparaEntidade: async function(ent, tip) {
+    preparaEntidade: async function (ent, tip, flag) {
       try {
         let myEntidade = {
-          designacao: ent.designacao,
-          sigla: ent.sigla,
-          sioe: ent.sioe,
-          internacional: ent.internacional,
-          tipologiasSel: tip,
-          estado: ent.estado,
+          designacao: !flag ? ent.designacao : ent.designacao.dados,
+          sigla: !flag ? ent.sigla : ent.sigla.dados,
+          sioe: !flag ? ent.sioe : ent.sioe.dados,
+          internacional: !flag ? ent.internacional : ent.internacional.dados,
+          tipologiasSel: !flag ? tip : tip.dados,
+          estado: !flag ? ent.estado : false,
         };
-
+        console.log(myEntidade);
         if (ent.dataCriacao) {
-          myEntidade.dataCriacao = ent.dataCriacao;
+          myEntidade.dataCriacao = !flag ? ent.dataCriacao : ent.dataCriacao.dados;
         }
 
         if (ent.dataExtincao) {
-          myEntidade.dataExtincao = ent.dataExtincao;
+          myEntidade.dataExtincao = !flag ? ent.dataExtincao : ent.dataExtincao.dados;
         }
 
         return myEntidade;
@@ -47,25 +47,42 @@ export default {
     },
   },
 
-  created: async function() {
-    try {
-      let idEntidade = this.$route.path.split("/")[3];
+  created: async function () {
+    if (this.$route.params.idEntidade.includes("-")) {
+      try {
+        let infoEntidade = await this.$request(
+          "get",
+          `/pedidos/${this.$route.params.idEntidade}`
+        );
+        this.entidade = await this.preparaEntidade(
+          infoEntidade.data.historico[0],
+          infoEntidade.data.historico[0].tipologiasSel,
+          true
+        );
+        this.dadosReady = true;
+      } catch (e) {
+        return e;
+      }
+    } else {
+      try {
+        let idEntidade = this.$route.path.split("/")[3];
+        let infoEntidade = await this.$request("get", "/entidades/" + idEntidade);
 
-      let infoEntidade = await this.$request("get", "/entidades/" + idEntidade);
+        let tipologias = await this.$request(
+          "get",
+          "/entidades/" + idEntidade + "/tipologias"
+        );
 
-      let tipologias = await this.$request(
-        "get",
-        "/entidades/" + idEntidade + "/tipologias"
-      );
+        this.entidade = await this.preparaEntidade(
+          infoEntidade.data,
+          tipologias.data,
+          false
+        );
 
-      this.entidade = await this.preparaEntidade(
-        infoEntidade.data,
-        tipologias.data
-      );
-
-      this.dadosReady = true;
-    } catch (e) {
-      return e;
+        this.dadosReady = true;
+      } catch (e) {
+        return e;
+      }
     }
   },
 };

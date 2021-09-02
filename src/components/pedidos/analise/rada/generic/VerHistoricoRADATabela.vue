@@ -442,7 +442,7 @@ export default {
       });
 
       this.dadosTabela.push({
-        campo: "Entidades Responsáveis",
+        campo: "Entidade responsável",
         colunaA: this.historico[indexA].entRes,
         colunaB: this.historico[indexB].entRes,
       });
@@ -629,7 +629,7 @@ export default {
             case "produtor":
               if (findA.dados[item].dados.entProdutoras.length > 0) {
                 this.dadosTabela.push({
-                  campo: "Entidades Produtoras",
+                  campo: "Entidade produtora",
                   colunaA: {
                     cor: findA.dados[item].cor,
                     dados: findA.dados[item].dados.entProdutoras,

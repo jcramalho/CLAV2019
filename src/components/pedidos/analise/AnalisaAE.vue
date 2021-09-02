@@ -1,6 +1,6 @@
 <template>
   <Loading v-if="loading" :message="'pedido'" />
-  <div v-else>
+  <div class="ma-5" v-else>
     <v-row v-if="dados.legislacao">
       <v-col cols="2">
         <div
@@ -22,9 +22,16 @@
         <v-icon color="red" @click="novoHistorico.legislacao.cor = 'vermelho'"
           >clear</v-icon
         >
-        <v-icon @click="abrirNotaDialog('legislacao', -1)">
-          add_comment
-        </v-icon>
+        <v-badge
+          color="indigo darken-4"
+          content="1"
+          :value="!!novoHistorico.legislacao.nota"
+          overlap
+        >
+          <v-icon @click="abrirNotaDialog('legislacao', -1)">
+            add_comment
+          </v-icon>
+        </v-badge>
       </v-col>
     </v-row>
     <v-row v-else>
@@ -48,9 +55,16 @@
         <v-icon color="red" @click="novoHistorico.referencial.cor = 'vermelho'"
           >clear</v-icon
         >
-        <v-icon @click="abrirNotaDialog('referencial', -1)">
-          add_comment
-        </v-icon>
+        <v-badge
+          color="indigo darken-4"
+          content="1"
+          :value="!!novoHistorico.referencial.nota"
+          overlap
+        >
+          <v-icon @click="abrirNotaDialog('referencial', -1)">
+            add_comment
+          </v-icon>
+        </v-badge>
       </v-col>
     </v-row>
     <v-row>
@@ -65,7 +79,9 @@
         </div>
       </v-col>
       <v-col class="mr-2">
-        <div v-for="(f, i) in dados.fundo" :key="i">{{ f }}</div>
+        <div v-for="(f, i) in dados.fundo" :key="i">
+          <a :href="'/entidades/ent_' + f.split(' - ')[0]">{{ f }}</a>
+        </div>
       </v-col>
       <v-col cols="1">
         <v-icon color="green" @click="novoHistorico.fundo.cor = 'verde'"
@@ -74,15 +90,22 @@
         <v-icon color="red" @click="novoHistorico.fundo.cor = 'vermelho'"
           >clear</v-icon
         >
-        <v-icon @click="abrirNotaDialog('fundo', -1)">
-          add_comment
-        </v-icon>
+
+        <v-badge
+          color="indigo darken-4"
+          content="1"
+          :value="!!novoHistorico.fundo.nota"
+          overlap
+        >
+          <v-icon @click="abrirNotaDialog('fundo', -1)"> add_comment </v-icon>
+        </v-badge>
       </v-col>
     </v-row>
 
     <v-expansion-panels popout>
-      <v-expansion-panel class="ma-1">
-        <v-expansion-panel-header class="pa-2 indigo darken-4 title white--text"
+      <v-expansion-panel class="ma-5">
+        <v-expansion-panel-header
+          class="pa-2 clav-linear-background title white--text"
           >Classes</v-expansion-panel-header
         >
         <v-expansion-panel-content>
@@ -97,7 +120,7 @@
                 <v-list-item-content
                   :class="[
                     'info-descricao',
-                    `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                    `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                   ]"
                 >
                   <v-list-item-title
@@ -120,59 +143,67 @@
                 <v-list-item-title class="wrap-text">
                   <table class="consulta mx-5">
                     <tr v-if="item.codigo">
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Código da Classe
                         </div>
                       </td>
-                      <td style="width:70%;">
+                      <td style="width: 70%">
                         {{ item.codigo }}
                       </td>
-                      <td
-                        style="width:10%"
-                        v-if="
-                          novoHistorico.zonaControlo[index].cor != 'amarelo'
-                        "
-                      >
+                      <td style="width: 10%">
                         <v-icon
                           color="green"
                           @click="
-                            novoHistorico.zonaControlo[index].cor = 'verde'
+                            novoHistorico.zonaControlo.dados[index].cor =
+                              'verde'
                           "
                           >check</v-icon
                         >
                         <v-icon
                           color="red"
                           @click="
-                            novoHistorico.zonaControlo[index].cor = 'vermelho'
+                            novoHistorico.zonaControlo.dados[index].cor =
+                              'vermelho'
                           "
                           >clear</v-icon
                         >
-                        <v-icon @click="abrirNotaDialog('zonaControlo', index)">
-                          add_comment
-                        </v-icon>
+                        <v-badge
+                          color="indigo darken-4"
+                          content="1"
+                          :value="
+                            !!novoHistorico.zonaControlo.dados[index].nota
+                          "
+                          overlap
+                        >
+                          <v-icon
+                            @click="abrirNotaDialog('zonaControlo', index)"
+                          >
+                            add_comment
+                          </v-icon>
+                        </v-badge>
                       </td>
                     </tr>
                     <tr v-if="item.referencia">
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Referência
                         </div>
                       </td>
-                      <td style="width:70%;">
+                      <td style="width: 70%">
                         {{ item.referencia }}
                       </td>
-                      <td v-if="!item.codigo" style="width:10%">
+                      <td v-if="!item.codigo" style="width: 10%">
                         <v-icon
                           color="green"
                           @click="
@@ -192,100 +223,100 @@
                       </td>
                     </tr>
                     <tr v-if="item.titulo">
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Título
                         </div>
                       </td>
-                      <td style="width:80%;">
+                      <td style="width: 80%">
                         {{ item.titulo }}
                       </td>
                     </tr>
                     <tr v-if="item.prazoConservacao">
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Prazo de Conservação Administrativa
                         </div>
                       </td>
-                      <td style="width:80%;">
+                      <td style="width: 80%">
                         {{ item.prazoConservacao }}
                         <span v-if="item.prazoConservacao == '1'">Ano</span
                         ><span v-else>Anos</span>
                       </td>
                     </tr>
                     <tr v-if="item.notasPCA">
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Notas do PCA
                         </div>
                       </td>
-                      <td style="width:80%;">
+                      <td style="width: 80%">
                         {{ item.notasPCA }}
                       </td>
                     </tr>
                     <tr v-if="item.destino">
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
-                          Destino Final
+                          Destino final
                         </div>
                       </td>
-                      <td v-if="item.destino === 'E'" style="width:80%;">
+                      <td v-if="item.destino === 'E'" style="width: 80%">
                         Eliminação
                       </td>
-                      <td v-else-if="item.destino === 'C'" style="width:80%;">
+                      <td v-else-if="item.destino === 'C'" style="width: 80%">
                         Conservação
                       </td>
-                      <td v-else style="width:80%;">
+                      <td v-else style="width: 80%">
                         {{ item.destino }}
                       </td>
                     </tr>
                     <tr v-if="item.notaDF">
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Nota do DF
                         </div>
                       </td>
-                      <td style="width:80%;">
+                      <td style="width: 80%">
                         {{ item.notaDF }}
                       </td>
                     </tr>
                     <tr v-if="item.destino == 'CP' && item.justificaDF">
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Justificação do DF
                         </div>
                       </td>
-                      <td style="width:80%;">
+                      <td style="width: 80%">
                         <span
                           v-for="(just, index) in item.justificaDF"
                           :key="index"
@@ -296,104 +327,104 @@
                     <tr
                       v-if="
                         item.ni &&
-                          (item.destino === 'C' ||
-                            item.destino === 'Conservação')
+                        (item.destino === 'C' || item.destino === 'Conservação')
                       "
                     >
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Natureza de intervenção
                         </div>
                       </td>
-                      <td style="width:80%;">{{ item.ni }}</td>
+                      <td style="width: 80%">{{ item.ni }}</td>
                     </tr>
                     <tr
                       v-if="
                         item.dono &&
-                          item.dono.length > 0 &&
-                          (item.destino === 'C' ||
-                            item.destino === 'Conservação')
+                        item.dono.length > 0 &&
+                        (item.destino === 'C' || item.destino === 'Conservação')
                       "
                     >
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Donos do PN
                         </div>
                       </td>
-                      <td style="width:80%;">
+                      <td style="width: 80%">
                         <li v-for="(d, i) in item.dono" :key="i">{{ d }}</li>
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Data de Início
                         </div>
                       </td>
-                      <td style="width:80%;">
+                      <td style="width: 80%">
                         {{ item.dataInicio }}
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Data de Fim
                         </div>
                       </td>
-                      <td style="width:80%;">{{ item.dataFim }}</td>
+                      <td style="width: 80%">{{ item.dataFim }}</td>
                     </tr>
                     <tr>
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           N.º de agregações
                         </div>
                       </td>
-                      <td v-if="item.agregacoes.length==0" style="width:80%;">
+                      <td v-if="item.agregacoes.length == 0" style="width: 80%">
                         {{ item.nrAgregacoes }}
                       </td>
-                      <td style="width:80%;" v-else>{{item.agregacoes.length}}</td>
+                      <td style="width: 80%" v-else>
+                        {{ item.agregacoes.length }}
+                      </td>
                     </tr>
                     <tr>
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Medição das UI em papel (m.l.)
                         </div>
                       </td>
-                      <td style="width:70%;" v-if="item.uiPapel">
+                      <td style="width: 70%" v-if="item.uiPapel">
                         {{ item.uiPapel }}
                       </td>
-                      <td style="width:70%;" v-else>0</td>
-                      <td style="width:10%;">
+                      <td style="width: 70%" v-else>0</td>
+                      <td style="width: 10%">
                         <v-icon
                           color="orange"
                           @click="
@@ -404,21 +435,21 @@
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Medição das UI em digital (Gb)
                         </div>
                       </td>
-                      <td style="width:70%;" v-if="item.uiDigital">
+                      <td style="width: 70%" v-if="item.uiDigital">
                         {{ item.uiDigital }}
                       </td>
-                      <td style="width:70%;" v-else>0</td>
-                      <td style="width:10%;">
+                      <td style="width: 70%" v-else>0</td>
+                      <td style="width: 10%">
                         <v-icon
                           color="orange"
                           @click="
@@ -429,21 +460,21 @@
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:20%;">
+                      <td style="width: 20%">
                         <div
                           :class="[
                             'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                           ]"
                         >
                           Medição das UI noutros suportes
                         </div>
                       </td>
-                      <td style="width:70%;" v-if="item.uiOutros">
+                      <td style="width: 70%" v-if="item.uiOutros">
                         {{ item.uiOutros }}
                       </td>
-                      <td style="width:70%;" v-else>0</td>
-                      <td style="width:10%;">
+                      <td style="width: 70%" v-else>0</td>
+                      <td style="width: 10%">
                         <v-icon
                           color="orange"
                           @click="
@@ -458,7 +489,7 @@
                     </tr>
                   </table>
 
-                  <div class="ma-1" v-if="item.agregacoes.length>0">
+                  <div class="ma-1" v-if="item.agregacoes.length > 0">
                     <v-data-table
                       :headers="cabecalho"
                       :items="item.agregacoes"
@@ -474,7 +505,7 @@
                               <div
                                 :class="[
                                   'info-descricao',
-                                  `info-descricao-${novoHistorico.zonaControlo[index].cor}`,
+                                  `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
                                 ]"
                               >
                                 Lista de Agregações
@@ -494,16 +525,16 @@
                       </template>
                       <template v-slot:item="prop">
                         <tr>
-                          <td style=" text-align: left">
+                          <td style="text-align: left">
                             {{ prop.item.codigo }}
                           </td>
-                          <td style=" text-align: left">
+                          <td style="text-align: left">
                             {{ prop.item.titulo }}
                           </td>
-                          <td style=" text-align: center">
+                          <td style="text-align: center">
                             {{ prop.item.dataContagem }}
                           </td>
-                          <td style=" text-align: center">
+                          <td style="text-align: center">
                             {{ prop.item.ni }}
                           </td>
                         </tr>
@@ -519,6 +550,12 @@
     </v-expansion-panels>
     <v-row>
       <v-spacer />
+      <v-btn
+        @click="guardarPedido()"
+        rounded
+        class="mt-5 clav-linear-background accent-4 white--text"
+        ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
+      >
       <PO
         operacao="Analisar"
         @avancarPedido="encaminharPedido($event)"
@@ -536,9 +573,7 @@
         <v-card-text>
           <v-row>
             <v-col cols="2">
-              <div class="info-label">
-                Nota
-              </div>
+              <div class="info-label">Nota</div>
             </v-col>
 
             <v-col>
@@ -598,9 +633,7 @@
 
           <v-card-actions>
             <v-spacer />
-            <v-btn text color="red accent-4" @click="close()">
-              Voltar
-            </v-btn>
+            <v-btn text color="red accent-4" @click="close()"> Voltar </v-btn>
             <v-btn class="indigo accent-4" dark @click="adicionar()">
               <span>Alterar</span>
             </v-btn>
@@ -628,6 +661,37 @@
           <v-btn color="red darken-4" text @click="erroDialog = false"
             >Fechar</v-btn
           >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialogGuardado" width="50%" persistent>
+      <v-card dark class="info-card">
+        <v-card-title class="headline mb-2">
+          Pedido guardado com sucesso!</v-card-title
+        >
+        <div class="info-content-card px-3 mx-6 mb-2">
+          <v-card-text class="pa-2 px-4 font-weight-medium">
+            <p>
+              O seu pedido foi guardado com sucesso. Pode abandonar a página.
+            </p>
+          </v-card-text>
+        </div>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="red darken-4"
+            rounded
+            dark
+            elevation="0"
+            class="px-4"
+            @click="
+              {
+                dialogGuardado = false;
+              }
+            "
+          >
+            Fechar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -676,6 +740,7 @@ export default {
       portaria: [],
       erro: null,
       erroDialog: false,
+      dialogGuardado: false,
       cabecalho: [
         {
           text: "Código",
@@ -716,32 +781,45 @@ export default {
   },
 
   async created() {
-    const criaNovoHistorico = {};
-    Object.keys(this.dados).forEach((key) => {
-      if (key !== "zonaControlo")
-        criaNovoHistorico[key] = {
-          cor: "verde",
-          dados: this.dados[key],
-          nota: null,
-        };
-      else {
-        criaNovoHistorico.zonaControlo = [];
-        this.dados.zonaControlo.forEach((zc) => {
-          criaNovoHistorico.zonaControlo.push({
+    if (
+      !this.p.historico[this.p.historico.length - 1].zonaControlo.dados[0].cor
+    ) {
+      const criaNovoHistorico = {};
+      Object.keys(this.dados).forEach((key) => {
+        if (key !== "zonaControlo")
+          criaNovoHistorico[key] = {
             cor: "verde",
-            dados: zc,
+            dados: this.dados[key],
             nota: null,
+          };
+        else {
+          criaNovoHistorico.zonaControlo = {
+            cor: "verde",
+            dados: [],
+            nota: null,
+          };
+          this.dados.zonaControlo.forEach((zc) => {
+            criaNovoHistorico.zonaControlo.dados.push({
+              ...zc,
+              cor: "verde",
+              nota: null,
+            });
           });
-        });
-      }
-    });
+        }
+      });
 
-    this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
+      this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
+    } else {
+      const copiaHistorico = JSON.parse(
+        JSON.stringify(this.p.historico[this.p.historico.length - 1])
+      );
+      this.novoHistorico = copiaHistorico;
+    }
     this.loading = false;
   },
 
   methods: {
-    prepararLeg: async function(leg) {
+    prepararLeg: async function (leg) {
       try {
         var myPortarias = [];
         for (var l of leg) {
@@ -819,6 +897,30 @@ export default {
       }
     },
 
+    async guardarPedido() {
+      try {
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        pedido.historico[pedido.historico.length - 1] = this.novoHistorico;
+
+        const novaDistribuicao = {
+          estado: pedido.estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.dialogGuardado = true;
+      } catch (e) {
+        //console.log("e :", e);
+      }
+    },
+
     close() {
       this.editar = false;
     },
@@ -841,18 +943,33 @@ export default {
         if (this.novoHistorico[campo].nota !== undefined)
           this.notaDialog.nota = this.novoHistorico[campo].nota;
       } else {
-        if (this.novoHistorico[campo][index].nota !== undefined)
+        if (
+          campo != "zonaControlo" &&
+          this.novoHistorico[campo][index].nota !== undefined
+        )
           this.notaDialog.nota = this.novoHistorico[campo][index].nota;
+        else {
+          this.notaDialog.nota = this.novoHistorico[campo].dados[index].nota;
+        }
       }
     },
 
     adicionarNota() {
-      if (this.notaDialog.index == -1) {
+      if (
+        this.notaDialog.index == -1 ||
+        this.notaDialog.campo != "zonaControlo"
+      ) {
         this.novoHistorico[this.notaDialog.campo].nota = this.notaDialog.nota;
-      } else
-        this.novoHistorico[this.notaDialog.campo][
-          this.notaDialog.index
-        ].nota = this.notaDialog.nota;
+      } else {
+        if (this.notaDialog.campo != "zonaControlo")
+          this.novoHistorico[this.notaDialog.campo][
+            this.notaDialog.index
+          ].nota = this.notaDialog.nota;
+        else
+          this.novoHistorico[this.notaDialog.campo].dados[
+            this.notaDialog.index
+          ].nota = this.notaDialog.nota;
+      }
 
       this.notaDialog = {
         visivel: false,
@@ -870,7 +987,8 @@ export default {
           this.erroDialog = true;
         } else {
           this.dados.zonaControlo[this.editarIndex].uiPapel = this.medicao;
-          this.novoHistorico.zonaControlo[this.editarIndex].cor = "amarelo";
+          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor =
+            "amarelo";
         }
         this.medicao = "";
         this.editarCampo = "";
@@ -882,7 +1000,8 @@ export default {
           this.erroDialog = true;
         } else {
           this.dados.zonaControlo[this.editarIndex].uiDigital = this.medicao;
-          this.novoHistorico.zonaControlo[this.editarIndex].cor = "amarelo";
+          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor =
+            "amarelo";
         }
         this.medicao = "";
         this.editarCampo = "";
@@ -894,7 +1013,8 @@ export default {
           this.erroDialog = true;
         } else {
           this.dados.zonaControlo[this.editarIndex].uiOutros = this.medicao;
-          this.novoHistorico.zonaControlo[this.editarIndex].cor = "amarelo";
+          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor =
+            "amarelo";
         }
         this.medicao = "";
         this.editarCampo = "";

@@ -101,7 +101,7 @@
         dense
         icon="warning"
         color="amber accent-3"
-      >Não existe justificação do Prazo de Conservação Administrativo</v-alert>
+      >Não existe justificação do prazo de conservação administrativa</v-alert>
     </v-col>
   </v-row>
 </template>

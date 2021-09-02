@@ -43,7 +43,7 @@
             <td>{{ props.item.nomeSI }}</td>
             <td>
               <v-btn small color="blue darken-2" dark rounded @click="show(props.item)">
-                <v-icon dark>edit</v-icon>
+                <v-icon dark>visibility</v-icon>
               </v-btn>
             </td>
             <td>

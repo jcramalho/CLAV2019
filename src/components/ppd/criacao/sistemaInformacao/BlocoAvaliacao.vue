@@ -28,10 +28,10 @@
                 <InfoBox header="Decomposição do SI" :text="myhelp.Ppd.Avaliacao.decomposicao"/>
               </div>
           </v-col>
-          <v-col v-if="ppd.si.avaliacao.tabelaDecomposicao.length > 0">
+          <v-col v-if="ppd.si.avaliacao.decomposicao.length > 0">
             <v-data-table
             :headers="headersDecomp"
-            :items="ppd.si.avaliacao.tabelaDecomposicao"
+            :items="ppd.si.avaliacao.decomposicao"
             class="elevation-1"
             :footer-props="footer_Classes"
             :page.sync="paginaSelectDecomp"
@@ -84,8 +84,13 @@
             </div>
           </v-col>
           <v-col>
-            <v-text-field solo dense >
-            </v-text-field>
+            <v-text-field
+              label="Não possui"
+              :value="ppd.si.avaliacao.pcaSI"
+              readonly
+              solo
+              dense
+            ></v-text-field>
           </v-col>
           <v-col :md="2">
             <div class="info-label">Destino final do sistema de informação
@@ -93,8 +98,13 @@
             </div>
           </v-col>
           <v-col>
-            <v-text-field solo dense >
-            </v-text-field>
+            <v-text-field
+              label=""
+              :value="ppd.si.avaliacao.destinoSI"
+              readonly
+              solo
+              dense
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-row>
@@ -144,8 +154,10 @@
             :myhelp="myhelp"
             v-bind:classesSI="classesSI"
             v-bind:classesDaFonteL="classesDaFonteL"
+            :v-bind:addClasse="addClasse"
             hide-overlay
             @guardarClasse="guardarClasse($event)"
+            @cancelarAdd="cancelarAdd"
           />
         </v-dialog>
 
@@ -320,7 +332,7 @@ import AddDecomposicao from"@/components/ppd/criacao/sistemaInformacao/AddDecomp
 import AddClasse from"@/components/ppd/criacao/sistemaInformacao/AddClasse.vue";
 
 export default {
-  props: ["ppd", "semaforos", "listaLegislacao", "classesSI", "classesDaFonteL"],
+  props: ["ppd", "semaforos", "classesSI", "classesDaFonteL"],
 
   components: {
     InfoBox,
@@ -392,22 +404,44 @@ export default {
       checkedCriticidade: ["Muito crítico", "Crítico", "Pouco crítico", "Não crítico"],
       simNao: ["Sim", "Não"],
 
-      tabelaDecomposicao:[]
+      decomposicao:[]
 
     };
   },
 
 
+  /*watch:{
+    "ppd.si.avaliacao.selecionadosTabelaFL": function() {
+      this.ppd.si.avaliacao.selecionadosTabelaFL.forEach(element => {
+        if(element.pca > this.ppd.si.avaliacao.pcaSI){
+          this.ppd.si.avaliacao.pcaSI = element.pca
+        }
+      });
+    }
+
+
+  },*/
 
   methods: {
 
+    cancelarAdd: function(){
+      this.addClasse = false
+    },
     //-----------
     guardarClasse(item) {
       this.ppd.si.avaliacao.selecionadosTabelaFL.push(item);
+      if(parseInt(item.pca) > parseInt(this.ppd.si.avaliacao.pcaSI)){
+        this.ppd.si.avaliacao.pcaSI = parseInt(item.pca);
+      }
+      if(this.ppd.si.avaliacao.destinoSI != "C"){
+        this.ppd.si.avaliacao.destinoSI = item.df;
+      }
+
       this.addClasse= false;
     },
 
     unselectClasse: function(item) {
+      var auxDF = ""
       if(item.codigo){
         this.classesSI.push({info:"Cod: " + item.codigo + " - " + item.titulo , classe:item.classe});
       }
@@ -416,16 +450,27 @@ export default {
       }
       var index = this.ppd.si.avaliacao.selecionadosTabelaFL.findIndex(e => e.classe === item.classe);
       this.ppd.si.avaliacao.selecionadosTabelaFL.splice(index, 1);
+      var auxPCA = 0;
+      this.ppd.si.avaliacao.selecionadosTabelaFL.forEach(element => {
+        if(parseInt(element.pca) > auxPCA){
+          auxPCA = parseInt(element.pca)
+        }
+        if(auxDF != "C"){
+          auxDF = element.df
+        }
+      });
+      this.ppd.si.avaliacao.pcaSI = auxPCA;
+      this.ppd.si.avaliacao.destinoSI = auxDF;
     },
 
     guardarDecomp(item) {
-      this.ppd.si.avaliacao.tabelaDecomposicao.push(item);
+      this.ppd.si.avaliacao.decomposicao.push(item);
       this.addDecomposicao= false;
     },
 
     unselectDecomp: function(item) {
-      var index = this.ppd.si.avaliacao.tabelaDecomposicao.findIndex(e => e.numeroSub === item.numeroSub);
-      this.ppd.si.avaliacao.tabelaDecomposicao.splice(index, 1);
+      var index = this.ppd.si.avaliacao.decomposicao.findIndex(e => e.numeroSub === item.numeroSub);
+      this.ppd.si.avaliacao.decomposicao.splice(index, 1);
     },
 
     selectSistema: function(numeroSI, relacao) {

@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <v-tabs-items v-model="active_tab" style="min-height: 376px">
-      <v-tab-item v-for="item in tab_items" :key="item.id">
+      <v-tab-item v-for="item in tab_items" :key="item.id" class="pa-2">
         <p class="clav-content-title-1">
           {{ item.tab }}
         </p>
@@ -12,14 +12,15 @@
           </ul>
         </div>
 
-        <v-row v-if="item.botoes" class="my-5">
+        <v-row v-if="item.botoes" justify="center">
           <v-col
-            class="pa-0"
-            align="center"
             cols="12"
-            :md="item.md_botao_prop"
+            sm="8"
+            md="6"
+            lg="4"
             v-for="botao in item.botoes"
             :key="botao.descricao"
+            align="center"
           >
             <v-btn
               v-if="!botao.form_action"

@@ -15,14 +15,14 @@
         color="indigo darken-2"
         dark
         rounded
-        @click="insereNovaNota(notas, 'na')"
+        @click="insereNovaNota(c.notasAp, 'na')"
       >
         Nota de aplicação
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
     </v-col>
     <v-col>
-      <v-row v-for="(nota, index) in notas" :key="index">
+      <v-row v-for="(nota, index) in c.notasAp" :key="index">
         <v-col cols="10">
           <v-textarea
             v-model="nota.nota"
@@ -37,7 +37,7 @@
             color="red darken-2"
             dark
             rounded
-            @click="notas.splice(index, 1)"
+            @click="c.notasAp.splice(index, 1)"
           >
             Remover
             <v-icon dark right>remove_circle_outline</v-icon>
@@ -68,7 +68,7 @@ export default {
   props: ["c"],
 
   components: {
-    InfoBox
+    InfoBox,
   },
 
   data() {
@@ -80,14 +80,14 @@ export default {
       mensagemNAVazia:
         "A nota anterior encontra-se vazia. Queira preenchê-la antes de criar nova.",
       mensagemNADuplicada:
-        "A última nota introduzida é um duplicado de outra já introduzida previamente!"
+        "A última nota introduzida é um duplicado de outra já introduzida previamente!",
     };
   },
   methods: {
-    notaDuplicada: function(notas) {
+    notaDuplicada: function (notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
-        var duplicados = notas.filter(n => n.nota == lastNota);
+        var duplicados = notas.filter((n) => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -96,18 +96,17 @@ export default {
       }
     },
 
-    insereNovaNota: async function(notas, tipo) {
+    insereNovaNota: async function (notas, tipo) {
       if (notas.length > 0 && notas[notas.length - 1].nota == "") {
         this.naVaziaFlag = true;
       } else if (this.notaDuplicada(notas)) {
         this.naDuplicadaFlag = true;
       } else {
-        var n = { id: tipo + "_" + nanoid(), nota: "" };
+        var n = { idNota: tipo + "_" + nanoid(), nota: "" };
         notas.push(n);
       }
-      this.$emit("notasAp", notas);
-    }
-  }
+    },
+  },
 };
 </script>
 

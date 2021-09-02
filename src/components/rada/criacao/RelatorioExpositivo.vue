@@ -17,7 +17,7 @@
         />
         <v-row>
           <v-col cols="12" xs="12" sm="3">
-            <div class="info-label">Entidades Produtoras</div>
+            <div class="info-label">Entidade produtora</div>
           </v-col>
           <v-col xs="12" sm="9">
             <v-autocomplete
@@ -26,7 +26,7 @@
               :items="entidadesProcessadas"
               item-text="entidade"
               item-value="entidade"
-              placeholder="Selecione as Entidades Produtoras"
+              placeholder="Selecione uma ou mais entidades."
               multiple
               solo
             >
@@ -51,7 +51,7 @@
       </div>
       <v-row v-if="!RE.entidadesProd[0]">
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Tipologia de Entidade</div>
+          <div class="info-label">Tipologia de entidade</div>
         </v-col>
         <v-col xs="12" sm="9">
           <v-autocomplete
@@ -60,7 +60,7 @@
             :items="tipologias"
             item-text="tipologia"
             item-value="tipologia"
-            placeholder="Selecione a Tipologia de Entidade"
+            placeholder="Selecione a Tipologia de entidade"
             solo
             :disabled="produtoraTipologiaClasse(RE.tipologiasProd)"
             chips
@@ -78,12 +78,12 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Data Inicial da Documentação</div>
+          <div class="info-label">Data inicial da documentação</div>
         </v-col>
         <v-col xs="12" sm="9">
           <SelecionarData
             :d="RE.dataInicial"
-            label="Data Inicial"
+            label="Data inicial"
             @dataSelecionada="RE.dataInicial = $event"
             data-minima="1200-01-01"
           >
@@ -102,12 +102,12 @@
           </SelecionarData>
         </v-col>
         <v-col cols="12" xs="12" sm="3">
-          <div class="info-label">Data Final da Documentação</div>
+          <div class="info-label">Data final da documentação</div>
         </v-col>
         <v-col xs="12" sm="9">
           <SelecionarData
             :d="RE.dataFinal"
-            label="Data Final"
+            label="Data final"
             @dataSelecionada="RE.dataFinal = $event"
             data-minima="1200-01-01"
           >
@@ -134,28 +134,28 @@
           <v-expansion-panel-content>
             <v-row>
               <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">História Administrativa/Biográfica</div>
+                <div class="info-label">História administrativa/biográfica</div>
               </v-col>
               <v-col xs="12" sm="9">
                 <v-textarea
                   solo
                   name="input-7-4"
                   v-model="RE.hist_admin"
-                  placeholder="História Administrativa/Biográfica"
+                  placeholder="História administrativa/biográfica"
                   :rules="basicRule"
                 ></v-textarea>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">História Custodial</div>
+                <div class="info-label">História custodial</div>
               </v-col>
               <v-col xs="12" sm="9">
                 <v-textarea
                   solo
                   name="input-7-4"
                   v-model="RE.hist_cust"
-                  placeholder="História Custodial"
+                  placeholder="História custodial"
                   :rules="basicRule"
                 ></v-textarea>
               </v-col>
@@ -169,14 +169,14 @@
           <v-expansion-panel-content>
             <v-row>
               <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">Sistema de Organização</div>
+                <div class="info-label">Sistema de organização</div>
               </v-col>
               <v-col xs="12" sm="9">
                 <v-textarea
                   solo
                   name="input-7-4"
                   v-model="RE.sist_org"
-                  placeholder="Sistema de Organização"
+                  placeholder="Sistema de organização"
                   :rules="basicRule"
                 ></v-textarea>
               </v-col>
@@ -204,14 +204,14 @@
             </v-row>
             <v-row>
               <v-col cols="12" xs="12" sm="3">
-                <div class="info-label">Estado de Conservação</div>
+                <div class="info-label">Estado de conservação</div>
               </v-col>
               <v-col xs="12" sm="9">
                 <v-textarea
                   solo
                   name="input-7-4"
                   v-model="RE.est_conser"
-                  placeholder="Estado de Conservação"
+                  placeholder="Estado de conservação"
                   :rules="basicRule"
                 ></v-textarea>
               </v-col>

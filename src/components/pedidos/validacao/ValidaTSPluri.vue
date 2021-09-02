@@ -561,7 +561,7 @@
                                   height="25"
                                 >
                                   <v-toolbar-title
-                                    >Destino Final</v-toolbar-title
+                                    >Destino final</v-toolbar-title
                                   >
                                 </v-toolbar>
                               </v-col>
@@ -578,11 +578,11 @@
                                 ].dados.df.dados
                               "
                               campoValue="valor"
-                              campoText="Destino Final"
+                              campoText="Destino final"
                               :permitirEditar="false"
                               tipo="df"
                               :info="{
-                                header: 'Destino Final',
+                                header: 'Destino final',
                                 text: myhelp.Classe.Campos.DF,
                               }"
                             />

@@ -22,15 +22,11 @@
             <v-stepper-content step="1">
               <InformacaoGeral
                 @seguinte="changeE1"
-                @loadConsultaPGD="loadConsultaPGD($event)"
+                @consultaFT="consultaFT($event)"
                 :ppd="ppd"
                 :entidades="entidades"
                 :semaforos="semaforos"
                 :myhelp="myhelp"
-                :tsRada="tsRada"
-                :portariaLC="portariaLC"
-                :portaria="portaria"
-                :portariaRada="portariaRada"
                 />
             </v-stepper-content>
             <v-stepper-step color="amber accent-3" :key="2" :complete="e1 > 2" :step="2">
@@ -100,7 +96,6 @@
                     <BlocoAvaliacao
                       :ppd="ppd"
                       :semaforos="semaforos"
-                      :listaLegislacao="listaLegislacao"
                       :classesSI="classesSI"
                       :classesDaFonteL="classesDaFonteL"
                       @newSistemasRelacionados="newSistemasRelacionados($event, ppd.si.avaliacao.sistemasRelacionados)"
@@ -145,8 +140,8 @@
                 Guardar Trabalho
                 <v-icon right>save</v-icon>
               </v-btn>
-              <v-btn color="indigo darken-2" dark class="ma-2" @click="criarPPD">
-                Criar PPD
+              <v-btn color="indigo darken-2" dark class="ma-2" @click="submeterPPD">
+                Submeter
               </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
                 Finalizar
@@ -156,24 +151,6 @@
               </v-btn>
             </v-stepper-content>
           </v-stepper>
-          <v-row justify-center>
-            <v-dialog v-model="ppdGuardado" persistent width="50%">
-              <v-card>
-                <v-card-title class="headline grey lighten-2" primary-title>Trabalho pendente guardado</v-card-title>
-                <v-card-text>
-                  <br />
-                  <p>
-                    Os seus dados foram guardados para que possa retomar o trabalho
-                    mais tarde. Aceda aos pendentes para continuar.
-                  </p>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </v-row>
         </v-card-text>
       </v-card>
     </v-col>
@@ -222,6 +199,45 @@
         </v-dialog>
       </div>
     </template>
+    <v-row justify-center>
+      <v-dialog v-model="ppdPendente" persistent width="50%">
+        <v-card>
+          <v-card-title class="headline grey lighten-2" primary-title>Trabalho pendente guardado</v-card-title>
+          <v-card-text>
+            <br />
+            <p>
+              Os seus dados foram guardados para que possa retomar o trabalho
+              mais tarde. Aceda aos pendentes para continuar.
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row justify-center>
+      <v-dialog v-model="classeCriada" persistent width="50%">
+        <v-card>
+          <v-card-title class="headline grey lighten-2" primary-title>Trabalho submetido</v-card-title>
+          <v-card-text>
+            <br />
+            <p>
+              Os seus dados foram submetidos. Pode verificar na secção "Gestão de Pedidos".
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="$router.push('/')">Fechar</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-snackbar v-model="erroValidacao" :color="'warning'" :timeout="6000">
+      {{mensagemErroSI}}
+      <v-btn dark text @click="erroValidacao = false">Fechar</v-btn>
+    </v-snackbar>
   </v-row>
 </template>
 
@@ -295,6 +311,8 @@ export default {
         nomePPD: "",
         mencaoResp: "",
         entSel: [],
+        fonteLegitimacao: "",
+        tipoFonteL: ""
       },
       si:{
         numeroSI: "",
@@ -318,7 +336,9 @@ export default {
         },
         avaliacao: {
           descricao: "",
-          tabelaDecomposicao: [],
+          pcaSI: 0,
+          destinoSI: "",
+          decomposicao: [],
           selecionadosTabelaFL: [],
           sistemasRelacionados: [],
           checkedAti: "",
@@ -380,18 +400,18 @@ export default {
       user: {
         token: ""
       },
-      fonteID: ""
+
     },
     panels: [],
     //para apagar!!!!!!!
     a: "",
     //---Fonte de legitimacao---
 
-    portaria: [],
-    portariaLC: [],
-    portariaRada: [],
-    tabelasSelecao: [],
-    tsRada: [],
+    //portaria: [],
+    //portariaLC: [],
+    //portariaRada: [],
+    //tabelasSelecao: [],
+    //tsRada: [],
     tree_ou_tabela: false,
     search: "",
     classesTree: [],
@@ -420,9 +440,10 @@ export default {
 
     loginErrorSnackbar: false,
 
-    loginErrorMessage: "Precisa de fazer login para criar um PLano de preservação digital!",
+    loginErrorMessage: "Precisa de fazer login para criar um Plano de preservação digital!",
     mensValCodigo: "",
-
+    erroValidacao : false,
+    mensagemErroSI: "",
 
     semaforos: {
       entidadesReady: false,
@@ -441,9 +462,7 @@ export default {
     errosValidacao: false,
     pendenteGuardado: false,
     pendenteGuardadoInfo: "",
-
-
-
+    ppdPendente: false,
   }),
 
 
@@ -462,6 +481,7 @@ export default {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
+          //delete this.ppd.listaSistemasInfoAuxiliar;
           var userBD = this.$verifyTokenUser();
           var pendenteParams = {
             numInterv: 1,
@@ -473,6 +493,13 @@ export default {
             token: this.$store.state.token
           };
           var response = this.$request("post", "/pendentes", pendenteParams);
+          response.then((resp) => {
+            this.ppdPendente = true;
+            setTimeout(() => {
+              this.ppdPendente = false;
+              this.$router.push('/')
+            }, 5000);
+          });
           this.pendenteGuardado = true;
           this.pendenteGuardadoInfo = JSON.stringify(response.data);
         }
@@ -484,7 +511,7 @@ export default {
     apagar: function() {
       this.$refs.form.reset();
       this.panels = [];
-      this.loadConsultaPGD();
+      this.consultaFT();
     },
     newSistemasRelacionados: function(sistema, lista) {
         lista.push(sistema);
@@ -496,6 +523,7 @@ export default {
       this.ppd.si.avaliacao.sistemasRelacionados.splice(index, 1);
     },
     guardarSistema: async function() {
+      this.mensagemErroSI = "Por favor verifique o(s) seguinte(s):"
       if(/*this.validaAll("O campo número do SI",this.ppd.si.numeroSI) &&
         this.validaAll("O campo  nome do SI",this.ppd.si.nomeSI) &&
         this.validaAll("O campo administrador do sistema",this.ppd.si.identificacao.adminSistema) &&
@@ -510,89 +538,29 @@ export default {
         this.validaOutsourcing(this.ppd.si.identificacao.outsourcing, this.ppd.si.identificacao.outsourcingCheck) &&
         this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
         this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/
-        //this.$refs.form.validate() para verificar se os campos obrigatorios tao preenchidos
-        true
+        this.$refs.form.validate()
+        && !isNaN(this.ppd.si.numeroSI)
+        && this.ppd.si.identificacao.adminSistema.length > 0
+        && this.ppd.si.avaliacao.descricao != ""
+        && this.ppd.si.caracterizacao.formatos != ""
+        && this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao != ""
+         //para verificar se os campos obrigatorios tao preenchidos
+        //true
       ){
         var sistema = {
           visto: true,
           numeroSI: this.ppd.si.numeroSI,
           nomeSI: this.ppd.si.nomeSI,
-          identificacao:{
-            adminSistema: this.ppd.si.identificacao.adminSistema,
-            adminDados: this.ppd.si.identificacao.adminDados,
-            propSistemaPublico: this.ppd.si.identificacao.propSistemaPublico,
-            propSistemaPrivado: this.ppd.si.identificacao.propSistemaPrivado,
-            propDados: this.ppd.si.identificacao.propDados,
-            localDadosPublico: this.ppd.si.identificacao.localDadosPublico,
-            localDadosPrivado: this.ppd.si.identificacao.localDadosPrivado,
-            userList: this.ppd.si.identificacao.userList,
-            defResponsavel: this.ppd.si.identificacao.defResponsavel,
-            expressaoResponsavel:this.ppd.si.identificacao.expressaoResponsavel,
-            insourcing: this.ppd.si.identificacao.insourcing,
-            outsourcing: this.ppd.si.identificacao.outsourcing,
-            notas: this.ppd.si.identificacao.notas,
-          },
-          avaliacao:{
-            descricao: this.ppd.si.avaliacao.descricao,
-            tabelaDecomposicao:this.ppd.si.avaliacao.tabelaDecomposicao,
-            selecionadosTabelaFL:this.ppd.si.avaliacao.selecionadosTabelaFL,
-            sistemasRelacionados:this.ppd.si.avaliacao.sistemasRelacionados,
-            checkedAti:this.ppd.si.avaliacao.checkedAti,
-            checkedGrau:this.ppd.si.avaliacao.checkedGrau,
-            checkedCriticidade:this.ppd.si.avaliacao.checkedCriticidade,
-            objetoPreservacao:this.ppd.si.avaliacao.objetoPreservacao,
-            legislacoes:this.ppd.si.avaliacao.legislacoes,
-          },
-          caracterizacao:{
-            dependenciaSoft: this.ppd.si.caracterizacao.dependenciaSoft,
-            categoriaDados: this.ppd.si.caracterizacao.categoriaDados,
-            formato: this.ppd.si.caracterizacao.formato,
-            modeloCres: this.ppd.si.caracterizacao.modeloCres,
-            dimensao: this.ppd.si.caracterizacao.dimensao,
-            crescimento: this.ppd.si.caracterizacao.crescimento,
-            localSistema: this.ppd.si.caracterizacao.localSistema,
-            salaTec: this.ppd.si.caracterizacao.salaTec,
-            acessoSalaTec: this.ppd.si.caracterizacao.acessoSalaTec,
-            energiaRed: this.ppd.si.caracterizacao.energiaRed,
-            energiaSoc: this.ppd.si.caracterizacao.energiaSoc,
-            alarme: this.ppd.si.caracterizacao.alarme,
-            climatizacao: this.ppd.si.caracterizacao.climatizacao,
-            seguranca: this.ppd.si.caracterizacao.seguranca,
-            comunicacaoEx: this.ppd.si.caracterizacao.comunicacaoEx,
-            planoContingencia: this.ppd.si.caracterizacao.planoContingencia,
-            planoMudEvolucao: this.ppd.si.caracterizacao.planoMudEvolucao,
-            privAcesso: this.ppd.si.caracterizacao.privAcesso,
-            catSegDados: this.ppd.si.caracterizacao.catSegDados,
-            rotinaAuditoria: this.ppd.si.caracterizacao.rotinaAuditoria,
-            logsRotinas: this.ppd.si.caracterizacao.logsRotinas,
-            integridadeInfo: this.ppd.si.caracterizacao.integridadeInfo,
-            armazenamento: this.ppd.si.caracterizacao.armazenamento,
-            replicacaoDados: this.ppd.si.caracterizacao.replicacaoDados,
-            backupsRegular: this.ppd.si.caracterizacao.backupsRegular,
-            modeloBackup: this.ppd.si.caracterizacao.modeloBackup,
-            qualidadeBackup: this.ppd.si.caracterizacao.qualidadeBackup,
-            inventarioSoft: this.ppd.si.caracterizacao.inventarioSoft,
-            inventarioHard: this.ppd.si.caracterizacao.inventarioHard,
-            documentacaoSis: this.ppd.si.caracterizacao.documentacaoSis,
-            documentacaoProc: this.ppd.si.caracterizacao.documentacaoProc,
-            controlVersaoDProc: this.ppd.si.caracterizacao.controlVersaoDProc,
-            contratoAtivos: this.ppd.si.caracterizacao.contratoAtivos,
-            planoRecuperacao: this.ppd.si.caracterizacao.planoRecuperacao,
-            notas: this.ppd.si.caracterizacao.notas,
-          },
-          estrategia:{
-            utilizacaoOperacional:{
-              idMetodoPreservacao: this.ppd.si.estrategia.utilizacaoOperacional.idMetodoPreservacao,
-              fundMetodoPreservacao: this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao,
-              lacunas: this.ppd.si.estrategia.utilizacaoOperacional.lacunas,
-          },
-            utilizacaoMemoria:{
-              idMetodoPreservacao: this.ppd.si.estrategia.utilizacaoMemoria.idMetodoPreservacao,
-              fundMetodoPreservacao: this.ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao,
-              lacunas: this.ppd.si.estrategia.utilizacaoMemoria.lacunas,
-            }
-          }
+          identificacao: {},
+          avaliacao: {},
+          caracterizacao: {},
+          estrategia: {},
         };
+        //alert(JSON.stringify(this.ppd.si.avaliacao))
+        Object.assign(sistema.identificacao,this.ppd.si.identificacao)
+        Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
+        Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
+        Object.assign(sistema.estrategia,this.ppd.si.estrategia)
         /*this.ppd.si.numeroSI = "",
         this.ppd.si.nomeSI = "",
         this.ppd.si.identificacao.adminSistema = [],
@@ -612,7 +580,7 @@ export default {
         this.ppd.si.identificacao.outsourcing = "",
         this.ppd.si.identificacao.notas = "",
         this.ppd.si.avaliacao.descricao = "",
-        this.ppd.si.avaliacao.tabelaDecomposicao = [],
+        this.ppd.si.avaliacao.decomposicao = [],
         this.ppd.si.avaliacao.selecionadosTabelaFL = [],
         this.ppd.si.avaliacao.sistemasRelacionados = [],
         this.ppd.si.avaliacao.checkedAti = "",
@@ -622,7 +590,7 @@ export default {
         this.ppd.si.avaliacao.legislacoes = "",
         this.ppd.si.caracterizacao.dependenciaSoft = "",
         this.ppd.si.caracterizacao.categoriaDados = "",
-        this.ppd.si.caracterizacao.formato = "",
+        this.ppd.si.caracterizacao.formatos = "",
         this.ppd.si.caracterizacao.modeloCres = "",
         this.ppd.si.caracterizacao.dimensao = "",
         this.ppd.si.caracterizacao.crescimento = "",
@@ -661,36 +629,60 @@ export default {
         this.ppd.si.estrategia.utilizacaoMemoria.idMetodoPreservacao= "",
         this.ppd.si.estrategia.utilizacaoMemoria.fundMetodoPreservacao= "",
         this.ppd.si.estrategia.utilizacaoMemoria.lacunas= ""*/
-        this.dialog= false;
+        this.dialog = false;
         this.newSistema(sistema,this.ppd.sistemasInfo);
-        this.ppd.si.avaliacao.tabelaDecomposicao = []
+        this.ppd.si.avaliacao.decomposicao = []
+        this.ppd.si.avaliacao.sistemasRelacionados = []
         this.$refs.form.reset();//   ver como fazer para conseguir usar isto sem apagar tudo..de modo a deixar os items e assim...
         this.panels = [];
         this.addSI = false;
-        this.ppd.si.avaliacao.sistemasRelacionados = []
-        await this.loadConsultaPGD();
+        this.ppd.si.avaliacao.pcaSI = 0;
+        this.ppd.si.avaliacao.destinoSI = "";
+        this.ppd.si.avaliacao.selecionadosTabelaFL = [];
+        await this.consultaFT();
       } else {
-        this.dialog= true;
+        
+        if(isNaN(this.ppd.si.numeroSI)){
+           this.mensagemErroSI = this.mensagemErroSI.concat("- Número de SI não pode conter letras ")
+        }
+        //  //fazer verificação com os campos todos
+        if(this.ppd.si.identificacao.adminSistema.length <= 0){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Identificação ")
+        }
+        if(this.ppd.si.avaliacao.descricao == ""){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Avaliação ")
+        }
+        if(this.ppd.si.caracterizacao.formatos == ""){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Caracterização ")
+        }
+        if(this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao == ""){
+          this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Estratégia ")
+        }
+        this.dialog = true;
         this.erroValidacao = true;
       }
     },
 
-  //-------Fonte Legitimacao-------
-    loadConsultaPGD: async function() {
+    //-------Fonte Legitimacao-------
+    consultaFT: async function() {
       try {
-        var response = await this.$request("get", "/pgd/"+this.ppd.fonteID);
-        //this.classesSI = await prepararClasses(response.data);
-        this.classesDaFonteL = response.data;
-        for (var c of response.data) {
-          if(c.pca){
-            if(c.codigo){
-              this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
-            }
-            else{
-              this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
+        var tipo = this.ppd.geral.fonteLegitimacao.id.split("_");
+        if(tipo[0] == 'pgd'){
+          var response = await this.$request("get", "/pgd/"+this.ppd.geral.fonteLegitimacao.id);
+          //this.classesSI = await prepararClasses(response.data);
+          this.classesDaFonteL = response.data;
+          for (var c of response.data) {
+            if(c.pca){
+              if(c.codigo){
+                this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
+              }
+              else{
+                this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
+              }
             }
           }
         }
+        //if(tipo[0] == '')
       }catch (err) {
         return err;
       }
@@ -738,23 +730,6 @@ export default {
       }
     },
 
-    //--------------------
-    //----------------------------------------------
-    prepararLeg: async function(leg) {
-      try {
-        var myPortarias = [];
-        for (var l of leg) {
-          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
-        }
-        return myPortarias;
-      } catch (error) {
-        return [];
-      }
-    },
-
-
-  //-------Fonte Legitimacao-------
-
 
     // Faz load de todas as entidades
     loadEntidades: async function() {
@@ -775,29 +750,6 @@ export default {
       }
     },
 
-    loadLegislacao: async function() {
-      try {
-        var response = await this.$request("get", "/legislacao?estado=Ativo");
-        this.listaLegislacao = response.data
-          .map(function(item) {
-            return {
-              tipo: item.tipo,
-              numero: item.numero,
-              sumario: item.sumario,
-              data: item.data,
-              selected: false,
-              id: item.id
-            };
-          })
-          .sort(function(a, b) {
-            return -1 * a.data.localeCompare(b.data);
-          });
-        this.semaforos.legislacaoReady = true;
-      } catch (error) {
-        return error;
-      }
-    },
-
     newSistema: async function(sis, lista) {
         var index = lista.findIndex(e => e.numeroSI === sis.numeroSI);
         if(index != -1){
@@ -811,21 +763,20 @@ export default {
           lista.push(sis);
           //Dar reset as listas usadas....
           this.ppd.listaSistemasInfoAuxiliar = [...lista];
-          this.loadConsultaPGD(this.fonteID);
+          this.consultaFT(this.ppd.geral.fonteLegitimacao);
           var child = [];
           var index =  this.ppd.arvore.findIndex(l => l.id === sis.numeroSI);
           //ESTE CASO NUNCA ACONTECE PORQUE NAO SE PODE INSERIR OUTRO SI COM O MESMO ID....
           if(index != -1){
-            if(this.ppd.arvore[index].avaliacao.tabelaDecomposicao.length>0){
-              let aux = this.ppd.arvore[index].avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
+            if(this.ppd.arvore[index].avaliacao.decomposicao.length>0){
+              let aux = this.ppd.arvore[index].avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub).toString().replaceAll(",","#")
               child = aux.split("#").map(e=> e=({"id": e, "name":e}));
-              alert(child[0]);
             }
           }
           else{
               child = [];
-              if(sis.avaliacao.tabelaDecomposicao.length>0){
-                let aux = sis.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub + "-" + e.nomeSub).toString().replaceAll(",","#")
+              if(sis.avaliacao.decomposicao.length>0){
+                let aux = sis.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + "-" + e.nomeSub).toString().replaceAll(",","#")
                 child = aux.split("#").map(e=> e=({"id": e.split("-")[0], "name":e.split("-").slice(1).toString()}));
                 //child.sort();
                 child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));
@@ -836,6 +787,7 @@ export default {
         }
     },
 
+    //apagar
     selectSistema: function(sis) {
       this.ppd.sistemasInfo.push(sis);
       this.ppd.listaSistemasInfoAuxiliar.push(sis);
@@ -857,22 +809,28 @@ export default {
       return 0;
     },
 
-    criarPPD: async function() {
+    submeterPPD: async function() {
       try {
         if (this.$store.state.name === "") {
           this.loginErrorSnackbar = true;
         } else {
           var erros = await this.validarPPD();
           if (erros == 0) {
+            var auxPPD = {
+              geral: {},
+              sistemasInfo: []
+            };
+            auxPPD.geral = this.ppd.geral;
+            auxPPD.sistemasInfo = this.ppd.sistemasInfo;
             var userBD = this.$verifyTokenUser();
             var pedidoParams = {
               tipoPedido: "Criação",
               tipoObjeto: "PPD",
-              novoObjeto: this.ppd,
+              novoObjeto: auxPPD,
               user: { email: userBD.email },
               entidade: userBD.entidade,
               token: this.$store.state.token,
-              historico: []
+              historico: await this.criaHistorico()
             };
 
             var response = await this.$request(
@@ -880,16 +838,74 @@ export default {
               "/pedidos",
               pedidoParams
             );
-            this.codigoPedido = JSON.stringify(response.data);
-            this.classeCriada = true;
+            if(response.status == '200'){
+              this.classeCriada = true;
+            }
           } else {
             this.errosValidacao = true;
           }
         }
       } catch (error) {
-        console.log("Erro na criação do pedido: " + JSON.stringify(error.response.data));
+        console.log("Erro na criação do pedido: " + error);
       }
     },
+
+    criaHistorico: async function () {
+      //alert(JSON.stringify(this.ppd.geral.entSel))
+      let historico = [
+        {
+            numeroPPD: {
+              cor: "verde",
+              dados: this.ppd.geral.numeroPPD,
+              nota: null,
+            },
+            nomePPD: {
+              cor: "verde",
+              dados: this.ppd.geral.nomePPD,
+              nota: null,
+            },
+            mencaoResp: {
+              cor: "verde",
+              dados: this.ppd.geral.mencaoResp,
+              nota: null,
+            },
+            fonteLegitimacao: {
+              cor: "verde",
+              dados: this.ppd.geral.fonteLegitimacao,
+              nota: null,
+            },
+            tipoFonteL: {
+              cor: "verde",
+              dados: this.ppd.geral.tipoFonteL,
+              nota: null,
+            },
+            entSel: {
+              cor: "verde",
+              dados: this.ppd.geral.entSel.map((c) => {
+                return {
+                  cor: "verde",
+                  dados: JSON.parse(JSON.stringify(c)),
+                  nota: null,
+                };
+              }),
+              nota: null,
+            },
+            sistemasInfo: {
+              cor: "verde",
+              dados: this.ppd.sistemasInfo.map((c) => {
+                return {
+                  cor: "verde",
+                  dados: JSON.parse(JSON.stringify(c)),
+                  nota: null,
+                };
+              }),
+              nota: null,
+            },
+          },
+      ]
+      //alert(JSON.stringify(historico))
+      return historico
+    }
 
 
   },
@@ -897,29 +913,9 @@ export default {
   created: async function() {
       try{
         await this.loadEntidades();
-        await this.loadLegislacao();
-        //var user = this.$verifyTokenUser();
-        //var response = await this.$request("get", "/legislacao?fonte=PGD/LC");
-        //this.portariaLC = await this.prepararLeg(response.data);
-        var response2 = await this.$request("get", "/pgd");
-        this.portaria = await this.prepararLeg(response2.data);
-        //var response3 = await this.$request("get", "/legislacao?fonte=RADA");
-        //this.portariaRada = await this.prepararLeg(response3.data);
-        //var response4 = await this.$request("get","/rada");
-        //this.tsRada = response4.data
-        var response5 = await this.$request("get","/tabelasSelecao")
-        this.tabelasSelecao = response5.data.map(ts=>{return {
-            titulo: ts.designacao,
-            codigo: ts.id.split("clav#")[1]
-          }
-        });
+        //await this.loadLegislacao();
       }
       catch(e){
-        this.portariaLC = [];
-        this.portaria = [];
-        this.portariaRada = [];
-        this.tabelasSelecao = [];
-        this.tsRada = [];
         console.log('Erro ao carregar a informação inicial: ' + e);
       }
   }

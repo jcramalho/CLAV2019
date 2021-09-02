@@ -1,5 +1,12 @@
 <template>
-  <v-navigation-drawer :value="drawer" width="320px" right absolute clipped>
+  <v-navigation-drawer
+    style="z-index: 2 !important"
+    :value="drawer"
+    width="320px"
+    right
+    absolute
+    clipped
+  >
     <v-list dense rounded>
       <v-list-item-group color="primary">
         <v-list-item @click="$router.push('/users/pedidos')">
@@ -7,7 +14,7 @@
             {{ this.$store.state.name }}</v-list-item-content
           >
           <v-list-item-icon>
-            <v-icon>account_circle</v-icon>
+            <v-icon color="secondary">account_circle</v-icon>
           </v-list-item-icon>
         </v-list-item>
         <v-list-item @click="$router.push('/users/alteracaoPassword')">

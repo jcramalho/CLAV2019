@@ -1,223 +1,153 @@
 <template>
-  <v-card flat class="ma-3">
-    <v-row>
-      <!-- HEADER -->
-      <v-col>
+  <v-card flat class="pa-3">
+    <v-row justify="center">
+      <v-col cols="12" sm="8">
         <p class="clav-content-title-1">Gestão de Pedidos</p>
-        <!-- CONTENT -->
-        <v-card-text class="mt-0">
-          <v-row justify="center" class="mt-3">
-            <v-col cols="12" md="3" class="text-center">
-              <v-btn
-                @click="expandAll"
-                rounded
-                class="white--text"
-                color="success darken-1"
-                id="botao-shadow"
-              >
-                <unicon
-                  name="expand-all-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.714 20.71"
-                  fill="#ffffff"
-                />
-                <p class="ml-2">Expandir Tudo</p>
-              </v-btn>
-            </v-col>
-            <v-col cols="12" md="3" class="text-center">
-              <v-btn
-                @click="closeAll"
-                rounded
-                class="white--text"
-                color="error"
-                id="botao-shadow"
-              >
-                <unicon
-                  name="close-all-icon"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20.71 20.818"
-                  fill="#ffffff"
-                />
-                <p class="ml-2">Fechar Tudo</p>
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-expansion-panels flat multiple v-model="panelsArr" class="mt-4">
-            <PedidosNovos
-              :pedidos="pedidosSubmetidos"
-              :pesquisaPedidos="pesquisaPedidos"
-              @distribuir="distribuiPedido($event)"
-            />
-
-            <PedidosAnalise
-              :pedidos="pedidosDistribuidos"
-              :pesquisaPedidos="pesquisaPedidos"
-              @analisar="analisaPedido($event)"
-            />
-
-            <PedidosValidacao
-              :pedidos="pedidosValidados"
-              :pesquisaPedidos="pesquisaPedidos"
-              @validar="validaPedido($event)"
-            />
-
-            <PedidosEmDespacho
-              :pedidos="pedidosEmDespacho"
-              :pesquisaPedidos="pesquisaPedidos"
-              @despachar="despacharPedido($event)"
-            />
-
-            <PedidosDevolvidos
-              :pedidos="pedidosDevolvidos"
-              :pesquisaPedidos="pesquisaPedidos"
-            />
-
-            <PedidosProcessados
-              :pedidos="pedidosProcessados"
-              :pesquisaPedidos="pesquisaPedidos"
-            />
-          </v-expansion-panels>
-        </v-card-text>
-
-        <v-dialog v-model="distribuir" width="80%" persistent>
-          <AvancarPedido
-            :utilizadores="utilizadoresParaAnalisar"
-            :texto="{
-              textoTitulo: 'Distribuição',
-              textoAlert: 'análise',
-              textoBotao: 'Distribuir',
-            }"
-            :pedido="pedidoParaDistribuir.codigo"
-            @fecharDialog="fecharDialog()"
-            @avancarPedido="atribuirPedido($event)"
-          />
-        </v-dialog>
       </v-col>
     </v-row>
+    <TogglePanelsCLAV :n="panelsArrItems" @alternar="panelsArr = $event" />
+    <v-expansion-panels v-model="panelsArr" multiple>
+      <PainelCLAV
+        v-for="estado in estados"
+        :key="estado.titulo"
+        :titulo="estado.titulo"
+        :infoHeader="estado.titulo"
+      >
+        <template v-slot:icon>
+          <v-badge color="error" overlap offset-x="5">
+            <unicon
+              :name="estado.icon"
+              width="20"
+              height="20"
+              viewBox="0 0 20.71 20.709"
+              fill="#ffffff"
+            />
+            <template v-slot:badge>
+              {{ estado.pedidos ? estado.pedidos.length : 0 }}
+            </template>
+          </v-badge>
+        </template>
+        <template v-slot:conteudo>
+          <EstadoConteudo
+            :pedidos="estado.pedidos"
+            :utilizadores="utilizadoresMapped"
+            @distribuir="distribuiPedido($event)"
+            @devolver="devolverPedido($event)"
+            @analisar="analisaPedido($event)"
+            @validar="validaPedido($event)"
+            @despachar="despacharPedido($event)"
+          />
+        </template>
+      </PainelCLAV>
+    </v-expansion-panels>
+
+    <!-- Dialog distribuir -->
+    <v-dialog v-model="distribuir" width="80%">
+      <AvancarPedido
+        :utilizadores="utilizadoresParaAnalisar"
+        :texto="{
+          textoTitulo: 'Distribuição',
+          textoAlert: 'análise',
+          textoBotao: 'Distribuir',
+        }"
+        :pedido="pedidoParaDistribuir.codigo"
+        @fecharDialog="distribuir = false"
+        @avancarPedido="atribuirPedido($event)"
+      />
+    </v-dialog>
+
+    <!-- Dialog devolver -->
+    <v-dialog v-model="devolver" width="80%">
+      <DevolverPedido
+        @fecharDialog="devolver = false"
+        @devolverPedido="devolvePedido($event)"
+      />
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
-import PedidosNovos from "@/components/pedidos/PedidosNovos";
-import PedidosAnalise from "@/components/pedidos/PedidosAnalise";
-import PedidosValidacao from "@/components/pedidos/PedidosValidacao";
-import PedidosDevolvidos from "@/components/pedidos/PedidosDevolvidos";
-import PedidosEmDespacho from "@/components/pedidos/PedidosEmDespacho";
-import PedidosProcessados from "@/components/pedidos/PedidosProcessados";
+import PainelCLAV from "@/components/generic/PainelCLAV";
+import EstadoConteudo from "./EstadoConteudo";
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
+import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
+import TogglePanelsCLAV from "@/components/generic/TogglePanelsCLAV";
 
 import { NIVEIS_ANALISAR_PEDIDO, NIVEIS_DISTRIBUIR_PEDIDO } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
 export default {
   components: {
-    PedidosNovos,
-    PedidosAnalise,
-    PedidosValidacao,
-    PedidosDevolvidos,
-    PedidosProcessados,
+    PainelCLAV,
+    EstadoConteudo,
     AvancarPedido,
-    PedidosEmDespacho,
+    DevolverPedido,
+    TogglePanelsCLAV,
   },
-
   data() {
     return {
       pedidoParaDistribuir: {},
+      pedidoADevolver: {},
       distribuir: false,
+      devolver: false,
       utilizadoresParaAnalisar: [],
-      pedidosSubmetidos: [],
-      pedidosDistribuidos: [],
-      pedidosValidados: [],
-      pedidosEmDespacho: [],
-      pedidosDevolvidos: [],
-      pedidosProcessados: [],
-      pesquisaPedidos: {
-        painel: undefined,
-        pesquisa: "",
-        pagina: 1,
-      },
+      utilizadoresMapped: {},
       // Array para poder expandir/fechar todos os panels
       panelsArr: [],
       panelsArrItems: 6,
+      estados: [
+        {
+          titulo: "Pedidos Novos",
+          icon: "pedido-novo-icon",
+          pedidos: [],
+        },
+        {
+          titulo: "Pedidos em Apreciação Técnica",
+          icon: "pedido-apr-tecn-icon",
+        },
+        {
+          titulo: "Pedidos em Validação",
+          icon: "pedido-em-validacao-icon",
+          pedidos: [],
+        },
+        {
+          titulo: "Pedidos em Despacho",
+          icon: "pedido-despacho-icon",
+          pedidos: [],
+        },
+        {
+          titulo: "Pedidos Devolvidos",
+          icon: "pedido-devolvido-icon",
+          pedidos: [],
+        },
+        {
+          titulo: "Pedidos Aprovados",
+          icon: "pedido-aprovado-icon",
+          pedidos: [],
+        },
+      ],
     };
   },
+  // async created() {
+  //   const response = await this.$request("get", "/users");
 
-  async created() {
-    await this.carregaPedidos();
-
-    const storage = JSON.parse(localStorage.getItem("pesquisa-pedidos"));
-
-    if (storage !== null && storage !== undefined) {
-      if (storage.limpar) localStorage.removeItem("pesquisa-pedidos");
-      else {
-        this.pesquisaPedidos = storage;
-        this.panelsArr = [this.pesquisaPedidos.painel];
-      }
-
-      localStorage.removeItem("pesquisa-pedidos");
-    }
+  //   this.utilizadores = response.data.reduce(
+  //     (users, data) => ((users[data["email"]] = { ...data }), users),
+  //     {}
+  //   );
+  // },
+  activated() {
+    this.carregaPedidos();
   },
-
   methods: {
-    goBack() {
-      this.$router.push("/tsInfo");
-    },
-    // Abrir todos os v-expansion-panel
-    expandAll() {
-      this.panelsArr = [...Array(this.panelsArrItems).keys()].map((k, i) => i);
-      console.log(this.panelsArr);
-    },
-    // Fechar todos os v-expansion-panel
-    closeAll() {
-      this.panelsArr = [];
-    },
-    temPermissaoDistribuir() {
-      return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
-    },
-
-    async carregaPedidos() {
-      try {
-        let pedidos = await this.$request("get", "/pedidos");
-        pedidos = pedidos.data;
-
-        this.pedidosSubmetidos = pedidos.filter((p) => p.estado === "Submetido");
-        this.pedidosDistribuidos = pedidos.filter((p) => {
-          if (p.estado === "Distribuído" || p.estado === "Redistribuído") return p;
-        });
-        this.pedidosValidados = pedidos.filter((p) => {
-          if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
-        });
-        this.pedidosDevolvidos = pedidos.filter((p) => p.estado === "Devolvido");
-        this.pedidosProcessados = pedidos.filter((p) => p.estado === "Validado");
-
-        this.pedidosEmDespacho = pedidos.filter((p) => p.estado === "Em Despacho");
-
-        if (this.temPermissaoDistribuir()) await this.listaUtilizadoresParaAnalisar();
-      } catch (e) {
-        console.warn("e", e);
-        return e;
-      }
-    },
-
-    fecharDialog() {
-      this.distribuir = false;
-    },
-
     distribuiPedido(dados) {
       this.pedidoParaDistribuir = dados;
       this.distribuir = true;
     },
-
-    async listaUtilizadoresParaAnalisar() {
-      const response = await this.$request("get", "/users");
-
-      const utilizadoresFiltrados = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
-
-      this.utilizadoresParaAnalisar = utilizadoresFiltrados;
+    devolverPedido(dados) {
+      this.pedidoADevolver = dados;
+      this.devolver = true;
     },
-
     analisaPedido(pedido) {
       this.$router.push("/pedidos/analisar/" + pedido.codigo);
     },
@@ -230,6 +160,32 @@ export default {
       this.$router.push("/pedidos/despachar/" + pedido.codigo);
     },
 
+    temPermissaoDistribuir() {
+      return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
+    },
+
+    carregaPedidos() {
+      this.$request("get", "/pedidos/meta")
+        .then((data) => {
+          var pedidos = data.data;
+          this.estados[0].pedidos = pedidos.filter(
+            (p) => p.estado === "Submetido" || p.estado === "Ressubmetido"
+          );
+          this.estados[1].pedidos = pedidos.filter((p) => {
+            if (p.estado === "Distribuído" || p.estado === "Redistribuído") return p;
+          });
+          this.estados[2].pedidos = pedidos.filter((p) => {
+            if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
+          });
+          this.estados[4].pedidos = pedidos.filter((p) => p.estado === "Devolvido");
+          this.estados[5].pedidos = pedidos.filter((p) => p.estado === "Validado");
+
+          this.estados[3].pedidos = pedidos.filter((p) => p.estado === "Em Despacho");
+
+          if (this.temPermissaoDistribuir()) this.listaUtilizadoresParaAnalisar();
+        })
+        .catch((err) => console.log(err));
+    },
     async atribuirPedido(dados) {
       try {
         let pedido = JSON.parse(JSON.stringify(this.pedidoParaDistribuir));
@@ -239,8 +195,6 @@ export default {
         let dadosUtilizador = this.$verifyTokenUser();
 
         pedido.estado = estado;
-
-        pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
 
         const novaDistribuicao = {
           estado: estado,
@@ -261,10 +215,65 @@ export default {
 
         this.carregaPedidos();
         // this.$router.push("/pedidos");
-        this.fecharDialog();
+        this.distribuir = false;
       } catch (e) {
-        console.log("e :", e);
+        console.log(e);
       }
+    },
+
+    async devolvePedido(dados) {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedidoADevolver));
+
+        let estado = "Devolvido";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        pedido.estado = estado;
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.devolver = false;
+        this.pedidoADevolver = "";
+        this.carregaPedidos();
+        // location.reload();
+      } catch (e) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem = "Erro ao devolver o pedido, por favor tente novamente";
+      }
+    },
+    async listaUtilizadoresParaAnalisar() {
+      const response = await this.$request("get", "/users");
+
+      const utilizadoresFiltrados = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
+
+      this.utilizadoresParaAnalisar = utilizadoresFiltrados;
+      this.utilizadoresMapped = response.data.reduce(
+        (users, data) => ((users[data["email"]] = { ...data }), users),
+        {}
+      );
+    },
+    // Abrir todos os v-expansion-panel
+    expandAll() {
+      this.panelsArr = [...Array(this.panelsArrItems).keys()].map((k, i) => i);
+    },
+    // Fechar todos os v-expansion-panel
+    closeAll() {
+      this.panelsArr = [];
+    },
+    print(evento) {
+      console.log("---");
+      console.log(evento);
     },
   },
 };

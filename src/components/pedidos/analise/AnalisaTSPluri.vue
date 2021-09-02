@@ -95,10 +95,9 @@
               class="elevation-1"
               :footer-props="tsFooterProps"
               :page.sync="paginaTabela"
-              :expanded="expanded"
               expand-icon="$expand"
-              :single-expand="true"
-              @click:row="clicked"
+              single-expand
+              @item-expanded="clicked"
               show-expand
             >
               <template v-slot:[`item.dono`]="{ item }">
@@ -137,7 +136,7 @@
                           <v-expansion-panel-header
                             class="clav-linear-background white--text"
                           >
-                            <div class="separador">
+                            <div>
                               <font size="4"><b> Descritivo da Classe</b></font>
                               <InfoBox
                                 header="Descritivo da Classe"
@@ -156,30 +155,12 @@
                                   )
                                 ].dados
                               "
-                              campoValue="descricao"
-                              campoText="Descrição"
-                              :permitirEditar="false"
-                              tipo="string"
-                              :info="{
-                                text: myhelp.Classe.Campos.Descricao,
-                                header: 'Descrição',
-                              }"
-                            />
-                            <ValidaCampo
-                              v-if="item.notasAp.length > 0"
-                              :dadosOriginais="item"
-                              :novoHistorico="
-                                novoHistorico.ts.classes.dados[
-                                  novoHistorico.ts.classes.dados.findIndex(
-                                    (e) => e.dados.chave.dados === item.chave
-                                  )
-                                ].dados
-                              "
                               campoValue="notasAp"
                               campoText="Notas de Aplicação"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="notasAp"
                               arrayValue="nota"
+                              :notas="expandedProc.notasAp"
                               :info="{
                                 header: 'Notas de Aplicação',
                                 text: myhelp.Classe.Campos.NotasAp,
@@ -187,7 +168,6 @@
                             />
 
                             <ValidaCampo
-                              v-if="item.exemplosNotasAp.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -198,9 +178,10 @@
                               "
                               campoValue="exemplosNotasAp"
                               campoText="Exemplos de Notas de Aplicação"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="exemplosNotasAp"
                               arrayValue="exemplo"
+                              :notas="expandedProc.exemplosNotasAp"
                               :info="{
                                 header: 'Exemplos de Notas de Aplicação',
                                 text: myhelp.Classe.Campos.ExemplosNotasAp,
@@ -208,7 +189,6 @@
                             />
 
                             <ValidaCampo
-                              v-if="item.notasEx.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -217,11 +197,12 @@
                                   )
                                 ].dados
                               "
-                              campoValue="NotasEx"
+                              campoValue="notasEx"
                               campoText="Notas de Exclusão"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="notasEx"
                               arrayValue="nota"
+                              :notas="expandedProc.notasEx"
                               :info="{
                                 header: 'Notas de Exclusão',
                                 text: myhelp.Classe.Campos.NotasEx,
@@ -229,7 +210,6 @@
                             />
 
                             <ValidaCampo
-                              v-if="item.termosInd.length > 0"
                               :dadosOriginais="item"
                               :novoHistorico="
                                 novoHistorico.ts.classes.dados[
@@ -240,9 +220,10 @@
                               "
                               campoValue="termosInd"
                               campoText="Termos de indice"
-                              :permitirEditar="false"
-                              tipo="array"
+                              :permitirEditar="true"
+                              tipo="termosInd"
                               arrayValue="termo"
+                              :notas="expandedProc.termosInd"
                               :info="{
                                 header: 'Termos de Indice',
                                 text: myhelp.Classe.Campos.TermosIndice,
@@ -260,7 +241,14 @@
         </v-row>
       </ValidaCampo>
       <v-row>
+        <Voltar class="ma-5" />
         <v-spacer />
+        <v-btn
+          @click="guardarPedido()"
+          rounded
+          class="mt-5 clav-linear-background accent-4 white--text"
+          ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
+        >
         <PO
           operacao="Analisar"
           @avancarPedido="encaminharPedido($event)"
@@ -283,6 +271,37 @@
           @confirma="finalizarPedido(dialogConfirmacao.dados)"
         />
       </v-dialog>
+      <v-dialog v-model="dialogGuardado" width="50%" persistent>
+        <v-card dark class="info-card">
+          <v-card-title class="headline mb-2">
+            Pedido guardado com sucesso!</v-card-title
+          >
+          <div class="info-content-card px-3 mx-6 mb-2">
+            <v-card-text class="pa-2 px-4 font-weight-medium">
+              <p>
+                O seu pedido foi guardado com sucesso. Pode abandonar a página.
+              </p>
+            </v-card-text>
+          </div>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              color="red darken-4"
+              rounded
+              dark
+              elevation="0"
+              class="px-4"
+              @click="
+                {
+                  dialogGuardado = false;
+                }
+              "
+            >
+              Fechar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </div>
 </template>
@@ -291,6 +310,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import ValidaCampo from "@/components/pedidos/analise/tabSel/generic/ValidaCampo";
 import InfoBox from "@/components/generic/infoBox.vue";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   props: {
@@ -302,6 +322,7 @@ export default {
     ValidaCampo,
     InfoBox,
     ConfirmacaoOperacao,
+    Voltar,
   },
 
   data() {
@@ -311,12 +332,14 @@ export default {
       expanded: [],
       novoHistorico: null,
       json: null,
+      expandedProc: {},
       listaProcs: false,
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
         dados: null,
       },
+      dialogGuardado: false,
       tsHeaders: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
         { text: "Título", value: "titulo", class: "subtitle-1" },
@@ -342,18 +365,14 @@ export default {
     };
   },
   methods: {
-    clicked(value) {
+    async clicked({ item }) {
       if (
-        value.descricao ||
-        value.notaDF ||
-        value.notaPCA ||
-        value.formaContagem ||
-        value.subFormaContagem ||
-        value.designacaoParticipante ||
-        value.designacaoDono
-      )
-        if (this.expanded[0] == value) this.expanded.pop();
-        else this.expanded = [value];
+        !this.expandedProc.codigo ||
+        this.expandedProc.codigo != item.codigo
+      ) {
+        let response = await this.$request("get", "/classes/c" + item.codigo);
+        this.expandedProc = response.data;
+      }
     },
     async despacharPedido(dados) {
       try {
@@ -419,11 +438,35 @@ export default {
         //console.log("e :", e);
       }
     },
+    async guardarPedido() {
+      try {
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        await this.alterarOriginal();
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        pedido.historico[pedido.historico.length - 1] = this.novoHistorico;
+
+        const novaDistribuicao = {
+          estado: pedido.estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+        };
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.dialogGuardado = true;
+      } catch (e) {
+        //console.log("e :", e);
+      }
+    },
     alterarOriginal() {
       let n_vermelhos = 0;
       Object.keys(this.novoHistorico).map((k) => {
         if (k != "ts") {
-          this.novoHistorico[k].nota = null;
           n_vermelhos =
             this.novoHistorico[k].cor === "vermelho"
               ? n_vermelhos + 1
@@ -431,7 +474,6 @@ export default {
         }
       });
       Object.keys(this.novoHistorico.ts).map((k) => {
-        this.novoHistorico.ts[k].nota = null;
         n_vermelhos =
           this.novoHistorico.ts[k].cor === "vermelho"
             ? n_vermelhos + 1
@@ -439,7 +481,6 @@ export default {
       });
 
       this.novoHistorico.ts.classes.dados.forEach((classe) => {
-        classe.nota = null;
         Object.keys(classe.dados).map((k) => {
           classe.dados[k].nota = null;
           n_vermelhos =
@@ -513,32 +554,10 @@ export default {
     this.json = JSON.stringify(this.p, null, 2);
   },
   created() {
+    //alert(JSON.stringify(this.p.objeto.dados.entidades));
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );
-    Object.keys(this.novoHistorico).map((k) => {
-      if (k != "ts") this.novoHistorico[k].nota = null;
-    });
-
-    Object.keys(this.novoHistorico.ts).map((k) => {
-      if (k != "entidades") this.novoHistorico.ts[k].nota = null;
-    });
-
-    this.novoHistorico.ts.entidades.dados.forEach((e) => {
-      e.nota = null;
-    });
-
-    this.novoHistorico.ts.classes.dados.forEach((classe) => {
-      classe.nota = null;
-      Object.keys(classe.dados).map((k) => {
-        classe.dados[k].nota = null;
-        if (k === "pca" || k === "df") {
-          Object.keys(classe.dados[k].dados).map((d) => {
-            classe.dados[k].dados[d].nota = null;
-          });
-        }
-      });
-    });
   },
 };
 </script>

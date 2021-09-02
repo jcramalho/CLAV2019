@@ -31,18 +31,18 @@
               <v-card-text
                 v-if="
                   tipoPedido() &&
-                    pedido.objeto.tipo != 'Classe_N1' &&
-                    pedido.objeto.tipo != 'Classe_N2'
+                  pedido.objeto.tipo != 'Classe_N1' &&
+                  pedido.objeto.tipo != 'Classe_N2'
                 "
               >
                 <div v-for="(info, campo) in h" :key="campo">
                   <v-row
                     v-if="
                       info.dados !== '' &&
-                        info.dados !== null &&
-                        campo !== 'estado' &&
-                        campo !== 'codigo' &&
-                        campo !== 'id'
+                      info.dados !== null &&
+                      campo !== 'estado' &&
+                      campo !== 'codigo' &&
+                      campo !== 'id'
                     "
                   >
                     <v-col cols="2">
@@ -161,7 +161,7 @@
                         </div>
 
                         <div class="info-conteudo" v-else>
-                          <span v-for="i in info" :key="i">{{ i }}</span>
+                          <span v-for="i in info.dados" :key="i">{{ i }}</span>
                         </div>
                       </div>
                     </v-col>
@@ -184,7 +184,7 @@
               <v-card-text
                 v-else-if="
                   pedido.objeto.tipo === 'Classe_N1' ||
-                    pedido.objeto.tipo === 'Classe_N2'
+                  pedido.objeto.tipo === 'Classe_N2'
                 "
               >
                 <div v-for="(info, campo) in h" :key="campo">
@@ -379,7 +379,7 @@ import {
   mapKeys,
   converterDadosOriginais,
   identificaItemAdicionado,
-  renomearRepetidosEmArray
+  renomearRepetidosEmArray,
 } from "@/utils/utils";
 
 import ZonaControlo from "@/components/pedidos/generic/VerHistoricoZonaControlo";
@@ -398,7 +398,7 @@ export default {
     VerHistoricoRADA,
     VerHistoricoRADATabela,
     VerHistoricoTS,
-    VerHistoricoTSTabela
+    VerHistoricoTSTabela,
   },
 
   data() {
@@ -409,47 +409,53 @@ export default {
       dialogVerHistoricoEmTabela: false,
       dialogVerNota: {
         visivel: false,
-        nota: ""
+        nota: "",
       },
       etapaReferente: "",
       onboarding: 0,
       dados: [],
       entidadesHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
       footerPropsEntidades: {
         "items-per-page-text": "Entidades por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas"
+        "items-per-page-all-text": "Todas",
       },
 
       tipologiasHeaders: [
         { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" }
+        { text: "Designação", value: "designacao", class: "subtitle-1" },
       ],
       footerPropsTipologias: {
         "items-per-page-text": "Tipologias por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas"
+        "items-per-page-all-text": "Todas",
       },
 
       processosHeaders: [
         { text: "Código", value: "codigo", class: "subtitle-1" },
-        { text: "Título", value: "titulo", class: "subtitle-1" }
+        { text: "Título", value: "titulo", class: "subtitle-1" },
       ],
       footerPropsProcessos: {
         "items-per-page-text": "Processos por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todos"
+        "items-per-page-all-text": "Todos",
       },
       notasHeaders: [{ text: "Nota", value: "nota", class: "subtitle-1" }],
       footerPropsnotas: {
         "items-per-page-text": "Notas por página",
         "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas"
+        "items-per-page-all-text": "Todas",
       },
-      classesAllowedInfo: ["descricao", "titulo", "notasAp", "notasEx"]
+      classesAllowedInfo: [
+        "codigo",
+        "descricao",
+        "titulo",
+        "notasAp",
+        "notasEx",
+      ],
     };
   },
 
@@ -467,7 +473,7 @@ export default {
 
     // Cor Fundo
     const cores = [];
-    this.distribuicaoFormatada.forEach(element => {
+    this.distribuicaoFormatada.forEach((element) => {
       switch (element) {
         case "Objeto Atual no Sistema":
         case "Submetido":
@@ -505,13 +511,13 @@ export default {
 
     distribuicao() {
       return this.pedido.distribuicao;
-    }
+    },
   },
 
   watch: {
     onboarding(novoValor, antigoValor) {
       this.etapaReferente = this.distribuicaoFormatada[novoValor];
-    }
+    },
   },
 
   methods: {
@@ -530,7 +536,7 @@ export default {
       );
 
       // Cria array com todos os estados
-      const estados = distribuicaoAlterada.map(etapa => etapa.estado);
+      const estados = distribuicaoAlterada.map((etapa) => etapa.estado);
 
       // Renomeia os estados repeticos (adiciona #x na frente do estado onde x é o numero de vezes repetido)
       let estadosRenomeados = renomearRepetidosEmArray(estados);
@@ -575,8 +581,8 @@ export default {
         this.pedido.objeto.tipo != "TS Organizacional" &&
         this.pedido.objeto.tipo != "TS Pluriorganizacional"
       );
-    }
-  }
+    },
+  },
 };
 </script>
 

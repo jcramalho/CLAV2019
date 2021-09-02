@@ -11,6 +11,20 @@
     <!-- CONTENT -->
     <v-row justify="center">
       <v-col cols="12" md="8">
+        <p class="content-text">Pretende importar múltiplos ficheiros:</p>
+        <v-row justify="center">
+          <v-tooltip top color="info" open-delay="500">
+            <template v-slot:activator="{ on }">
+              <v-checkbox
+                class="py-5 mt-5"
+                v-model="multImport"
+                label="Importar em lote"
+                v-on="on"
+              ></v-checkbox>
+            </template>
+            <span> Fonte de legitimação</span>
+          </v-tooltip>
+        </v-row>
         <p class="content-text">
           Selecione a fonte de legitimação da Tabela de Seleção a importar:
         </p>
@@ -85,7 +99,7 @@
           </v-tooltip>
         </v-row>
         <div v-if="tipo != null">
-          <div class="pa-0 ma-0" v-if="tipo == 'Organizacional'">
+          <div class="pa-0 ma-0" v-if="!multImport && tipo == 'Organizacional'">
             <p class="content-text">
               Identifique a entidade ou tipologia da Tabela de Seleção:
             </p>
@@ -114,7 +128,7 @@
               <span> Entidade ou tipologia da Tabela de Seleção</span>
             </v-tooltip>
           </div>
-          <div class="pa-0 ma-0" v-else>
+          <div class="pa-0 ma-0" v-else-if="!multImport">
             <p class="content-text">
               Identifique as entidades e tipologias da Tabela de Seleção:
             </p>
@@ -138,25 +152,27 @@
               <span> Entidades e tipologias da Tabela de Seleção</span>
             </v-tooltip>
           </div>
-          <p class="content-text">
-            Insira a designação para a Tabela de Seleção:
-          </p>
-          <v-tooltip top color="info" open-delay="500">
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                class="my-4 mx-15"
-                color="primary"
-                v-on="on"
-                clearable
-                single-line
-                hide-details
-                v-model="designacao"
-                label="Designação da Tabela de Seleção"
-              ></v-text-field>
-            </template>
+          <div v-if="!multImport">
+            <p class="content-text">
+              Insira a designação para a Tabela de Seleção:
+            </p>
+            <v-tooltip top color="info" open-delay="500">
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  class="my-4 mx-15"
+                  color="primary"
+                  v-on="on"
+                  clearable
+                  single-line
+                  hide-details
+                  v-model="designacao"
+                  label="Designação da Tabela de Seleção"
+                ></v-text-field>
+              </template>
 
-            <span> Designação da Tabela de Seleção</span>
-          </v-tooltip>
+              <span> Designação da Tabela de Seleção</span>
+            </v-tooltip>
+          </div>
 
           <p class="content-text">
             Selecione o ficheiro com a Tabela de Seleção a importar:
@@ -169,7 +185,7 @@
                 placeholder="Selecione o ficheiro CSV/Excel com a Tabela de Seleção"
                 show-size
                 accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                multiple
+                :multiple="multImport ? true : false"
                 v-on="on"
                 truncate-length="100"
                 color="primary"
@@ -265,9 +281,27 @@
           </v-card>
         </div>
         <div class="text-center mt-6">
+          <v-progress-linear
+            class="my-2 white--text"
+            v-if="loading && multImport"
+            :value="(progresso * 100) / total"
+            color="primary"
+            height="25"
+          >
+            <template v-slot:default="{}">
+              <strong>
+                A Processar: {{ fileName }} - {{ progresso }}/{{
+                  total
+                }}
+                Ficheiros</strong
+              >
+            </template>
+          </v-progress-linear>
           <v-btn
             v-if="
+              (multImport && (fonteLegitimacao == null || file.length < 2)) ||
               (tipo == 'Organizacional' &&
+                !multImport &&
                 (designacao == null ||
                   file.length == 0 ||
                   tipo == null ||
@@ -275,6 +309,7 @@
                   entidade_tipologia == null ||
                   !entidade_tipologia.length)) ||
               (tipo == 'Pluriorganizacional' &&
+                !multImport &&
                 (designacao == null ||
                   file.length == 0 ||
                   tipo == null ||
@@ -302,6 +337,7 @@
           <v-btn
             v-else
             @click="enviarFicheiro()"
+            :loading="loading"
             rounded
             class="white--text clav-linear-background"
           >
@@ -317,15 +353,31 @@
         </div>
 
         <v-dialog v-model="erroDialog" persistent max-width="60%">
-          <v-card dark class="info-card">
-            <v-card-title class="headline mb-2">
+          <v-card class="info-card">
+            <v-card-title class="headline mb-2 white--text">
               Não foi possível criar o pedido de criação de tabela de
               seleção</v-card-title
             >
 
             <div class="info-content-card px-3 mx-6 mb-2">
               <v-card-text class="pa-2 px-4 font-weight-medium">
-                <p class="error--text">{{ erro }}</p>
+                <v-expansion-panels accordion>
+                  <v-expansion-panel v-for="(item, i) in erro" :key="i">
+                    <v-expansion-panel-header
+                      class="clav-linear-background white--text"
+                      >{{ item.file }}</v-expansion-panel-header
+                    >
+                    <v-expansion-panel-content>
+                      <ol>
+                        <li v-for="(erro, j) in item.errors" :key="j">
+                          <span class="red--text text--darken-5">{{
+                            erro.msg
+                          }}</span>
+                        </li>
+                      </ol>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
               </v-card-text>
             </div>
             <v-card-actions>
@@ -345,12 +397,64 @@
         </v-dialog>
         <v-dialog v-model="successDialog" persistent max-width="60%">
           <v-card class="info-card">
-            <v-card-title class="headline mb-2">
-              Pedido de criação de tabela de seleção criado com sucesso
+            <v-card-title class="headline mb-2 white--text">
+              {{
+                !multImport
+                  ? "Pedido de criação de tabela de seleção criado com sucesso"
+                  : "Resumo dos pedidos de criação de tabelas de seleção"
+              }}
             </v-card-title>
             <div class="info-content-card px-3 mx-6 mb-2">
               <v-card-text class="pa-2 px-4 font-weight-medium">
-                <p v-html="success"></p>
+                <v-expansion-panels v-if="multImport" accordion>
+                  <v-expansion-panel
+                    v-for="(item, i) in multImportList"
+                    :key="i"
+                  >
+                    <v-expansion-panel-header
+                      :class="
+                        item.errors
+                          ? 'clav-linear-background red--text'
+                          : 'clav-linear-background white--text'
+                      "
+                      >{{ item.file }}
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+                      <ol v-if="item.errors">
+                        <li v-for="(erro, j) in item.errors" :key="j">
+                          <span class="red--text text--darken-5">{{
+                            erro.msg
+                          }}</span>
+                        </li>
+                      </ol>
+                      <span v-else
+                        >Código do pedido: {{ item.id }}
+                        <p>Estatísticas:</p>
+                        <ol>
+                          <li>{{ loadStats(item.stats) }}</li>
+                        </ol>
+                        <v-btn
+                          v-if="multImport"
+                          color="success darken-1"
+                          rounded
+                          dark
+                          elevation="0"
+                          class="px-4"
+                          @click="seguirPedido(item.id)"
+                        >
+                          Seguir Pedido
+                        </v-btn></span
+                      >
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+                <div v-else>
+                  Código do pedido: {{ codigo }}
+                  <p>Estatísticas:</p>
+                  <ol>
+                    <li>{{ loadStats(stats) }}</li>
+                  </ol>
+                </div>
               </v-card-text>
             </div>
             <v-card-actions>
@@ -376,12 +480,13 @@
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
+                v-if="!multImport"
                 color="success darken-1"
                 rounded
                 dark
                 elevation="0"
                 class="px-4"
-                @click="seguirPedido"
+                @click="seguirPedido()"
               >
                 Seguir Pedido
               </v-btn>
@@ -470,12 +575,18 @@ export default {
     success: "",
     successDialog: false,
     loading: false,
+    progresso: 0,
+    total: 0,
+    fileName: "",
     entidades_tipologias: [],
     entidade_tipologia: [],
     tipo: "Organizacional",
     designacao: "",
     codigo: "",
     fonteLegitimacao: null,
+    multImport: false,
+    multImportList: [],
+    stats: [],
     dialogConfirmacao: {
       visivel: false,
       mensagem: "",
@@ -520,29 +631,135 @@ export default {
     goBack() {
       this.$router.push("/tsInfo");
     },
+    loadStats(fstats) {
+      for (var k in fstats) {
+        switch (k) {
+          case "processos":
+            return "Número de Processos: " + fstats[k];
+          case "donos":
+            return "Número de Processos Donos: " + fstats[k];
+          case "participantes":
+            return "Número de Processos Participantes: " + fstats[k];
+          /*
+          default:
+            stats += "<li>Entidade: " + k + "<ul>";
+            for (var kb in fstats[k]) {
+              switch (kb) {
+                case "processos":
+                  stats +=
+                    "<li>Número de Processos: " +
+                    response.data.stats[k][kb] +
+                    "</li>";
+                  break;
+                case "donos":
+                  stats +=
+                    "<li>Número de Processos Donos: " +
+                    response.data.stats[k][kb] +
+                    "</li>";
+                  break;
+                case "participantes":
+                  stats +=
+                    "<li>Número de Processos Participantes: " +
+                    response.data.stats[k][kb] +
+                    "</li>";
+                  break;
+                default:
+                  break;
+              }
+            }
+            stats += "</ul>";
+        }
+      }
+      stats += "</ul>";
+      */
+        }
+      }
+    },
     enviarFicheiro: async function () {
-      try {
-        this.erro = "";
-        this.erroDialog = false;
-        this.successDialog = false;
-        this.success = "";
-        this.loading = true;
-        var formData = new FormData();
-        formData.append("file", this.file[0]);
-        formData.append("designacao", this.designacao);
-        formData.append(
-          "entidades_ts",
-          JSON.stringify(this.entidade_tipologia)
-        );
-        formData.append("tipo_ts", "TS " + this.tipo);
-        formData.append("fonteL", this.fonteLegitimacao);
+      this.erro = "";
+      this.erroDialog = false;
+      this.successDialog = false;
+      this.success = "";
+      this.total = this.file.length;
+      this.loading = true;
 
-        var response = await this.$request(
-          "post",
-          "/tabelasSelecao/importar",
-          formData
-        );
-        /*
+      for (var index in this.file) {
+        try {
+          this.fileName = this.file[index].name;
+          var formData = new FormData();
+          formData.append("file", this.file[index]);
+
+          if (!this.multImport) {
+            formData.append("designacao", this.designacao);
+            formData.append(
+              "entidades_ts",
+              JSON.stringify(this.entidade_tipologia)
+            );
+          }
+          formData.append("multImport", this.multImport);
+          formData.append("tipo_ts", "TS " + this.tipo);
+          formData.append("fonteL", this.fonteLegitimacao);
+
+          var response = await this.$request(
+            "post",
+            "/tabelasSelecao/importar",
+            formData
+          );
+
+          if (response) {
+            if (this.multImport) {
+              this.multImportList.push({
+                file: this.file[index].name,
+                id: response.data.codigo,
+                stats: response.data.stats,
+              });
+            } else {
+              this.stats = response.data.stats;
+              this.codigo = response.data.codigo;
+            }
+          }
+        } catch (e) {
+          if (e) {
+            if (e.response.data.entidades) {
+              this.loading = false;
+              this.entidadesFalta = e.response.data.entidades;
+              this.acrescenta = e.response.data.acrescenta;
+              if (e.response.data.acrescenta) {
+                this.dialogConfirmacao = {
+                  visivel: true,
+                  mensagem: e.response.data.message,
+                };
+              } else {
+                this.dialogConfirmacao = {
+                  visivel: true,
+                  mensagem: e.response.data.message,
+                };
+              }
+            } else if (e.response.data.some((err) => !!err.file)) {
+              if (this.multImport) {
+                this.multImportList = this.multImportList.concat(
+                  e.response.data
+                );
+              } else {
+                this.loading = false;
+                this.erro = e.response.data;
+                this.erroDialog = true;
+              }
+            } else {
+              this.loading = false;
+              this.erro = e.response.data[0].msg || e.response.data;
+              this.erroDialog = true;
+            }
+          } else {
+            this.loading = false;
+            this.erro = "Erro interno";
+            this.erroDialog = true;
+          }
+        }
+        this.progresso += 1;
+      }
+
+      /*
         var response2 = await this.$request(
           "get",
           "/legislacao/" + response.data.codigo.split("pgd_")[1]
@@ -566,96 +783,80 @@ export default {
           response2.data
         );
         */
-        var stats = "<ul>";
-        for (var k in response.data.stats) {
-          switch (k) {
-            case "processos":
-              stats +=
-                "<li>Número de Processos: " + response.data.stats[k] + "</li>";
-              break;
-            case "donos":
-              stats +=
-                "<li>Número de Processos Donos: " +
-                response.data.stats[k] +
-                "</li>";
-              break;
-            case "participantes":
-              stats +=
-                "<li>Número de Processos Participantes: " +
-                response.data.stats[k] +
-                "</li>";
-              break;
-            default:
-              stats += "<li>Entidade: " + k + "<ul>";
-              for (var kb in response.data.stats[k]) {
-                switch (kb) {
-                  case "processos":
-                    stats +=
-                      "<li>Número de Processos: " +
-                      response.data.stats[k][kb] +
-                      "</li>";
-                    break;
-                  case "donos":
-                    stats +=
-                      "<li>Número de Processos Donos: " +
-                      response.data.stats[k][kb] +
-                      "</li>";
-                    break;
-                  case "participantes":
-                    stats +=
-                      "<li>Número de Processos Participantes: " +
-                      response.data.stats[k][kb] +
-                      "</li>";
-                    break;
-                  default:
-                    break;
-                }
+      /*
+      var stats = "<ul>";
+      for (var k in response.data.stats) {
+        switch (k) {
+          case "processos":
+            stats +=
+              "<li>Número de Processos: " + response.data.stats[k] + "</li>";
+            break;
+          case "donos":
+            stats +=
+              "<li>Número de Processos Donos: " +
+              response.data.stats[k] +
+              "</li>";
+            break;
+          case "participantes":
+            stats +=
+              "<li>Número de Processos Participantes: " +
+              response.data.stats[k] +
+              "</li>";
+            break;
+          default:
+            stats += "<li>Entidade: " + k + "<ul>";
+            for (var kb in response.data.stats[k]) {
+              switch (kb) {
+                case "processos":
+                  stats +=
+                    "<li>Número de Processos: " +
+                    response.data.stats[k][kb] +
+                    "</li>";
+                  break;
+                case "donos":
+                  stats +=
+                    "<li>Número de Processos Donos: " +
+                    response.data.stats[k][kb] +
+                    "</li>";
+                  break;
+                case "participantes":
+                  stats +=
+                    "<li>Número de Processos Participantes: " +
+                    response.data.stats[k][kb] +
+                    "</li>";
+                  break;
+                default:
+                  break;
               }
-              stats += "</ul>";
-          }
-        }
-        stats += "</ul>";
-
-        this.success = `Código do pedido: ${response.data.codigo}\n<p>Estatísticas:<\p>\n${stats}`;
-        this.codigo = response.data.codigo;
-
-        this.successDialog = true;
-      } catch (e) {
-        if (e.response.data.entidades) {
-          this.loading = false;
-          this.entidadesFalta = e.response.data.entidades;
-          this.acrescenta = e.response.data.acrescenta;
-          if (e.response.data.acrescenta) {
-            this.dialogConfirmacao = {
-              visivel: true,
-              mensagem: e.response.data.message,
-            };
-          } else {
-            this.dialogConfirmacao = {
-              visivel: true,
-              mensagem: e.response.data.message,
-            };
-          }
-        } else {
-          this.loading = false;
-          this.erro = e.response.data[0].msg || e.response.data;
-          this.erroDialog = true;
+            }
+            stats += "</ul>";
         }
       }
+      stats += "</ul>";
+      */
+
+      //this.success = `Código do pedido: ${response.data.codigo}\n<p>Estatísticas:<\p>\n${stats}`;
+      //this.codigo = response.data.codigo;
+
+      !this.dialogConfirmacao.visivel
+        ? !this.erroDialog
+          ? (this.successDialog = true)
+          : ""
+        : "";
     },
-    seguirPedido: function () {
+    seguirPedido: function (codigo = this.codigo) {
       switch (this.fonteLegitimacao) {
         case "TS/LC":
-          this.$router.push(`/pedidos/submissao/${this.codigo}`);
+          this.$router.push(`/pedidos/submissao/${codigo}`);
           break;
         case "PGD/LC":
-          this.$router.push(`/pgd/${this.codigo}`);
+          this.$router.push(`/pgd/${codigo}`);
           break;
         case "PGD":
-          this.$router.push(`/pgd/${this.codigo}`);
+          this.$router.push(`/pgd/${codigo}`);
           break;
         case "RADA":
-          this.$router.push(`/pgd/${this.codigo}`);
+          this.$router.push(`/pgd/${codigo}`);
           break;
       }
     },
@@ -676,9 +877,7 @@ export default {
       this.dialogConfirmacao.visivel = false;
       this.entidadesFalta.map((e) =>
         this.entidade_tipologia.splice(
-          this.entidade_tipologia[
-            this.entidade_tipologia.findIndex((ent) => e.sigla == ent)
-          ],
+          this.entidade_tipologia.findIndex((ent) => e.sigla == ent),
           1
         )
       );

@@ -3,14 +3,14 @@
   <div v-if="RE.entidadesProd.length > 0">
     <v-row>
       <v-col cols="12" xs="12" sm="3">
-        <div class="info-label">Entidades Produtoras</div>
+        <div class="info-label">Entidade produtora</div>
       </v-col>
       <v-col xs="12" sm="9">
         <v-autocomplete
           v-model="newSerie.entProdutoras"
           :items="RE.entidadesProd"
           :rules="[v => !!v[0] || 'Campo obrigatório!']"
-          label="Selecione as Entidades Produtoras"
+          label="Selecione uma ou mais entidades."
           multiple
           chips
           deletable-chips
@@ -31,13 +31,13 @@
   <div v-else>
     <v-row>
       <v-col cols="12" xs="12" sm="3">
-        <div class="info-label">Tipologias das Entidades Produtoras</div>
+        <div class="info-label">Tipologias da entidade produtora</div>
       </v-col>
       <v-col cols="12" xs="12" sm="9">
         <v-autocomplete
           v-model="newSerie.tipologiasProdutoras"
           :items="[RE.tipologiasProd]"
-          label="Selecione as Tipologias da Entidades produtoras"
+          label="Selecione as Tipologias da entidade produtora"
           multiple
           :rules="[v => !!v[0] || 'Campo obrigatório!']"
           chips

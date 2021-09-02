@@ -4,29 +4,25 @@
       v-if="!!p.pedidos_dependentes[0]"
       :pedidos="p.pedidos_dependentes"
     />
-    <v-card class="mt-4">
-      <v-card-title class="indigo darken-4 white--text title"
-        >{{ !!p.objeto.acao ? p.objeto.acao : "Criação" }} do RADA
-        <v-spacer />
-
-        <v-tooltip
-          v-if="
-            temPermissaoConsultarHistorico() &&
-            !(p.objeto.acao === 'Criação' && p.estado === 'Submetido')
-          "
-          bottom
-        >
-          <template v-slot:activator="{ on }">
-            <v-icon @click="verHistorico()" color="white" v-on="on">
-              history
-            </v-icon>
-          </template>
-          <span>Ver histórico de alterações...</span>
-        </v-tooltip>
-      </v-card-title>
-      <v-card-text>
-        <br />
-        <v-stepper v-model="e1" vertical class="elevation-0">
+    <v-row>
+      <v-col>
+        <v-stepper v-model="e1" vertical elevation="6">
+          <br />
+          <v-tooltip
+            v-if="
+              temPermissaoConsultarHistorico() &&
+              !(
+                p.objeto.acao === 'Criação' &&
+                (p.estado === 'Submetido' || p.estado === 'Ressubmetido')
+              )
+            "
+            bottom
+          >
+            <template v-slot:activator="{ on }">
+              <v-icon @click="verHistorico()" color="white" v-on="on"> history </v-icon>
+            </template>
+            <span>Ver histórico de alterações...</span>
+          </v-tooltip>
           <!-- Informação Geral -->
           <v-stepper-step color="amber accent-3" :key="1" :step="1" editable>
             <font size="4">
@@ -57,8 +53,8 @@
             <TSRada :TS="p.objeto.dados.tsRada" />
           </v-stepper-content>
         </v-stepper>
-      </v-card-text>
-    </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

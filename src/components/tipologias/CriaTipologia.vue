@@ -1,122 +1,90 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <!-- Header -->
-        <v-app-bar color="indigo darken-3" dark>
-          <v-toolbar-title class="card-heading"
-            >Nova tipologia de entidade</v-toolbar-title
-          >
-        </v-app-bar>
+  <v-card flat class="pa-3">
+    <p class="clav-content-title-1">Nova tipologia de entidade</p>
 
-        <!-- Content -->
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Nome da Tipologia
-                <InfoBox
-                  header="Nome da tipologia"
-                  :text="myhelp.Tipologias.Campos.Nome"
-                  helpColor="indigo darken-4"
-                  dialogColor="#E0F2F1"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="tipologia.designacao"
-                label="Nome da Tipologia"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+    <!-- Content -->
+    <v-card-text>
+      <Campo
+        nome="Nome da Tipologia"
+        infoHeader="Nome da Tipologia"
+        :infoBody="myhelp.Tipologias.Campos.Nome"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-text-field
+            filled
+            clearable
+            color="primary"
+            single-line
+            v-model="tipologia.designacao"
+            label="Nome da Tipologia"
+            hide-details
+            dense
+          ></v-text-field>
+        </template>
+      </Campo>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">
-                Sigla
-                <InfoBox
-                  header="Sigla"
-                  :text="myhelp.Tipologias.Campos.Sigla"
-                  helpColor="indigo darken-4"
-                  dialogColor="#E0F2F1"
-                />
-              </div>
-            </v-col>
-            <v-col>
-              <v-text-field
-                filled
-                clearable
-                color="indigo"
-                single-line
-                v-model="tipologia.sigla"
-                label="Sigla"
-              ></v-text-field>
-            </v-col>
-          </v-row>
+      <Campo
+        nome="Sigla"
+        infoHeader="Sigla"
+        :infoBody="myhelp.Tipologias.Campos.Sigla"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo>
+          <v-text-field
+            filled
+            clearable
+            color="indigo"
+            single-line
+            v-model="tipologia.sigla"
+            label="Sigla"
+            hide-details
+            dense
+          ></v-text-field>
+        </template>
+      </Campo>
 
-          <!-- Blocos expansivos -->
-          <v-expansion-panels>
-            <v-expansion-panel popout focusable>
-              <v-expansion-panel-header class="expansion-panel-heading">
-                <div>
-                  Entidades
-                  <InfoBox
-                    header="Selecionar entidades"
-                    :text="myhelp.Tipologias.Campos.Entidades"
-                    helpColor="indigo lighten-5"
-                    dialogColor="#E0F2F1"
-                  />
-                </div>
-
-                <template v-slot:actions>
-                  <v-icon color="white">expand_more</v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <DesSelEnt
-                  :entidades="entSel"
-                  tipo="tipologias"
-                  @unselectEntidade="unselectEntidade($event)"
-                />
-
-                <hr style="border-top: 1px dashed #dee2f8;" />
-
-                <SelEnt
-                  :entidadesReady="entidadesReady"
-                  :entidades="entidades"
-                  @selectEntidade="selectEntidade($event)"
-                />
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-card-text>
-        <v-snackbar
-          v-model="snackbar"
-          :timeout="8000"
-          color="error"
-          :top="true"
+      <!-- Blocos expansivos -->
+      <v-expansion-panels>
+        <PainelCLAV
+          titulo="Entidades"
+          icon="mdi-bank"
+          infoHeader="Selecionar entidades"
+          :infoBody="myhelp.Tipologias.Campos.Entidades"
         >
-          {{ text }}
-          <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-        </v-snackbar>
-      </v-card>
+          <template v-slot:conteudo>
+            <DesSelEnt
+              :entidades="entSel"
+              tipo="tipologias"
+              @unselectEntidade="unselectEntidade($event)"
+            />
 
+            <hr style="border-top: 1px dashed #dee2f8" />
+
+            <SelEnt
+              :entidadesReady="entidadesReady"
+              :entidades="entidades"
+              @selectEntidade="selectEntidade($event)"
+            />
+          </template>
+        </PainelCLAV>
+      </v-expansion-panels>
       <!-- Painel Operações -->
       <PainelOpsTip :t="tipologia" :acao="'Criação'" />
-    </v-col>
-  </v-row>
+    </v-card-text>
+    <v-snackbar v-model="snackbar" :timeout="8000" color="error" :top="true">
+      {{ text }}
+      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+    </v-snackbar>
+  </v-card>
 </template>
 
 <script>
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 import PainelOpsTip from "@/components/tipologias/PainelOperacoesTipologias";
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo.vue";
+import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
 const help = require("@/config/help").help;
 
@@ -143,15 +111,16 @@ export default {
     DesSelEnt,
     SelEnt,
     PainelOpsTip,
-    InfoBox
+    Campo,
+    PainelCLAV,
   },
 
   methods: {
     // Vai à API buscar todas as entidades
-    loadEntidades: async function() {
+    loadEntidades: async function () {
       try {
         let response = await this.$request("get", "/entidades");
-        this.entidades = response.data.map(function(item) {
+        this.entidades = response.data.map(function (item) {
           return {
             sigla: item.sigla,
             designacao: item.designacao,
@@ -164,7 +133,7 @@ export default {
       }
     },
 
-    unselectEntidade: function(entidade) {
+    unselectEntidade: function (entidade) {
       // Recoloca a entidade nos selecionáveis
       this.entidades.push(entidade);
       let index = this.entSel.findIndex((e) => e.id === entidade.id);
@@ -172,7 +141,7 @@ export default {
       this.tipologia.entidadesSel = this.entSel;
     },
 
-    selectEntidade: function(entidade) {
+    selectEntidade: function (entidade) {
       this.entSel.push(entidade);
       this.tipologia.entidadesSel = this.entSel;
       // Remove dos selecionáveis
@@ -186,7 +155,7 @@ export default {
     },
   },
 
-  created: function() {
+  created: function () {
     this.loadEntidades();
   },
 };

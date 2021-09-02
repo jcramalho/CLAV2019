@@ -1,102 +1,109 @@
 <template>
-  <v-card class="ma-8">
-    <p class="content-title-1 mt-3">{{ tipo }}</p>
+  <v-card class="pa-3">
+    <p class="clav-content-title-1">{{ tipo }}</p>
     <v-card-text>
-      <div class="info-content pa-4">
-        <v-tooltip top color="info" open-delay="500">
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-on="on"
-              v-model="search"
-              append-icon="search"
-              label="Procurar / filtrar"
-              text
-              single-line
-              hide-details
-              clearable
-              color="blue darken-3"
-              class="mt-n2 mb-3 mx-6 font-weight-medium"
-            ></v-text-field>
-          </template>
+      <v-tooltip top color="info" open-delay="500">
+        <template v-slot:activator="{ on }">
+          <v-text-field
+            v-on="on"
+            v-model="search"
+            append-icon="search"
+            label="Procurar / filtrar"
+            text
+            single-line
+            hide-details
+            clearable
+            color="blue darken-3"
+            class="mt-n2 mb-3 mx-6 font-weight-medium"
+          ></v-text-field>
+        </template>
 
-          <span> Filtrar </span>
-        </v-tooltip>
+        <span> Filtrar </span>
+      </v-tooltip>
 
-        <v-data-table
-          v-if="this.headers[this.cabecalho.length - 1]"
-          class="content-table"
-          :headers="headers"
-          :items="lista"
-          :search="search"
-          :footer-props="footer_props"
-        >
-          <template v-slot:no-results>
-            <v-alert
-              :value="true"
-              color="error"
-              icon="warning"
-              class="font-weight-medium my-3"
-              id="alerta-erro"
-              >Não foram encontrados resultados para "{{ search }}".</v-alert
-            >
-          </template>
+      <v-data-table
+        v-if="this.headers[this.cabecalho.length - 1]"
+        class="content-table"
+        :headers="headers"
+        :items="lista"
+        :search="search"
+        :footer-props="footer_props"
+      >
+        <template v-slot:no-results>
+          <v-alert
+            :value="true"
+            color="error"
+            icon="warning"
+            class="font-weight-medium my-3"
+            id="alerta-erro"
+            >Não foram encontrados resultados para "{{ search }}".</v-alert
+          >
+        </template>
 
-          <template v-slot:item="props">
-            <ListagemTI
-              v-if="tipo === 'Termos de Índice'"
-              :item="props.item"
-              @rowClicked="go($event.idClasse)"
-            />
+        <template v-slot:item="props">
+          <ListagemTI
+            v-if="tipo === 'Termos de Índice'"
+            :item="props.item"
+            @rowClicked="go($event.idClasse)"
+          />
 
-            <ListagemTE
-              v-else-if="tipo == 'Tipologias de Entidade'"
-              :item="props.item"
-              @rowClicked="go($event.id)"
-              @iconClicked="switchOperacao($event.operacao.descricao, $event.item.id)"
-            />
+          <ListagemTE
+            v-else-if="tipo == 'Tipologias de Entidade'"
+            :item="props.item"
+            @rowClicked="go($event.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
+          />
 
-            <ListagemE
-              v-else-if="tipo == 'Entidades'"
-              :item="props.item"
-              @rowClicked="go($event.id)"
-              @iconClicked="switchOperacao($event.operacao.descricao, $event.item.id)"
-            />
+          <ListagemE
+            v-else-if="tipo == 'Entidades'"
+            :item="props.item"
+            @rowClicked="go($event.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
+          />
 
-            <ListagemLegislacao
-              v-else-if="tipo == 'Legislação'"
-              :item="props.item"
-              @rowClicked="go($event.numero)"
-              @iconClicked="switchOperacao($event.operacao.descricao, $event.item.id)"
-            />
+          <ListagemLegislacao
+            v-else-if="tipo == 'Legislação'"
+            :item="props.item"
+            @rowClicked="go($event.numero)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, $event.item.id)
+            "
+          />
 
-            <ListagemNot
-              v-else-if="tipo == 'Notícias'"
-              :item="props.item"
-              @rowClicked="go($event.id)"
-              @iconClicked="switchOperacao($event.operacao.descricao, props.item.id)"
-            />
-            <tr v-else-if="tipo == 'RADA/CLAV'">
-              <td>{{ props.item.dataAprovacao }}</td>
-              <td>{{ props.item.titulo }}</td>
-              <td>
-                <ul>
-                  <li v-for="(entidade, i) in props.item.entResp" :key="i">
-                    <a :href="'/entidades/ent_' + entidade.sigla">{{
-                      entidade.sigla + " - " + entidade.designacao
-                    }}</a>
-                  </li>
-                </ul>
-              </td>
-              <td>{{ props.item.estado }}</td>
-              <td>
-                <v-btn text @click="$emit('ver', props.item.codigo)"
-                  ><v-icon>remove_red_eye</v-icon></v-btn
-                >
-                <v-btn text @click="$emit('download', props.item.codigo)"
-                  ><v-icon color="#c62828">picture_as_pdf</v-icon></v-btn
-                >
-              </td>
-              <!-- <td v-for="(campo, index) in props.item" v-bind:key="index">
+          <ListagemNot
+            v-else-if="tipo == 'Notícias'"
+            :item="props.item"
+            @rowClicked="go($event.id)"
+            @iconClicked="
+              switchOperacao($event.operacao.descricao, props.item.id)
+            "
+          />
+          <tr v-else-if="tipo == 'RADA/CLAV'">
+            <td>{{ props.item.dataAprovacao }}</td>
+            <td>{{ props.item.titulo }}</td>
+            <td>
+              <ul>
+                <li v-for="(entidade, i) in props.item.entResp" :key="i">
+                  <a :href="'/entidades/ent_' + entidade.sigla">{{
+                    entidade.sigla + " - " + entidade.designacao
+                  }}</a>
+                </li>
+              </ul>
+            </td>
+            <td>{{ props.item.estado }}</td>
+            <td>
+              <v-btn text @click="$emit('ver', props.item.codigo)"
+                ><v-icon>remove_red_eye</v-icon></v-btn
+              >
+              <v-btn text @click="$emit('download', props.item.codigo)"
+                ><v-icon color="#c62828">picture_as_pdf</v-icon></v-btn
+              >
+            </td>
+            <!-- <td v-for="(campo, index) in props.item" v-bind:key="index">
               <div v-if="props.item">
                 <div v-if="index === 'entidade'">
                   <a :href="'/entidades/ent_' + campo">{{ campo }}</a>
@@ -104,38 +111,39 @@
                 <div v-else>{{ campo }}</div>
               </div>
             </td> -->
-            </tr>
+          </tr>
 
-            <tr
-              v-else-if="tipo == 'Autos de Eliminação'"
-              @click="go(props.item.id.replace(/\//g, '_'))"
-            >
-              <td v-for="(campo, index) in props.item" v-bind:key="index">
-                <div v-if="props.item">
-                  <div v-if="index === 'entidade'">
-                    <a :href="'/entidades/ent_' + campo">{{ campo }}</a>
-                  </div>
-                  <div v-else>{{ campo }}</div>
+          <tr
+            v-else-if="tipo == 'Autos de Eliminação'"
+            @click="go(props.item.id.replace(/\//g, '_'))"
+          >
+            <td v-for="(campo, index) in props.item" v-bind:key="index">
+              <div v-if="props.item">
+                <div v-if="index === 'entidade'">
+                  <a :href="'/entidades/ent_' + campo">{{ campo }}</a>
                 </div>
-              </td>
-            </tr>
+                <div v-else>{{ campo }}</div>
+              </div>
+            </td>
+          </tr>
 
-            <tr v-else @click="go(props.item.id)">
-              <td v-for="(campo, index) in props.item" v-bind:key="index">
-                <div>{{ campo }}</div>
-              </td>
-            </tr>
-          </template>
-          <template v-slot:[`item.entidades`]="{ item }">
-            <span v-for="(ent, index) in item.entidades" :key="index">{{ ent }}</span>
-          </template>
+          <tr v-else @click="go(props.item.id)">
+            <td v-for="(campo, index) in props.item" v-bind:key="index">
+              <div>{{ campo }}</div>
+            </td>
+          </tr>
+        </template>
+        <template v-slot:[`item.entidades`]="{ item }">
+          <span v-for="(ent, index) in item.entidades" :key="index">{{
+            ent
+          }}</span>
+        </template>
 
-          <template v-slot:pageText="props">
-            Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
-            {{ props.itemsLength }}
-          </template>
-        </v-data-table>
-      </div>
+        <template v-slot:pageText="props">
+          Resultados: {{ props.pageStart }} - {{ props.pageStop }} de
+          {{ props.itemsLength }}
+        </template>
+      </v-data-table>
       <slot name="radatemp"></slot>
     </v-card-text>
   </v-card>
@@ -244,7 +252,6 @@ export default {
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "end",
             width: "auto",
             sortable: false,
             class: "subtitle-3",
@@ -253,27 +260,27 @@ export default {
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
+
             sortable: false,
-            width: "25%",
+            width: "auto",
             class: "subtitle-3",
           };
         else if (this.campos[i] === "entidades")
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
+
             sortable: true,
-            width: "15%",
+            width: "auto",
             class: "subtitle-3",
           };
         else if (this.campos[i] === "data" || this.campos[i] === "numero")
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
+
             sortable: true,
-            width: "13%",
+            width: "auto",
             class: "subtitle-3",
           };
         else if (
@@ -284,26 +291,32 @@ export default {
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "start",
             sortable: true,
-            width: "20%",
+            width: "auto",
             class: "subtitle-3",
           };
         else if (this.campos[i] === "designacao")
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "center",
             sortable: true,
-            width: "50%",
+            width: "auto",
+            class: "subtitle-3",
+          };
+        else if (this.campos[i] === "tipo")
+          this.headers[i] = {
+            text: this.cabecalho[i],
+            value: this.campos[i],
+            sortable: true,
+            width: "auto",
             class: "subtitle-3",
           };
         else
           this.headers[i] = {
             text: this.cabecalho[i],
             value: this.campos[i],
-            align: "center",
             sortable: true,
+            width: "auto",
             class: "subtitle-3",
           };
       }

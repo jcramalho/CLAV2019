@@ -5,7 +5,6 @@
         <v-data-table
           :headers="headers"
           :items="pedidos"
-          class="elevation-1"
           rows-per-page-text="Pedidos por página"
         >
           <template v-slot:no-data>
@@ -15,7 +14,7 @@
           </template>
 
           <template slot="headerCell" slot-scope="props">
-            <span style="color: blue;">
+            <span style="color: blue">
               {{ props.header.text }}
             </span>
           </template>
@@ -36,7 +35,10 @@
               </td>
               <td>
                 <v-btn
-                  v-if="props.item.estado == 'Submetido'"
+                  v-if="
+                    (props.item.estado == 'Submetido') |
+                      (props.item.estado == 'Ressubmetido')
+                  "
                   color="blue"
                   dark
                   rounded
@@ -62,8 +64,8 @@
           <v-card-text>
             <div v-if="!selectedUser.name">
               <p>
-                Selecione o utilizador a quem deve ser atribuída a análise do
-                pedido (basta clicar na linha correspondente):
+                Selecione o utilizador a quem deve ser atribuída a análise do pedido
+                (basta clicar na linha correspondente):
               </p>
 
               <v-data-table
@@ -86,7 +88,8 @@
             <div v-else>
               <p>
                 Tarefa atribuída a:
-                <b>{{ selectedUser.name }} ({{ selectedUser.entidade.split("_")[1] }})</b>.
+                <b>{{ selectedUser.name }} ({{ selectedUser.entidade.split("_")[1] }})</b
+                >.
               </p>
               <div class="info-label">Despacho</div>
               <v-textarea
@@ -100,21 +103,11 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn
-              color="indigo darken-4"
-              rounded
-              dark
-              @click="guardarDistribuicao"
-            >
+            <v-btn color="indigo darken-4" rounded dark @click="guardarDistribuicao">
               Guardar
             </v-btn>
 
-            <v-btn
-              color="red darken-4"
-              rounded
-              dark
-              @click="cancelarDistribuicao"
-            >
+            <v-btn color="red darken-4" rounded dark @click="cancelarDistribuicao">
               Cancelar
             </v-btn>
           </v-card-actions>
@@ -132,7 +125,7 @@ export default {
     despacho: "",
     usersHeaders: [
       { text: "Nome", value: "name", class: "title" },
-      { text: "Entidade", value: "entidade", class: "title" }
+      { text: "Entidade", value: "entidade", class: "title" },
     ],
     usersRecords: [],
     selectedUser: {},
@@ -142,29 +135,29 @@ export default {
         align: "left",
         sortable: true,
         value: "data",
-        class: "title"
+        class: "title",
       },
       {
         text: "Estado",
         align: "left",
         sortable: true,
         value: "estado",
-        class: "title"
+        class: "title",
       },
       { text: "Código", value: "codigo", sortable: false, class: "title" },
       {
         text: "Responsável",
         value: "responsavel",
         sortable: true,
-        class: "title"
+        class: "title",
       },
       { text: "Tipo", value: "tipo", sortable: true, class: "title" },
       { text: "Objeto", value: "objeto", sortable: false, class: "title" },
-      { text: "Tarefa", sortable: true, class: "title" }
+      { text: "Tarefa", sortable: true, class: "title" },
     ],
-    pedidos: []
+    pedidos: [],
   }),
-  created: async function() {
+  created: async function () {
     try {
       var response = await this.$request("get", "/pedidos");
       this.pedidos = response.data;
@@ -173,15 +166,15 @@ export default {
     }
   },
   methods: {
-    rowClicked: function(item) {
+    rowClicked: function (item) {
       this.$emit("pedidoSelected", item);
     },
 
-    showPedido: function(item) {
+    showPedido: function (item) {
       this.$emit("pedidoSelected", item);
     },
 
-    distribuirPedido: async function(pedido) {
+    distribuirPedido: async function (pedido) {
       try {
         this.pedidoParaDistribuir = pedido;
         var response = await this.$request("get", "/users");
@@ -192,25 +185,25 @@ export default {
       }
     },
 
-    cancelarDistribuicao: function() {
+    cancelarDistribuicao: function () {
       this.distribuir = false;
       this.selectedUser = {};
       this.despacho = "";
     },
 
-    guardarDistribuicao: async function() {
+    guardarDistribuicao: async function () {
       try {
         var novaDistribuicao = {
           estado: "Distribuído",
           responsavel: this.selectedUser.email,
           data: new Date(),
-          despacho: this.despacho
+          despacho: this.despacho,
         };
         this.pedidoParaDistribuir.estado = "Distribuído";
         this.pedidoParaDistribuir.user = { token: this.$store.state.token };
         var response = await this.$request("put", "/pedidos", {
           pedido: this.pedidoParaDistribuir,
-          distribuicao: novaDistribuicao
+          distribuicao: novaDistribuicao,
         });
 
         this.distribuir = false;
@@ -221,8 +214,8 @@ export default {
       } catch (e) {
         return e;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -23,14 +23,16 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9" v-if="semaforos.entidadesReady">
           <v-autocomplete
-            v-model="ppd.geral.entSel"
+            label="Selecione as entidades abrangidas pelo PPD"
             :items="entidades"
             item-text="label"
+            return-object
+            v-model="ppd.geral.entSel"
             placeholder="Selecione as entidades abrangidas pelo PPD"
             multiple
             chips
             deletable-chips
-            return-object
+            :rules="[(v) => !!v || 'Tem de escolher pelo menos uma entidade']"
           >
           </v-autocomplete>
         </v-col>
@@ -48,10 +50,11 @@
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-textarea
-              v-model="ppd.geral.mencaoResp"
-              label=""
-              solo
-              clearable
+            :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
+            v-model="ppd.geral.mencaoResp"
+            label=""
+            solo
+            clearable
           ></v-textarea>
         </v-col>
       </v-row>
@@ -74,58 +77,63 @@
           <div v-if="loadCheck === 'TS/LC'">
             <v-autocomplete
               label="Selecione a fonte de legitimação"
-              :items="tabelasSelecao"
-              item-text="titulo"
-              return-object
-              v-model="a"
-              solo
-              dense
-            />
-          </div>
-          <div v-else-if="loadCheck === 'PGD/LC'">
-            <v-autocomplete
-              label="Selecione a fonte de legitimação"
-              :items="portariaLC"
-              item-text="titulo"
-              return-object
-              v-model="a"
-              solo
-              dense
-            />
-          </div>
-          <div v-else-if="loadCheck === 'PGD'">
-            <v-autocomplete
-              label="Selecione a fonte de legitimação"
-              :items="portaria"
+              :items="this.tabelasSelecao"
               item-text="titulo"
               return-object
               v-model="fonteLegitimacaoSelected"
               solo
               dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
+            />
+          </div>
+          <div v-else-if="loadCheck === 'PGD/LC'">
+            <v-autocomplete
+              label="Selecione a fonte de legitimação"
+              :items="this.portariaLC"
+              item-text="titulo"
+              return-object
+              v-model="fonteLegitimacaoSelected"
+              solo
+              dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
+            />
+          </div>
+          <div v-else-if="loadCheck === 'PGD'">
+            <v-autocomplete
+              label="Selecione a fonte de legitimação"
+              :items="this.portaria"
+              item-text="titulo"
+              return-object
+              v-model="fonteLegitimacaoSelected"
+              solo
+              dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
             />
           </div>
           <div v-else-if="loadCheck === 'RADA'">
             <v-autocomplete
               label="Selecione a fonte de legitimação"
-              :items="portariaRada"
+              :items="this.portariaRada"
               item-text="titulo"
               return-object
-              v-model="a"
+              v-model="fonteLegitimacaoSelected"
               solo
               dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
             />
           </div>
           <div v-else>
-                <v-autocomplete
-                  label="Selecione a fonte de legitimação"
-                  :items="tsRada"
-                  item-text="titulo"
-                  return-object
-                  v-model="a"
-                  solo
-                  dense
-                ></v-autocomplete>
-              </div>
+            <v-autocomplete
+              label="Selecione a fonte de legitimação"
+              :items="this.tsRada"
+              item-text="titulo"
+              return-object
+              v-model="fonteLegitimacaoSelected"
+              solo
+              dense
+              :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
+            ></v-autocomplete>
+            </div>
         </v-col>
       </v-row>
     </v-form>
@@ -133,6 +141,10 @@
     <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">
       Limpar
     </v-btn>
+    <v-snackbar v-model="valido" :color="'warning'" :timeout="6000">
+      Precisa de selecionar pelo menos uma entidade.
+      <v-btn dark text @click="valido = false">Fechar</v-btn>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -144,7 +156,7 @@ import InfoBox from "@/components/generic/infoBox.vue";
 
 
 export default {
-  props: ["ppd", "entidades", "semaforos", "portariaLC", "portaria", "portariaRada", "tsRada", "myhelp"],
+  props: ["ppd", "entidades", "semaforos", "myhelp"],
   components: {
     InfoBox
   },
@@ -156,27 +168,99 @@ export default {
     //usado para receber a info selecionada da fonteL.. para trocar!! para ja so tem o PGD a funcionar!!!!
     a: "",
     loadCheck: "",
+    valido: false,
+    //---Fonte de legitimacao---
+
+    portaria: [],
+    portariaLC: [],
+    portariaRada: [],
+    tabelasSelecao: [],
+    tsRada: [],
+
   }),
   computed: {
 
   },
-  watch:{
-    "fonteLegitimacaoSelected": function() {
 
+  created: async function() {
+      try{
+        this.fonteLegitimacaoSelected = this.ppd.geral.fonteLegitimacao;
+        this.loadCheck = this.ppd.geral.tipoFonteL;
+        //await this.loadLegislacao();
+      }
+      catch(e){
+        console.log('Erro ao carregar a informação inicial: ' + e);
+      }
+  },
+
+  watch:{
+    "loadCheck": async function(){
+      try{
+        this.ppd.geral.tipoFonteL = this.loadCheck;
+        if(this.loadCheck == "TS/LC"){
+          var response = await this.$request("get","/tabelasSelecao")
+          this.tabelasSelecao = response.data.map(ts=>{return {
+              titulo: ts.designacao,
+              codigo: ts.id.split("clav#")[1]
+            }
+          });
+        }
+        if(this.loadCheck == "PGD/LC"){
+          var response = await this.$request("get", "/pgd/lc");
+          this.portariaLC = await this.prepararLeg(response.data);
+        }
+        if(this.loadCheck == "PGD"){
+          var response = await this.$request("get", "/pgd");
+          this.portaria = await this.prepararLeg(response.data);
+        }
+        if(this.loadCheck == "RADA"){
+          var response = await this.$request("get", "/legislacao?fonte=RADA");
+          this.portariaRada = await this.prepararLeg(response.data);
+        }
+        else{
+          var response = await this.$request("get","/rada");
+          this.tsRada = response.data
+        }
+      }
+       catch(e){
+        this.portariaLC = [];
+        this.portaria = [];
+        this.portariaRada = [];
+        this.tabelasSelecao = [];
+        this.tsRada = [];
+        console.log('Erro ao carregar a informação inicial: ' + e);
+      }
+    },
+
+    "fonteLegitimacaoSelected": function() {
       if (this.fonteLegitimacaoSelected) {
-        this.ppd.fonteID = this.fonteLegitimacaoSelected.id
-        this.$emit("loadConsultaPGD");
+        this.ppd.geral.fonteLegitimacao = this.fonteLegitimacaoSelected
+        this.$emit("consultaFT");
       }
     }
   },
 
   methods: {
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
     apagar: function() {
       this.$refs.form.reset();
     },
     next: function() {
-      if (this.$refs.form.validate()) {
-        this.$emit("seguinte", 2);
+      if(this.$refs.form.validate()){
+        if(this.ppd.geral.entSel.length > 0)
+          this.$emit("seguinte", 2);
+        else
+          this.valido = true
       }
     }
   }

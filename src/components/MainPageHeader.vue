@@ -56,7 +56,7 @@
       <!--Notificações-->
       <v-btn
         v-if="this.$store.state.name"
-        @click="drawerNotificacoes"
+        @click="$router.push('/users/painel')"
         icon
         color="primary"
       >
@@ -108,11 +108,7 @@
           slider-color="secondary"
           :icons-and-text="$vuetify.breakpoint.mdAndDown"
         >
-          <v-container
-            class="pa-0"
-            v-for="tab in tabsAcessiveis"
-            :key="tab.titulo"
-          >
+          <v-container class="pa-0" v-for="tab in tabsAcessiveis" :key="tab.titulo">
             <!--Tab sem menus-->
             <v-tab
               v-if="!tab.menu"
@@ -130,13 +126,7 @@
               />
               <p class="ml-3 hidden-md-and-down">{{ tab.titulo }}</p>
             </v-tab>
-            <v-menu
-              else
-              offset-y
-              open-on-hover
-              max-height="75%"
-              z-index="99999"
-            >
+            <v-menu else offset-y open-on-hover max-height="75%" z-index="99999">
               <!--Tabs com menus -->
               <template v-slot:activator="{ on }">
                 <v-tab
@@ -169,19 +159,12 @@
                   "
                 >
                   <!--Opção-->
-                  <v-row
-                    @click="go(menuLink.url)"
-                    justify="center"
-                    class="white--text"
-                  >
+                  <v-row @click="go(menuLink.url)" justify="center" class="white--text">
                     {{ menuLink.opcao }}
                   </v-row>
                   <!--Subopções-->
                   <transition name="opcoes">
-                    <div
-                      v-if="hover && i === activeItem && menuLink.acoes"
-                      class="acoes"
-                    >
+                    <div v-if="hover && i === activeItem && menuLink.acoes" class="acoes">
                       <div
                         v-for="action in menuLink.acoes"
                         :key="action.name"
@@ -298,12 +281,7 @@
           fill="#e5e5e5"
         />
       </v-btn>
-      <v-dialog
-        v-model="dialog"
-        fullscreen
-        hide-overlay
-        transition="fade-transition"
-      >
+      <v-dialog v-model="dialog" fullscreen hide-overlay transition="fade-transition">
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" icon dark>
             <unicon
@@ -316,7 +294,7 @@
           </v-btn>
         </template>
         <v-card class="toolbar">
-          <v-app-bar dark flat id="mobile-toolbar" class="toolbar">
+          <v-app-bar flat id="mobile-toolbar" class="toolbar">
             <v-toolbar-title
               v-if="this.$store.state.name == ''"
               @click="goRoute('/')"
@@ -330,9 +308,7 @@
               style="cursor: pointer"
             >
               <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
-              <p
-                class="subtitle-letter-md font-weight-light d-inline text-wrap"
-              >
+              <p class="subtitle-letter-md font-weight-light d-inline text-wrap">
                 {{ this.$store.state.entidade.split("_")[1] }}
               </p>
             </v-toolbar-title>
@@ -360,11 +336,7 @@
             </v-btn>
           </v-app-bar>
           <v-list rounded color="rgba(0,0,0,0)" dark two-line>
-            <v-container
-              class="pa-0"
-              v-for="tab in tabsAcessiveis"
-              :key="tab.titulo"
-            >
+            <v-container class="pa-0" v-for="tab in tabsAcessiveis" :key="tab.titulo">
               <v-list-item
                 v-if="!tab.menu"
                 @click="
@@ -688,13 +660,6 @@ export default {
           },
           level: [1, 3, 3.5, 4, 5, 6, 7],
           url: "/pedidos",
-          menu: [
-            {
-              opcao: "Pendentes",
-              level: [1, 3, 3.5, 4, 5, 6, 7],
-              url: "/pendentes",
-            },
-          ],
         },
         {
           titulo: "Estatística",
@@ -838,9 +803,7 @@ export default {
         var levelsSet = new Set();
 
         if (navbar[i].menu) {
-          navbar[i].menu.forEach((m) =>
-            m.level.forEach((l) => levelsSet.add(l))
-          );
+          navbar[i].menu.forEach((m) => m.level.forEach((l) => levelsSet.add(l)));
         } else {
           navbar[i].level.forEach((l) => levelsSet.add(l));
         }
@@ -858,9 +821,7 @@ export default {
           menu = JSON.parse(JSON.stringify(menu));
           for (var j = 0; j < menu.length; j++)
             if (navbar[i].menu[j].acoes)
-              menu[j].acoes = menu[j].acoes.filter((o) =>
-                o.level.includes(this.level)
-              );
+              menu[j].acoes = menu[j].acoes.filter((o) => o.level.includes(this.level));
           filtered.push({
             titulo: navbar[i].titulo,
             icon: navbar[i].icon,

@@ -58,8 +58,8 @@
           <v-card-title>Erros detetados na validação</v-card-title>
           <v-card-text>
             <p>
-              Há erros de validação. Selecione "Validar" para ver extamente
-              quais e proceder à sua correção.
+              Há erros de validação. Selecione "Validar" para ver extamente quais e
+              proceder à sua correção.
             </p>
           </v-card-text>
           <v-card-actions>
@@ -78,16 +78,11 @@
           <v-card-text>
             <p>Selecionou o cancelamento do pedido.</p>
             <p>Toda a informação introduzida será eliminada.</p>
-            <p>
-              Confirme a decisão para ser reencaminhado para a página principal.
-            </p>
+            <p>Confirme a decisão para ser reencaminhado para a página principal.</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn
-              color="indigo darken-1"
-              text
-              @click="cancelarCriacaoLegislacao"
+            <v-btn color="indigo darken-1" text @click="cancelarCriacaoLegislacao"
               >Confirmo</v-btn
             >
             <v-btn color="red darken-1" dark @click="pedidoEliminado = false"
@@ -99,12 +94,7 @@
     </v-row>
 
     <v-row>
-      <v-snackbar
-        v-model="loginErrorSnackbar"
-        :timeout="8000"
-        color="error"
-        :top="true"
-      >
+      <v-snackbar v-model="loginErrorSnackbar" :timeout="8000" color="error" :top="true">
         {{ loginErrorMessage }}
         <v-btn text @click="loginErrorSnackbar = false">Fechar</v-btn>
       </v-snackbar>
@@ -125,7 +115,7 @@ import { criarHistorico, extrairAlteracoes } from "@/utils/utils";
 import { eNUV, eDataFormatoErrado, eNV } from "@/utils/validadores";
 
 export default {
-  props: ["l", "acao", "original"],
+  props: ["l", "acao", "original", "pedido"],
 
   components: {
     ValidarLegislacaoInfoBox,
@@ -282,30 +272,28 @@ export default {
               throw new Error(
                 "Não foram alterados dados. Altere a informação pretendida e volte a submeter o pedido."
               );
+            if (this.pedido) this.ressubmeterPedido();
+            else {
+              let userBD = this.$verifyTokenUser();
 
-            let userBD = this.$verifyTokenUser();
+              let pedidoParams = {
+                tipoPedido: this.acao,
+                tipoObjeto: "Legislação",
+                novoObjeto: dataObj,
+                user: { email: userBD.email },
+                entidade: userBD.entidade,
+                token: this.$store.state.token,
+                historico: historico,
+              };
 
-            let pedidoParams = {
-              tipoPedido: this.acao,
-              tipoObjeto: "Legislação",
-              novoObjeto: dataObj,
-              user: { email: userBD.email },
-              entidade: userBD.entidade,
-              token: this.$store.state.token,
-              historico: historico,
-            };
+              if (this.original !== undefined)
+                pedidoParams.objetoOriginal = this.original;
+              else pedidoParams.objetoOriginal = dataObj;
 
-            if (this.original !== undefined)
-              pedidoParams.objetoOriginal = this.original;
-            else pedidoParams.objetoOriginal = dataObj;
+              const codigoPedido = await this.$request("post", "/pedidos", pedidoParams);
 
-            const codigoPedido = await this.$request(
-              "post",
-              "/pedidos",
-              pedidoParams
-            );
-
-            this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+              this.$router.push(`/pedidos/submissao/${codigoPedido.data}`);
+            }
           } else {
             this.errosValidacao = true;
           }
@@ -318,12 +306,38 @@ export default {
       }
     },
 
+    async ressubmeterPedido() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let estado = "Ressubmetido";
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: "Ressubmissão",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.$router.push(`/pedidos/submissao/${pedido.codigo}`);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
     // Cancela a criação da Legislacao
-    eliminarLegislacao: function() {
+    eliminarLegislacao: function () {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoLegislacao: function() {
+    cancelarCriacaoLegislacao: function () {
       this.$router.push("/");
     },
   },

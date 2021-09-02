@@ -1,106 +1,113 @@
 <template>
-  <v-expansion-panel v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF">
-    <!-- SUBCLASSES 4º NÍVEL -->
-    <v-expansion-panel-header class="expansion-panel-heading">
-      <div>Subclasses de nível 4</div>
-      <template v-slot:actions>
-        <v-icon color="white">expand_more</v-icon>
-      </template>
-    </v-expansion-panel-header>
-    <v-expansion-panel-content>
-      <v-row>
-        <v-col cols="2">
-          <v-tabs vertical outlined v-model="active">
-            <v-tab v-for="subClasse in c.subclasses" :key="subClasse.codigo">{{
-              subClasse.codigo
-            }}</v-tab>
-          </v-tabs>
+  <v-expansion-panels>
+    <v-expansion-panel v-if="c.temSubclasses4NivelPCA || c.temSubclasses4NivelDF">
+      <!-- SUBCLASSES 4º NÍVEL -->
+      <v-expansion-panel-header class="clav-linear-background white--text">
+        <div>Subclasses de nível 4</div>
+        <template v-slot:actions>
+          <v-icon color="white">expand_more</v-icon>
+        </template>
+      </v-expansion-panel-header>
+      <v-expansion-panel-content>
+        <v-row>
+          <v-col cols="2">
+            <v-tabs vertical outlined v-model="active">
+              <v-tab v-for="subClasse in c.subclasses" :key="subClasse.codigo">{{
+                subClasse.codigo
+              }}</v-tab>
+            </v-tabs>
 
-          <v-btn depressed x-small color="primary" @click="addSubclasse">
-            Adicionar subclasse
-            <v-icon dark right>add_circle_outline</v-icon>
-          </v-btn>
-        </v-col>
-        <v-col>
-          <v-tabs-items v-model="active">
-            <v-tab-item
-              v-for="subClasse in c.subclasses"
-              :key="subClasse.codigo"
-              class="ma-2 pa-2"
-            >
-              <v-row>
-                <v-col cols="2">
-                  <div class="info-label">Código:</div>
-                </v-col>
-                <v-col>{{ subClasse.codigo }}</v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="2">
-                  <div class="info-label">Código do pai:</div>
-                </v-col>
-                <v-col>{{ c.codigo }}</v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="2">
-                  <div class="info-label">Título:</div>
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    v-model="subClasse.titulo"
-                    label="Título"
-                    solo
-                    clearable
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="2">
-                  <div class="info-label">Descrição:</div>
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    v-model="subClasse.descricao"
-                    label="Descrição"
-                    solo
-                    clearable
-                  ></v-text-field>
-                </v-col>
-              </v-row>
+            <v-btn depressed x-small color="primary" @click="addSubclasse">
+              Adicionar subclasse
+              <v-icon dark right>add_circle_outline</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-tabs-items v-model="active">
+              <v-tab-item
+                v-for="subClasse in c.subclasses"
+                :key="subClasse.codigo"
+                class="ma-2 pa-2"
+              >
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Código:</div>
+                  </v-col>
+                  <v-col>{{ subClasse.codigo }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Código do pai:</div>
+                  </v-col>
+                  <v-col>{{ c.codigo }}</v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Título:</div>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      v-model="subClasse.titulo"
+                      label="Título"
+                      solo
+                      clearable
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="2">
+                    <div class="info-label">Descrição:</div>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      v-model="subClasse.descricao"
+                      label="Descrição"
+                      solo
+                      clearable
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
 
-              <hr style="border-top: 3px dashed green; border-radius: 2px" />
+                <ListaDeNotasCLAV
+                  nome="Termos de Índice"
+                  infoHeader="Termos de Índice"
+                  :infoBody="myhelp.Classe.Campos.TermosIndice"
+                  :objeto="subClasse"
+                  tipo="ti"
+                ></ListaDeNotasCLAV>
 
-              <TermosIndiceOps :c="subClasse" />
+                <hr style="border-top: 3px dashed green; border-radius: 2px" />
 
-              <hr style="border-top: 3px dashed green; border-radius: 2px" />
-
-              <BlocoDecisoes4Nivel
-                :c="subClasse"
-                :semaforos="semaforos"
-                :pcaFormasContagem="pcaFormasContagem"
-                :pcaSubFormasContagem="pcaSubFormasContagem"
-              />
-            </v-tab-item>
-          </v-tabs-items>
-        </v-col>
-      </v-row>
-    </v-expansion-panel-content>
-  </v-expansion-panel>
+                <BlocoDecisoes4Nivel
+                  :c="subClasse"
+                  :semaforos="semaforos"
+                  :pcaFormasContagem="pcaFormasContagem"
+                  :pcaSubFormasContagem="pcaSubFormasContagem"
+                />
+              </v-tab-item>
+            </v-tabs-items>
+          </v-col>
+        </v-row>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+  </v-expansion-panels>
 </template>
 
 <script>
-import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
+const help = require("@/config/help").help;
+
 import BlocoDecisoes4Nivel from "@/components/classes/criacao/BlocoDecisoes4Nivel.vue";
 
 export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
 
   components: {
-    TermosIndiceOps,
     BlocoDecisoes4Nivel,
   },
 
   data: function () {
     return {
+      myhelp: help,
       active: null,
 
       destinoFinalTipos: [

@@ -10,13 +10,13 @@
         <RADAEntry v-if="!!UI.codCota" label="Cota" :value="UI.codCota" />
         <RADAEntry v-if="!!UI.descricao" label="Descrição" :value="UI.descricao" />
         <RADAEntryDouble
-          label_1="Data Inicial"
+          label_1="Data inicial"
           :value_1="UI.dataInicial"
-          label_2="Data Final"
+          label_2="Data final"
           :value_2="UI.dataFinal"
         />
 
-        <RADAEntry label="Entidades Produtoras" v-if="UI.produtor.entProdutoras.length > 0">
+        <RADAEntry label="Entidade produtora" v-if="UI.produtor.entProdutoras.length > 0">
           <template v-slot:valor>
             <ul>
               <li v-for="(ent, i) in UI.produtor.entProdutoras" :key="i">{{ent}}</li>

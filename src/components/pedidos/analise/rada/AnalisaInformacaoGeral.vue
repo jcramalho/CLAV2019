@@ -23,7 +23,7 @@
       :dadosOriginais="RADA"
       :novoHistorico="novoHistorico"
       campoValue="entRes"
-      campoText="Entidades Responsáveis"
+      campoText="Entidade responsável"
       tipo="array"
     >
       <template v-slot:input="props">
@@ -33,7 +33,7 @@
           @change="props.items.updateValue"
           v-model="props.items.campoEditado"
           :items="entidades"
-          placeholder="Selecione as Entidades Responsáveis."
+          placeholder="Selecione uma ou mais entidades."
           chips
           multiple
           solo

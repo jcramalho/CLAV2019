@@ -187,6 +187,20 @@ export default {
         width: "15%",
         filterable: false,
       },
+      {
+        text: "Tipo",
+        value: "tipoProc",
+        width: "0%",
+        class: ["body-2", "font-weight-bold"],
+        align: " d-none",
+      },
+      {
+        text: "Pré-Selecionado",
+        value: "preSelectedLabel",
+        width: "0%",
+        class: ["body-2", "font-weight-bold"],
+        align: " d-none",
+      },
     ],
     procsFooterProps: {
       "items-per-page-text": "Processos por página",

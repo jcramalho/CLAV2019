@@ -1,14 +1,11 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <v-subheader class="info-label">Tipologias selecionadas</v-subheader>
-    </v-col>
-    <v-col v-if="tipologias.length > 0">
+  <Campo nome="Tipologias selecionadas" color="neutralpurple">
+    <template v-slot:conteudo>
       <v-data-table
+        v-if="tipologias.length > 0"
         :headers="headers"
         :items="tipologias"
         :items-per-page="100"
-        class="elevation-1"
         hide-default-footer
       >
         <template v-slot:headers="props">
@@ -35,34 +32,36 @@
           </tr>
         </template>
       </v-data-table>
-    </v-col>
-    <v-col v-else>
-      <v-alert :value="true" type="warning"
+      <v-alert v-else :value="true" type="warning"
         >Não tem tipologias selecionadas...</v-alert
       >
-    </v-col>
-  </v-row>
+    </template>
+  </Campo>
 </template>
 
 <script>
+import Campo from "@/components/generic/Campo.vue";
 export default {
   props: ["tipologias"],
 
-  data: function() {
+  components: {
+    Campo,
+  },
+  data: function () {
     return {
       headers: [
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },
-        { text: "Remover" }
-      ]
+        { text: "Remover" },
+      ],
     };
   },
 
   methods: {
-    unselectTipologia: function(tipologia) {
+    unselectTipologia: function (tipologia) {
       this.$emit("unselectTipologia", tipologia);
-    }
-  }
+    },
+  },
 };
 </script>
 

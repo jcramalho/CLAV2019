@@ -1,285 +1,104 @@
 <template>
-  <v-content
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
-    }"
-  >
-    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
-      <v-row>
-        <v-col class="py-0 my-0">
-          <v-btn
-            @click="$router.go(-1)"
-            rounded
-            class="white--text clav-linear-background"
+  <v-card flat class="pa-3">
+    <v-row>
+      <v-col>
+        <!-- HEADER -->
+        <p class="clav-content-title-1">Criar Classe</p>
+
+        <BlocoMeta :c="classe" class="mt-6" />
+
+        <v-expansion-panels flat class="mt-6">
+          <!-- DESCRITIVO DA CLASSE -->
+          <BlocoDescritivo :c="classe" class="mt-6" />
+
+          <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
+          <BlocoContexto
+            :c="classe"
+            :semaforos="semaforos"
+            :procRel="listaProcessos"
+            :legs="listaLegislacao"
+            v-if="classe.nivel == 3"
+          />
+
+          <!-- DECISÕES DE AVALIAÇÂO -->
+
+          <PainelCLAV
+            v-if="classe.nivel == 3"
+            titulo="Decisões de Avaliação"
+            infoHeader="Decisões de Avaliação"
+            :infoBody="myhelp.Classe.BlocoDecisoes"
           >
-            <unicon
-              name="arrow-back-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 20.71 37.261"
-              fill="#ffffff"
-            />
-            <p class="ml-2">Voltar</p>
-          </v-btn>
-          <!-- HEADER -->
-          <v-card flat style="border-radius: 10px !important">
-            <p
-              class="content-title-1 py-5"
-              style="color: #4da0d0 !important; text-align: center"
-            >
-              Criar Classe
-            </p>
+            <template v-slot:icon>
+              <unicon
+                name="decisao-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 23.668"
+                fill="#ffffff"
+              />
+            </template>
+            <template v-slot:conteudo>
+              <v-expansion-panel-content>
+                <!-- HÁ SUBDIVISÃO? -->
+                <Subdivisao3Nivel :c="classe" />
 
-            <v-card-text>
-              <v-row>
-                <v-col cols="12" lg="2">
-                  <div class="info-label">Nível</div>
-                </v-col>
-                <v-col cols="12" lg="10">
-                  <div class="info-content pa-4 pb-4" style="min-height: 50px">
-                    <v-radio-group
-                      v-model="classe.nivel"
-                      row
-                      hide-details
-                      :class="{
-                        'px-0': $vuetify.breakpoint.smAndDown,
-                        'px-3': $vuetify.breakpoint.mdAndUp,
-                      }"
-                      class="mt-1"
-                    >
-                      <v-radio
-                        v-for="(n, i) in classeNiveis"
-                        :key="i"
-                        :label="n.label"
-                        :value="n.value"
-                        color="blue"
-                        :class="{
-                          'mx-auto': $vuetify.breakpoint.smAndDown,
-                        }"
-                      ></v-radio>
-                    </v-radio-group>
-                  </div>
-                </v-col>
-              </v-row>
+                <!--<hr style="border: 2px dashed #dee2f8;" /> -->
 
-              <!-- CLASSE PAI -->
-              <v-row
-                v-if="classe.nivel > 1"
-                :class="{
-                  'mt-7': $vuetify.breakpoint.smAndDown,
-                  'mt-6': $vuetify.breakpoint.mdAndUp,
-                }"
-              >
-                <v-col cols="12" lg="2">
-                  <div class="info-label">
-                    Classe Pai
-                    <InfoBox
-                      header="Classe Pai"
-                      :text="myhelp.Classe.Campos.Pai"
-                      helpColor="info"
-                    />
-                  </div>
-                </v-col>
-                <v-col cols="12" lg="10">
-                  <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px">
-                    <v-select
-                      class="mt-n5 px-3"
-                      item-text="label"
-                      item-value="value"
-                      v-model="classe.pai.codigo"
-                      :items="classesPai"
-                      label="Selecione uma classe de nível superior"
-                      clearable
-                      hide-details
-                      single-line
-                    />
-                  </div>
-                </v-col>
-              </v-row>
-
-              <!-- CÓDIGO DA NOVA CLASSE -->
-              <v-row
-                v-if="classe.nivel == 1 || classe.pai.codigo"
-                :class="{
-                  'mt-7': $vuetify.breakpoint.smAndDown,
-                  'mt-6': $vuetify.breakpoint.mdAndUp,
-                }"
-              >
-                <v-col cols="12" lg="2">
-                  <div class="info-label">
-                    Código
-                    <InfoBox
-                      header="Código da Classe"
-                      :text="myhelp.Classe.Campos.Codigo"
-                      helpColor="info"
-                    />
-                  </div>
-                </v-col>
-                <v-col cols="12" lg="10">
-                  <div class="info-content pa-4 px-5 pb-0" style="min-height: 50px">
-                    <v-text-field
-                      class="mt-n3 px-3"
-                      v-model="classe.codigo"
-                      label="Código"
-                      text
-                      hide-details
-                      single-line
-                      clearable
-                      color="blue darken-3"
-                    ></v-text-field>
-                    <span style="color: red" class="px-3">{{ mensValCodigo }}</span>
-                  </div>
-                </v-col>
-              </v-row>
-
-              <!-- TÍTULO -->
-              <v-row
-                v-if="classe.nivel == 1 || classe.pai.codigo"
-                :class="{
-                  'mt-7': $vuetify.breakpoint.smAndDown,
-                  'mt-6': $vuetify.breakpoint.mdAndUp,
-                }"
-              >
-                <v-col cols="12" lg="2">
-                  <div class="info-label">
-                    Título
-                    <InfoBox
-                      header="Título da Classe"
-                      :text="myhelp.Classe.Campos.Titulo"
-                      helpColor="info"
-                    />
-                  </div>
-                </v-col>
-                <v-col cols="12" lg="10">
-                  <div class="info-content pa-4 px-5 pb-6" style="min-height: 50px">
-                    <v-text-field
-                      class="mt-n4 px-3"
-                      v-model="classe.titulo"
-                      label="Título"
-                      text
-                      hide-details
-                      single-line
-                      clearable
-                      color="blue darken-3"
-                    ></v-text-field>
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-expansion-panels flat class="mt-6">
-                <!-- DESCRITIVO DA CLASSE -->
-                <BlocoDescritivo :c="classe" class="mt-6" />
-
-                <!-- CONTEXTO DE AVALIAÇÂO DA CLASSE -->
-                <BlocoContexto
-                  class="mt-6"
+                <!-- DECISÃO SEM SUBDIVISÃO -->
+                <DecisaoSemSubPCA
                   :c="classe"
                   :semaforos="semaforos"
-                  :donos="entidadesD"
-                  :participantes="entidadesP"
-                  :procRel="listaProcessos"
-                  :legs="listaLegislacao"
-                  v-if="classe.nivel == 3"
+                  :pcaFormasContagem="pcaFormasContagem"
+                  :pcaSubFormasContagem="pcaSubFormasContagem"
                 />
 
-                <!-- DECISÕES DE AVALIAÇÂO -->
-                <v-expansion-panel v-if="classe.nivel == 3" popout class="mt-6">
-                  <v-expansion-panel-header
-                    style="outline: none"
-                    :class="{
-                      'text-center': $vuetify.breakpoint.smAndDown,
-                      'text-left': $vuetify.breakpoint.mdAndUp,
-                    }"
-                    class="pa-0"
-                  >
-                    <div
-                      :class="{
-                        'px-3': $vuetify.breakpoint.mdAndUp,
-                      }"
-                      class="separador"
-                    >
-                      <unicon
-                        class="mt-3"
-                        name="decisao-icon"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20.71 23.668"
-                        fill="#ffffff"
-                      />
-                      <span class="ml-3 mr-1">Decisões de Avaliação</span>
+                <!--<hr style="border-top: 3px dashed #1A237E; border-radius: 2px;"/> -->
 
-                      <InfoBox
-                        header="Decisões de Avaliação"
-                        :text="myhelp.Classe.BlocoDecisoes"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-expansion-panel-header>
+                <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
 
-                  <v-expansion-panel-content id="expanded-content">
-                    <!-- HÁ SUBDIVISÃO? -->
-                    <Subdivisao3Nivel :c="classe" />
-
-                    <!--<hr style="border: 2px dashed #dee2f8;" /> -->
-
-                    <!-- DECISÃO SEM SUBDIVISÃO -->
-                    <DecisaoSemSubPCA
-                      :c="classe"
-                      :semaforos="semaforos"
-                      :pcaFormasContagem="pcaFormasContagem"
-                      :pcaSubFormasContagem="pcaSubFormasContagem"
-                    />
-
-                    <!--<hr style="border-top: 3px dashed #1A237E; border-radius: 2px;"/> -->
-
-                    <DecisaoSemSubDF :c="classe" :semaforos="semaforos" />
-
-                    <!-- DECISÃO COM SUBDIVISÃO -->
-                    <Subclasses4Nivel
-                      :c="classe"
-                      :semaforos="semaforos"
-                      :pcaFormasContagem="pcaFormasContagem"
-                      :pcaSubFormasContagem="pcaSubFormasContagem"
-                    />
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-card-text>
-
-            <v-snackbar
-              v-model="loginErrorSnackbar"
-              :timeout="8000"
-              color="error"
-              :top="true"
-            >
-              {{ loginErrorMessage }}
-              <v-btn icon color="white" @click="loginErrorSnackbar = false">
-                <unicon
-                  name="remove-icon"
-                  width="15"
-                  height="15"
-                  viewBox="0 0 20.71 20.697"
-                  fill="#ffffff"
+                <!-- DECISÃO COM SUBDIVISÃO -->
+                <Subclasses4Nivel
+                  :c="classe"
+                  :semaforos="semaforos"
+                  :pcaFormasContagem="pcaFormasContagem"
+                  :pcaSubFormasContagem="pcaSubFormasContagem"
+                  class="mt-3"
                 />
-              </v-btn>
-            </v-snackbar>
+              </v-expansion-panel-content>
+            </template>
+          </PainelCLAV>
+        </v-expansion-panels>
+        <v-snackbar
+          v-model="loginErrorSnackbar"
+          :timeout="8000"
+          color="error"
+          :top="true"
+        >
+          {{ loginErrorMessage }}
+          <v-btn icon color="white" @click="loginErrorSnackbar = false">
+            <unicon
+              name="remove-icon"
+              width="15"
+              height="15"
+              viewBox="0 0 20.71 20.697"
+              fill="#ffffff"
+            />
+          </v-btn>
+        </v-snackbar>
 
-            <PainelOperacoes :c="classe" :pendenteId="''" />
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-content>
+        <PainelOperacoes @limpar="$emit('limpar')" :c="classe" :pendenteId="''" />
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
-const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
-import InfoBox from "@/components/generic/infoBox.vue";
+import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
+import BlocoMeta from "@/components/classes/criacao/BlocoMeta.vue";
 import BlocoDescritivo from "@/components/classes/criacao/BlocoDescritivo.vue";
 import BlocoContexto from "@/components/classes/criacao/BlocoContexto.vue";
 
@@ -291,14 +110,15 @@ import PainelOperacoes from "@/components/classes/criacao/PainelOperacoes.vue";
 
 export default {
   components: {
+    BlocoMeta,
     BlocoDescritivo,
     BlocoContexto,
     Subdivisao3Nivel,
     DecisaoSemSubPCA,
     DecisaoSemSubDF,
     Subclasses4Nivel,
-    InfoBox,
     PainelOperacoes,
+    PainelCLAV,
   },
 
   data: () => ({
@@ -390,15 +210,6 @@ export default {
       4: "ddd.dd.ddd.dd (d - digito)",
     },
 
-    classeNiveis: [
-      { label: "Nível 1", value: "1" },
-      { label: "Nível 2", value: "2" },
-      { label: "Nível 3", value: "3" },
-    ],
-
-    classesPai: [],
-    entidadesD: [],
-    entidadesP: [],
     listaProcessos: [],
     listaLegislacao: [],
 
@@ -408,7 +219,6 @@ export default {
     semaforos: {
       paisReady: false,
       classesReady: false,
-      entidadesReady: false,
       legislacaoReady: false,
       pcaFormasContagemReady: false,
       pcaSubFormasContagemReady: false,
@@ -424,21 +234,10 @@ export default {
   }),
 
   watch: {
-    "classe.pai.codigo": function () {
-      // O código da classe depende da classe pai
-      this.classe.codigo = "";
-      if (this.classe.pai.codigo) this.classe.codigo = this.classe.pai.codigo + ".";
-    },
     "classe.nivel": function () {
       // A classe pai depende do nível
       this.classe.pai.codigo = "";
 
-      if (this.classe.nivel > 1) {
-        this.loadPais();
-      }
-      if (this.classe.nivel >= 3 && !this.semaforos.entidadesReady) {
-        this.loadEntidades();
-      }
       if (this.classe.nivel >= 3 && !this.semaforos.classesReady) {
         this.loadProcessos();
       }
@@ -447,26 +246,6 @@ export default {
       }
       if (this.classe.nivel >= 3) {
         this.loadPCA();
-      }
-    },
-
-    "classe.codigo": async function () {
-      try {
-        this.mensValCodigo = "";
-        if (!this.codeFormats[this.classe.nivel].test(this.classe.codigo)) {
-          this.mensValCodigo =
-            "Formato de código inválido! Deve ser: " +
-            this.formatoCodigo[this.classe.nivel];
-        } else if (!this.classe.codigo.includes(this.classe.pai.codigo)) {
-          this.mensValCodigo = "Não pode alterar o código do pai selecionado em cima...";
-        } else {
-          var existe = await this.verificaExistenciaCodigo(this.classe.codigo);
-          if (existe) {
-            this.mensValCodigo = "Código já existente na base de dados...";
-          }
-        }
-      } catch (erro) {
-        return erro;
       }
     },
 
@@ -583,69 +362,6 @@ export default {
   },
 
   methods: {
-    // Carrega os potenciais pais da BD, quando alguém muda o nível para >1....................
-
-    loadPais: async function () {
-      try {
-        var response = await this.$request(
-          "get",
-          "/classes?nivel=" + (this.classe.nivel - 1)
-        );
-        this.classesPai = response.data
-          .map(function (item) {
-            return {
-              label: item.codigo + " - " + item.titulo,
-              value: item.id.split("#c")[1],
-            };
-          })
-          .sort(function (a, b) {
-            return a.label.localeCompare(b.label);
-          });
-      } catch (erro) {
-        return erro;
-      }
-    },
-
-    // Carrega as entidades da BD....................
-
-    loadEntidades: async function () {
-      try {
-        var response = await this.$request("get", "/entidades");
-        this.entidadesD = response.data.map(function (item) {
-          return {
-            selected: false,
-            id: item.id,
-            sigla: item.sigla,
-            designacao: item.designacao,
-            tipo: "Entidade",
-            intervencao: "Indefinido",
-            estado: item.estado,
-          };
-        });
-        response = await this.$request("get", "/tipologias");
-        this.entidadesD = await this.entidadesD.concat(
-          response.data.map(function (item) {
-            return {
-              selected: false,
-              id: item.id,
-              sigla: item.sigla,
-              designacao: item.designacao,
-              tipo: "Tipologia",
-              intervencao: "Indefinido",
-            };
-          })
-        );
-        await this.entidadesD.sort(function (a, b) {
-          return a.sigla.localeCompare(b.sigla);
-        });
-
-        this.entidadesP = JSON.parse(JSON.stringify(this.entidadesD));
-        this.semaforos.entidadesReady = true;
-      } catch (erro) {
-        return erro;
-      }
-    },
-
     // Carrega os Processos da BD....................
 
     loadProcessos: async function () {

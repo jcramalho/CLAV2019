@@ -171,11 +171,11 @@ function validarSerie(
         dataInicial:
             new Date(classe[4] + "-01-01") >= new Date(re.dataInicial)
                 ? classe[4] + "-01-01"
-                : adicionarErro(erros, "series", classe[0], "Data Inicial"),
+                : adicionarErro(erros, "series", classe[0], "Data inicial"),
         dataFinal:
             new Date(classe[5] + "-12-31") <= new Date(re.dataFinal) && new Date(classe[5] + "-12-31") >= new Date(classe[4] + "-01-01")
                 ? classe[5] + "-12-31"
-                : adicionarErro(erros, "series", classe[0], "Data Final"),
+                : adicionarErro(erros, "series", classe[0], "Data final"),
         tUA: ["Processo", "Coleção", "Dossier", "Registo"].includes(classe[6])
             ? classe[6]
             : adicionarErro(
@@ -187,7 +187,7 @@ function validarSerie(
         tSerie:
             classe[7] == "Fechada" || classe[7] == "Aberta"
                 ? classe[7]
-                : adicionarErro(erros, "series", classe[0], "Tipo de Série"),
+                : adicionarErro(erros, "series", classe[0], "Tipo de série"),
         suporte_e_medicao: suporte_e_medicao(classe, erros),
         UIs: [],
         localizacao: !!classe[10]
@@ -228,11 +228,11 @@ function validarSubserie(classe, pai, erros, re, novas_classes, formaContagem) {
         dataInicial:
             new Date(classe[4] + "-01-01") >= new Date(re.dataInicial)
                 ? classe[4] + "-01-01"
-                : adicionarErro(erros, "subseries", classe[0], "Data Inicial"),
+                : adicionarErro(erros, "subseries", classe[0], "Data inicial"),
         dataFinal:
             new Date(classe[5] + "-12-31") <= new Date(re.dataFinal) && new Date(classe[5] + "-12-31") >= new Date(classe[4] + "-01-01")
                 ? classe[5] + "-12-31"
-                : adicionarErro(erros, "subseries", classe[0], "Data Final"),
+                : adicionarErro(erros, "subseries", classe[0], "Data final"),
         UIs: [],
         relacoes: preencherRelacoes(classe, erros, "subseries"),
         pca: !!classe[15] ? classe[15] : null,

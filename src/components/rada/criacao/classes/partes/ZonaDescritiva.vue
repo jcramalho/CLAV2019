@@ -17,12 +17,12 @@
     <v-row>
       <!-- DATA INICIAL -->
       <v-col :cols="newSerie.tipo == 'Subsérie' ? 2 : 3">
-        <div class="info-label">Data Inicial</div>
+        <div class="info-label">Data inicial</div>
       </v-col>
       <v-col sm="3" md="3">
         <SelecionarData
           :d="newSerie.dataInicial"
-          label="Data Inicial"
+          label="Data inicial"
           @dataSelecionada="newSerie.dataInicial = $event"
           :dataMinima="RE.dataInicial"
           :dataMaxima="RE.dataFinal"
@@ -40,14 +40,14 @@
           </template>
         </SelecionarData>
       </v-col>
-      <!-- DATA FINAL -->
+      <!-- DATA fINAL -->
       <v-col :cols="newSerie.tipo == 'Subsérie' ? 2 : 3">
-        <div class="info-label">Data Final</div>
+        <div class="info-label">Data final</div>
       </v-col>
       <v-col sm="3" md="3">
         <SelecionarData
           :d="newSerie.dataFinal"
-          label="Data Final"
+          label="Data final"
           @dataSelecionada="newSerie.dataFinal = $event"
           :dataMinima="RE.dataInicial"
           :dataMaxima="RE.dataFinal"
@@ -85,13 +85,13 @@
       <v-row>
         <!-- TUArq -->
         <v-col md="3" sm="3">
-          <div class="info-label">Tipo de Unidade Arquivística</div>
+          <div class="info-label">Tipo de unidade arquivística</div>
         </v-col>
         <v-col md="3" sm="3">
           <v-select
             :rules="[v => !!v || 'Campo obrigatório!']"
             v-if="newSerie.tipo != 'Subsérie'"
-            label="Tipo de Unidade Arquivística"
+            label="Tipo de unidade arquivística"
             v-model="newSerie.tUA"
             :items="tiposUA"
             chips
@@ -109,7 +109,7 @@
           </v-select>
         </v-col>
         <v-col md="3" sm="3">
-          <div class="info-label">Tipo de Série</div>
+          <div class="info-label">Tipo de série</div>
         </v-col>
         <v-col sm="3" md="3">
           <v-select

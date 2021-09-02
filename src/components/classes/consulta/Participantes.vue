@@ -1,68 +1,48 @@
 <template>
-  <v-row v-if="!valida">
-    <!-- PARTICIPANTES NO PROCESSO -->
-    <v-col xs="2" sm="2">
-      <div class="info-label">
-        Participantes no processo
-        <InfoBox
-          header="Participantes no processo"
-          :text="myhelp.Classe.Campos.Participantes"
-          helpColor="indigo darken-4"
-          dialogColor="#E0F2F1"
-        />
-      </div>
-    </v-col>
-    <v-col xs="10" sm="10">
-      <div class="info-content">
-        <v-data-table
-          :headers="headers"
-          :items="myParticipantes"
-          class="elevation-1"
-          hide-default-footer
-        >
-          <template v-slot:item="props">
-            <tr>
-              <td style="color: #1A237E;">{{ props.item.label }}</td>
-              <td>
-                <ul>
-                  <li v-for="p in props.item.participantes" :key="p.label">
-                    <a
-                      v-if="p.idTipo == 'Entidade'"
-                      :href="'/entidades/' + p.idParticipante"
-                    >
-                      {{ p.sigla }}
-                      ({{ p.idTipo }}) - {{ p.designacao }}
-                    </a>
-                    <a v-else :href="'/tipologias/' + p.idParticipante">
-                      {{ p.sigla }}
-                      ({{ p.idTipo }}) - {{ p.designacao }}
-                    </a>
-                  </li>
-                </ul>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
-    </v-col>
-  </v-row>
+  <!-- PARTICIPANTES NO PROCESSO -->
+  <Campo
+    v-if="!valida"
+    nome="Participantes no processo"
+    infoHeader="Participantes no processo"
+    :infoBody="myhelp.Classe.Campos.Participantes"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
+      <v-data-table :headers="headers" :items="myParticipantes" hide-default-footer>
+        <template v-slot:item="props">
+          <tr>
+            <td>{{ props.item.label }}</td>
+            <td>
+              <ul>
+                <li v-for="p in props.item.participantes" :key="p.label">
+                  <a
+                    v-if="p.idTipo == 'Entidade'"
+                    :href="'/entidades/' + p.idParticipante"
+                  >
+                    {{ p.sigla }}
+                    ({{ p.idTipo }}) - {{ p.designacao }}
+                  </a>
+                  <a v-else :href="'/tipologias/' + p.idParticipante">
+                    {{ p.sigla }}
+                    ({{ p.idTipo }}) - {{ p.designacao }}
+                  </a>
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </template>
+  </Campo>
   <div v-else>
-    <v-data-table
-      :headers="headers"
-      :items="myParticipantes"
-      class="elevation-1"
-      hide-default-footer
-    >
+    <v-data-table :headers="headers" :items="myParticipantes" hide-default-footer>
       <template v-slot:item="props">
         <tr>
-          <td style="color: #1A237E;">{{ props.item.label }}</td>
+          <td style="color: #1a237e">{{ props.item.label }}</td>
           <td>
             <ul>
               <li v-for="p in props.item.participantes" :key="p.label">
-                <a
-                  v-if="p.idTipo == 'Entidade'"
-                  :href="'/entidades/' + p.idParticipante"
-                >
+                <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idParticipante">
                   {{ p.sigla }}
                   ({{ p.idTipo }}) - {{ p.designacao }}
                 </a>
@@ -80,14 +60,14 @@
 </template>
 
 <script>
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo";
 const help = require("@/config/help").help;
 
 export default {
   props: ["entidades", "valida"],
-  components: { InfoBox },
+  components: { Campo },
 
-  data: function() {
+  data: function () {
     return {
       headers: [
         {
@@ -95,13 +75,13 @@ export default {
           align: "left",
           sortable: false,
           value: "label",
-          class: ["table-header", "body-2", "font-weight-bold"]
+          class: ["body-2", "font-weight-bold"],
         },
         {
           text: "Participantes",
           value: "participantes",
-          class: ["table-header", "body-2", "font-weight-bold"]
-        }
+          class: ["body-2", "font-weight-bold"],
+        },
       ],
       participPorTipo: {
         Apreciador: [],
@@ -109,20 +89,20 @@ export default {
         Comunicador: [],
         Decisor: [],
         Executor: [],
-        Iniciador: []
+        Iniciador: [],
       },
       myParticipantes: [],
-      myhelp: help
+      myhelp: help,
     };
   },
 
   methods: {
-    go: function(idClasse) {
+    go: function (idClasse) {
       this.$router.push("/entidades/" + idClasse);
       this.$router.go();
     },
 
-    normaliza: function(tipo) {
+    normaliza: function (tipo) {
       var res = "";
       switch (tipo) {
         case "Assessor":
@@ -147,10 +127,10 @@ export default {
           res = "Desconhecido";
       }
       return res;
-    }
+    },
   },
 
-  mounted: function() {
+  mounted: function () {
     var tipo;
     for (var i = 0; i < this.entidades.length; i++) {
       tipo = this.entidades[i].participLabel;
@@ -161,11 +141,11 @@ export default {
       if (this.participPorTipo[tipo].length > 0) {
         this.myParticipantes.push({
           label: this.normaliza(tipo),
-          participantes: this.participPorTipo[tipo]
+          participantes: this.participPorTipo[tipo],
         });
       }
     }
-  }
+  },
 };
 </script>
 
@@ -193,12 +173,5 @@ a:hover {
   padding: 5px;
   width: 100%;
   border: 1px solid #1a237e;
-}
-
-.table-header {
-  color: #1a237e;
-  font-weight: 400;
-  background-color: #dee2f8;
-  font-weight: bold;
 }
 </style>

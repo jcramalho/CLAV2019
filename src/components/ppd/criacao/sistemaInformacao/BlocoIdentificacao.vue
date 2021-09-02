@@ -395,6 +395,9 @@ export default {
       if(this.ppd.si.identificacao.outsourcingCheck !='Sim'){
         this.ppd.si.identificacao.outsourcing = this.ppd.si.identificacao.outsourcingCheck;
       }
+      else{
+        this.ppd.si.identificacao.outsourcing = ""
+      }
     },
 
     "ppd.si.identificacao.insourcingCheck": function() {
@@ -402,13 +405,18 @@ export default {
       if(this.ppd.si.identificacao.insourcingCheck !='Sim'){
         this.ppd.si.identificacao.insourcing = this.ppd.si.identificacao.insourcingCheck;
       }
+      else{
+        this.ppd.si.identificacao.insourcing = ""
+      }
     },
     "ppd.si.identificacao.defCheck": function() {
 
       if(this.ppd.si.identificacao.defCheck !='Sim'){
         this.ppd.si.identificacao.defResponsavel = this.ppd.si.identificacao.defCheck;
       }
-
+      else{
+        this.ppd.si.identificacao.defResponsavel = ""
+      }
     },
   }
 

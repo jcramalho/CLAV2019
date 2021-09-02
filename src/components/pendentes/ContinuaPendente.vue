@@ -17,7 +17,7 @@
                       readonly
                     ></v-text-field>
                     <v-text-field
-                      :value="this.pedido.criadoPor"
+                      :value="pedido.criadoPor"
                       label="Autor"
                       readonly
                     ></v-text-field>
@@ -47,15 +47,15 @@ export default {
     headers: [
       { text: "Data", value: "data" },
       { text: "Responsável", value: "criadoPor" },
-      { text: "Objeto", value: "objeto" }
+      { text: "Objeto", value: "objeto" },
     ],
-    etapas: []
+    etapas: [],
   }),
 
-  mounted: function() {
+  mounted: function () {
     this.pendente = this.obj;
     this.pendenteLoaded = true;
-  }
+  },
 };
 </script>
 

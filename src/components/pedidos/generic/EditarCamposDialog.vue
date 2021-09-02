@@ -18,6 +18,7 @@
           <v-text-field
             filled
             clearable
+            outlined
             color="indigo"
             single-line
             v-model="valorEditado"
@@ -36,6 +37,7 @@
           <v-text-field
             filled
             clearable
+            outlined
             color="indigo"
             single-line
             v-model="valorEditado"
@@ -68,6 +70,7 @@
           <v-text-field
             filled
             clearable
+            outlined
             color="indigo"
             single-line
             v-model="valorEditado"
@@ -111,6 +114,7 @@
           <v-text-field
             filled
             clearable
+            outlined
             color="indigo"
             single-line
             v-model="valorEditado"
@@ -128,6 +132,7 @@
             filled
             clearable
             color="indigo"
+            outlined
             single-line
             v-model="valorEditado"
             label="Sigla"
@@ -146,6 +151,7 @@
           <v-select
             filled
             item-color="indigo"
+            outlined
             color="indigo"
             v-model="valorEditado"
             :items="tiposDiploma"
@@ -257,8 +263,10 @@
         </v-col>
         <v-col>
           <v-text-field
+            class="text-field"
             filled
             clearable
+            outlined
             color="indigo"
             single-line
             v-model="valorEditado"
@@ -275,9 +283,11 @@
         </v-col>
         <v-col>
           <v-text-field
+            class="text-field"
             filled
             clearable
             color="indigo"
+            outlined
             single-line
             v-model="valorEditado"
             label="codigo"
@@ -292,8 +302,10 @@
         </v-col>
         <v-col>
           <v-text-field
+            class="text-field"
             filled
             clearable
+            outlined
             color="indigo"
             single-line
             v-model="valorEditado"
@@ -309,8 +321,10 @@
         </v-col>
         <v-col>
           <v-text-field
+            class="text-field"
             filled
             clearable
+            outlined
             color="indigo"
             single-line
             v-model="valorEditado"
@@ -505,5 +519,9 @@ export default {
   width: 100%;
   border: 1px solid #283593;
   border-radius: 3px;
+}
+
+.text-field {
+  border-top: 0.9px solid #97999c;
 }
 </style>

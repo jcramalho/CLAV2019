@@ -1,15 +1,12 @@
 <template>
-  <v-card flat class="ma-3">
-    <v-card-title class="indigo darken-4 white--text" dark>
-      Lista de pedidos submetidos
-      <v-spacer />
-      <v-chip color="indigo accent-4" text-color="white">
-        <b>Total de pedidos: {{ pedidos.length }}</b>
-      </v-chip>
-    </v-card-title>
-
-    <v-card-text>
-      <v-card>
+  <PainelCLAV titulo="Lista de pedidos submetidos">
+    <template v-slot:icon>
+      <v-badge color="error" :content="pedidos.length" overlap>
+        <v-icon color="secondary"> mdi-send-clock </v-icon>
+      </v-badge>
+    </template>
+    <template v-slot:conteudo>
+      <v-card flat>
         <v-card-title>
           <v-text-field
             v-model="procurar"
@@ -24,7 +21,6 @@
           :headers="headers"
           :items="pedidos"
           :search.sync="procurar"
-          class="elevation-1"
           sort-by="codigo"
           :custom-sort="ordenaTabela"
           :footer-props="footerProps"
@@ -59,6 +55,10 @@
               {{ item.estado }}
               <v-icon right>send</v-icon>
             </v-chip>
+            <v-chip v-else-if="item.estado === 'Ressubmetido'" outlined color="grey">
+              {{ item.estado }}
+              <v-icon right>send</v-icon>
+            </v-chip>
 
             <v-chip v-else outlined color="orange">
               {{ item.estado }}
@@ -72,13 +72,18 @@
           </template>
         </v-data-table>
       </v-card>
-    </v-card-text>
-  </v-card>
+    </template>
+  </PainelCLAV>
 </template>
 
 <script>
+import PainelCLAV from "@/components/generic/PainelCLAV";
 export default {
   props: ["pedidos"],
+
+  components: {
+    PainelCLAV,
+  },
 
   data() {
     return {

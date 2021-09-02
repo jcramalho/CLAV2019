@@ -11,12 +11,12 @@
     <template v-slot:activator="{ on }">
       <slot :item="{ label, dataValor, on }">
         <v-text-field
-          filled
           v-model="dataValor"
           :label="label"
           prepend-icon="event"
           readonly
           v-on="on"
+          hide-details
         />
       </slot>
     </template>

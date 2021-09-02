@@ -77,7 +77,7 @@ export default {
         class: ["table-header", "body-2", "font-weight-bold"],
       },
       {
-        text: "Classe Pai",
+        text: "Classe pai",
         value: "pai",
         sortable: true,
         align: "center",

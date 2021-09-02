@@ -2,14 +2,14 @@
   <div>
     <v-row>
       <v-col md="3" sm="3">
-        <div class="info-label">Destino Final</div>
+        <div class="info-label">Destino final</div>
       </v-col>
       <v-col sm="9" md="9">
         <v-select
           :disabled="disable_df()"
           v-model="newSerie.df"
           :items="['Conservação', 'Conservação Parcial', 'Eliminação']"
-          label="Destino Final"
+          label="Destino final"
           solo
           clearable
         >
@@ -30,14 +30,14 @@
     <v-row>
       <!-- {{newSerie}} -->
       <v-col md="3" sm="3">
-        <div class="info-label">Nota sobre o DF</div>
+        <div class="info-label">Notas ao DF</div>
       </v-col>
       <v-col sm="9" md="9">
         <v-text-field
           :rules="[v => rule_nota_DF(v)]"
           solo
           clearable
-          label="Nota sobre o DF"
+          label="Notas ao DF"
           v-model="newSerie.notaDF"
         ></v-text-field>
       </v-col>
@@ -110,7 +110,7 @@
           dense
           icon="warning"
           color="amber accent-3"
-        >Não existe justificação do Destino Final</v-alert>
+        >Não existe justificação do Destino final</v-alert>
       </v-col>
     </v-row>
   </div>

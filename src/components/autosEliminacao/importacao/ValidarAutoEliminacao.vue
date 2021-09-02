@@ -81,7 +81,7 @@
           </v-row>
           <v-row>
             <v-col cols="3">
-              <div class="info-label">Destino Final</div>
+              <div class="info-label">Destino final</div>
             </v-col>
             <v-col>
               {{item.destino}}

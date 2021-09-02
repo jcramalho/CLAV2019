@@ -8,7 +8,7 @@
           <Identificacao :newSerie="newSubserie" :classes="classes" />
           <v-row>
             <v-col md="3" sm="3">
-              <div class="info-label">Classe Pai</div>
+              <div class="info-label">Classe pai</div>
             </v-col>
             <v-col cols="12" sm="9" md="0">
               <v-autocomplete
@@ -20,7 +20,7 @@
                 item-text="searchField"
                 solo
                 clearable
-                label="Classe Pai"
+                label="Classe pai"
               >
                 <template v-slot:no-data>
                   <v-list-item>
@@ -243,14 +243,14 @@ export default {
       if (!Boolean(this.newSubserie.pca)) {
         if (!Boolean(this.newSubserie.notaPCA)) {
           this.erros.push(
-            "Prazo de Conservação Administrativo ou nota sobre o PCA;"
+            " ou nota sobre o PCA;"
           );
         }
       }
 
       if (!Boolean(this.newSubserie.df)) {
         if (!Boolean(this.newSubserie.notaDF)) {
-          this.erros.push("Destino Final ou nota sobre o DF;");
+          this.erros.push("Destino final ou nota sobre o DF;");
         }
       }
 

@@ -23,7 +23,7 @@
             <template v-slot:activator="{ on }">
               <v-icon color="orange darken-2" v-on="on">warning</v-icon> Participante
             </template>
-            <span>Alterado em confomidade com <strong>Destino Final</strong> de <strong>Conservação</strong></span>
+            <span>Alterado em confomidade com <strong>Destino final</strong> de <strong>Conservação</strong></span>
           </v-tooltip>
         </td>
         <td style="text-align: center;" v-else-if="tipo=='TS_LC' || tipo=='PGD_LC'">{{prop.item.ni}}</td>

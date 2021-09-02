@@ -65,22 +65,22 @@
             ></v-text-field>
           </template>
         </ValidaCampo>
-        <!-- Data Inicial -->
+        <!-- Data inicial -->
         <ValidaCampo
           :dadosOriginais="elemento"
           :novoHistorico="novoHistorico.dados"
           campoValue="dataInicial"
-          campoText="Data Inicial"
+          campoText="Data inicial"
           tipo="string"
           :permitirEditar="false"
           @corAlterada="validadeClasse"
         />
-        <!-- Data Final -->
+        <!-- Data final -->
         <ValidaCampo
           :dadosOriginais="elemento"
           :novoHistorico="novoHistorico.dados"
           campoValue="dataFinal"
-          campoText="Data Final"
+          campoText="Data final"
           tipo="string"
           :permitirEditar="false"
           @corAlterada="validadeClasse"
@@ -92,7 +92,7 @@
           :dadosOriginais="elemento"
           :novoHistorico="novoHistorico.dados"
           campoValue="produtor"
-          campoText="Entidades Produtoras"
+          campoText="Entidade produtora"
           tipo="array"
           :permitirEditar="false"
           @corAlterada="validadeClasse"

@@ -8,6 +8,7 @@
       <ShowClasse v-else-if="p.tipo == 'Classe'" :p="p" />  
       <ShowRADA v-else-if="p.tipo == 'RADA'" :p="p" /> 
       <ShowAE v-else-if="p.tipo == 'Auto de Eliminação'" :p="p" />
+      <ShowPPD v-else-if="p.tipo == 'PPD'" :p="p" />
       <ShowDefault v-else :p="p" />
     </v-card-text>
     <v-card-actions>
@@ -22,6 +23,7 @@ import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
 import ShowClasse from "@/components/pendentes/consulta/ShowClasse.vue";
 import ShowTSOrg from "@/components/pendentes/consulta/ShowTSOrg.vue";
 import ShowTSPluri from "@/components/pendentes/consulta/ShowTSPluri.vue";
+import ShowPPD from "@/components/pendentes/consulta/ShowPPD.vue";
 import ShowDefault from "@/components/pendentes/consulta/ShowDefault.vue";
 
 export default {
@@ -33,7 +35,8 @@ export default {
     ShowTSPluri,
     ShowDefault,
     ShowRADA,
-    ShowAE
+    ShowAE,
+    ShowPPD
   },
 
   data: () => ({

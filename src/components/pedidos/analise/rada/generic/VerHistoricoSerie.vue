@@ -28,23 +28,23 @@
               <VerHistoricoCampo campoText="Descrição" :historicoCampo="historico.descricao" />
               <VerHistoricoCampo
                 v-if="!!historico.eFilhoDe.dados"
-                campoText="Classe Pai"
+                campoText="Classe pai"
                 :historicoCampo="historico.eFilhoDe"
               />
               <VerHistoricoCampo campoText="Nível" :historicoCampo="historico.tipo" />
-              <VerHistoricoCampo campoText="Data Inicial" :historicoCampo="historico.dataInicial" />
-              <VerHistoricoCampo campoText="Data Final" :historicoCampo="historico.dataFinal" />
+              <VerHistoricoCampo campoText="Data inicial" :historicoCampo="historico.dataInicial" />
+              <VerHistoricoCampo campoText="Data final" :historicoCampo="historico.dataFinal" />
               <VerHistoricoCampo
-                campoText="Unidades de Instalação"
+                campoText="Unidades de instalação"
                 :historicoCampo="historico.UIs"
               />
 
               <div v-if="historico.tipo.dados == 'Série'">
                 <VerHistoricoCampo
-                  campoText="Tipo de Unidade Arquivística"
+                  campoText="Tipo de unidade arquivística"
                   :historicoCampo="historico.tUA"
                 />
-                <VerHistoricoCampo campoText="Tipo de Série" :historicoCampo="historico.tSerie" />
+                <VerHistoricoCampo campoText="Tipo de série" :historicoCampo="historico.tSerie" />
                 <VerHistoricoCampo
                   campoText="Suporte e Medição"
                   :historicoCampo="historico.suporte_e_medicao"
@@ -72,7 +72,7 @@
               <div v-if="historico.tipo.dados == 'Série'">
                 <VerHistoricoCampo
                   v-if="!!historico.entProdutoras.dados[0]"
-                  campoText="Entidades Produtoras"
+                  campoText="Entidade produtora"
                   :historicoCampo="historico.entProdutoras"
                 />
                 <VerHistoricoCampo
@@ -119,7 +119,7 @@
         <v-stepper-content :step="3" flat v-if="!!historico.pca || !!historico.notaPCA">
           <v-card flat>
             <v-card outlined>
-              <div class="info-label">Prazo de Conservação Administrativo</div>
+              <div class="info-label">Prazo de conservação administrativa</div>
               <v-card-text>
                 <VerHistoricoCampo
                   v-if="!!historico.pca.dados"
@@ -134,7 +134,7 @@
                 <div v-if="!!historico.formaContagem">
                   <VerHistoricoCampo
                     v-if="!!historico.formaContagem.forma.dados"
-                    campoText="Forma de Contagem do PCA"
+                    campoText="Forma de contagem do PCA"
                     :historicoCampo="historico.formaContagem.forma"
                   >
                     <template v-slot:campo>
@@ -143,7 +143,7 @@
                   </VerHistoricoCampo>
                   <VerHistoricoCampo
                     v-if="!!historico.formaContagem.subforma.dados"
-                    campoText="Subforma de Contagem do PCA"
+                    campoText="Subforma de contagem do PCA"
                     :historicoCampo="historico.formaContagem.subforma"
                   />
                 </div>
@@ -173,7 +173,7 @@
             </v-card>
             <br />
             <v-card outlined>
-              <div class="info-label">Destino Final</div>
+              <div class="info-label">Destino final</div>
               <v-card-text>
                 <VerHistoricoCampo
                   v-if="!!historico.df.dados"
@@ -182,7 +182,7 @@
                 />
                 <VerHistoricoCampo
                   v-if="!!historico.notaDF.dados"
-                  campoText="Nota sobre o DF"
+                  campoText="Notas ao DF"
                   :historicoCampo="historico.notaDF"
                 />
                 <VerHistoricoCampo

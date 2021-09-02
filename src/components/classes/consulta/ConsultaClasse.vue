@@ -40,78 +40,95 @@
               </template>
 
               <template v-slot:conteudo>
-                <v-row
-                  :class="{
-                    'mt-10': $vuetify.breakpoint.smAndDown,
-                    'mt-8': $vuetify.breakpoint.mdAndUp,
-                  }"
-                >
-                  <!-- ESTADO -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">Estado</div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div
-                      class="info-content pa-4"
-                      v-if="classe.status == 'A'"
-                      style="color: #46c354 !important"
-                    >
+                <Campo nome="Estado" infoHeader="Estado" color="neutralpurple">
+                  <template v-slot:conteudo>
+                    <div v-if="classe.status == 'A'" style="color: #46c354 !important">
                       Ativa
                     </div>
                     <div
-                      class="info-content pa-4"
                       v-else-if="classe.status == 'H'"
                       style="color: #dfb83a !important"
                     >
                       Em revisão...
                     </div>
-                    <div
-                      class="info-content pa-4"
-                      v-else
-                      style="color: #f44336 !important"
-                    >
-                      Inativa
-                    </div>
-                  </v-col>
-                </v-row>
+                    <div v-else style="color: #f44336 !important">Inativa</div>
+                  </template>
+                </Campo>
 
-                <v-row
-                  :class="{
-                    'mt-5': $vuetify.breakpoint.smAndDown,
-                    'mt-4': $vuetify.breakpoint.mdAndUp,
-                  }"
+                <Campo
+                  nome="Descrição"
+                  infoHeader="Descrição"
+                  :infoBody="myhelp.Classe.Campos.Descricao"
+                  color="neutralpurple"
                 >
-                  <!-- DESCRIÇÂO -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Descrição
-                      <InfoBox
-                        header="Descrição"
-                        :text="myhelp.Classe.Campos.Descricao"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4">
-                      {{ classe.descricao }}
-                    </div>
-                  </v-col>
-                </v-row>
+                  <template v-slot:conteudo>
+                    {{ classe.descricao }}
+                  </template>
+                </Campo>
 
-                <NotasAp :notas="classe.notasAp" v-if="classe.notasAp.length > 0" />
+                <Campo
+                  v-if="classe.notasAp.length > 0"
+                  nome="Notas de Aplicação"
+                  infoHeader="Notas de Aplicação"
+                  :infoBody="myhelp.Classe.Campos.NotasAp"
+                  color="neutralpurple"
+                >
+                  <template v-slot:conteudo>
+                    <ul>
+                      <li v-for="n in classe.notasAp" :key="n.idNota">
+                        {{ n.nota }}
+                      </li>
+                    </ul>
+                  </template>
+                </Campo>
 
-                <ExemplosNotasAp
-                  :exemplos="classe.exemplosNotasAp"
+                <Campo
                   v-if="classe.exemplosNotasAp.length > 0"
-                />
+                  nome="Exemplos de Notas de Aplicação"
+                  infoHeader="Exemplos de Notas de Aplicação"
+                  :infoBody="myhelp.Classe.Campos.ExemplosNotasAp"
+                  color="neutralpurple"
+                >
+                  <template v-slot:conteudo>
+                    <ul>
+                      <li v-for="n in classe.exemplosNotasAp" :key="n.idNota">
+                        {{ n.exemplo }}
+                      </li>
+                    </ul>
+                  </template>
+                </Campo>
 
-                <NotasEx :notas="classe.notasEx" v-if="classe.notasEx.length > 0" />
+                <Campo
+                  v-if="classe.notasEx.length > 0"
+                  nome="Notas de Exclusão"
+                  infoHeader="Notas de Exclusão"
+                  :infoBody="myhelp.Classe.Campos.NotasEx"
+                  color="neutralpurple"
+                >
+                  <template v-slot:conteudo>
+                    <ul>
+                      <li
+                        v-for="n in classe.notasEx"
+                        :key="n.idNota"
+                        v-html="analisaRefs(n.nota)"
+                      />
+                    </ul>
+                  </template>
+                </Campo>
 
-                <TermosIndice
-                  :termos="classe.termosInd"
+                <Campo
                   v-if="classe.termosInd.length > 0"
-                />
+                  nome="Termos de Índice"
+                  infoHeader="Termos de Índice"
+                  :infoBody="myhelp.Classe.Campos.TermosIndice"
+                  color="neutralpurple"
+                >
+                  <template v-slot:conteudo>
+                    <ul>
+                      <li v-for="t in classe.termosInd" :key="t.idTI">{{ t.termo }}</li>
+                    </ul>
+                  </template>
+                </Campo>
               </template>
             </PainelCLAV>
 
@@ -131,43 +148,92 @@
                 />
               </template>
               <template v-slot:conteudo>
-                <v-row>
-                  <!-- TIPO DE PROCESSO -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Tipo de Processo
-                      <InfoBox
-                        header="Tipo de Processo"
-                        :text="myhelp.Classe.Campos.TipoProcesso"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4">{{ classe.tipoProc }}</div>
-                  </v-col>
-                </v-row>
+                <!-- TIPO DE PROCESSO -->
+                <Campo
+                  nome="Tipo de Processo"
+                  infoHeader="Tipo de Processo"
+                  :infoBody="myhelp.Classe.Campos.TipoProcesso"
+                  color="neutralpurple"
+                >
+                  <template v-slot:conteudo>
+                    {{ classe.tipoProc }}
+                  </template>
+                </Campo>
 
-                <v-row>
-                  <!-- TRANSVERSALIDADE -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Processo Transversal
-                      <InfoBox
-                        header="Processo Transversal"
-                        :text="myhelp.Classe.Campos.ProcessoTransversal"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4">
-                      {{ classe.procTrans == "S" ? "Sim" : "Não" }}
-                    </div>
-                  </v-col>
-                </v-row>
+                <!-- TRANSVERSALIDADE -->
+                <Campo
+                  nome="Processo Transversal"
+                  infoHeader="Processo Transversal"
+                  :infoBody="myhelp.Classe.Campos.ProcessoTransversal"
+                  color="neutralpurple"
+                >
+                  <template v-slot:conteudo>
+                    {{ classe.procTrans == "S" ? "Sim" : "Não" }}
+                  </template>
+                </Campo>
 
-                <Donos :entidades="classe.donos" v-if="classe.donos.length > 0" />
+                <Campo
+                  v-if="classe.donos.length > 0"
+                  nome="Donos do processo"
+                  infoHeader="Donos do processo"
+                  :infoBody="myhelp.Classe.Campos.Donos"
+                  color="neutralpurple"
+                >
+                  <template v-slot:conteudo>
+                    <ul>
+                      <li v-for="p in classe.donos" :key="p.idDono">
+                        <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idDono">
+                          {{ p.sigla }}:
+                          {{ p.designacao }}
+                          ({{ p.tipo.split("#")[1] }})
+                        </a>
+                        <a v-else :href="'/tipologias/' + p.idDono">
+                          {{ p.sigla }}:
+                          {{ p.designacao }}
+                          ({{ p.tipo.split("#")[1] }})
+                        </a>
+                      </li>
+                    </ul>
+                  </template>
+                </Campo>
+
+                <!-- <Campo
+                  nome="Participantes no processo"
+                  infoHeader="Participantes no processo"
+                  :infoBody="myhelp.Classe.Campos.Participantes"
+                  color="neutralpurple"
+                >
+                  <template v-slot:conteudo>
+                    <v-data-table
+                      :headers="headersParticipantes"
+                      :items="myParticipantes"
+                      hide-default-footer
+                    >
+                      <template v-slot:item="props">
+                        <tr>
+                          <td>{{ props.item.label }}</td>
+                          <td>
+                            <ul>
+                              <li v-for="p in props.item.participantes" :key="p.label">
+                                <a
+                                  v-if="p.idTipo == 'Entidade'"
+                                  :href="'/entidades/' + p.idParticipante"
+                                >
+                                  {{ p.sigla }}
+                                  ({{ p.idTipo }}) - {{ p.designacao }}
+                                </a>
+                                <a v-else :href="'/tipologias/' + p.idParticipante">
+                                  {{ p.sigla }}
+                                  ({{ p.idTipo }}) - {{ p.designacao }}
+                                </a>
+                              </li>
+                            </ul>
+                          </td>
+                        </tr>
+                      </template>
+                    </v-data-table>
+                  </template>
+                </Campo> -->
 
                 <Participantes
                   :entidades="classe.participantes"
@@ -203,152 +269,79 @@
                 />
               </template>
               <template v-slot:conteudo>
-                <v-row>
-                  <v-col>
-                    <v-toolbar
-                      color="#083581"
-                      class="caption mt-5"
-                      dark
-                      height="45"
-                      style="border-radius: 6px"
-                    >
-                      <v-toolbar-title
-                        :class="{
-                          'mx-auto': $vuetify.breakpoint.smAndDown,
-                          'mx-0': $vuetify.breakpoint.mdAndUp,
-                        }"
-                      >
-                        Prazo de Conservação Administrativa
-                      </v-toolbar-title>
-                    </v-toolbar>
-                  </v-col>
+                <v-row justify="center">
+                  <span class="clav-content-title-2">
+                    Prazo de Conservação Administrativa
+                  </span>
                 </v-row>
 
-                <v-row
-                  :class="{
-                    'mt-5': $vuetify.breakpoint.smAndDown,
-                    'mt-4': $vuetify.breakpoint.mdAndUp,
-                  }"
+                <!-- PRAZO -->
+                <Campo
+                  nome="Prazo"
+                  infoHeader="Prazo"
+                  :infoBody="myhelp.Classe.Campos.Prazo"
+                  color="neutralpurple"
                 >
-                  <!-- PRAZO -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Prazo
-                      <InfoBox
-                        header="Prazo"
-                        :text="myhelp.Classe.Campos.Prazo"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4" v-if="classe.pca.valores > 1">
+                  <template v-slot:conteudo>
+                    <div v-if="classe.pca.valores > 1">
                       {{ classe.pca.valores + " anos" }}
                     </div>
-                    <div class="info-content pa-4" v-else-if="classe.pca.valores == 1">
+                    <div v-else-if="classe.pca.valores == 1">
                       {{ classe.pca.valores + " ano" }}
                     </div>
-                    <div class="info-content pa-4" v-else-if="classe.pca.notas != ''">
-                      Não especificado
-                    </div>
-                  </v-col>
-                </v-row>
+                    <div v-else-if="classe.pca.notas != ''">Não especificado</div>
+                  </template>
+                </Campo>
 
-                <v-row
+                <!-- NOTAS -->
+                <Campo
                   v-if="classe.pca.notas != ''"
-                  :class="{
-                    'mt-5': $vuetify.breakpoint.smAndDown,
-                    'mt-4': $vuetify.breakpoint.mdAndUp,
-                  }"
+                  nome="Notas"
+                  infoHeader="Notas ao PCA"
+                  :infoBody="myhelp.Classe.Campos.Notas"
+                  color="neutralpurple"
                 >
-                  <!-- NOTAS -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Notas
-                      <InfoBox
-                        header="Notas ao PCA"
-                        :text="myhelp.Classe.Campos.Notas"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4">
-                      {{ classe.pca.notas }}
-                    </div>
-                  </v-col>
-                </v-row>
+                  <template v-slot:conteudo>
+                    {{ classe.pca.notas }}
+                  </template>
+                </Campo>
 
-                <v-row
+                <!-- FORMA DE CONTAGEM -->
+                <Campo
                   v-if="classe.pca.formaContagem"
-                  :class="{
-                    'mt-5': $vuetify.breakpoint.smAndDown,
-                    'mt-4': $vuetify.breakpoint.mdAndUp,
-                  }"
+                  nome="Forma de Contagem"
+                  infoHeader="Forma de Contagem"
+                  :infoBody="myhelp.Classe.Campos.FormaContagem"
+                  color="neutralpurple"
                 >
-                  <!-- FORMA DE CONTAGEM -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Forma de Contagem
-                      <InfoBox
-                        header="Forma de Contagem"
-                        :text="myhelp.Classe.Campos.FormaContagem"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4">
-                      {{ classe.pca.formaContagem }}
-                    </div>
-                  </v-col>
-                </v-row>
+                  <template v-slot:conteudo>
+                    {{ classe.pca.formaContagem }}
+                  </template>
+                </Campo>
 
-                <v-row
+                <!-- SUBFORMA DE CONTAGEM -->
+                <Campo
                   v-if="classe.pca.subFormaContagem"
-                  :class="{
-                    'mt-5': $vuetify.breakpoint.smAndDown,
-                    'mt-4': $vuetify.breakpoint.mdAndUp,
-                  }"
+                  nome="Subforma de Contagem"
+                  infoHeader="Subforma de Contagem"
+                  :infoBody="myhelp.Classe.Campos.SubformaContagem"
+                  color="neutralpurple"
                 >
-                  <!-- SUBFORMA DE CONTAGEM -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Subforma de Contagem
-                      <InfoBox
-                        header="Subforma de Contagem"
-                        :text="myhelp.Classe.Campos.SubformaContagem"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4">
-                      {{ classe.pca.subFormaContagem }}
-                    </div>
-                  </v-col>
-                </v-row>
+                  <template v-slot:conteudo>
+                    {{ classe.pca.subFormaContagem }}
+                  </template>
+                </Campo>
 
-                <v-row
+                <!-- JUSTIFICAÇÂO -->
+                <Campo
                   v-if="classe.pca.justificacao"
-                  :class="{
-                    'mt-5': $vuetify.breakpoint.smAndDown,
-                    'mt-4': $vuetify.breakpoint.mdAndUp,
-                  }"
+                  nome="Justificação"
+                  infoHeader="Justificação"
+                  :infoBody="myhelp.Classe.Campos.JustificacaoPCA"
+                  color="neutralpurple"
                 >
-                  <!-- JUSTIFICAÇÂO -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Justificação
-                      <InfoBox
-                        header="Justificação do PCA"
-                        :text="myhelp.Classe.Campos.JustificacaoPCA"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4" style="min-height: 61px">
+                  <template v-slot:conteudo>
+                    <div>
                       <div v-for="c in classe.pca.justificacao" :key="c.tipoId">
                         <!-- Critério Gestionário ...............................-->
                         <v-row v-if="c.tipoId == 'CriterioJustificacaoGestionario'">
@@ -415,50 +408,22 @@
                         </v-row>
                       </div>
                     </div>
-                  </v-col>
-                </v-row>
+                  </template>
+                </Campo>
 
                 <!-- DESTINO FINAL ................................................... -->
-
-                <v-row>
-                  <v-col>
-                    <v-toolbar
-                      color="#083581"
-                      class="caption mt-5"
-                      dark
-                      height="45"
-                      style="border-radius: 6px"
-                    >
-                      <v-toolbar-title
-                        :class="{
-                          'mx-auto': $vuetify.breakpoint.smAndDown,
-                          'mx-0': $vuetify.breakpoint.mdAndUp,
-                        }"
-                        >Destino Final</v-toolbar-title
-                      >
-                    </v-toolbar>
-                  </v-col>
+                <v-row justify="center">
+                  <span class="clav-content-title-2 mt-5">Destino final</span>
                 </v-row>
-
-                <v-row
-                  :class="{
-                    'mt-5': $vuetify.breakpoint.smAndDown,
-                    'mt-4': $vuetify.breakpoint.mdAndUp,
-                  }"
+                <!-- VALOR -->
+                <Campo
+                  nome="Destino final"
+                  infoHeader="Destino final"
+                  :infoBody="myhelp.Classe.Campos.DF"
+                  color="neutralpurple"
                 >
-                  <!-- VALOR -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Destino Final
-                      <InfoBox
-                        header="Destino Final"
-                        :text="myhelp.Classe.Campos.DF"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4">
+                  <template v-slot:conteudo>
+                    <div>
                       <span v-if="classe.df.valor == 'E'">Eliminação</span>
                       <span v-else-if="classe.df.valor == 'C'"> Conservação </span>
                       <span v-else-if="classe.df.valor == 'CP'">
@@ -466,52 +431,32 @@
                       </span>
                       <span v-else-if="classe.df.nota != ''">Não Especificado</span>
                     </div>
-                  </v-col>
-                </v-row>
+                  </template>
+                </Campo>
 
-                <v-row
+                <!-- NOTA ao DF -->
+                <Campo
                   v-if="classe.df.nota"
-                  ::class="{
-                'mt-5': $vuetify.breakpoint.smAndDown,
-                'mt-4': $vuetify.breakpoint.mdAndUp
-              }"
+                  nome="Nota"
+                  infoHeader="Nota ao DF"
+                  :infoBody="myhelp.Classe.Campos.NotasDF"
+                  color="neutralpurple"
                 >
-                  <!-- NOTA ao DF -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Nota
-                      <InfoBox
-                        header="Nota ao DF"
-                        :text="myhelp.Classe.Campos.NotasDF"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4">{{ classe.df.nota }}</div>
-                  </v-col>
-                </v-row>
+                  <template v-slot:conteudo>
+                    {{ classe.df.nota }}
+                  </template>
+                </Campo>
 
-                <v-row
+                <!-- JUSTIFICAÇÂO -->
+                <Campo
                   v-if="classe.df.justificacao"
-                  :class="{
-                    'mt-5': $vuetify.breakpoint.smAndDown,
-                    'mt-4': $vuetify.breakpoint.mdAndUp,
-                  }"
+                  nome="Justificação"
+                  infoHeader="Justificação do DF"
+                  :infoBody="myhelp.Classe.Campos.JustificacaoDF"
+                  color="neutralpurple"
                 >
-                  <!-- JUSTIFICAÇÂO -->
-                  <v-col cols="12" lg="2">
-                    <div class="info-label">
-                      Justificação
-                      <InfoBox
-                        header="Justificação do DF"
-                        :text="myhelp.Classe.Campos.JustificacaoDF"
-                        helpColor="info"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="12" lg="10">
-                    <div class="info-content pa-4" style="min-height: 61px">
+                  <template v-slot:conteudo>
+                    <div>
                       <div v-for="c in classe.df.justificacao" :key="c.tipoId">
                         <!-- Critério Legal ...................................-->
                         <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
@@ -595,8 +540,8 @@
                         </v-row>
                       </div>
                     </div>
-                  </v-col>
-                </v-row>
+                  </template>
+                </Campo>
               </template>
             </PainelCLAV>
           </v-expansion-panels>
@@ -610,25 +555,25 @@
 
 <script>
 import ClassesFilho from "@/components/classes/consulta/ClassesFilho.vue";
-import NotasAp from "@/components/classes/consulta/NotasAp.vue";
-import NotasEx from "@/components/classes/consulta/NotasEx.vue";
-import ExemplosNotasAp from "@/components/classes/consulta/ExemplosNotasAp.vue";
-import TermosIndice from "@/components/classes/consulta/TermosIndice.vue";
-import Donos from "@/components/classes/consulta/Donos.vue";
 import Participantes from "@/components/classes/consulta/Participantes.vue";
 import ProcessosRelacionados from "@/components/classes/consulta/ProcessosRelacionados.vue";
 import Legislacao from "@/components/classes/consulta/Legislacao.vue";
 import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue";
 import Voltar from "@/components/generic/Voltar.vue";
 
-import InfoBox from "@/components/generic/infoBox.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV";
+import Campo from "@/components/generic/Campo";
 
 export default {
   props: ["idc", "savedSearch"],
   data: () => ({
     classe: {},
     classeLoaded: false,
+    codeFormats: {
+      2: /[0-9]{3}\.[0-9]{2}(?!\.)/,
+      3: /[0-9]{3}\.[0-9]{2}\.[0-9]{3}(?!\.)/,
+    },
+
     filhosHeaders: [
       {
         text: "Código",
@@ -646,24 +591,31 @@ export default {
   }),
 
   components: {
-    InfoBox,
     ClassesFilho,
-    NotasAp,
-    NotasEx,
-    ExemplosNotasAp,
-    TermosIndice,
-    Donos,
     Participantes,
     ProcessosRelacionados,
     Legislacao,
     ClassesArvoreLateral,
     Voltar,
     PainelCLAV,
+    Campo,
   },
 
   methods: {
     go: function (idClasse) {
       this.$router.push("/classes/consultar/c" + idClasse);
+    },
+
+    analisaRefs: function (nota) {
+      var notaHtml = nota.replace(
+        this.codeFormats[3],
+        '<a href="/classes/consultar/c$&">$&</a>'
+      );
+      notaHtml = notaHtml.replace(
+        this.codeFormats[2],
+        '<a href="/classes/consultar/c$&">$&</a>'
+      );
+      return notaHtml;
     },
   },
   mounted: function () {

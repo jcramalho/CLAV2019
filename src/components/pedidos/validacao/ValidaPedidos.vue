@@ -5,26 +5,21 @@
       <v-col>
         <v-card>
           <v-card-title class="indigo darken-4 title white--text" dark>
-            Validação do pedido: {{ pedido.codigo }} -
-            {{ pedido.objeto.acao }} de
+            Validação do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
             <v-spacer />
             <v-tooltip
               v-if="
                 temPermissaoConsultarHistorico() &&
-                  !(
-                    pedido.objeto.acao === 'Criação' &&
-                    pedido.estado === 'Submetido'
-                  )
+                !(
+                  pedido.objeto.acao === 'Criação' &&
+                  (pedido.estado === 'Submetido' || pedido.estado === 'Ressubmetido')
+                )
               "
               bottom
             >
               <template v-slot:activator="{ on }">
-                <v-icon
-                  @click="verHistorico()"
-                  color="white"
-                  v-on="on"
-                  class="ml-4"
+                <v-icon @click="verHistorico()" color="white" v-on="on" class="ml-4"
                   >history</v-icon
                 >
               </template>
@@ -33,11 +28,7 @@
 
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-icon
-                  @click="showDespachos()"
-                  color="white"
-                  v-on="on"
-                  class="ml-2"
+                <v-icon @click="showDespachos()" color="white" v-on="on" class="ml-2"
                   >comment</v-icon
                 >
               </template>
@@ -47,25 +38,16 @@
 
           <!-- Para a Criação de novos dados -->
           <v-card-text
-            v-if="
-              pedido.objeto.acao === 'Criação' ||
-                pedido.objeto.acao === 'Importação'
-            "
+            v-if="pedido.objeto.acao === 'Criação' || pedido.objeto.acao === 'Importação'"
           >
-            <ValidaEntidade
-              v-if="pedido.objeto.tipo === 'Entidade'"
-              :p="pedido"
-            />
+            <ValidaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
 
             <ValidaRADA
               v-if="pedido.objeto.tipo === 'RADA'"
               :p="pedido"
               fase="validacao"
             />
-            <ValidaLegislacao
-              v-if="pedido.objeto.tipo === 'Legislação'"
-              :p="pedido"
-            />
+            <ValidaLegislacao v-if="pedido.objeto.tipo === 'Legislação'" :p="pedido" />
 
             <ValidaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
@@ -75,8 +57,8 @@
             <ValidaClasseN1
               v-else-if="
                 pedido.objeto.tipo === 'Classe_N3' ||
-                  pedido.objeto.tipo === 'Classe_N1' ||
-                  pedido.objeto.tipo === 'Classe_N2'
+                pedido.objeto.tipo === 'Classe_N1' ||
+                pedido.objeto.tipo === 'Classe_N2'
               "
               :p="pedido"
               validar
@@ -85,7 +67,7 @@
             <ValidaAE
               v-if="
                 pedido.objeto.tipo.includes('AE ') ||
-                  pedido.objeto.tipo === 'Auto de Eliminação'
+                pedido.objeto.tipo === 'Auto de Eliminação'
               "
               :p="pedido"
               :tipo="pedido.objeto.tipo"
@@ -108,17 +90,12 @@
           <v-card-text
             v-if="
               pedido.objeto.acao === 'Alteração' ||
-                pedido.objeto.acao === 'Extinção' ||
-                pedido.objeto.acao === 'Revogação'
+              pedido.objeto.acao === 'Extinção' ||
+              pedido.objeto.acao === 'Revogação'
             "
           >
             <span>
-              <v-alert
-                type="info"
-                width="90%"
-                class="m-auto mb-2 mt-2"
-                outlined
-              >
+              <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
                 <span v-if="pedido.objeto.tipo === 'Legislação'">
                   <b>{{ pedido.objeto.tipo }}:</b>
                   {{ pedido.objeto.dadosOriginais.diplomaFonte }}
@@ -129,7 +106,7 @@
                 <span
                   v-else-if="
                     pedido.objeto.tipo === 'Entidade' ||
-                      pedido.objeto.tipo === 'Tipologia'
+                    pedido.objeto.tipo === 'Tipologia'
                   "
                 >
                   <b>{{ pedido.objeto.tipo }}:</b>
@@ -141,10 +118,7 @@
               <v-divider class="m-auto mb-2" />
             </span>
 
-            <ValidaEditaEntidade
-              v-if="pedido.objeto.tipo === 'Entidade'"
-              :p="pedido"
-            />
+            <ValidaEditaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
 
             <ValidaEditaLegislacao
               v-if="pedido.objeto.tipo === 'Legislação'"
@@ -167,10 +141,7 @@
 
     <!-- Dialog Ver Despachos-->
     <v-dialog v-model="despachosDialog" width="50%">
-      <VerDespachos
-        :despachos="pedido.distribuicao"
-        @fecharDialog="fecharDialog()"
-      />
+      <VerDespachos :despachos="pedido.distribuicao" @fecharDialog="fecharDialog()" />
     </v-dialog>
 
     <!-- Dialog Ver Historico de Alterações-->
@@ -219,7 +190,7 @@ export default {
     VerDespachos,
     ErroDialog,
     ValidaRADA,
-    VerHistorico
+    VerHistorico,
   },
 
   data() {
@@ -229,7 +200,7 @@ export default {
       pedido: {},
       erroDialog: {
         visivel: false,
-        mensagem: null
+        mensagem: null,
       },
       pedidoLoaded: false,
       despachosDialog: false,
@@ -237,9 +208,9 @@ export default {
         { text: "Estado", align: "left", sortable: false, value: "estado" },
         { text: "Data", value: "data" },
         { text: "Responsável", value: "responsavel" },
-        { text: "Despacho", value: "despacho" }
+        { text: "Despacho", value: "despacho" },
       ],
-      etapas: []
+      etapas: [],
     };
   },
 
@@ -252,6 +223,11 @@ export default {
         data.estado !== "Devolvido para validação"
       )
         throw new URIError("Este pedido não pertence a este estado.");
+
+      data.historico = data.historico.map((hist) => ({
+        ...hist,
+        codigo: { dados: data.objeto.codigo },
+      }));
 
       this.pedido = data;
       this.pedidoLoaded = true;
@@ -283,7 +259,7 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
-    }
-  }
+    },
+  },
 };
 </script>

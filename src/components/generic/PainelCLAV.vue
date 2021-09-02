@@ -1,6 +1,6 @@
 <template>
   <v-expansion-panel>
-    <v-expansion-panel-header class="white--text clav-linear-background">
+    <v-expansion-panel-header hide-actions class="white--text clav-linear-background">
       <v-row class="ma-0 pa-0" align="center">
         <v-col v-if="icon" cols="1" class="pl-3 ma-0 pa-0" align="center">
           <v-icon color="secondary">

@@ -2,7 +2,7 @@
   <div>
     <VerHistoricoCampo
       v-if="!!historico.entidadesProd.dados[0]"
-      campoText="Entidades Produtoras"
+      campoText="Entidade produtora"
       :historicoCampo="historico.entidadesProd"
     />
 
@@ -13,27 +13,27 @@
     />
 
     <VerHistoricoCampo
-      campoText="Data Inicial"
+      campoText="Data inicial"
       :historicoCampo="historico.dataInicial"
     />
 
     <VerHistoricoCampo
-      campoText="Data Final"
+      campoText="Data final"
       :historicoCampo="historico.dataFinal"
     />
 
     <VerHistoricoCampo
-      campoText="História Administrativa/Biográfica"
+      campoText="História administrativa/biográfica"
       :historicoCampo="historico.hist_admin"
     />
 
     <VerHistoricoCampo
-      campoText="História Custodial"
+      campoText="História custodial"
       :historicoCampo="historico.hist_cust"
     />
 
     <VerHistoricoCampo
-      campoText="Sistema de Organização"
+      campoText="Sistema de organização"
       :historicoCampo="historico.sist_org"
     />
 
@@ -43,7 +43,7 @@
     />
 
     <VerHistoricoCampo
-      campoText="Estado de Conservação"
+      campoText="Estado de conservação"
       :historicoCampo="historico.est_conser"
     />
   </div>

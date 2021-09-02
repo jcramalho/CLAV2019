@@ -1,5 +1,10 @@
 <template>
   <v-card>
+    <v-card-title class="indigo darken-4 title white--text mb-4" dark>
+      <v-icon color="white" class="ma-1">create</v-icon>
+      Adicionar
+      {{ converteCampo(campo) }}
+    </v-card-title>
     <v-card-text>
       <v-row>
         <v-col>
@@ -7,6 +12,7 @@
             clearable
             filled
             auto-grow
+            outlined
             color="indigo"
             v-model="nota"
             label="Nota"
@@ -31,11 +37,11 @@
 <script>
 import { mapKeys } from "@/utils/utils";
 export default {
-  props: ["notaAtual"],
+  props: ["notaAtual", "campo"],
 
   data() {
     return {
-      nota: null,
+      nota: null
     };
   },
 
@@ -43,7 +49,7 @@ export default {
     notaAtual(novaNota, antigaNota) {
       if (novaNota !== undefined) this.nota = novaNota;
       else this.nota = "";
-    },
+    }
   },
 
   mounted() {
@@ -66,13 +72,13 @@ export default {
       } else {
         this.$emit("adicionar", {
           nota: this.nota,
-          campo: this.campo,
+          campo: this.campo
         });
 
         this.nota = "";
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -84,5 +90,9 @@ export default {
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
+}
+
+.text-area {
+  background-color: #e8eaf6;
 }
 </style>

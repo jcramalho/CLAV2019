@@ -59,11 +59,11 @@
           </v-row>
           <v-row>
             <v-col xs="12" sm="3">
-              <div class="info-label">Data Inicial da Documentação</div>
+              <div class="info-label">Data inicial da documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
               <SelecionarData
-                label="Data Inicial"
+                label="Data inicial"
                 :d="UI.dataInicial"
                 @dataSelecionada="UI.dataInicial = $event"
                 :dataMinima="RE.dataInicial"
@@ -83,11 +83,11 @@
               </SelecionarData>
             </v-col>
             <v-col xs="12" sm="3">
-              <div class="info-label">Data Final da Documentação</div>
+              <div class="info-label">Data final da documentação</div>
             </v-col>
             <v-col xs="12" sm="3">
               <SelecionarData
-                label="Data Final"
+                label="Data final"
                 :d="UI.dataFinal"
                 @dataSelecionada="UI.dataFinal = $event"
                 :dataMinima="RE.dataInicial"

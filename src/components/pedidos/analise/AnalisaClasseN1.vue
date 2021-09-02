@@ -48,6 +48,7 @@
     <!-- Dialog de Edição para Notas De Aplicação/Exclusão -->
     <v-dialog v-model="notaDialogApp" width="50%" persistent>
       <AdicionarNotaAplicacao
+        :campo="dialogCampo"
         :notaAtual="dialogValue"
         @fechar="notaDialogApp = false"
         @adicionar="adicionarNotaAplicacao($event, dialogCampo)"

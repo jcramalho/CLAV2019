@@ -1,97 +1,87 @@
 <template>
-  <v-content
-    :class="{
-      'px-6': $vuetify.breakpoint.smAndDown,
-      'px-12': $vuetify.breakpoint.mdAndUp,
-    }"
-  >
-    <v-container fluid class="pa-0 ma-0" style="max-width: 100%">
-      <v-row>
-        <v-col class="pt-0">
-          <v-card flat style="border-radius: 10px !important">
-            <p
-              class="content-title-1 py-5"
-              style="color: #4da0d0 !important; text-align: center"
+  <v-card flat class="pa-2">
+    <v-row justify="center">
+      <v-col>
+        <p class="clav-content-title-1">Alterar Classe</p>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col>
+        <v-tooltip top color="info" open-delay="500">
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              style="text-align: center !important"
+              class="centered-input mt-n1 mb-2 px-8"
+              v-model="search"
+              v-on="on"
+              label="Pesquisar por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
+              text
+              hide-details
+              single-line
+              clearable
+              v-on:keyup.enter="processaPesquisa()"
+              color="primary"
+            ></v-text-field>
+          </template>
+          <span
+            >Pesquisar por código, título, notas de aplicação, exemplos de notas de
+            aplicação ou termos de índice...</span
+          >
+        </v-tooltip>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col align="center">
+        <v-btn
+          @click="processaPesquisa()"
+          rounded
+          class="white--text clav-linear-background"
+        >
+          <unicon
+            name="consultar-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 20.71 20.697"
+            fill="#ffffff"
+          />
+          <p>Pesquisar</p>
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col>
+        <v-card-text>
+          <div v-if="classesCarregadas">
+            <v-treeview
+              rounded
+              hoverable
+              multiple-active
+              :items="classesTree"
+              item-key="id"
+              :search="realSearch"
+              :filter="filter"
+              :open="selectedParents"
+              :active="selected"
             >
-              Alterar Classe
-            </p>
-            <v-row justify="center" class="text-center mx-0">
-              <v-col class="mt-4">
-                <div
-                  class="info-content"
-                  :class="{
-                    'margin-mdUp': $vuetify.breakpoint.mdAndUp,
-                    'margin-smDown': $vuetify.breakpoint.smAndDown,
-                  }"
-                >
-                  <v-tooltip top color="info" open-delay="500">
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        style="text-align: center !important"
-                        class="centered-input mt-n1 mb-2 px-8"
-                        v-model="search"
-                        v-on="on"
-                        label="Pesquisar por código, título, notas de aplicação, exemplos de notas de aplicação ou termos de índice..."
-                        text
-                        hide-details
-                        single-line
-                        clearable
-                        v-on:keyup.enter="processaPesquisa()"
-                        color="blue darken-3"
-                      ></v-text-field>
-                    </template>
-                    <span
-                      >Pesquisar por código, título, notas de aplicação, exemplos de notas
-                      de aplicação ou termos de índice...</span
-                    >
-                  </v-tooltip>
-                </div>
-                <v-btn
-                  @click="processaPesquisa()"
-                  rounded
-                  class="white--text clav-linear-background"
-                >
-                  <unicon
-                    name="consultar-icon"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20.71 20.697"
-                    fill="#ffffff"
-                  />
-                  <p class="ml-2">Pesquisar</p>
-                </v-btn>
-                <v-card-text class="mt-12 text-left" id="treeview-card">
-                  <div v-if="classesCarregadas">
-                    <v-treeview
+              <template slot="label" slot-scope="{ item }">
+                <v-tooltip bottom color="info" open-delay="500">
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      v-on="on"
                       rounded
-                      hoverable
-                      multiple-active
-                      :items="classesTree"
-                      item-key="id"
-                      :search="realSearch"
-                      :filter="filter"
-                      :open="selectedParents"
-                      :active="selected"
+                      text
+                      color="blue"
+                      @click="$router.push('/classes/editar/c' + item.id)"
                     >
-                      <template slot="label" slot-scope="{ item }">
-                        <v-tooltip bottom color="info" open-delay="500">
-                          <template v-slot:activator="{ on }">
-                            <v-btn
-                              v-on="on"
-                              rounded
-                              text
-                              color="blue"
-                              @click="$router.push('/classes/editar/c' + item.id)"
-                            >
-                              {{ item.name }}
-                            </v-btn>
-                          </template>
-                          <span> {{ item.name }} </span>
-                        </v-tooltip>
-                        <br />
-                      </template>
-                    </v-treeview>
-                    <!--
+                      {{ item.name }}
+                    </v-btn>
+                  </template>
+                  <span> {{ item.name }} </span>
+                </v-tooltip>
+                <br />
+              </template>
+            </v-treeview>
+            <!--
                     <v-alert
                       type="info"
                       class="font-weight-medium my-auto"
@@ -100,16 +90,12 @@
                     >
                       Sem resultados. Volte a pesquisar...
                     </v-alert>-->
-                  </div>
-                  <Loading v-else :message="'classes'" />
-                </v-card-text>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-content>
+          </div>
+          <Loading v-else :message="'classes'" />
+        </v-card-text>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>

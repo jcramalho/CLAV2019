@@ -1,54 +1,35 @@
 <template>
-  <v-row v-if="!valida">
-    <!-- PROCESSOS RELACIONADOS -->
-    <v-col xs="2" sm="2">
-      <div class="info-label">
-        Processos Relacionados
-        <InfoBox
-          header="Processos Relacionados"
-          :text="myhelp.Classe.Campos.ProcessosRelacionados"
-          helpColor="indigo darken-4"
-          dialogColor="#E0F2F1"
-        />
-      </div>
-    </v-col>
-    <v-col xs="10" sm="10">
-      <div class="info-content">
-        <v-data-table
-          :headers="headers"
-          :items="myProcRel"
-          class="elevation-1"
-          hide-default-footer
-        >
-          <template v-slot:item="props">
-            <tr>
-              <td style="color: #1A237E;">{{ props.item.label }}</td>
-              <td>
-                <ul>
-                  <li v-for="p in props.item.processos" :key="p.label">
-                    <a :href="'/classes/consultar/c' + p.codigo">{{
-                      p.codigo
-                    }}</a>
-                    - {{ p.titulo }}
-                  </li>
-                </ul>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
-    </v-col>
-  </v-row>
+  <!-- PROCESSOS RELACIONADOS -->
+  <Campo
+    v-if="!valida"
+    nome="Processos Relacionados"
+    infoHeader="Processos Relacionados"
+    :infoBody="myhelp.Classe.Campos.ProcessosRelacionados"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
+      <v-data-table :headers="headers" :items="myProcRel" hide-default-footer>
+        <template v-slot:item="props">
+          <tr>
+            <td style="color: #1a237e">{{ props.item.label }}</td>
+            <td>
+              <ul>
+                <li v-for="p in props.item.processos" :key="p.label">
+                  <a :href="'/classes/consultar/c' + p.codigo">{{ p.codigo }}</a>
+                  - {{ p.titulo }}
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </template>
+  </Campo>
   <div v-else>
-    <v-data-table
-      :headers="headers"
-      :items="myProcRel"
-      class="elevation-1"
-      hide-default-footer
-    >
+    <v-data-table :headers="headers" :items="myProcRel" hide-default-footer>
       <template v-slot:item="props">
         <tr>
-          <td style="color: #1A237E;">{{ props.item.label }}</td>
+          <td style="color: #1a237e">{{ props.item.label }}</td>
           <td>
             <ul>
               <li v-for="p in props.item.processos" :key="p.label">
@@ -64,14 +45,14 @@
 </template>
 
 <script>
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo.vue";
 const help = require("@/config/help").help;
 
 export default {
   props: ["processos", "valida"],
-  components: { InfoBox },
+  components: { Campo },
 
-  data: function() {
+  data: function () {
     return {
       headers: [
         {
@@ -79,13 +60,13 @@ export default {
           align: "left",
           sortable: false,
           value: "label",
-          class: ["table-header", "body-2", "font-weight-bold"]
+          class: ["body-2", "font-weight-bold"],
         },
         {
           text: "Processos",
           value: "processos",
-          class: ["table-header", "body-2", "font-weight-bold"]
-        }
+          class: ["body-2", "font-weight-bold"],
+        },
       ],
       relPorTipo: {
         eAntecessorDe: [],
@@ -95,7 +76,7 @@ export default {
         eSintetizadoPor: [],
         eSucessorDe: [],
         eSuplementoDe: [],
-        eSuplementoPara: []
+        eSuplementoPara: [],
       },
       labels: {
         eAntecessorDe: "É Antecessor de",
@@ -105,21 +86,21 @@ export default {
         eSintetizadoPor: "É Sintetizado por",
         eSucessorDe: "É Sucessor de",
         eSuplementoDe: "É Suplemento de",
-        eSuplementoPara: "É Suplemento para"
+        eSuplementoPara: "É Suplemento para",
       },
       myProcRel: [],
-      myhelp: help
+      myhelp: help,
     };
   },
 
   methods: {
-    go: function(id) {
+    go: function (id) {
       this.$router.push("/classes/consultar/c" + id);
       this.$router.go();
-    }
+    },
   },
 
-  mounted: function() {
+  mounted: function () {
     var tipo;
     for (var i = 0; i < this.processos.length; i++) {
       tipo = this.processos[i].idRel;
@@ -130,11 +111,11 @@ export default {
       if (this.relPorTipo[tipo].length > 0) {
         this.myProcRel.push({
           label: this.labels[tipo],
-          processos: this.relPorTipo[tipo]
+          processos: this.relPorTipo[tipo],
         });
       }
     }
-  }
+  },
 };
 </script>
 

@@ -13,7 +13,7 @@
       </v-col>
     </v-row>
     <v-data-table
-      :headers="(tipo=='TS_LC' || tipo=='PGD_LC') ? cabecalhoLC : cabecalho"
+      :headers="tipo == 'TS_LC' || tipo == 'PGD_LC' ? cabecalhoLC : cabecalho"
       :items="agregacoes"
       item-key="codigo"
       :items-per-page="5"
@@ -25,6 +25,7 @@
         <tr>
           <td>
             <v-text-field
+              :class="!(tipo == 'TS_LC' || tipo == 'PGD_LC') ? 'codigo' : ''"
               hint="Exemplo: AS_DGLAB_1/2019"
               label="Insira um código para a agregação"
               v-model="codigo"
@@ -33,6 +34,9 @@
           </td>
           <td>
             <v-text-field
+              :class="
+                tipo == 'TS_LC' || tipo == 'PGD_LC' ? 'tituloLC' : 'titulo'
+              "
               hint="Exemplo: Auditoria à Entidade A"
               label="Insira um título para a agregação"
               v-model="titulo"
@@ -41,17 +45,31 @@
           </td>
           <td>
             <v-text-field
+              :class="tipo == 'TS_LC' || tipo == 'PGD_LC' ? 'pcaLC' : 'pca'"
               hint="Exemplo: 2009"
               label="Insira o ano de contagem do PCA"
               v-model="dataContagem"
               clearable
             ></v-text-field>
           </td>
-          <td v-if="tipo=='TS_LC' || tipo=='PGD_LC'"><v-select :items="natureza" v-model="ni" dense></v-select></td>
+          <td v-if="tipo == 'TS_LC' || tipo == 'PGD_LC'">
+            <v-select
+              class="naturezaLC mt-5"
+              :items="natureza"
+              v-model="ni"
+              dense
+            ></v-select>
+          </td>
           <td>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
-                <v-icon v-on="on" small @click="addAgregacao">check</v-icon>
+                <v-icon
+                  :class="!(tipo == 'TS_LC' || tipo == 'PGD_LC') ? 'acoes' : ''"
+                  v-on="on"
+                  small
+                  @click="addAgregacao"
+                  >check</v-icon
+                >
               </template>
               <span>Adicionar Agregação</span>
             </v-tooltip>
@@ -60,7 +78,7 @@
       </template>
 
       <template v-slot:item="prop">
-        <tr v-if="prop.index === 0">
+        <tr v-if="agregacoes.indexOf(prop.item) === 0">
           <td>
             <v-text-field
               hint="Exemplo: AS_DGLAB_1/2019"
@@ -85,7 +103,14 @@
               clearable
             ></v-text-field>
           </td>
-          <td v-if="tipo=='TS_LC' || tipo=='PGD_LC'"><v-select :items="natureza" v-model="ni" dense></v-select></td>
+          <td v-if="tipo == 'TS_LC' || tipo == 'PGD_LC'">
+            <v-select
+              class="mt-5"
+              :items="natureza"
+              v-model="ni"
+              dense
+            ></v-select>
+          </td>
           <td>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -107,7 +132,7 @@
           <td>{{ prop.item.codigo }}</td>
           <td>{{ prop.item.titulo }}</td>
           <td>{{ prop.item.dataContagem }}</td>
-          <td v-if="tipo=='TS_LC' || tipo=='PGD_LC'">{{ prop.item.ni }}</td>
+          <td v-if="tipo == 'TS_LC' || tipo == 'PGD_LC'">{{ prop.item.ni }}</td>
           <td>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -141,9 +166,7 @@
     </v-data-table>
     <v-snackbar v-model="snackbar" color="success">
       Agregação editada com sucesso!
-      <v-btn dark text @click="snackbar = false">
-        Fechar
-      </v-btn>
+      <v-btn dark text @click="snackbar = false"> Fechar </v-btn>
     </v-snackbar>
     <v-dialog v-model="deleteDialog" width="700" persistent>
       <v-card outlined>
@@ -196,7 +219,7 @@
 const help = require("@/config/help").help;
 
 export default {
-  props: ["auto", "index","agregacoes","tipo"],
+  props: ["auto", "index", "agregacoes", "tipo"],
 
   components: {},
 
@@ -212,41 +235,76 @@ export default {
     deleteDialog: false,
     deleteObj: null,
     cabecalhoLC: [
-      { text: "Código", align: "left", sortable: false, value: "codigo" , width: "20%"},
+      {
+        text: "Código",
+        sortable: false,
+        value: "codigo",
+        width: "20%",
+      },
       { text: "Título", align: "left", value: "titulo", width: "30%" },
-      { text: "Data de início de contagem do PCA", align: "center", value: "dataContagem" , width: "15%"},
-      { text: "Natureza de intervenção", align: "center", value: "ni", width: "20%" },
-      { text: "Ações", align: "center", sortable: false, value: "action", width: "5%" }
+      {
+        text: "Data de início de contagem do PCA",
+        value: "dataContagem",
+        width: "25%",
+      },
+      {
+        text: "Natureza de intervenção",
+        value: "ni",
+        width: "20%",
+      },
+      {
+        text: "Ações",
+        sortable: false,
+        value: "action",
+        width: "5%",
+      },
     ],
     cabecalho: [
-      { text: "Código", align: "left", sortable: false, value: "codigo" , width: "30%"},
-      { text: "Título", align: "left", value: "titulo", width: "40%" },
-      { text: "Data de início de contagem do PCA", align: "center", value: "dataContagem" , width: "15%"},
-      { text: "Ações", align: "center", sortable: false, value: "action", width: "5%" }
+      {
+        text: "Código",
+        sortable: false,
+        value: "codigo",
+        width: "20%",
+      },
+      { text: "Título", align: "left", value: "titulo", width: "25%" },
+      {
+        text: "Data de início de contagem do PCA",
+        value: "dataContagem",
+        width: "25%",
+      },
+      {
+        text: "Ações",
+        sortable: false,
+        value: "action",
+        width: "5%",
+      },
     ],
     footer_props: {
-      "items-per-page-text": "Mostrar"
+      "items-per-page-text": "Mostrar",
     },
 
     erro: null,
-    erroDialog: false
+    erroDialog: false,
   }),
-  created: function() {
-    if(this.auto.zonaControlo[this.index].destino =="C" || this.auto.zonaControlo[this.index].destino =="Conservação") {
-      this.ni = "Participante"
-      this.natureza = ["Participante"] 
+  created: function () {
+    if (
+      this.auto.zonaControlo[this.index].destino == "C" ||
+      this.auto.zonaControlo[this.index].destino == "Conservação"
+    ) {
+      this.ni = "Participante";
+      this.natureza = ["Participante"];
     }
   },
   methods: {
-    limparAG: function() {
+    limparAG: function () {
       this.codigo = null;
       this.titulo = null;
       this.dataContagem = null;
       this.editAG = null;
     },
-    deleteAG: function() {
+    deleteAG: function () {
       var indexAG = this.agregacoes
-        .map(function(x) {
+        .map(function (x) {
           return x.codigo;
         })
         .indexOf(this.deleteObj.codigo);
@@ -254,12 +312,10 @@ export default {
       this.deleteDialog = false;
       this.limparAG();
     },
-    addAgregacao: function() {
+    addAgregacao: function () {
       const re = /\d{4}/;
       var currentTime = new Date();
-      var result = this.agregacoes.filter(
-        ag => ag.codigo == this.codigo
-      );
+      var result = this.agregacoes.filter((ag) => ag.codigo == this.codigo);
       if (!this.codigo || !this.titulo || !this.dataContagem) {
         this.erro = help.AutoEliminacao.Erros.FaltaCamposAg;
         this.erroDialog = true;
@@ -289,18 +345,46 @@ export default {
             codigo: this.codigo,
             titulo: this.titulo,
             dataContagem: this.dataContagem,
-            ni: this.ni
+            ni: this.ni,
           });
           this.limparAG();
         }
       }
     },
-    upAgregacao: function(item) {
+    upAgregacao: function (item) {
       this.codigo = item.codigo;
       this.titulo = item.titulo;
       this.dataContagem = item.dataContagem;
       this.ni = item.ni;
-    }
-  }
+    },
+  },
 };
 </script>
+<style>
+.tituloLC {
+  margin-left: 80px;
+  width: 100%;
+}
+.pcaLC {
+  margin-left: 230px;
+  width: 70%;
+}
+.naturezaLC {
+  margin-left: 150px;
+  width: 50%;
+}
+.codigo {
+  width: 310px;
+}
+.titulo {
+  margin-left: 105px;
+  width: 100%;
+}
+.pca {
+  margin-left: 280px;
+  width: 70%;
+}
+.acoes {
+  margin-left: 290px;
+}
+</style>

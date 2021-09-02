@@ -13,12 +13,12 @@
       :historicoCampo="historico.codCota"
     />
 
-    <VerHistoricoCampo campoText="Data Inicial" :historicoCampo="historico.dataInicial" />
-    <VerHistoricoCampo campoText="Data Final" :historicoCampo="historico.dataFinal" />
+    <VerHistoricoCampo campoText="Data inicial" :historicoCampo="historico.dataInicial" />
+    <VerHistoricoCampo campoText="Data final" :historicoCampo="historico.dataFinal" />
 
     <VerHistoricoCampo
       v-if="!!historico.produtor.dados.entProdutoras[0]"
-      campoText="Entidades Produtoras"
+      campoText="Entidade produtora"
       :historicoCampo="historico.produtor"
     >
       <template v-slot:campo>

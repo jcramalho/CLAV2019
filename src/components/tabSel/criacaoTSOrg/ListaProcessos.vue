@@ -93,6 +93,7 @@
             </td>
             <td>
               <v-radio-group
+                v-if="props.item.procTrans === 'S'"
                 class="mt-5"
                 v-model="participante[props.item.chave]"
                 v-on:change="
@@ -319,6 +320,20 @@ export default {
         class: ["body-2", "font-weight-bold"],
         width: "5%",
         sortable: false,
+      },
+      {
+        text: "Tipo",
+        value: "tipoProc",
+        width: "0%",
+        class: ["body-2", "font-weight-bold"],
+        align: " d-none",
+      },
+      {
+        text: "Pré-Selecionado",
+        value: "preSelectedLabel",
+        width: "0%",
+        class: ["body-2", "font-weight-bold"],
+        align: " d-none",
       },
     ],
     procsFooterProps: {

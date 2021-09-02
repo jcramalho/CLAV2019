@@ -17,9 +17,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" xs="12" sm="3">
-          <div style="padding-top:6px" class="info-label">
-            Entidades Responsáveis
-          </div>
+          <div style="padding-top:6px" class="info-label">Entidade responsável</div>
         </v-col>
         <v-col cols="12" xs="12" sm="9">
           <v-autocomplete
@@ -27,7 +25,7 @@
             :rules="[v => !!v[0] || 'Campo de preenchimento obrigatório!']"
             v-model="RADA.entRes"
             :items="entidadesProcessadas"
-            placeholder="Selecione as Entidades Responsáveis."
+            placeholder="Selecione uma ou mais entidades."
             chips
             multiple
             solo

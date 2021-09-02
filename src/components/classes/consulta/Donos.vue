@@ -1,19 +1,19 @@
 <template>
   <v-row v-if="!valida">
     <!-- DONOS DO PROCESSO -->
-    <v-col xs="2" sm="2">
-      <div class="info-label">
-        Donos do processo
-        <InfoBox
-          header="Donos do processo"
-          :text="myhelp.Classe.Campos.Donos"
-          helpColor="indigo darken-4"
-          dialogColor="#E0F2F1"
-        />
-      </div>
+    <v-col cols="12" sm="4" md="3">
+      <v-card class="pa-4" color="neutralpurple">
+        <v-row class="pa-0 ma-0" justify="center">
+          <span class="clav-info-label">Donos do processo</span>
+          <InfoBox
+            header="Donos do processo"
+            :text="myhelp.Classe.Campos.Donos"
+          />
+        </v-row>
+      </v-card>
     </v-col>
-    <v-col xs="10" sm="10">
-      <div class="info-content">
+    <v-col cols="12" sm="8" md="9">
+      <v-card color="secondary" class="pa-4">
         <ul>
           <li v-for="p in entidades" :key="p.idDono">
             <a v-if="p.idTipo == 'Entidade'" :href="'/entidades/' + p.idDono">
@@ -28,7 +28,7 @@
             </a>
           </li>
         </ul>
-      </div>
+      </v-card>
     </v-col>
   </v-row>
   <div v-else>
@@ -57,23 +57,23 @@ export default {
   props: ["entidades", "valida"],
   components: { InfoBox },
 
-  data: function() {
+  data: function () {
     return {
       headers: [
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },
-        { text: "Tipo", value: "tipo" }
+        { text: "Tipo", value: "tipo" },
       ],
-      myhelp: help
+      myhelp: help,
     };
   },
 
   methods: {
-    go: function(idClasse) {
+    go: function (idClasse) {
       this.$router.push("/entidades/" + idClasse);
       this.$router.go();
-    }
-  }
+    },
+  },
 };
 </script>
 
