@@ -8,7 +8,7 @@ ENV VUE_APP_API_VERSION=$VUE_APP_API_VERSION
 ARG VUE_APP_INTERFACE_VERSION
 ENV VUE_APP_INTERFACE_VERSION=$VUE_APP_INTERFACE_VERSION
 RUN npm install
-RUN npm audit fix -f
+RUN npm audit fix --legacy-peer-deps
 RUN npm run build
 
 FROM nginx:1.19
