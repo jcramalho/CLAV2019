@@ -1,16 +1,22 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <div class="info-label">
-        Processos Relacionados
-        <InfoBox header="Processos Relacionados" :text="myhelp.Classe.Campos.ProcessosRelacionados" />
-      </div>
-    </v-col>
-    <v-col v-if="processos.length > 0">
-      <v-data-table :headers="headers" :items="processos" class="elevation-1" hide-default-footer>
+  <Campo
+    nome="Processos Relacionados"
+    infoHeader="Processos Relacionados"
+    :infoBody="myhelp.Classe.Campos.ProcessosRelacionados"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo
+      ><v-data-table
+        v-if="processos.length > 0"
+        :headers="headers"
+        :items="processos"
+        hide-default-footer
+      >
         <template v-slot:header="props">
           <tr>
-            <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
+            <th v-for="h in props.headers" :key="h.text" class="subtitle-2">
+              {{ h.text }}
+            </th>
           </tr>
         </template>
 
@@ -20,34 +26,40 @@
             <td>{{ props.item.codigo }}</td>
             <td>{{ props.item.titulo }}</td>
             <td>
-              <v-btn small color="red darken-2" dark rounded @click="unselectProcRel(props.item)">
+              <v-btn
+                small
+                color="red darken-2"
+                dark
+                rounded
+                @click="unselectProcRel(props.item)"
+              >
                 <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
           </tr>
         </template>
       </v-data-table>
-    </v-col>
-    <v-col v-else>
-      <v-alert :value="true" type="warning">Não tem processos relacionados...</v-alert>
-    </v-col>
-  </v-row>
+      <v-alert v-else :value="true" type="warning" border="left"
+        >Não tem processos relacionados...</v-alert
+      >
+    </template>
+  </Campo>
 </template>
 
 <script>
 const labels = require("@/config/labels").classeCriacaoProcessosRelacionadosOps;
 const help = require("@/config/help").help;
 
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo";
 
 export default {
   props: ["processos"],
 
   components: {
-    InfoBox
+    Campo,
   },
 
-  data: function() {
+  data: function () {
     return {
       mylabels: labels,
       myhelp: help,
@@ -55,7 +67,7 @@ export default {
         { text: "Relação", align: "left", sortable: true, value: "idRel" },
         { text: "Processo", align: "left", sortable: false, value: "codigo" },
         { text: "Título", align: "left", sortable: false, value: "titulo" },
-        { text: "Remover", align: "left", sortable: false, value: "" }
+        { text: "Remover", align: "left", sortable: false, value: "" },
       ],
 
       labels: {
@@ -66,20 +78,20 @@ export default {
         eSintetizadoPor: "É Sintetizado por",
         eSucessorDe: "É Sucessor de",
         eSuplementoDe: "É Suplemento de",
-        eSuplementoPara: "É Suplemento para"
-      }
+        eSuplementoPara: "É Suplemento para",
+      },
     };
   },
 
   methods: {
-    go: function(id) {
+    go: function (id) {
       this.$router.push("/classes/consultar/c" + id);
       this.$router.go();
     },
-    unselectProcRel: function(proc) {
+    unselectProcRel: function (proc) {
       this.$emit("unselectProcRel", proc);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

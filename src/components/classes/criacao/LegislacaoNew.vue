@@ -2,42 +2,44 @@
   <v-row class="ma-2 indigo lighten-5">
     <v-col cols="2">
       <div class="info-label">Legislação nova</div>
-      <v-btn small dark rounded color="indigo darken-2" @click="newLegislacao">
+      <v-btn small rounded color="success" @click="newLegislacao">
         Adicionar
-        <v-icon small dark right>add_circle_outline</v-icon>
+        <v-icon small right>add_circle_outline</v-icon>
       </v-btn>
     </v-col>
     <v-col>
       <v-form v-model="valid">
-        <v-container>
-          <v-row>
-            <v-col xs12 md3 v-if="listaTipos.length > 0">
-              <v-select
-                item-text="label"
-                item-value="value"
-                v-model="tipo"
-                :items="listaTipos"
-                label="Tipo"
-              />
-            </v-col>
+        <v-row>
+          <v-col xs12 md3 v-if="listaTipos.length > 0">
+            <v-select
+              item-text="label"
+              item-value="value"
+              v-model="tipo"
+              :items="listaTipos"
+              label="Tipo"
+            />
+          </v-col>
 
-            <v-col xs12 md3 v-else>
-              <v-text-field v-model="tipo" label="Tipo"></v-text-field>
-            </v-col>
+          <v-col xs12 md3 v-else>
+            <v-text-field v-model="tipo" label="Tipo"></v-text-field>
+          </v-col>
 
-            <v-col xs12 md3>
-              <v-text-field v-model="numero" label="Número"></v-text-field>
-            </v-col>
+          <v-col xs12 md3>
+            <v-text-field v-model="numero" label="Número"></v-text-field>
+          </v-col>
 
-            <v-col xs12 md3>
-              <v-text-field v-model="sumario" label="Sumário"></v-text-field>
-            </v-col>
+          <v-col xs12 md3>
+            <v-text-field v-model="sumario" label="Sumário"></v-text-field>
+          </v-col>
 
-            <v-col xs12 md3>
-              <SelecionarData :d="data" :label="'Data: AAAA-MM-DD'" @dataSelecionada="data = $event" />
-            </v-col>
-          </v-row>
-        </v-container>
+          <v-col xs12 md3>
+            <SelecionarData
+              :d="data"
+              :label="'Data: AAAA-MM-DD'"
+              @dataSelecionada="data = $event"
+            />
+          </v-col>
+        </v-row>
       </v-form>
     </v-col>
 
@@ -56,7 +58,7 @@ export default {
 
   components: { SelecionarData },
 
-  data: function() {
+  data: function () {
     return {
       listaTipos: [],
       erroValidacao: false,
@@ -65,17 +67,14 @@ export default {
       tipo: "",
       numero: "",
       sumario: "",
-      data: ""
+      data: "",
     };
   },
 
-  created: async function() {
+  created: async function () {
     try {
-      var tipos = await this.$request(
-        "get",
-        "/vocabularios/vc_tipoDiplomaLegislativo"
-      );
-      this.listaTipos = tipos.data.map(t => {
+      var tipos = await this.$request("get", "/vocabularios/vc_tipoDiplomaLegislativo");
+      this.listaTipos = tipos.data.map((t) => {
         return { label: t.termo, value: t.termo };
       });
     } catch (e) {
@@ -84,37 +83,33 @@ export default {
   },
 
   methods: {
-    fecharErros: function() {
+    fecharErros: function () {
       this.mensagensErro = [];
       this.erroValidacao = false;
     },
 
-    validaTipo: function(t) {
+    validaTipo: function (t) {
       var res = true;
       if (t == "") {
-        this.mensagensErro.push(
-          "O tipo não pode ser vazio, selecione um valor!"
-        );
+        this.mensagensErro.push("O tipo não pode ser vazio, selecione um valor!");
         res = false;
       }
       return res;
     },
 
-    validaNumero: function(n) {
+    validaNumero: function (n) {
       var res = true;
       if (n == "") {
-        this.mensagensErro.push(
-          "O número não pode ser vazio, introduza um valor!"
-        );
+        this.mensagensErro.push("O número não pode ser vazio, introduza um valor!");
         res = false;
       }
       return res;
     },
 
-    validaDups: async function(t, n) {
+    validaDups: async function (t, n) {
       try {
         var legs = await this.$request("get", "/legislacao");
-        var test = legs.data.filter(l => l.tipo == t && l.numero == n);
+        var test = legs.data.filter((l) => l.tipo == t && l.numero == n);
         if (test.length > 0) {
           this.mensagensErro.push(
             "Já existe um documento legislativo na BD com o mesmo tipo e número!"
@@ -128,19 +123,17 @@ export default {
       }
     },
 
-    validaDupsLocais: function(t, n) {
-      var test = this.legislacao.filter(l => l.tipo == t && l.numero == n);
+    validaDupsLocais: function (t, n) {
+      var test = this.legislacao.filter((l) => l.tipo == t && l.numero == n);
       if (test.length > 0) {
-        this.mensagensErro.push(
-          "Já foi criado um item com esse tipo e número!"
-        );
+        this.mensagensErro.push("Já foi criado um item com esse tipo e número!");
         return false;
       } else {
         return true;
       }
     },
 
-    validaSumario: function(s) {
+    validaSumario: function (s) {
       if (s != "") return true;
       else {
         this.mensagensErro.push("O sumário não pode ficar vazio!");
@@ -148,7 +141,7 @@ export default {
       }
     },
 
-    validaData: function(d) {
+    validaData: function (d) {
       if (d != "") return true;
       else {
         this.mensagensErro.push("A data não pode ficar vazia!");
@@ -156,7 +149,7 @@ export default {
       }
     },
 
-    newLegislacao: async function() {
+    newLegislacao: async function () {
       if (
         this.validaTipo(this.tipo) &&
         this.validaNumero(this.numero) &&
@@ -170,7 +163,7 @@ export default {
           id: "...",
           numero: this.numero,
           sumario: this.sumario,
-          data: this.data
+          data: this.data,
         };
         this.tipo = "";
         this.numero = "";
@@ -180,8 +173,8 @@ export default {
       } else {
         this.erroValidacao = true;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

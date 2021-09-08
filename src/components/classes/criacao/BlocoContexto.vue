@@ -26,18 +26,12 @@
 
         <!-- DONOS -->
         <DonosOps :entidades="c.donos" @unselectEntidade="unselectEntidade($event)" />
-
-        <v-row>
-          <v-col>
-            <hr style="border-top: 1px dashed #dee2f8" />
-          </v-col>
-        </v-row>
-
         <DonosSelect
           :entidadesReady="entidadesReady"
           :entidades="entidadesD"
           @selectEntidade="selectEntidade($event)"
         />
+        <hr style="border-top: 1px dashed #dee2f8" />
         <DonosNew
           @newEntidade="newEntidade($event, c.donos)"
           :entidadesReady="entidadesReady"
@@ -65,8 +59,6 @@
             :entidades="c.participantes"
             @unselectParticipante="unselectParticipante($event)"
           />
-
-          <hr style="border-top: 1px dashed #dee2f8" />
 
           <ParticipantesSelect
             :entidadesReady="entidadesReady"
@@ -107,8 +99,6 @@
           @unselectProcRel="unselectProcesso($event)"
         />
 
-        <hr style="border-top: 1px dashed #dee2f8" />
-
         <ProcessosRelacionadosSelect
           :procReady="semaforos.classesReady"
           :processos="procRel"
@@ -120,23 +110,16 @@
         <!-- LEGISLAÇÂO -->
         <LegislacaoOps :legs="c.legislacao" @unselectDiploma="unselectDiploma($event)" />
 
-        <v-row>
-          <v-col>
-            <hr style="border-top: 1px dashed #dee2f8" />
-          </v-col>
-        </v-row>
-
-        <LegislacaoNew
-          :legislacao="c.legislacao"
-          @newLegislacao="newLegislacao($event, c.legislacao)"
-        />
-
-        <hr style="border-top: 1px dashed #dee2f8" />
-
         <LegislacaoSelect
           :legs="legs"
           :legislacaoReady="semaforos.legislacaoReady"
           @selectDiploma="selectDiploma($event)"
+        />
+
+        <hr style="border-top: 1px dashed #dee2f8" />
+        <LegislacaoNew
+          :legislacao="c.legislacao"
+          @newLegislacao="newLegislacao($event, c.legislacao)"
         />
       </v-expansion-panel-content>
     </template>

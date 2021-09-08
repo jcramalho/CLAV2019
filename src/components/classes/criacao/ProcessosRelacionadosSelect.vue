@@ -1,10 +1,11 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <div class="info-label">Selecione o(s) processo(s) relacionado(s)</div>
-    </v-col>
-    <v-col v-if="procReady">
-      <v-card>
+  <Campo
+    nome="Selecione o(s) processo(s) relacionado(s)"
+    infoHeader="Selecione o(s) processo(s) relacionado(s)"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
+      <v-card v-if="procReady" flat>
         <v-card-title>
           <v-text-field
             v-model="searchProcessos"
@@ -20,57 +21,55 @@
           :items-per-page="5"
           :search="searchProcessos"
           item-key="id"
-          class="elevation-1"
           :sort-by="['codigo']"
         >
-          <template v-slot:item="props">
-            <tr>
-              <td>
-                <v-select
-                  :key="props.item.id"
-                  item-text="label"
-                  item-value="value"
-                  v-model="props.item.idRel"
-                  :items="tiposRelacao"
-                  solo
-                  @change="selectProcesso(props.item.id, $event)"
-                />
-              </td>
-              <td>{{ props.item.codigo }}</td>
-              <td>{{ props.item.titulo }}</td>
-            </tr>
+          <template v-slot:item.relacao="{ item }">
+            <v-select
+              :key="item.id"
+              item-text="label"
+              item-value="value"
+              v-model="item.idRel"
+              :items="tiposRelacao"
+              solo
+              hide-details
+              @change="selectProcesso(item.id, $event)"
+            />
           </template>
 
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            color="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" color="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-card>
-    </v-col>
-    <v-col v-else>
-      <v-subheader>{{ mylabels.procRel }}</v-subheader>
-    </v-col>
-  </v-row>
+      <v-subheader v-else>{{ mylabels.procRel }}</v-subheader>
+    </template>
+  </Campo>
 </template>
 
 <script>
+import Campo from "@/components/generic/Campo";
 
 export default {
   props: ["procReady", "processos"],
-
-  data: function() {
+  components: {
+    Campo,
+  },
+  data: function () {
     return {
       searchProcessos: "",
       paginationProcessos: { sortBy: "codigo" },
       mylabels: require("@/config/labels").mensagensEspera,
 
       processosRelacionadosHeaders: [
-        { text: "Relação", align: "left", value: "relacao" },
-        { text: "Processo", align: "left", value: "codigo", sortable: true },
-        { text: "Título", value: "titulo" }
+        { text: "Relação", align: "left", value: "relacao", width: "35%" },
+        {
+          text: "Processo",
+          align: "left",
+          value: "codigo",
+          sortable: true,
+          width: "20%",
+        },
+        { text: "Título", value: "titulo", width: "45%" },
       ],
 
       tiposRelacao: [
@@ -82,24 +81,24 @@ export default {
         { label: "Sintese de", value: "eSinteseDe" },
         { label: "Sintetizado por", value: "eSintetizadoPor" },
         { label: "Suplemento de", value: "eSuplementoDe" },
-        { label: "Suplemento para", value: "eSuplementoPara" }
-      ]
+        { label: "Suplemento para", value: "eSuplementoPara" },
+      ],
     };
   },
 
   methods: {
-    go: function(id) {
+    go: function (id) {
       this.$router.push("/classes/consultar/c" + id);
       this.$router.go();
     },
-    selectProcesso: function(id, relacao) {
-      var index = this.processos.findIndex(p => p.id === id);
+    selectProcesso: function (id, relacao) {
+      var index = this.processos.findIndex((p) => p.id === id);
       this.processos[index].relacao = relacao;
       var selectedProcesso = JSON.parse(JSON.stringify(this.processos[index]));
       this.processos.splice(index, 1);
       this.$emit("selectProcesso", selectedProcesso);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

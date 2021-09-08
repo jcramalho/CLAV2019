@@ -1,10 +1,11 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <div class="info-label">Selecione a legislação</div>
-    </v-col>
-    <v-col v-if="legislacaoReady">
-      <v-card>
+  <Campo
+    nome="Selecione a legislação"
+    infoHeader="Selecione a legislação"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
+      <v-card v-if="legislacaoReady" flat>
         <v-card-title>
           <v-text-field
             v-model="searchDiplomas"
@@ -20,7 +21,6 @@
           :items-per-page="5"
           :search="searchDiplomas"
           item-key="id"
-          class="elevation-1"
           :footer-props="footer_props"
         >
           <template v-slot:item="props">
@@ -32,30 +32,29 @@
             </tr>
           </template>
 
-          <template
-            v-slot:footer.page-text="props"
-          >Diplomas {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
+          <template v-slot:footer.page-text="props"
+            >Diplomas {{ props.pageStart }} - {{ props.pageStop }} de
+            {{ props.itemsLength }}</template
+          >
 
-          <v-alert
-            v-slot:no-results
-            :value="true"
-            color="error"
-            icon="warning"
-          >A procura por "{{ search }}" não deu resultados.</v-alert>
+          <v-alert v-slot:no-results :value="true" color="error" icon="warning"
+            >A procura por "{{ search }}" não deu resultados.</v-alert
+          >
         </v-data-table>
       </v-card>
-    </v-col>
-    <v-col v-else>
-      <v-subheader>{{ mylabels.legislacao }}</v-subheader>
-    </v-col>
-  </v-row>
+      <v-subheader v-else>{{ mylabels.legislacao }}</v-subheader>
+    </template>
+  </Campo>
 </template>
 
 <script>
+import Campo from "@/components/generic/Campo";
 export default {
   props: ["legs", "legislacaoReady"],
-
-  data: function() {
+  components: {
+    Campo,
+  },
+  data: function () {
     return {
       searchDiplomas: "",
       mylabels: require("@/config/labels").mensagensEspera,
@@ -64,22 +63,22 @@ export default {
         { text: "Tipo", align: "left", value: "tipo", sortable: false },
         { text: "Número", value: "numero", sortable: false },
         { text: "Sumário", value: "sumario", sortable: false },
-        { text: "Data", value: "data" }
+        { text: "Data", value: "data" },
       ],
 
       footer_props: {
         "items-per-page-text": "Diplomas por página",
         "items-per-page-options": [5, 10, 20, -1],
-        "items-per-page-all-text": "Todos"
-      }
+        "items-per-page-all-text": "Todos",
+      },
     };
   },
 
   methods: {
-    selectDiploma: function(diploma) {
+    selectDiploma: function (diploma) {
       this.$emit("selectDiploma", diploma);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

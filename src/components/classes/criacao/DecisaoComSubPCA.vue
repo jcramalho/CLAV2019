@@ -1,23 +1,28 @@
 <template>
   <!-- PCA -->
-  <v-card class="ma-2" >
-    <v-card-title class="indigo darken-4 subtitle-1 white--text" dark>Prazo de Conservação Administrativa</v-card-title>
+  <v-card class="ma-2">
+    <v-card-title class="indigo darken-4 subtitle-1 white--text" dark
+      >Prazo de Conservação Administrativa</v-card-title
+    >
     <v-card-text>
       <v-row class="ma-2">
         <v-col cols="2">
           <div class="info-label">
             Prazo
-            <InfoBox header="Prazo de Conservação Administrativa" :text="myhelp.Classe.Campos.Prazo" />
+            <InfoBox
+              header="Prazo de Conservação Administrativa"
+              :text="myhelp.Classe.Campos.Prazo"
+            />
           </div>
         </v-col>
         <v-col>
           <v-text-field
-          v-model="c.pca.valor"
-          label="Prazo em anos: 0 a 199"
-          v-mask="'###'"
-          solo
-          clearable
-        ></v-text-field>
+            v-model="c.pca.valor"
+            label="Prazo em anos: 0 a 199"
+            v-mask="'###'"
+            solo
+            clearable
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -30,11 +35,11 @@
         </v-col>
         <v-col>
           <v-textarea
-          solo
-          label="Notas ao PCA"
-          v-model="c.pca.notas"
-          rows="2"
-        ></v-textarea>
+            solo
+            label="Notas ao PCA"
+            v-model="c.pca.notas"
+            rows="2"
+          ></v-textarea>
         </v-col>
       </v-row>
 
@@ -42,7 +47,10 @@
         <v-col cols="2">
           <div class="info-label">
             Forma de Contagem
-            <InfoBox header="Forma de contagem do PCA" :text="myhelp.Classe.Campos.FormaContagem" />
+            <InfoBox
+              header="Forma de contagem do PCA"
+              :text="myhelp.Classe.Campos.FormaContagem"
+            />
           </div>
         </v-col>
         <v-col>
@@ -58,11 +66,20 @@
         </v-col>
       </v-row>
 
-      <v-row class="ma-2" v-if="semaforos.pcaSubFormasContagemReady && c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'">
+      <v-row
+        class="ma-2"
+        v-if="
+          semaforos.pcaSubFormasContagemReady &&
+          c.pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'
+        "
+      >
         <v-col cols="2">
           <div class="info-label">
             Subforma de contagem
-            <InfoBox header="Forma de contagem do PCA" :text="myhelp.Classe.Campos.SubformaContagem" />
+            <InfoBox
+              header="Forma de contagem do PCA"
+              :text="myhelp.Classe.Campos.SubformaContagem"
+            />
           </div>
         </v-col>
         <v-col cols="10">
@@ -75,18 +92,18 @@
             solo
             dense
           >
-            <template v-slot:selection="{item}">
+            <template v-slot:selection="{ item }">
               <p>{{ item.label }}</p>
             </template>
 
-            <template v-slot:item="{item}">
+            <template v-slot:item="{ item }">
               <p>{{ item.label }}</p>
             </template>
           </v-select>
         </v-col>
       </v-row>
 
-      <hr style="border-top: 1px dashed #1A237E;" />
+      <hr style="border-top: 1px dashed #1a237e" />
 
       <!-- JUSTIFICAÇÂO DO PCA -->
 
@@ -94,7 +111,10 @@
         <v-col cols="3">
           <div class="ma-2 info-label">
             Justificação do PCA
-            <InfoBox header="Justificação do PCA" :text="myhelp.Classe.Campos.JustificacaoPCA" />
+            <InfoBox
+              header="Justificação do PCA"
+              :text="myhelp.Classe.Campos.JustificacaoPCA"
+            />
           </div>
 
           <div class="ma-2">
@@ -102,11 +122,18 @@
               color="indigo darken-2"
               dark
               rounded
-              @click="adicionarCriterioGestionario( c.pca.justificacao, 'CriterioJustificacaoGestionario',
-                                                    'Critério Gestionário', textoCriterioGestionario,
-                                                    [], [])"
+              @click="
+                adicionarCriterioGestionario(
+                  c.pca.justificacao,
+                  'CriterioJustificacaoGestionario',
+                  'Critério Gestionário',
+                  textoCriterioGestionario,
+                  [],
+                  []
+                )
+              "
               v-if="!c.semaforos.critGestionarioAdicionado"
-            >Critério Gestionário
+              >Critério Gestionário
               <v-icon dark right>add_circle_outline</v-icon>
             </v-btn>
           </div>
@@ -116,8 +143,16 @@
               color="indigo darken-2"
               dark
               rounded
-              @click="adicionarCriterioLegalPCA( c.pca.justificacao, 'CriterioJustificacaoLegal',
-                                                  'Critério Legal', '', [], c.legislacao )"
+              @click="
+                adicionarCriterioLegalPCA(
+                  c.pca.justificacao,
+                  'CriterioJustificacaoLegal',
+                  'Critério Legal',
+                  '',
+                  [],
+                  c.legislacao
+                )
+              "
               v-if="!c.semaforos.critLegalAdicionadoPCA"
             >
               Critério Legal
@@ -136,7 +171,8 @@
                   dark
                   small
                   @click="removerCriterioTodo(c.pca.justificacao, cindex, 'PCA')"
-                  >remove_circle</v-icon>
+                  >remove_circle</v-icon
+                >
               </div>
             </v-col>
             <!-- Se existir um critério de Utilidade Administrativa ........................-->
@@ -173,22 +209,20 @@
                   v-model="crit.notas"
                 ></v-textarea>
                 <span v-for="(l, i) in crit.legislacao" :key="l.id">
-                  <a :href="'/legislacao/' + l.id">
-                    {{ l.tipo }} {{ l.numero }}
-                  </a>
+                  <a :href="'/legislacao/' + l.id"> {{ l.tipo }} {{ l.numero }} </a>
                   <v-icon
                     color="red darken-2"
                     dark
                     small
                     @click="crit.legislacao.splice(i, 1)"
-                    >remove_circle</v-icon>
+                    >remove_circle</v-icon
+                  >
                   <span v-if="i == crit.legislacao.length - 1">.</span>
                   <span v-else>, </span>
                 </span>
               </div>
               <div class="info-content" v-if="crit.legislacao.length == 0">
-                Sem legislação associada. Pode associar legislação na área de
-                contexto.
+                Sem legislação associada. Pode associar legislação na área de contexto.
               </div>
             </v-col>
             <!-- Se existir um critério Gestionário ..........................................-->
@@ -207,7 +241,7 @@
 
             <hr
               v-if="cindex < c.pca.justificacao.length"
-              style="border-top: 2px dotted #1A237E; width: 100%;"
+              style="border-top: 2px dotted #1a237e; width: 100%"
             />
           </v-row>
         </v-col>
@@ -217,7 +251,7 @@
 </template>
 
 <script>
-const help = require("@/config/help").help
+const help = require("@/config/help").help;
 
 import ProcessosRelacionadosOps from "@/components/classes/criacao/ProcessosRelacionadosOps.vue";
 import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
@@ -229,52 +263,41 @@ export default {
   components: {
     //ProcessosRelacionadosOps,
     //LegislacaoOps,
-    InfoBox
+    InfoBox,
   },
 
-  data: function() {
+  data: function () {
     return {
       myhelp: help,
       textoCriterioGestionario:
         "Prazo para imputação de responsabilidade pela gestão estratégica, decorrente de" +
         " escrutínio público (eleições) ou da não recondução no mandato. Considerou-se para" +
-        " a definição do prazo o tempo do mandato de maior duração: 5 anos."
+        " a definição do prazo o tempo do mandato de maior duração: 5 anos.",
     };
   },
 
   methods: {
     // Adiciona um critério à lista de critérios do PCA ou do DF....................
-    adicionarCriterio: function(
-      justificacao,
-      tipo,
-      label,
-      notas,
-      procRel,
-      legislacao
-    ) {
+    adicionarCriterio: function (justificacao, tipo, label, notas, procRel, legislacao) {
       let myProcRel = JSON.parse(JSON.stringify(procRel));
       let myLeg = JSON.parse(JSON.stringify(legislacao));
 
-      var indice = justificacao.findIndex(crit => crit.tipo === tipo);
+      var indice = justificacao.findIndex((crit) => crit.tipo === tipo);
       if (indice == -1) {
         justificacao.push({
           tipo: tipo,
           label: label,
           notas: notas,
           procRel: myProcRel,
-          legislacao: myLeg
+          legislacao: myLeg,
         });
       } else {
-        justificacao[indice].procRel = justificacao[indice].procRel.concat(
-          myProcRel
-        );
-        justificacao[indice].legislacao = justificacao[
-          indice
-        ].legislacao.concat(myLeg);
+        justificacao[indice].procRel = justificacao[indice].procRel.concat(myProcRel);
+        justificacao[indice].legislacao = justificacao[indice].legislacao.concat(myLeg);
       }
     },
 
-    adicionarCriterioLegalPCA: function(
+    adicionarCriterioLegalPCA: function (
       justificacao,
       tipo,
       label,
@@ -282,18 +305,11 @@ export default {
       procRel,
       legislacao
     ) {
-      this.adicionarCriterio(
-        justificacao,
-        tipo,
-        label,
-        notas,
-        procRel,
-        legislacao
-      );
+      this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
       this.c.semaforos.critLegalAdicionadoPCA = true;
     },
 
-    adicionarCriterioGestionario: function(
+    adicionarCriterioGestionario: function (
       justificacao,
       tipo,
       label,
@@ -301,19 +317,12 @@ export default {
       procRel,
       legislacao
     ) {
-      this.adicionarCriterio(
-        justificacao,
-        tipo,
-        label,
-        notas,
-        procRel,
-        legislacao
-      );
+      this.adicionarCriterio(justificacao, tipo, label, notas, procRel, legislacao);
       this.c.semaforos.critGestionarioAdicionado = true;
     },
 
     // Remove um critério completo duma vez
-    removerCriterioTodo: function(justificacao, i, PCAouDF) {
+    removerCriterioTodo: function (justificacao, i, PCAouDF) {
       this.atualizaFlagsCriterios(justificacao[i].tipo, PCAouDF);
       justificacao.splice(i, 1);
     },
@@ -328,19 +337,19 @@ export default {
       }
     },
 
-    unselectProcesso: function(proc, listaProc) {
-      var index = listaProc.findIndex(p => p.id === proc.id);
+    unselectProcesso: function (proc, listaProc) {
+      var index = listaProc.findIndex((p) => p.id === proc.id);
       listaProc.splice(index, 1);
     },
 
-    unselectDiploma: function(diploma, listaLeg) {
-      var index = listaLeg.findIndex(e => e.id === diploma.id);
+    unselectDiploma: function (diploma, listaLeg) {
+      var index = listaLeg.findIndex((e) => e.id === diploma.id);
       listaLeg.splice(index, 1);
-      if(listaLeg.length == 0){
-        this.semaforos.critLegalAdicionadoPCA = false
+      if (listaLeg.length == 0) {
+        this.semaforos.critLegalAdicionadoPCA = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

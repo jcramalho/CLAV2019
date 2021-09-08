@@ -1,5 +1,5 @@
 <template>
-  <v-row class="ma-2 indigo lighten-4">
+  <v-row class="ma-2 indigo lighten-5">
     <v-col cols="3">
       <div class="info-label">Participante novo</div>
       <v-btn small rounded class="success" @click="newEntidade">

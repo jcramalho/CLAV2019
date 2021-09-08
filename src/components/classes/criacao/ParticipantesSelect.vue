@@ -23,24 +23,18 @@
           :footer-props="participantesFooterProps"
           :sort-by="['sigla']"
         >
-          <template v-slot:item="props">
-            <tr>
-              <td>
-                <v-select
-                  :key="props.item.id"
-                  item-text="label"
-                  item-value="value"
-                  v-model="props.item.intervencao"
-                  :items="tiposIntervencao"
-                  solo
-                  dense
-                  @change="selectParticipante(props.item.id, $event)"
-                />
-              </td>
-              <td>{{ props.item.sigla }}</td>
-              <td>{{ props.item.designacao }}</td>
-              <td>{{ props.item.tipo }}</td>
-            </tr>
+          <template v-slot:item.intervencao="{ item }">
+            <v-select
+              :key="item.id"
+              item-text="label"
+              item-value="value"
+              v-model="item.intervencao"
+              :items="tiposIntervencao"
+              solo
+              dense
+              hide-details
+              @change="selectParticipante(item.id, $event)"
+            />
           </template>
 
           <template v-slot:footer.page-text="props"
@@ -72,10 +66,10 @@ export default {
       mylabels: require("@/config/labels").mensagensEspera,
 
       participantesHeaders: [
-        { text: "Intervenção", align: "left", value: "intervencao" },
-        { text: "Sigla", align: "left", value: "sigla", sortable: true },
-        { text: "Designação", value: "designacao" },
-        { text: "Tipo", value: "tipo" },
+        { text: "Intervenção", align: "left", value: "intervencao", width: "35%" },
+        { text: "Sigla", align: "left", value: "sigla", sortable: true, width: "10%" },
+        { text: "Designação", value: "designacao", width: "35%" },
+        { text: "Tipo", value: "tipo", width: "20%" },
       ],
 
       tiposIntervencao: [
