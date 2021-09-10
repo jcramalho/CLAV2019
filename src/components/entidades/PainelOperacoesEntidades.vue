@@ -391,7 +391,9 @@ export default {
     },
 
     cancelarCriacaoEntidade: function () {
-      this.$router.push("/");
+      this.$request("delete", "/pedidos/" + this.pedido.codigo)
+        .then(() => this.$router.push("/"))
+        .catch((err) => console.error(err));
     },
   },
 };

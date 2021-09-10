@@ -2,7 +2,7 @@
   <Campo :nome="nome" :infoHeader="infoHeader" :infoBody="infoBody" color="neutralpurple">
     <template v-slot:lateral>
       <v-btn small color="success" rounded @click="insereNovaNota(lista)">
-        Nota de aplicação
+        Acrescentar nova
         <v-icon right>add_circle_outline</v-icon>
       </v-btn>
     </template>
@@ -15,7 +15,7 @@
             v-model="nota[campo]"
             auto-grow
             solo
-            label="Nota de Aplicação"
+            label="Este campo deve ser preenchido!"
             rows="1"
           ></v-textarea>
           <v-row>

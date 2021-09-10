@@ -1,16 +1,15 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <div class="info-label">
-        Legislação
-        <InfoBox header="Legislação" :text="myhelp.Classe.Campos.Legislacao" />
-      </div>
-    </v-col>
-    <v-col v-if="legs.length > 0">
+  <Campo
+    nome="Legislação"
+    infoHeader="Legislação"
+    :infoBody="myhelp.Classe.Campos.Legislacao"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
       <v-data-table
+        v-if="legs.length > 0"
         :headers="headers"
         :items="legs"
-        class="elevation-1"
         hide-default-footer
         :footer-props="footer_props"
       >
@@ -20,8 +19,10 @@
               v-for="h in props.headers"
               :key="h.text"
               class="body-2 font-weight-bold"
-              style="color: green;"
-            >{{ h.text }}</th>
+              style="color: green"
+            >
+              {{ h.text }}
+            </th>
           </tr>
         </template>
 
@@ -32,37 +33,44 @@
             <td>{{ props.item.sumario }}</td>
             <td>{{ props.item.data }}</td>
             <td>
-              <v-btn small color="red darken-2" dark rounded @click="unselectDiploma(props.item)">
+              <v-btn
+                small
+                color="red darken-2"
+                dark
+                rounded
+                @click="unselectDiploma(props.item)"
+              >
                 <v-icon dark>remove_circle_outline</v-icon>
               </v-btn>
             </td>
           </tr>
         </template>
 
-        <template
-          v-slot:footer.page-text="props"
-        >Diplomas {{ props.pageStart }} - {{ props.pageStop }} de {{ props.itemsLength }}</template>
+        <template v-slot:footer.page-text="props"
+          >Diplomas {{ props.pageStart }} - {{ props.pageStop }} de
+          {{ props.itemsLength }}</template
+        >
       </v-data-table>
-    </v-col>
-    <v-col v-else>
-      <v-alert :value="true" type="warning">Não tem legislação selecionada...</v-alert>
-    </v-col>
-  </v-row>
+      <v-alert v-else :value="true" type="warning" border="left"
+        >Não tem legislação selecionada...</v-alert
+      >
+    </template>
+  </Campo>
 </template>
 
 <script>
 const help = require("@/config/help").help;
 
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo";
 
 export default {
   props: ["legs"],
 
   components: {
-    InfoBox
+    Campo,
   },
 
-  data: function() {
+  data: function () {
     return {
       myhelp: help,
       headers: [
@@ -70,22 +78,22 @@ export default {
         { text: "Número", value: "numero" },
         { text: "Sumário", value: "sumario" },
         { text: "Data", value: "data" },
-        { text: "Remover", value: "" }
+        { text: "Remover", value: "" },
       ],
 
       footer_props: {
         "items-per-page-text": "Diplomas por página",
         "items-per-page-options": [5, 10, 20, -1],
-        "items-per-page-all-text": "Todos"
-      }
+        "items-per-page-all-text": "Todos",
+      },
     };
   },
 
   methods: {
-    unselectDiploma: function(diploma) {
+    unselectDiploma: function (diploma) {
       this.$emit("unselectDiploma", diploma);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

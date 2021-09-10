@@ -671,30 +671,11 @@ export default {
     },
 
     cancelarCriacaoClasse: function () {
-      this.$router.push("/");
+      this.$request("delete", "/pedidos/" + this.pedido.codigo)
+        .then(() => this.$router.push("/"))
+        .catch((err) => console.error(err));
     },
   },
 };
 </script>
-<style>
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-</style>
+<style scoped></style>
