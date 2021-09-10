@@ -1,20 +1,26 @@
 <template>
-  <v-row ma-2>
-    <!-- TERMOS DE ÍNDICE -->
-    <v-col cols="2">
-      <div class="info-label">
-        Termos de Índice
-        <InfoBox header="Termos de Índice" :text="myhelp.Classe.Campos.TermosIndice" helpColor="indigo darken-4"/>
-      </div>
+  <Campo
+    nome="Processo transversal"
+    infoHeader="Processo transversal"
+    :infoBody="myhelp.Classe.Campos.TermosIndice"
+    color="neutralpurple"
+  >
+    <template v-slot:lateral>
       <v-btn color="indigo darken-2" dark rounded @click="insereNovoTI(c.termosInd)">
         Novo termo
         <v-icon dark right>add_circle_outline</v-icon>
       </v-btn>
-    </v-col>
-    <v-col>
+    </template>
+    <template v-slot:conteudo>
       <v-row v-for="(ti, index) in c.termosInd" :key="index">
         <v-col cols="10">
-          <v-textarea v-model="ti.termo" auto-grow solo label="Termo de Índice" rows="1"></v-textarea>
+          <v-textarea
+            v-model="ti.termo"
+            auto-grow
+            solo
+            label="Termo de Índice"
+            rows="1"
+          ></v-textarea>
         </v-col>
         <v-col>
           <v-btn color="red darken-2" dark rounded @click="c.termosInd.splice(index, 1)">
@@ -23,31 +29,30 @@
           </v-btn>
         </v-col>
       </v-row>
-    </v-col>
+      <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
+        {{ mensagemTIVazio }}
+        <v-btn dark text @click="tiVazioFlag = false">Fechar</v-btn>
+      </v-snackbar>
 
-    <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
-      {{ mensagemTIVazio }}
-      <v-btn dark text @click="tiVazioFlag=false">Fechar</v-btn>
-    </v-snackbar>
-
-    <v-snackbar v-model="tiDuplicadoFlag" :color="'error'" :timeout="60000">
-      {{ mensagemTIDuplicado }}
-      <v-btn dark text @click="tiDuplicadoFlag=false">Fechar</v-btn>
-    </v-snackbar>
-  </v-row>
+      <v-snackbar v-model="tiDuplicadoFlag" :color="'error'" :timeout="60000">
+        {{ mensagemTIDuplicado }}
+        <v-btn dark text @click="tiDuplicadoFlag = false">Fechar</v-btn>
+      </v-snackbar>
+    </template>
+  </Campo>
 </template>
 
 <script>
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/Campo";
 
 export default {
   props: ["c"],
 
   components: {
-    InfoBox
+    Campo,
   },
 
   data() {
@@ -59,15 +64,15 @@ export default {
       mensagemTIVazio:
         "O Termo de Índice anterior encontra-se vazio. Queira preenchê-lo antes de criar um novo.",
       mensagemTIDuplicado:
-        "O último termo introduzido é um duplicado de outro já introduzido previamente!"
+        "O último termo introduzido é um duplicado de outro já introduzido previamente!",
     };
   },
 
   methods: {
-    tiDuplicado: function(termos) {
+    tiDuplicado: function (termos) {
       if (termos.length > 1) {
         var lastTermo = termos[termos.length - 1].termo;
-        var duplicados = termos.filter(t => t.termo == lastTermo);
+        var duplicados = termos.filter((t) => t.termo == lastTermo);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -76,7 +81,7 @@ export default {
       }
     },
 
-    insereNovoTI: function(termos) {
+    insereNovoTI: function (termos) {
       if (termos.length > 0 && termos[termos.length - 1].termo == "") {
         this.tiVazioFlag = true;
       } else if (this.tiDuplicado(termos)) {
@@ -85,8 +90,8 @@ export default {
         var n = { id: "ti_" + nanoid(), termo: "", existe: false };
         termos.push(n);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
