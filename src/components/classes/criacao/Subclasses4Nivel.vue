@@ -68,13 +68,7 @@
                   </v-col>
                 </v-row>
 
-                <ListaDeNotasCLAV
-                  nome="Termos de Índice"
-                  infoHeader="Termos de Índice"
-                  :infoBody="myhelp.Classe.Campos.TermosIndice"
-                  :objeto="subClasse"
-                  tipo="ti"
-                ></ListaDeNotasCLAV>
+                <TermosIndiceOps :c="subClasse" />
 
                 <hr style="border-top: 3px dashed green; border-radius: 2px" />
 
@@ -97,12 +91,13 @@
 const help = require("@/config/help").help;
 
 import BlocoDecisoes4Nivel from "@/components/classes/criacao/BlocoDecisoes4Nivel.vue";
-
+import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
 export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
 
   components: {
     BlocoDecisoes4Nivel,
+    TermosIndiceOps,
   },
 
   data: function () {
