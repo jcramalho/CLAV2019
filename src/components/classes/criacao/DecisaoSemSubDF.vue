@@ -93,7 +93,7 @@
                   <div v-if="crit.tipo == 'CriterioJustificacaoComplementaridadeInfo'">
                     {{ crit.notas }}
                     <span v-for="(p, i) in crit.procRel" :key="p.id">
-                      <a :href="'/classes/consultar/' + p.id"
+                      <a :href="'/classes/consultar/' + p.id" target="_blank"
                         >{{ p.codigo }}: {{ p.titulo }}</a
                       >
                       <v-icon
@@ -119,7 +119,9 @@
                         v-model="crit.notas"
                       ></v-textarea>
                       <span v-for="(l, i) in crit.legislacao" :key="l.id">
-                        <a :href="'/legislacao/' + l.id">{{ l.tipo }} {{ l.numero }}</a>
+                        <a :href="'/legislacao/' + l.id" target="_blank"
+                          >{{ l.tipo }} {{ l.numero }}</a
+                        >
                         <v-icon
                           color="error"
                           class="mb-1"
@@ -153,7 +155,7 @@
                         )"
                         :key="p.id"
                       >
-                        <a :href="'/classes/consultar/' + p.id"
+                        <a :href="'/classes/consultar/' + p.id" target="_blank"
                           >{{ p.codigo }}: {{ p.titulo }}</a
                         >
                         <v-icon
@@ -180,7 +182,7 @@
                         )"
                         :key="p.id"
                       >
-                        <a :href="'/classes/consultar/' + p.id"
+                        <a :href="'/classes/consultar/' + p.id" target="_blank"
                           >{{ p.codigo }}: {{ p.titulo }}</a
                         >
                         <v-icon

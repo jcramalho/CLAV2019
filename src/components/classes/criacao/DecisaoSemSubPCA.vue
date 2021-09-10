@@ -180,12 +180,13 @@
                     ></v-textarea>
                     <a
                       :href="'/classes/consultar/' + p.id"
+                      target="_blank"
                       v-for="(p, i) in crit.procRel"
                       :key="p.id"
                     >
                       {{ p.codigo }}: {{ p.titulo }}
                       <span v-if="i == crit.procRel.length - 1">.</span>
-                      <span v-else>,</span>
+                      <span v-else>, </span>
                     </a>
                   </div>
                   <div v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
