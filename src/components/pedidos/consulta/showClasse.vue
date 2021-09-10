@@ -158,11 +158,6 @@
 </template>
 
 <script>
-import ShowNotasAp from "@/components/pedidos/consulta/classes/ShowNotasAp";
-import ShowExemplosNotasAp from "@/components/pedidos/consulta/classes/ShowExemplosNotasAp";
-import ShowNotasEx from "@/components/pedidos/consulta/classes/ShowNotasEx";
-import ShowTIs from "@/components/pedidos/consulta/classes/ShowTIs";
-
 import ShowDonos from "@/components/pedidos/consulta/classes/ShowDonos";
 import ShowParticipantes from "@/components/pedidos/consulta/classes/ShowParticipantes";
 import ShowProcRel from "@/components/pedidos/consulta/classes/ShowProcRel";
@@ -177,10 +172,6 @@ export default {
   props: ["p"],
 
   components: {
-    ShowNotasAp,
-    ShowExemplosNotasAp,
-    ShowNotasEx,
-    ShowTIs,
     ShowDonos,
     ShowParticipantes,
     ShowProcRel,

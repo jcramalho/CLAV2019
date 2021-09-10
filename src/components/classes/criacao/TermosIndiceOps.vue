@@ -6,29 +6,42 @@
     color="neutralpurple"
   >
     <template v-slot:lateral>
-      <v-btn color="indigo darken-2" dark rounded @click="insereNovoTI(c.termosInd)">
-        Novo termo
-        <v-icon dark right>add_circle_outline</v-icon>
-      </v-btn>
-    </template>
-    <template v-slot:conteudo>
-      <v-row v-for="(ti, index) in c.termosInd" :key="index">
-        <v-col cols="10">
-          <v-textarea
-            v-model="ti.termo"
-            auto-grow
-            solo
-            label="Termo de Índice"
-            rows="1"
-          ></v-textarea>
-        </v-col>
-        <v-col>
-          <v-btn color="red darken-2" dark rounded @click="c.termosInd.splice(index, 1)">
-            Remover
-            <v-icon dark right>remove_circle_outline</v-icon>
+      <v-row>
+        <v-col align="right">
+          <v-btn
+            class="white-text"
+            color="success"
+            rounded
+            @click="insereNovoTI(c.termosInd)"
+          >
+            Novo termo
+            <v-icon right>add_circle_outline</v-icon>
           </v-btn>
         </v-col>
       </v-row>
+    </template>
+    <template v-slot:conteudo>
+      <div v-if="c.termosInd.length">
+        <v-row v-for="(ti, index) in c.termosInd" :key="index">
+          <v-col cols="10">
+            <v-textarea
+              v-model="ti.termo"
+              auto-grow
+              solo
+              label="Termo de Índice"
+              rows="1"
+            ></v-textarea>
+          </v-col>
+          <v-col>
+            <v-btn color="error" dark rounded @click="c.termosInd.splice(index, 1)">
+              Remover
+              <v-icon dark right>remove_circle_outline</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </div>
+      <v-alert v-else border="left" type="warning">Sem Termos de Índice!</v-alert>
+
       <v-snackbar v-model="tiVazioFlag" :color="'warning'" :timeout="60000">
         {{ mensagemTIVazio }}
         <v-btn dark text @click="tiVazioFlag = false">Fechar</v-btn>
