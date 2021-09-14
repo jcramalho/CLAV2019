@@ -78,8 +78,6 @@
         </span>
         <ShowTSPluri v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'" :p="pedido" />
         <ShowTSOrg v-else-if="pedido.objeto.tipo == 'TS Organizacional'" :p="pedido" />
-        <ShowAE v-else-if="pedido.objeto.tipo === 'Auto de Eliminação'" :p="pedido" />
-        <ShowRADA v-else-if="pedido.objeto.tipo == 'RADA'" :p="pedido" />
         <ShowClasse v-else-if="pedido.objeto.tipo == 'Classe_N3'" :p="pedido" />
         <ShowClasseL1
           v-else-if="
@@ -87,6 +85,8 @@
           "
           :p="pedido"
         />
+        <ShowAE v-else-if="pedido.objeto.tipo === 'Auto de Eliminação'" :p="pedido" />
+        <ShowRADA v-else-if="pedido.objeto.tipo == 'RADA'" :p="pedido" />
         <div v-else v-for="(info, campo) in dados" :key="campo">
           <v-row
             v-if="
