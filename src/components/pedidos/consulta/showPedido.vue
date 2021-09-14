@@ -3,12 +3,7 @@
     <v-card-title class="pa-2 indigo darken-4 title white--text">
       Consulta do pedido: {{ p.codigo }}
       <v-spacer />
-      <v-chip
-        v-if="etapaPedido"
-        color="indigo accent-4"
-        text-color="white"
-        label
-      >
+      <v-chip v-if="etapaPedido" color="indigo accent-4" text-color="white" label>
         <v-icon class="mr-1">label</v-icon>
         <b>{{ etapaPedido }}</b>
       </v-chip>
@@ -51,9 +46,7 @@
           <div class="info-label">Tipo</div>
         </v-col>
         <v-col>
-          <div class="info-content">
-            {{ p.objeto.acao }} - {{ p.objeto.tipo }}
-          </div>
+          <div class="info-content">{{ p.objeto.acao }} - {{ p.objeto.tipo }}</div>
         </v-col>
       </v-row>
 
@@ -83,8 +76,8 @@
 
       <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
       <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
-      <ShowClasse v-else-if="p.objeto.tipo == 'Classe'" :p="p" />
       <ShowPPD v-else-if="p.objeto.tipo == 'PPD'" :p="p" />
+      <ShowClasse v-else-if="p.objeto.tipo == 'Classe_N3'" :p="p" />
       <ShowClasseL1
         v-else-if="p.objeto.tipo == 'Classe_N1' || p.objeto.tipo == 'Classe_N2'"
         :p="p"
@@ -97,9 +90,7 @@
       />
 
       <ShowAE
-        v-else-if="
-          p.objeto.tipo.includes('AE ') || p.objeto.tipo == 'Auto de Eliminação'
-        "
+        v-else-if="p.objeto.tipo.includes('AE ') || p.objeto.tipo == 'Auto de Eliminação'"
         :p="p"
       />
       <ShowPGD v-else-if="p.objeto.tipo == 'PGD'" :p="p" />
@@ -201,10 +192,7 @@ import SubstituirResponsavel from "@/components/pedidos/generic/SubstituirRespon
 import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 
 import VerHistorico from "@/components/pedidos/generic/VerHistorico";
-import {
-  NIVEIS_ANALISAR_PEDIDO,
-  NIVEIS_SUBSTITUIR_RESPONSAVEL,
-} from "@/utils/consts";
+import { NIVEIS_ANALISAR_PEDIDO, NIVEIS_SUBSTITUIR_RESPONSAVEL } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
 export default {
