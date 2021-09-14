@@ -78,6 +78,13 @@
         </span>
         <ShowTSPluri v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'" :p="pedido" />
         <ShowTSOrg v-else-if="pedido.objeto.tipo == 'TS Organizacional'" :p="pedido" />
+        <ShowClasse v-else-if="pedido.objeto.tipo == 'Classe_N3'" :p="pedido" />
+        <ShowClasseL1
+          v-else-if="
+            pedido.objeto.tipo == 'Classe_N1' || pedido.objeto.tipo == 'Classe_N2'
+          "
+          :p="pedido"
+        />
         <ShowAE v-else-if="pedido.objeto.tipo === 'Auto de Eliminação'" :p="pedido" />
         <ShowRADA v-else-if="pedido.objeto.tipo == 'RADA'" :p="pedido" />
         <div v-else v-for="(info, campo) in dados" :key="campo">
@@ -137,7 +144,7 @@
 
               <!-- Processos -->
               <Campo
-                v-else-if="(campo === 'processosSel') && (info.length > 0)"
+                v-else-if="campo === 'processosSel' && info.length > 0"
                 :nome="transformaKeys(campo)"
                 color="neutralpurple"
               >
@@ -158,9 +165,9 @@
 
               <!-- Tipologias:
                       - só mostra se houver pelo menos uma -->
-              
+
               <Campo
-                v-else-if="(campo === 'tipologiasSel') && (info.length > 0)"
+                v-else-if="campo === 'tipologiasSel' && info.length > 0"
                 :nome="transformaKeys(campo)"
                 color="neutralpurple"
               >
@@ -182,7 +189,9 @@
               <!-- Notas de Aplicaçao/Exclusao -->
 
               <Campo
-                v-else-if="(campo === 'notasAp' || campo === 'notasEx') && (info.length > 0)"
+                v-else-if="
+                  (campo === 'notasAp' || campo === 'notasEx') && info.length > 0
+                "
                 :nome="transformaKeys(campo)"
                 color="neutralpurple"
               >
@@ -248,6 +257,8 @@ import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
 import ShowTSOrg from "@/components/pedidos/consulta/showTSOrg.vue";
 import ShowAE from "@/components/pedidos/consulta/showSubmissaoAE.vue";
 import ShowRADA from "@/components/pedidos/consulta/showRADA.vue";
+import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
+import ShowClasseL1 from "@/components/pedidos/consulta/showClasseL1.vue";
 import { mapKeys } from "@/utils/utils";
 import PedidosDevolvidosVue from "../pedidos/PedidosDevolvidos.vue";
 import Campo from "@/components/generic/Campo";
@@ -261,6 +272,8 @@ export default {
     Loading,
     ShowTSPluri,
     ShowTSOrg,
+    ShowClasse,
+    ShowClasseL1,
     ShowAE,
     ShowRADA,
     Campo,
