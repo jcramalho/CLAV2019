@@ -7,6 +7,7 @@
         :semaforos="semaforos"
         :pcaFormasContagem="pcaFormasContagem"
         :pcaSubFormasContagem="pcaSubFormasContagem"
+        :disable="disable"
       />
 
       <hr style="border-top: 2px dashed #1a237e" />
@@ -16,6 +17,7 @@
         :semaforos="semaforos"
         :pcaFormasContagem="pcaFormasContagem"
         :pcaSubFormasContagem="pcaSubFormasContagem"
+        :disable="disable"
       />
     </v-card-text>
   </v-card>
@@ -26,7 +28,7 @@ import DecisaoComSubPCA from "@/components/classes/criacao/DecisaoComSubPCA.vue"
 import DecisaoComSubDF from "@/components/classes/criacao/DecisaoComSubDF.vue";
 
 export default {
-  props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
+  props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem", "disable"],
 
   components: {
     DecisaoComSubPCA,

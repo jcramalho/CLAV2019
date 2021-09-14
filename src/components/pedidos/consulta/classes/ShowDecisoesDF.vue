@@ -1,40 +1,32 @@
 <template>
   <div>
-    <v-row>
-        <v-col cols="2">
-          <div class="info-label">Destino</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">
-              {{ df.valor }}
-          </div>
-        </v-col>
-    </v-row>
+    <Campo nome="Destino" infoHeader="Destino" color="neutralpurple">
+      <template v-slot:conteudo>
+        {{ df.valor }}
+      </template>
+    </Campo>
 
-    <v-row v-if="df.notas!=''">
-        <v-col cols="2">
-          <div class="info-label">Notas</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">
-              {{ df.notas }}
-          </div>
-        </v-col>
-      </v-row>
+    <Campo v-if="df.notas != ''" nome="Notas" infoHeader="Notas" color="neutralpurple">
+      <template v-slot:conteudo>
+        {{ df.notas }}
+      </template>
+    </Campo>
 
-      <ShowDecisoesDFJustificacao :j="df.justificacao" />
-
+    <ShowDecisoesDFJustificacao :j="df.justificacao" />
   </div>
 </template>
 
 <script>
-import ShowDecisoesDFJustificacao from "@/components/pedidos/consulta/classes/ShowDecisoesDFJustificacao"
+import ShowDecisoesDFJustificacao from "@/components/pedidos/consulta/classes/ShowDecisoesDFJustificacao";
+
+import Campo from "@/components/generic/Campo";
 
 export default {
   props: ["df"],
 
   components: {
-    ShowDecisoesDFJustificacao
-  }
-}
+    ShowDecisoesDFJustificacao,
+    Campo,
+  },
+};
 </script>

@@ -17,9 +17,10 @@
               </v-tabs>
 
               <v-btn
+                v-if="!disable"
                 class="white-text"
                 depressed
-                small
+                x-small
                 color="primary"
                 @click="addSubclasse"
               >
@@ -51,6 +52,7 @@
                   <Campo nome="Título" infoHeader="Título" color="neutralpurple">
                     <template v-slot:conteudo>
                       <v-text-field
+                        v-if="!disable"
                         v-model="subClasse.titulo"
                         label="Título"
                         solo
@@ -58,11 +60,13 @@
                         dense
                         hide-details
                       ></v-text-field>
+                      <p v-else>{{ subClasse.titulo }}</p>
                     </template>
                   </Campo>
                   <Campo nome="Descrição" infoHeader="Descrição" color="neutralpurple">
                     <template v-slot:conteudo>
                       <v-text-field
+                        v-if="!disable"
                         v-model="subClasse.descricao"
                         label="Descrição"
                         solo
@@ -70,10 +74,25 @@
                         dense
                         hide-details
                       ></v-text-field>
+                      <p v-else>{{ subClasse.descricao }}</p>
                     </template>
                   </Campo>
 
-                  <TermosIndiceOps :c="subClasse" />
+                  <TermosIndiceOps v-if="!disable" :c="subClasse" />
+                  <Campo
+                    v-else
+                    nome="Processo transversal"
+                    infoHeader="Processo transversal"
+                    color="neutralpurple"
+                  >
+                    <template v-slot:conteudo>
+                      <ul>
+                        <li v-for="(ti, index) in subClasse.termosInd" :key="index">
+                          {{ ti.termo }}
+                        </li>
+                      </ul>
+                    </template>
+                  </Campo>
 
                   <BlocoDecisoes4Nivel
                     class="my-4"
@@ -81,6 +100,7 @@
                     :semaforos="semaforos"
                     :pcaFormasContagem="pcaFormasContagem"
                     :pcaSubFormasContagem="pcaSubFormasContagem"
+                    :disable="disable"
                   />
                 </v-tab-item>
               </v-tabs-items>
@@ -101,7 +121,7 @@ import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 import Campo from "@/components/generic/Campo";
 
 export default {
-  props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
+  props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem", "disable"],
 
   components: {
     BlocoDecisoes4Nivel,

@@ -106,22 +106,70 @@
             </template>
           </Campo>
 
-          <ShowDonos
+          <Campo
             v-if="p.objeto.dados.donos.length > 0"
-            :lista="p.objeto.dados.donos"
-          />
-          <ShowParticipantes
+            nome="Donos do processo"
+            infoHeader="Donos do processo"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(p, i) in p.objeto.dados.donos" :key="i">
+                  {{ p.sigla }}:
+                  {{ p.designacao }}
+                  ({{ p.tipo }})
+                </li>
+              </ul>
+            </template>
+          </Campo>
+
+          <Campo
             v-if="p.objeto.dados.participantes.length > 0"
-            :lista="p.objeto.dados.participantes"
-          />
-          <ShowProcRel
+            nome="Participantes no processo"
+            infoHeader="Participantes no processo"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(p, i) in p.objeto.dados.participantes" :key="i">
+                  [{{ p.intervencao }}] {{ p.sigla }}:
+                  {{ p.designacao }}
+                  ({{ p.tipo }})
+                </li>
+              </ul>
+            </template>
+          </Campo>
+
+          <Campo
             v-if="p.objeto.dados.processosRelacionados.length > 0"
-            :lista="p.objeto.dados.processosRelacionados"
-          />
-          <ShowLegislacao
+            nome="Processos relacionados"
+            infoHeader="Processos relacionados"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(p, i) in p.objeto.dados.processosRelacionados" :key="i">
+                  [{{ p.relacao }}]: {{ p.codigo }} - {{ p.titulo }}
+                </li>
+              </ul>
+            </template>
+          </Campo>
+
+          <Campo
             v-if="p.objeto.dados.legislacao.length > 0"
-            :lista="p.objeto.dados.legislacao"
-          />
+            nome="Legislação"
+            infoHeader="Legislação"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(leg, i) in p.objeto.dados.legislacao" :key="i">
+                  {{ leg.tipo }}
+                  {{ leg.numero }}, {{ leg.data }}, {{ leg.sumario }}
+                </li>
+              </ul>
+            </template>
+          </Campo>
         </v-card-text>
       </v-card>
 
@@ -130,23 +178,54 @@
           Decisões de avaliação
         </v-card-title>
         <v-card-text class="pa-2">
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">PCA</div>
-            </v-col>
-            <v-col>
-              <ShowDecisoesPCA :pca="p.objeto.dados.pca" />
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">DF</div>
-            </v-col>
-            <v-col>
-              <ShowDecisoesDF :df="p.objeto.dados.df" />
-            </v-col>
-          </v-row>
+          <Campo
+            nome="Subclasses de 4º nível?"
+            infoHeader="Subclasses de 4º nível"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              {{ !p.objeto.dados.temSubclasses4Nivel ? "Não" : "Sim" }}
+            </template>
+          </Campo>
+          <div v-if="!p.objeto.dados.temSubclasses4Nivel">
+            <Campo nome="PCA" infoHeader="PCA" color="neutralpurple">
+              <template v-slot:conteudo>
+                <ShowDecisoesPCA :pca="p.objeto.dados.pca" />
+              </template>
+            </Campo>
+            <Campo nome="DF" infoHeader="DF" color="neutralpurple">
+              <template v-slot:conteudo>
+                <ShowDecisoesDF :df="p.objeto.dados.df" />
+              </template>
+            </Campo>
+          </div>
+          <div v-else>
+            <Campo
+              nome="Motivo(s) da subdivisão em 4ºs níveis"
+              infoHeader="Motivo(s) da subdivisão em 4ºs níveis:"
+              color="neutralpurple"
+            >
+              <template v-slot:conteudo>
+                <ul>
+                  <li v-if="!!p.objeto.dados.temSubclasses4NivelPCA">
+                    Prazo de Conservação Administrativa distinto
+                  </li>
+                  <li v-if="!!p.objeto.dados.temSubclasses4NivelDF">
+                    Destino Final distinto
+                  </li>
+                </ul>
+              </template>
+            </Campo>
+            <strong></strong>
+            <Subclasses4Nivel
+              :c="p.objeto.dados"
+              :semaforos="p.objeto.dados.subclasses[0].semaforos"
+              :pcaFormasContagem="p.objeto.dados.pca.pcaFormasContagem"
+              :pcaSubFormasContagem="p.objeto.dados.pca.pcaSubFormasContagem"
+              :disable="true"
+              class="mt-3"
+            />
+          </div>
         </v-card-text>
       </v-card>
 
@@ -158,13 +237,9 @@
 </template>
 
 <script>
-import ShowDonos from "@/components/pedidos/consulta/classes/ShowDonos";
-import ShowParticipantes from "@/components/pedidos/consulta/classes/ShowParticipantes";
-import ShowProcRel from "@/components/pedidos/consulta/classes/ShowProcRel";
-import ShowLegislacao from "@/components/pedidos/consulta/classes/ShowLegislacao";
-
 import ShowDecisoesPCA from "@/components/pedidos/consulta/classes/ShowDecisoesPCA";
 import ShowDecisoesDF from "@/components/pedidos/consulta/classes/ShowDecisoesDF";
+import Subclasses4Nivel from "@/components/classes/criacao/Subclasses4Nivel";
 
 import Campo from "@/components/generic/Campo";
 
@@ -172,10 +247,7 @@ export default {
   props: ["p"],
 
   components: {
-    ShowDonos,
-    ShowParticipantes,
-    ShowProcRel,
-    ShowLegislacao,
+    Subclasses4Nivel,
     ShowDecisoesPCA,
     ShowDecisoesDF,
     Campo,
@@ -194,19 +266,4 @@ export default {
 };
 </script>
 
-<style>
-.info-label {
-  color: #00695c;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e0f2f1;
-  font-weight: bold;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-</style>
+<style></style>

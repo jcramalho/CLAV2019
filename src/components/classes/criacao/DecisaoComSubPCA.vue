@@ -13,6 +13,7 @@
       >
         <template v-slot:conteudo>
           <v-text-field
+            v-if="!disable"
             v-model="c.pca.valor"
             label="Prazo em anos: 0 a 199"
             v-mask="'###'"
@@ -21,6 +22,9 @@
             dense
             hide-details
           ></v-text-field>
+          <p v-else>
+            {{ c.pca.valor }}
+          </p>
         </template>
       </Campo>
 
@@ -32,6 +36,7 @@
       >
         <template v-slot:conteudo>
           <v-textarea
+            v-if="!disable"
             solo
             label="Notas ao PCA"
             v-model="c.pca.notas"
@@ -39,6 +44,9 @@
             dense
             hide-details
           ></v-textarea>
+          <p v-else>
+            {{ c.pca.notas }}
+          </p>
         </template>
       </Campo>
 
@@ -51,6 +59,7 @@
       >
         <template v-slot:conteudo>
           <v-select
+            v-if="!disable"
             item-text="label"
             item-value="value"
             v-model="c.pca.formaContagem"
@@ -60,6 +69,9 @@
             dense
             hide-details
           />
+          <p v-else>
+            {{ c.pca.formaContagem }}
+          </p>
         </template>
       </Campo>
 
@@ -75,6 +87,7 @@
       >
         <template v-slot:conteudo>
           <v-select
+            v-if="!disable"
             item-text="label"
             item-value="value"
             v-model="c.pca.subFormaContagem"
@@ -92,6 +105,9 @@
               <p>{{ item.label }}</p>
             </template>
           </v-select>
+          <p v-else>
+            {{ c.pca.subFormaContagem }}
+          </p>
         </template>
       </Campo>
 
@@ -105,7 +121,7 @@
         color="neutralpurple"
       >
         <template v-slot:lateral>
-          <v-row>
+          <v-row v-if="!disable">
             <v-col align="right">
               <v-btn
                 color="primary"
@@ -157,7 +173,7 @@
               color="neutralpurple"
             >
               <template v-slot:lateral>
-                <v-row>
+                <v-row v-if="!disable">
                   <v-col align="center">
                     <v-icon
                       color="error"
@@ -172,6 +188,7 @@
 
                 <div v-if="crit.tipo == 'CriterioJustificacaoUtilidadeAdministrativa'">
                   <v-textarea
+                    v-if="!disable"
                     auto-grow
                     clearable
                     single-line
@@ -179,8 +196,10 @@
                     :value="crit.notas"
                     v-model="crit.notas"
                   ></v-textarea>
+                  <p v-else>{{ crit.notas }}</p>
                   <a
                     :href="'/classes/consultar/' + p.id"
+                    target="_blank"
                     v-for="(p, i) in crit.procRel"
                     :key="p.id"
                   >
@@ -193,6 +212,7 @@
                 <div v-else-if="crit.tipo == 'CriterioJustificacaoLegal'">
                   <div v-if="crit.legislacao.length > 0">
                     <v-textarea
+                      v-if="!disable"
                       auto-grow
                       clearable
                       single-line
@@ -200,11 +220,14 @@
                       :value="crit.notas"
                       v-model="crit.notas"
                     ></v-textarea>
+                    <p v-else>{{ crit.notas }}</p>
                     <span v-for="(l, i) in crit.legislacao" :key="l.id">
-                      <a :href="'/legislacao/' + l.id"> {{ l.tipo }} {{ l.numero }} </a>
+                      <a :href="'/legislacao/' + l.id" target="_blank">
+                        {{ l.tipo }} {{ l.numero }}
+                      </a>
                       <v-icon
-                        color="red darken-2"
-                        dark
+                        v-if="!disable"
+                        color="error"
                         small
                         @click="crit.legislacao.splice(i, 1)"
                         >remove_circle</v-icon
@@ -227,6 +250,7 @@
                   rows="1"
                   :value="crit.notas"
                   v-model="crit.notas"
+                  :disabled="disable"
                 ></v-textarea>
               </template>
             </Campo>
@@ -248,7 +272,7 @@ import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 import Campo from "@/components/generic/Campo";
 
 export default {
-  props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
+  props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem", "disable"],
 
   components: {
     //ProcessosRelacionadosOps,

@@ -11,6 +11,7 @@
       >
         <template v-slot:conteudo>
           <v-select
+            v-if="!disable"
             v-model="c.df.valor"
             :items="destinoFinalTipos"
             item-value="value"
@@ -20,6 +21,7 @@
             hide-details
           >
           </v-select>
+          <p v-else>{{ destinoFinalTipos.find((e) => e.value === c.df.valor).label }}</p>
         </template>
       </Campo>
       <Campo
@@ -30,6 +32,7 @@
       >
         <template v-slot:conteudo>
           <v-textarea
+            v-if="!disable"
             solo
             label="Notas ao destino final"
             v-model="c.df.notas"
@@ -37,6 +40,8 @@
             dense
             hide-details
           ></v-textarea>
+
+          <p v-else>{{ c.df.notas }}</p>
         </template>
       </Campo>
 
@@ -50,7 +55,7 @@
         color="neutralpurple"
       >
         <template v-slot:lateral>
-          <v-row>
+          <v-row v-if="!disable">
             <v-col align="right">
               <v-btn
                 v-if="!c.semaforos.critLegalAdicionadoDF"
@@ -81,7 +86,7 @@
 
               <Campo :nome="crit.label" :infoHeader="crit.label" color="neutralpurple">
                 <template v-slot:lateral>
-                  <v-row>
+                  <v-row v-if="!disable">
                     <v-col align="center">
                       <v-icon
                         v-if="crit.tipo != 'CriterioJustificacaoDensidadeInfo'"
@@ -97,6 +102,7 @@
                   <div v-if="crit.tipo == 'CriterioJustificacaoLegal'">
                     <div v-if="crit.legislacao.length > 0">
                       <v-textarea
+                        v-if="!disable"
                         auto-grow
                         clearable
                         single-line
@@ -104,9 +110,16 @@
                         :value="crit.notas"
                         v-model="crit.notas"
                       ></v-textarea>
+                      <p v-else>{{ crit.notas }}</p>
                       <span v-for="(l, i) in crit.legislacao" :key="l.id">
-                        <a :href="'/legislacao/' + l.id"> {{ l.tipo }} {{ l.numero }} </a>
-                        <v-icon color="error" small @click="crit.legislacao.splice(i, 1)"
+                        <a :href="'/legislacao/' + l.id" target="_blank">
+                          {{ l.tipo }} {{ l.numero }}
+                        </a>
+                        <v-icon
+                          v-if="!disable"
+                          color="error"
+                          small
+                          @click="crit.legislacao.splice(i, 1)"
                           >remove_circle</v-icon
                         >
                         <span v-if="i == crit.legislacao.length - 1">.</span>
@@ -124,6 +137,7 @@
                     {{ crit.notas }}
                     <a
                       :href="'/classes/consultar/' + p.id"
+                      target="_blank"
                       v-for="(p, i) in crit.procRel"
                       :key="p.id"
                     >
@@ -153,7 +167,7 @@ import LegislacaoOps from "@/components/classes/criacao/LegislacaoOps.vue";
 import Campo from "@/components/generic/Campo";
 
 export default {
-  props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
+  props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem", "disable"],
 
   components: {
     //ProcessosRelacionadosOps,
