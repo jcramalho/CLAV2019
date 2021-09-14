@@ -82,10 +82,9 @@
         </v-data-table>
       </v-card-text>
     </v-card>
-
     <ShowTSPluri v-if="Pedido.objeto.tipo == 'TS Pluriorganizacional'" :p="Pedido" />
     <ShowTSOrg v-else-if="Pedido.objeto.tipo == 'TS Organizacional'" :p="Pedido" />
-    <ShowClasse v-else-if="Pedido.objeto.tipo == 'Classe'" :p="Pedido" />
+    <ShowClasse v-else-if="Pedido.objeto.tipo == 'Classe_N3'" :p="Pedido" />
     <ShowClasseL1
       v-else-if="Pedido.objeto.tipo == 'Classe_N1' || Pedido.objeto.tipo == 'Classe_N2'"
       :p="Pedido"

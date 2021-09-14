@@ -1,13 +1,19 @@
 <template>
   <Campo :nome="nome" :infoHeader="infoHeader" :infoBody="infoBody" color="neutralpurple">
     <template v-slot:lateral>
-      <v-btn small color="success" rounded @click="insereNovaNota(lista)">
-        Acrescentar nova
-        <v-icon right>add_circle_outline</v-icon>
-      </v-btn>
+      <v-row>
+        <v-col align="right">
+          <v-btn small color="success" rounded @click="insereNovaNota(lista)">
+            {{ acrescentar[tipo] }}
+            <v-icon right>add_circle_outline</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </template>
     <template v-slot:conteudo>
-      <v-alert v-if="!lista.length" color="warning" border="left">Sem notas</v-alert>
+      <v-alert v-if="!lista.length" color="warning" border="left">{{
+        aviso[tipo]
+      }}</v-alert>
 
       <v-row v-else v-for="(nota, index) in lista" :key="index">
         <v-col>
@@ -74,6 +80,18 @@ export default {
         "A nota anterior encontra-se vazia. Queira preenchê-la antes de criar nova.",
       mensagemNotaDuplicada:
         "A última nota introduzida é um duplicado de outra já introduzida previamente!",
+      acrescentar: {
+        na: "Acrescentar nota",
+        exna: "Acrescentar nota",
+        ne: "Acrescentar nota",
+        ti: "Acrescentar termo",
+      },
+      aviso: {
+        na: "Sem Notas de Aplicação!",
+        exna: "Sem Exemplos de Notas de Aplicação!",
+        ne: "Sem Notas de Exclusão!",
+        ti: "Sem Termos de Índice",
+      },
     };
   },
   computed: {
@@ -101,7 +119,7 @@ export default {
         case "ti":
           return "termo";
         default:
-          return [];
+          return "";
       }
     },
   },

@@ -17,8 +17,8 @@
       </p>
     </v-alert>
     <v-radio-group v-model="c.temSubclasses4Nivel" row>
-      <v-radio label="Não" :value="false" color="error"></v-radio>
-      <v-radio label="Sim" :value="true" color="success"></v-radio>
+      <v-radio label="Não" :value="false" color="primary"></v-radio>
+      <v-radio label="Sim" :value="true" color="primary"></v-radio>
     </v-radio-group>
 
     <div v-if="c.temSubclasses4Nivel" width="100%" class="mb-2">
