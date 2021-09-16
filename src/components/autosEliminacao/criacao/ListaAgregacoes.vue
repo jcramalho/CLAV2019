@@ -21,7 +21,8 @@
       :footer-props="footer_props"
       :search="search"
     >
-      <template v-slot:no-data>
+
+      <template v-slot:top>
         <tr>
           <td>
             <v-text-field
@@ -73,45 +74,6 @@
               </template>
               <span>Adicionar Agregação</span>
             </v-tooltip>
-          </td>
-        </tr>
-      </template>
-
-      <template v-slot:item="prop">
-        <tr v-if="agregacoes.indexOf(prop.item) === 0">
-          <td>
-            <v-text-field
-              hint="Exemplo: AS_DGLAB_1/2019"
-              label="Insira um código para a agregação"
-              v-model="codigo"
-              clearable
-            ></v-text-field>
-          </td>
-          <td>
-            <v-text-field
-              hint="Exemplo: Auditoria à Entidade A"
-              label="Insira um título para a agregação"
-              v-model="titulo"
-              clearable
-            ></v-text-field>
-          </td>
-          <td>
-            <v-text-field
-              hint="Exemplo: 2009"
-              label="Insira o ano de contagem do PCA"
-              v-model="dataContagem"
-              clearable
-            ></v-text-field>
-          </td>
-          <td v-if="tipo == 'TS_LC' || tipo == 'PGD_LC'">
-            <v-select
-              class="mt-5"
-              :items="natureza"
-              v-model="ni"
-              dense
-            ></v-select>
-          </td>
-          <td>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-icon class="mx-2" v-on="on" small @click="limparAG"
@@ -120,14 +82,15 @@
               </template>
               <span>Limpar Agregação</span>
             </v-tooltip>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-icon v-on="on" small @click="addAgregacao">check</v-icon>
-              </template>
-              <span>Adicionar Agregação</span>
-            </v-tooltip>
           </td>
         </tr>
+      </template>
+
+      <template v-slot:no-data>
+        <div>Ainda não há agregações definidas.</div>
+      </template>
+
+      <template v-slot:item="prop">
         <tr>
           <td>{{ prop.item.codigo }}</td>
           <td>{{ prop.item.titulo }}</td>
@@ -341,7 +304,7 @@ export default {
           this.erro = help.AutoEliminacao.Erros.DataContagemInicio;
           this.erroDialog = true;
         } else {
-          this.agregacoes.unshift({
+          this.agregacoes.push({
             codigo: this.codigo,
             titulo: this.titulo,
             dataContagem: this.dataContagem,
