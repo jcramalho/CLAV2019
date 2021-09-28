@@ -282,8 +282,8 @@
         </div>
         <div class="text-center mt-6">
           <v-progress-linear
-            class="my-2 white--text"
             v-if="loading && multImport"
+            class="my-2 white--text"
             :value="(progresso * 100) / total"
             color="primary"
             height="25"
@@ -336,8 +336,8 @@
 
           <v-btn
             v-else
-            @click="enviarFicheiro()"
             :loading="loading"
+            @click="enviarFicheiro()"
             rounded
             class="white--text clav-linear-background"
           >
@@ -573,8 +573,8 @@ export default {
     erro: "",
     erroDialog: false,
     success: "",
-    successDialog: false,
     loading: false,
+    successDialog: false,
     progresso: 0,
     total: 0,
     fileName: "",
@@ -680,8 +680,8 @@ export default {
       this.erroDialog = false;
       this.successDialog = false;
       this.success = "";
-      this.total = this.file.length;
       this.loading = true;
+      this.total = this.file.length;
 
       for (var index in this.file) {
         try {
@@ -716,12 +716,13 @@ export default {
             } else {
               this.stats = response.data.stats;
               this.codigo = response.data.codigo;
+              this.loading = false;
             }
           }
         } catch (e) {
           if (e) {
+            this.loading = false;
             if (e.response.data.entidades) {
-              this.loading = false;
               this.entidadesFalta = e.response.data.entidades;
               this.acrescenta = e.response.data.acrescenta;
               if (e.response.data.acrescenta) {
@@ -740,18 +741,18 @@ export default {
                 this.multImportList = this.multImportList.concat(
                   e.response.data
                 );
-              } else {
                 this.loading = false;
+              } else {
                 this.erro = e.response.data;
                 this.erroDialog = true;
               }
-            } else {
               this.loading = false;
+            } else {
               this.erro = e.response.data[0].msg || e.response.data;
               this.erroDialog = true;
             }
-          } else {
             this.loading = false;
+          } else {
             this.erro = "Erro interno";
             this.erroDialog = true;
           }
