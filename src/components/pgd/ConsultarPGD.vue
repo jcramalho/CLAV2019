@@ -686,15 +686,7 @@ export default {
         : this.$router.push({ name: "ts" });
     },
     checkExpand(item) {
-      Object.keys(item).forEach(
-        (key) => item[key] === undefined && delete item[key]
-      );
-      var keys = Object.keys(item);
-      return !!item.descricao || this.objeto.fonte.text == "PGD"
-        ? keys.length > 3
-        : this.objeto.fonte.text == "RADA"
-        ? keys.length > 4
-        : true;
+      return !!item.descricao || item.nivel > 2;
     },
     async remove() {
       this.dialogConfirmacao.header = "Remoção de Tabela de Seleção";
