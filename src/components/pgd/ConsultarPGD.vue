@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-card class="ma-4">
+    <Loading v-if="loading" :message="''" />
+    <v-card v-else class="ma-4">
       <v-card-title class="clav-linear-background white--text">
         {{ titulo }}
         <v-spacer />
@@ -11,6 +12,14 @@
             </v-btn>
           </template>
           <span>Exportar Tabela de Seleção</span>
+        </v-tooltip>
+        <v-tooltip v-if="$verifyTokenUser().level === 7" left>
+          <template v-slot:activator="{ on }">
+            <v-btn @click="remove()" color="white" icon v-on="on">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </template>
+          <span>Remover Tabela de Seleção</span>
         </v-tooltip>
       </v-card-title>
 
@@ -135,6 +144,7 @@
                 <ShowPGD :classe="classe" />
               </v-list-group>
             </v-list>
+
             <v-data-table
               v-else
               :headers="
@@ -153,6 +163,22 @@
               expand-icon="$expand"
               show-expand
             >
+              <template
+                v-slot:[`item.data-table-expand`]="{ item, isExpanded, expand }"
+              >
+                <v-icon
+                  v-if="checkExpand(item) && !isExpanded"
+                  @click="expand(true)"
+                  >mdi-chevron-down
+                </v-icon>
+
+                <v-icon
+                  v-if="checkExpand(item) && isExpanded"
+                  @click="expand(false)"
+                  >mdi-chevron-down mdi-rotate-180
+                </v-icon>
+              </template>
+
               <template v-slot:[`item.pca`]="{ item }">
                 {{
                   item.pca > 1
@@ -344,7 +370,7 @@
                               {{
                                 item.pca > 1
                                   ? item.pca + " Anos"
-                                  : item.pca === ""
+                                  : item.pca === "" || !item.pca
                                   ? "Não Específicado"
                                   : item.pca + " Ano"
                               }}
@@ -468,12 +494,61 @@
         </v-row>
       </v-card-text>
     </v-card>
+    <v-dialog v-model="dialogConfirmacao.visivel" persistent max-width="60%">
+      <v-card class="info-card">
+        <v-card-title class="clav-linear-background white--text mb-2">
+          {{ dialogConfirmacao.header }}</v-card-title
+        >
+        <div class="info-content-card px-3 mx-6 mb-2">
+          <v-card-text class="pa-2 px-4 font-weight-medium">
+            <p>{{ dialogConfirmacao.mensagem }}</p>
+          </v-card-text>
+        </div>
+        <v-card-actions>
+          <v-btn
+            v-if="
+              dialogConfirmacao.tipo != 'Sucesso' ||
+              dialogConfirmacao.tipo != 'Sucesso'
+            "
+            color="success"
+            rounded
+            dark
+            elevation="0"
+            class="px-4"
+            @click="
+              {
+                dialogConfirmacao.visivel = false;
+                removeTS();
+              }
+            "
+          >
+            Confirmar
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="red darken-4"
+            rounded
+            dark
+            elevation="0"
+            class="px-4"
+            @click="
+              {
+                rerout();
+              }
+            "
+          >
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
 import ShowPGD from "@/components/pgd/ShowPGD.vue";
 import Campo from "@/components/generic/Campo.vue";
 import InfoBox from "@/components/generic/infoBox.vue";
+import Loading from "@/components/generic/Loading";
 
 export default {
   props: ["classes", "classesTree", "objeto", "titulo"],
@@ -481,6 +556,7 @@ export default {
     ShowPGD,
     Campo,
     InfoBox,
+    Loading,
   },
   data: () => ({
     search: "",
@@ -593,9 +669,53 @@ export default {
       "items-per-page-text": "Mostrar",
       "items-per-page-all-text": "Todos",
     },
+    dialogConfirmacao: {
+      tipo: "",
+      visivel: false,
+      mensagem: "",
+    },
+    loading: false,
     myhelp: require("@/config/help").help,
   }),
   methods: {
+    rerout() {
+      this.dialogConfirmacao.tipo !== "Sucesso"
+        ? (this.dialogConfirmacao.visivel = false)
+        : this.objeto.fonte.text == "RADA"
+        ? this.$router.push({ name: "Rada" })
+        : this.$router.push({ name: "ts" });
+    },
+    checkExpand(item) {
+      return !!item.descricao || item.nivel > 2;
+    },
+    async remove() {
+      this.dialogConfirmacao.header = "Remoção de Tabela de Seleção";
+      this.dialogConfirmacao.mensagem = `Pretende remover a ${this.titulo}?`;
+      this.dialogConfirmacao.visivel = true;
+    },
+    async removeTS() {
+      this.loading = true;
+      try {
+        await this.$request(
+          "delete",
+          "/tabelasSelecao/" + this.$route.params.idPGD
+        );
+        this.loading = false;
+        this.dialogConfirmacao.tipo = "Sucesso";
+        this.dialogConfirmacao.header = `Remoção de Tabela de Seleção`;
+        this.dialogConfirmacao.mensagem =
+          "A Tabela de Seleção foi removida com sucesso.";
+
+        this.dialogConfirmacao.visivel = true;
+      } catch (e) {
+        this.loading = false;
+        this.dialogConfirmacao.tipo = "Insucesso";
+        this.dialogConfirmacao.header = `Remoção de Tabela de Seleção`;
+        this.dialogConfirmacao.mensagem =
+          "Insucesso na remoção da Tabela de Seleção.";
+        this.dialogConfirmacao.visivel = true;
+      }
+    },
     csvExport() {
       //let csvContent = "data:text/csv;charset=utf-8,";
       let headers;
@@ -766,5 +886,17 @@ export default {
   width: 100%;
   border: 1px solid #1a237e;
   border-radius: 3px;
+}
+.info-card {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
+}
+
+.info-content-card {
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  color: #606060;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>
