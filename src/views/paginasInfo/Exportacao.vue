@@ -66,7 +66,7 @@
             </template>
           </PainelCLAV>
 
-          <PainelCLAV titulo="Defina as query strings a usar na exportação">
+          <PainelCLAV titulo="Defina os parâmetros a usar na exportação">
             <template v-slot:icon>
               <v-icon color="secondary">{{ exportIcon }}</v-icon>
             </template>
