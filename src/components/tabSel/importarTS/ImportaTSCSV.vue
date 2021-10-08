@@ -686,8 +686,9 @@ export default {
       for (var index in this.file) {
         try {
           this.fileName = this.file[index].name;
+          console.log(this.fileName);
           var formData = new FormData();
-          formData.append("file", this.file[index]);
+          formData.append("file", this.file[index], this.fileName);
 
           if (!this.multImport) {
             formData.append("designacao", this.designacao);
