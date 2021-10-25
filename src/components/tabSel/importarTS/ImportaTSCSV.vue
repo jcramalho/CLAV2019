@@ -370,9 +370,42 @@
                     <v-expansion-panel-content>
                       <ol>
                         <li v-for="(erro, j) in item.errors" :key="j">
-                          <span class="red--text text--darken-5">{{
-                            erro.msg
-                          }}</span>
+                          <v-row>
+                            <v-col
+                              cols="12"
+                              sm="10"
+                              :md="erro.deleted === true ? 11 : 10"
+                            >
+                              <span class="red--text text--darken-5"
+                                >{{ erro.msg }}
+                              </span>
+                            </v-col>
+
+                            <v-col
+                              cols="12"
+                              sm="2"
+                              :md="erro.deleted === true ? 1 : 2"
+                            >
+                              <v-spacer />
+
+                              <v-btn
+                                v-if="!!erro.id && !erro.deleted"
+                                color="red darken-4"
+                                rounded
+                                dark
+                                elevation="0"
+                                class="px-4"
+                                :loading="loadingBtn"
+                                @click="removeTS(erro.id, i, j)"
+                                >Remover</v-btn
+                              >
+                              <v-icon
+                                v-else-if="erro.deleted === true"
+                                color="success"
+                                >mdi-check</v-icon
+                              >
+                            </v-col>
+                          </v-row>
                         </li>
                       </ol>
                     </v-expansion-panel-content>
@@ -422,9 +455,42 @@
                     <v-expansion-panel-content>
                       <ol v-if="item.errors">
                         <li v-for="(erro, j) in item.errors" :key="j">
-                          <span class="red--text text--darken-5">{{
-                            erro.msg
-                          }}</span>
+                          <v-row>
+                            <v-col
+                              cols="12"
+                              sm="10"
+                              :md="erro.deleted === true ? 11 : 10"
+                            >
+                              <span class="red--text text--darken-5"
+                                >{{ erro.msg }}
+                              </span>
+                            </v-col>
+
+                            <v-col
+                              cols="12"
+                              sm="2"
+                              :md="erro.deleted === true ? 1 : 2"
+                            >
+                              <v-spacer />
+
+                              <v-btn
+                                v-if="!!erro.id && !erro.deleted"
+                                color="red darken-4"
+                                rounded
+                                dark
+                                elevation="0"
+                                class="px-4"
+                                :loading="loadingBtn"
+                                @click="removeTS(erro.id, i, j)"
+                                >Remover</v-btn
+                              >
+                              <v-icon
+                                v-else-if="erro.deleted === true"
+                                color="success"
+                                >mdi-check</v-icon
+                              >
+                            </v-col>
+                          </v-row>
                         </li>
                       </ol>
                       <span v-else
@@ -574,6 +640,7 @@ export default {
     erroDialog: false,
     success: "",
     loading: false,
+    loadingBtn: false,
     successDialog: false,
     progresso: 0,
     total: 0,
@@ -722,7 +789,7 @@ export default {
           }
         } catch (e) {
           if (e) {
-            this.loading = false;
+            this.loading = !this.multImport ? false : true;
             if (e.response.data.entidades) {
               this.entidadesFalta = e.response.data.entidades;
               this.acrescenta = e.response.data.acrescenta;
@@ -742,22 +809,20 @@ export default {
                 this.multImportList = this.multImportList.concat(
                   e.response.data
                 );
-                this.loading = false;
               } else {
                 this.erro = e.response.data;
                 this.erroDialog = true;
               }
-              this.loading = false;
             } else {
               this.erro = e.response.data[0].msg || e.response.data;
               this.erroDialog = true;
             }
-            this.loading = false;
           } else {
             this.erro = "Erro interno";
             this.erroDialog = true;
           }
         }
+
         this.progresso += 1;
       }
 
@@ -845,6 +910,7 @@ export default {
           ? (this.successDialog = true)
           : ""
         : "";
+      this.loading = false;
     },
     seguirPedido: function (codigo = this.codigo) {
       switch (this.fonteLegitimacao) {
@@ -861,6 +927,18 @@ export default {
           this.$router.push(`/pgd/${codigo}`);
           break;
       }
+    },
+    async removeTS(id, item, error) {
+      try {
+        this.loadingBtn = true;
+        await this.$request("delete", "/tabelasSelecao/" + id);
+        if (!this.multImport) {
+          this.erro[item].errors[error].deleted = true;
+        } else {
+          this.multImportList[item].errors[error].deleted = true;
+        }
+        this.loadingBtn = false;
+      } catch (e) {}
     },
     selecionar: function () {
       this.dialogConfirmacao.visivel = false;
