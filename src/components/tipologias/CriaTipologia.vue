@@ -47,6 +47,7 @@
       <!-- Blocos expansivos -->
       <v-expansion-panels>
         <PainelCLAV
+          class="mt-2"
           titulo="Entidades"
           icon="mdi-bank"
           infoHeader="Selecionar entidades"
@@ -161,39 +162,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.separador {
-  color: white;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #1a237e;
-  font-size: 14pt;
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
-}
-
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-</style>
+<style scoped></style>

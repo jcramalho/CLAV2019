@@ -31,24 +31,15 @@
                 :footer-props="footerProps"
               >
                 <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
-                  >
+                  <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined>
                     Nenhuma entidade selecionada...
                   </v-alert>
                 </template>
 
                 <template v-slot:item.sigla="{ item }">
-                  <v-badge
-                    v-if="novoItemAdicionado(item, campo)"
-                    right
-                    dot
-                    inline
-                    >{{ item.sigla }}</v-badge
-                  >
+                  <v-badge v-if="novoItemAdicionado(item, campo)" right dot inline>{{
+                    item.sigla
+                  }}</v-badge>
 
                   <span v-else>
                     {{ item.sigla }}
@@ -56,9 +47,7 @@
                 </template>
 
                 <template v-slot:item.operacao="{ item }">
-                  <v-icon color="red" @click="removeEntidade(item)">
-                    delete
-                  </v-icon>
+                  <v-icon color="red" @click="removeEntidade(item)"> delete </v-icon>
                 </template>
 
                 <template v-slot:top>
@@ -79,12 +68,8 @@
           <!-- Operações -->
           <v-col cols="auto">
             <span v-if="!esconderOperacoes[campo]">
-              <v-icon class="mr-1" color="green" @click="verifica(campo)">
-                check
-              </v-icon>
-              <v-icon class="mr-1" color="red" @click="anula(campo)">
-                clear
-              </v-icon>
+              <v-icon class="mr-1" color="green" @click="verifica(campo)"> check </v-icon>
+              <v-icon class="mr-1" color="red" @click="anula(campo)"> clear </v-icon>
             </span>
             <v-icon
               v-if="!(info instanceof Array)"
@@ -95,9 +80,7 @@
               create
             </v-icon>
 
-            <v-icon @click="abrirNotaDialog(campo)">
-              add_comment
-            </v-icon>
+            <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
           </v-col>
         </v-row>
       </div>
@@ -106,6 +89,7 @@
         <v-spacer />
         <PO
           operacao="Validar"
+          @avancarPedido="encaminharPedido($event)"
           @finalizarPedido="verificaEstadoCampos($event)"
           @devolverPedido="despacharPedido($event)"
         />
@@ -270,8 +254,7 @@ export default {
       this.loading = false;
     } catch (e) {
       this.erroDialog.visivel = true;
-      this.erroDialog.mensagem =
-        "Erro ao carregar os dados, por favor tente novamente";
+      this.erroDialog.mensagem = "Erro ao carregar os dados, por favor tente novamente";
     }
   },
 
@@ -305,9 +288,7 @@ export default {
 
     abreEntidadesDialog() {
       this.dados.entidadesSel.forEach((entSel) => {
-        const index = this.entidades.findIndex(
-          (ent) => ent.sigla === entSel.sigla
-        );
+        const index = this.entidades.findIndex((ent) => ent.sigla === entSel.sigla);
 
         if (index !== -1) this.entidades.splice(index, 1);
       });
@@ -369,11 +350,50 @@ export default {
         });
       } catch (err) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao carregar os dados, por favor tente novamente";
+        this.erroDialog.mensagem = "Erro ao carregar os dados, por favor tente novamente";
       }
     },
+    async encaminharPedido(dados) {
+      try {
+        let dadosUtilizador = this.$verifyTokenUser();
 
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        const estado = pedido.estado === "Apreciado" ? "Apreciado2v" : "Reapreciado2v";
+
+        pedido.estado = estado;
+
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
+        pedido.historico.push(this.novoHistorico);
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao distribuir o pedido, por favor tente novamente";
+      }
+    },
     async despacharPedido(dados) {
       try {
         const estado = "Devolvido";
@@ -406,8 +426,7 @@ export default {
         this.$router.go(-1);
       } catch (e) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao devolver o pedido, por favor tente novamente";
+        this.erroDialog.mensagem = "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 
@@ -464,16 +483,11 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        let numeroErros = await this.validarTipologiaEntidade(
-          pedido.objeto.dados
-        );
+        let numeroErros = await this.validarTipologiaEntidade(pedido.objeto.dados);
 
         if (numeroErros === 0) {
           for (const key in pedido.objeto.dados) {
-            if (
-              pedido.objeto.dados[key] === null ||
-              pedido.objeto.dados[key] === ""
-            ) {
+            if (pedido.objeto.dados[key] === null || pedido.objeto.dados[key] === "") {
               delete pedido.objeto.dados[key];
             }
           }

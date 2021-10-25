@@ -103,6 +103,7 @@
       <template v-slot:extension>
         <v-tabs
           grow
+          dark
           show-arrows
           color="secondary"
           slider-color="secondary"

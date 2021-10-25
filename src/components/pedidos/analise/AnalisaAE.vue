@@ -4,10 +4,7 @@
     <v-row v-if="dados.legislacao">
       <v-col cols="2">
         <div
-          :class="[
-            'info-descricao',
-            `info-descricao-${novoHistorico.legislacao.cor}`,
-          ]"
+          :class="['info-descricao', `info-descricao-${novoHistorico.legislacao.cor}`]"
         >
           Fonte de Legitimação
         </div>
@@ -28,19 +25,14 @@
           :value="!!novoHistorico.legislacao.nota"
           overlap
         >
-          <v-icon @click="abrirNotaDialog('legislacao', -1)">
-            add_comment
-          </v-icon>
+          <v-icon @click="abrirNotaDialog('legislacao', -1)"> add_comment </v-icon>
         </v-badge>
       </v-col>
     </v-row>
     <v-row v-else>
       <v-col cols="2">
         <div
-          :class="[
-            'info-descricao',
-            `info-descricao-${novoHistorico.referencial.cor}`,
-          ]"
+          :class="['info-descricao', `info-descricao-${novoHistorico.referencial.cor}`]"
         >
           Referencial Classificativo
         </div>
@@ -61,20 +53,13 @@
           :value="!!novoHistorico.referencial.nota"
           overlap
         >
-          <v-icon @click="abrirNotaDialog('referencial', -1)">
-            add_comment
-          </v-icon>
+          <v-icon @click="abrirNotaDialog('referencial', -1)"> add_comment </v-icon>
         </v-badge>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="2">
-        <div
-          :class="[
-            'info-descricao',
-            `info-descricao-${novoHistorico.fundo.cor}`,
-          ]"
-        >
+        <div :class="['info-descricao', `info-descricao-${novoHistorico.fundo.cor}`]">
           Fundo
         </div>
       </v-col>
@@ -84,12 +69,8 @@
         </div>
       </v-col>
       <v-col cols="1">
-        <v-icon color="green" @click="novoHistorico.fundo.cor = 'verde'"
-          >check</v-icon
-        >
-        <v-icon color="red" @click="novoHistorico.fundo.cor = 'vermelho'"
-          >clear</v-icon
-        >
+        <v-icon color="green" @click="novoHistorico.fundo.cor = 'verde'">check</v-icon>
+        <v-icon color="red" @click="novoHistorico.fundo.cor = 'vermelho'">clear</v-icon>
 
         <v-badge
           color="indigo darken-4"
@@ -104,8 +85,7 @@
 
     <v-expansion-panels popout>
       <v-expansion-panel class="ma-5">
-        <v-expansion-panel-header
-          class="pa-2 clav-linear-background title white--text"
+        <v-expansion-panel-header class="pa-2 clav-linear-background title white--text"
           >Classes</v-expansion-panel-header
         >
         <v-expansion-panel-content>
@@ -125,9 +105,7 @@
                 >
                   <v-list-item-title
                     v-if="item.codigo && item.referencia"
-                    v-text="
-                      item.codigo + ', ' + item.referencia + ' - ' + item.titulo
-                    "
+                    v-text="item.codigo + ', ' + item.referencia + ' - ' + item.titulo"
                   ></v-list-item-title>
                   <v-list-item-title
                     v-else-if="item.codigo"
@@ -159,31 +137,23 @@
                       <td style="width: 10%">
                         <v-icon
                           color="green"
-                          @click="
-                            novoHistorico.zonaControlo.dados[index].cor =
-                              'verde'
-                          "
+                          @click="novoHistorico.zonaControlo.dados[index].cor = 'verde'"
                           >check</v-icon
                         >
                         <v-icon
                           color="red"
                           @click="
-                            novoHistorico.zonaControlo.dados[index].cor =
-                              'vermelho'
+                            novoHistorico.zonaControlo.dados[index].cor = 'vermelho'
                           "
                           >clear</v-icon
                         >
                         <v-badge
                           color="indigo darken-4"
                           content="1"
-                          :value="
-                            !!novoHistorico.zonaControlo.dados[index].nota
-                          "
+                          :value="!!novoHistorico.zonaControlo.dados[index].nota"
                           overlap
                         >
-                          <v-icon
-                            @click="abrirNotaDialog('zonaControlo', index)"
-                          >
+                          <v-icon @click="abrirNotaDialog('zonaControlo', index)">
                             add_comment
                           </v-icon>
                         </v-badge>
@@ -280,9 +250,7 @@
                           Destino final
                         </div>
                       </td>
-                      <td v-if="item.destino === 'E'" style="width: 80%">
-                        Eliminação
-                      </td>
+                      <td v-if="item.destino === 'E'" style="width: 80%">Eliminação</td>
                       <td v-else-if="item.destino === 'C'" style="width: 80%">
                         Conservação
                       </td>
@@ -317,11 +285,9 @@
                         </div>
                       </td>
                       <td style="width: 80%">
-                        <span
-                          v-for="(just, index) in item.justificaDF"
-                          :key="index"
-                          >{{ just }}</span
-                        >
+                        <span v-for="(just, index) in item.justificaDF" :key="index">{{
+                          just
+                        }}</span>
                       </td>
                     </tr>
                     <tr
@@ -427,9 +393,7 @@
                       <td style="width: 10%">
                         <v-icon
                           color="orange"
-                          @click="
-                            abrirEditor('Medição das UI em papel (m.l.)', index)
-                          "
+                          @click="abrirEditor('Medição das UI em papel (m.l.)', index)"
                           >create</v-icon
                         >
                       </td>
@@ -452,9 +416,7 @@
                       <td style="width: 10%">
                         <v-icon
                           color="orange"
-                          @click="
-                            abrirEditor('Medição das UI em digital (Gb)', index)
-                          "
+                          @click="abrirEditor('Medição das UI em digital (Gb)', index)"
                           >create</v-icon
                         >
                       </td>
@@ -477,12 +439,7 @@
                       <td style="width: 10%">
                         <v-icon
                           color="orange"
-                          @click="
-                            abrirEditor(
-                              'Medição das UI noutros suportes',
-                              index
-                            )
-                          "
+                          @click="abrirEditor('Medição das UI noutros suportes', index)"
                           >create</v-icon
                         >
                       </td>
@@ -601,11 +558,7 @@
             Cancelar
           </v-btn>
 
-          <v-btn
-            color="indigo accent-4 white--text"
-            rounded
-            @click="adicionarNota()"
-          >
+          <v-btn color="indigo accent-4 white--text" rounded @click="adicionarNota()">
             Adicionar
           </v-btn>
         </v-card-actions>
@@ -648,32 +601,22 @@
         >
 
         <v-card-text>
-          <span
-            class="subtitle-1"
-            style="white-space: pre-wrap"
-            v-html="erro"
-          ></span>
+          <span class="subtitle-1" style="white-space: pre-wrap" v-html="erro"></span>
         </v-card-text>
 
         <v-divider></v-divider>
 
         <v-card-actions>
-          <v-btn color="red darken-4" text @click="erroDialog = false"
-            >Fechar</v-btn
-          >
+          <v-btn color="red darken-4" text @click="erroDialog = false">Fechar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="dialogGuardado" width="50%" persistent>
       <v-card dark class="info-card">
-        <v-card-title class="headline mb-2">
-          Pedido guardado com sucesso!</v-card-title
-        >
+        <v-card-title class="headline mb-2"> Pedido guardado com sucesso!</v-card-title>
         <div class="info-content-card px-3 mx-6 mb-2">
           <v-card-text class="pa-2 px-4 font-weight-medium">
-            <p>
-              O seu pedido foi guardado com sucesso. Pode abandonar a página.
-            </p>
+            <p>O seu pedido foi guardado com sucesso. Pode abandonar a página.</p>
           </v-card-text>
         </div>
         <v-card-actions>
@@ -781,9 +724,7 @@ export default {
   },
 
   async created() {
-    if (
-      !this.p.historico[this.p.historico.length - 1].zonaControlo.dados[0].cor
-    ) {
+    if (!this.p.historico[this.p.historico.length - 1].zonaControlo.dados[0].cor) {
       const criaNovoHistorico = {};
       Object.keys(this.dados).forEach((key) => {
         if (key !== "zonaControlo")
@@ -867,8 +808,15 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado =
-          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+        var estado;
+        if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído")
+          dados.etapa === "Validação 1"
+            ? (estado = "Apreciado")
+            : (estado = "Apreciado2v");
+        else
+          dados.etapa === "Validação 1"
+            ? (estado = "Reapreciado")
+            : (estado = "Reapreciado2v");
 
         pedido.estado = estado;
 
@@ -955,10 +903,7 @@ export default {
     },
 
     adicionarNota() {
-      if (
-        this.notaDialog.index == -1 ||
-        this.notaDialog.campo != "zonaControlo"
-      ) {
+      if (this.notaDialog.index == -1 || this.notaDialog.campo != "zonaControlo") {
         this.novoHistorico[this.notaDialog.campo].nota = this.notaDialog.nota;
       } else {
         if (this.notaDialog.campo != "zonaControlo")
@@ -987,8 +932,7 @@ export default {
           this.erroDialog = true;
         } else {
           this.dados.zonaControlo[this.editarIndex].uiPapel = this.medicao;
-          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor =
-            "amarelo";
+          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor = "amarelo";
         }
         this.medicao = "";
         this.editarCampo = "";
@@ -1000,8 +944,7 @@ export default {
           this.erroDialog = true;
         } else {
           this.dados.zonaControlo[this.editarIndex].uiDigital = this.medicao;
-          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor =
-            "amarelo";
+          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor = "amarelo";
         }
         this.medicao = "";
         this.editarCampo = "";
@@ -1013,8 +956,7 @@ export default {
           this.erroDialog = true;
         } else {
           this.dados.zonaControlo[this.editarIndex].uiOutros = this.medicao;
-          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor =
-            "amarelo";
+          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor = "amarelo";
         }
         this.medicao = "";
         this.editarCampo = "";

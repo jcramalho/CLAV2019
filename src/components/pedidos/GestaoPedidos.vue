@@ -106,7 +106,12 @@ export default {
           icon: "pedido-apr-tecn-icon",
         },
         {
-          titulo: "Pedidos em Validação",
+          titulo: "Pedidos em Validação 1",
+          icon: "pedido-em-validacao-icon",
+          pedidos: [],
+        },
+        {
+          titulo: "Pedidos em Validação 2",
           icon: "pedido-em-validacao-icon",
           pedidos: [],
         },
@@ -177,10 +182,12 @@ export default {
           this.estados[2].pedidos = pedidos.filter((p) => {
             if (p.estado === "Apreciado" || p.estado === "Reapreciado") return p;
           });
-          this.estados[4].pedidos = pedidos.filter((p) => p.estado === "Devolvido");
-          this.estados[5].pedidos = pedidos.filter((p) => p.estado === "Validado");
-
-          this.estados[3].pedidos = pedidos.filter((p) => p.estado === "Em Despacho");
+          this.estados[3].pedidos = pedidos.filter((p) => {
+            if (p.estado === "Apreciado2v" || p.estado === "Reapreciado2v") return p;
+          });
+          this.estados[4].pedidos = pedidos.filter((p) => p.estado === "Em Despacho");
+          this.estados[5].pedidos = pedidos.filter((p) => p.estado === "Devolvido");
+          this.estados[6].pedidos = pedidos.filter((p) => p.estado === "Validado");
 
           if (this.temPermissaoDistribuir()) this.listaUtilizadoresParaAnalisar();
         })

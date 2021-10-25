@@ -638,9 +638,10 @@ export default {
     async ressubmeterPedido() {
       try {
         let pedido = JSON.parse(JSON.stringify(this.pedido));
-        let estado = "Ressubmetido";
 
         let dadosUtilizador = this.$verifyTokenUser();
+
+        let estado = "Ressubmetido";
 
         pedido.estado = estado;
 
@@ -660,20 +661,53 @@ export default {
         console.log(e);
       }
     },
+    async cancelarPedido() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
 
-    criacaoClasseTerminada: function () {
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        let estado = "Cancelado";
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: "Cancelar",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.$router.push(`/pedidos/submissao/${pedido.codigo}`);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    criacaoClasseTerminada() {
       this.$router.push("/");
     },
 
     // Cancela a criação da classe
-    eliminarClasse: function () {
+    eliminarClasse() {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoClasse: function () {
-      this.$request("delete", "/pedidos/" + this.pedido.codigo)
-        .then(() => this.$router.push("/"))
-        .catch((err) => console.error(err));
+    cancelarCriacaoClasse() {
+      if (this.pedido) {
+        this.cancelarPedido();
+        this.$router.push("/");
+      } else if (!this.o._id) {
+        this.$router.push("/");
+      } else {
+        this.$request("delete", "/pendentes/" + this.o._id)
+          .then(() => this.$router.push("/"))
+          .catch((err) => console.error(err));
+      }
     },
   },
 };

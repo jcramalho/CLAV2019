@@ -1,26 +1,21 @@
 <template>
   <div>
     <Loading v-if="!noticiasReady" :message="'notícias'" />
-    <v-card v-else class="ma-8">
-      <v-card-title class="indigo darken-4 white--text" dark>
+    <v-card v-else class="ma-2" flat>
+      <v-card-title class="clav-linear-background white--text">
         {{ tipo }}
-        <v-spacer></v-spacer>
+      </v-card-title>
+
+      <v-card-text>
         <v-text-field
           v-model="search"
           append-icon="search"
           label="Filtrar"
-          single-line
-          hide-details
-          dark
         ></v-text-field>
-      </v-card-title>
-
-      <v-card-text>
         <v-data-table
           :headers="headers"
           :items="noticias"
           :search="search"
-          class="elevation-1"
           :footer-props="footer_props"
           v-if="this.headers[this.cabecalhos.length - 1]"
         >
@@ -34,9 +29,7 @@
             <ListagemNot
               :item="props.item"
               @rowClicked="go($event.id)"
-              @iconClicked="
-                switchOperacao($event.operacao.descricao, props.item.id)
-              "
+              @iconClicked="switchOperacao($event.operacao.descricao, props.item.id)"
             />
           </template>
 
@@ -49,26 +42,15 @@
       <v-dialog :value="eliminarId != ''" persistent max-width="290px">
         <v-card>
           <v-card-title class="headline">Confirmar ação</v-card-title>
-          <v-card-text>
-            Tem a certeza que pretende eliminar a notícia?
-          </v-card-text>
+          <v-card-text> Tem a certeza que pretende eliminar a notícia? </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red" text @click="eliminarId = ''">
-              Cancelar
-            </v-btn>
-            <v-btn color="primary" text @click="remover(eliminarId)">
-              Confirmar
-            </v-btn>
+            <v-btn color="red" text @click="eliminarId = ''"> Cancelar </v-btn>
+            <v-btn color="primary" text @click="remover(eliminarId)"> Confirmar </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-snackbar
-        v-model="snackbar"
-        :color="color"
-        :timeout="timeout"
-        :top="true"
-      >
+      <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :top="true">
         {{ text }}
         <v-btn text @click="fecharSnackbar">Fechar</v-btn>
       </v-snackbar>
@@ -94,19 +76,19 @@ export default {
     dialog: false,
     footer_props: {
       "items-per-page-options": [10, 20, 100],
-      "items-per-page-text": "Mostrar"
+      "items-per-page-text": "Mostrar",
     },
     snackbar: false,
     text: "",
     color: "",
     timeout: 4000,
     eliminarId: "",
-    done: false
-    }),
+    done: false,
+  }),
 
   components: {
     Loading,
-    ListagemNot
+    ListagemNot,
   },
 
   methods: {
@@ -114,7 +96,7 @@ export default {
       if (level >= NIVEL_MINIMO_ALTERAR) {
         this.operacoes = [
           { icon: "edit", descricao: "Alteração", cor: "indigo darken-2" },
-          { icon: "delete", descricao: "Remoção", cor: "red" }
+          { icon: "delete", descricao: "Remoção", cor: "red" },
         ];
       }
     },
@@ -135,16 +117,15 @@ export default {
             value: this.campos[i],
             align: "end",
             width: "10%",
-            class: ["table-header", "subtitle-2", "font-weight-bold"]
+            class: ["table-header", "subtitle-2", "font-weight-bold"],
           };
         else
           this.headers[i] = {
             text: this.cabecalhos[i],
             value: this.campos[i],
-            class: ["table-header", "subtitle-2", "font-weight-bold"]
+            class: ["table-header", "subtitle-2", "font-weight-bold"],
           };
       }
-
     },
 
     preparaLista(level, listaNoticias) {
@@ -158,14 +139,14 @@ export default {
               data: listaNoticias[i].data,
               ativa: listaNoticias[i].ativa,
               operacoes: this.operacoes,
-              id: listaNoticias[i]._id
+              id: listaNoticias[i]._id,
             });
           } else {
             myTree.push({
               titulo: listaNoticias[i].titulo,
               data: listaNoticias[i].data,
               operacoes: this.operacoes,
-              id: listaNoticias[i]._id
+              id: listaNoticias[i]._id,
             });
           }
         }
@@ -175,7 +156,7 @@ export default {
             myTree.push({
               titulo: listaNoticias[i].titulo,
               data: listaNoticias[i].data,
-              id: listaNoticias[i]._id
+              id: listaNoticias[i]._id,
             });
           }
         }
@@ -191,22 +172,22 @@ export default {
       this.$router.push("/noticias/editar/" + id);
     },
 
-    remover(id){
+    remover(id) {
       this.$request("delete", "/noticias/" + id)
-        .then(res => {
-            this.text = res.data;
-            this.color = "success";
-            this.snackbar = true;
-            this.eliminarId = "";
-            this.done = true;
-            this.getNoticias();
+        .then((res) => {
+          this.text = res.data;
+          this.color = "success";
+          this.snackbar = true;
+          this.eliminarId = "";
+          this.done = true;
+          this.getNoticias();
         })
-        .catch(e => {
-            this.text = e.response.data[0].msg || e.response.data;
-            this.color = "error";
-            this.snackbar = true;
-            this.eliminarId = "";
-            this.done = false;
+        .catch((e) => {
+          this.text = e.response.data[0].msg || e.response.data;
+          this.color = "error";
+          this.snackbar = true;
+          this.eliminarId = "";
+          this.done = false;
         });
     },
 
@@ -243,17 +224,14 @@ export default {
         this.noticias = await this.preparaLista(level, response.data);
 
         this.noticiasReady = true;
-        
       } catch (e) {
         return e;
       }
-    }
-
+    },
   },
 
-  created: async function() {
+  created: async function () {
     try {
-      
       let response = await this.$request("get", "/noticias");
 
       let level = this.$userLevel();
@@ -263,11 +241,11 @@ export default {
       this.preparaOperacoes(level);
 
       this.noticias = await this.preparaLista(level, response.data);
-      
+
       this.noticiasReady = true;
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

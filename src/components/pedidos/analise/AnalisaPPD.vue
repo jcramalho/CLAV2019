@@ -167,10 +167,7 @@ export default {
   },
   methods: {
     async clicked({ item }) {
-      if (
-        !this.expandedProc.codigo ||
-        this.expandedProc.codigo != item.codigo
-      ) {
+      if (!this.expandedProc.codigo || this.expandedProc.codigo != item.codigo) {
         let response = await this.$request("get", "/classes/c" + item.codigo);
         this.expandedProc = response.data;
       }
@@ -210,8 +207,15 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado =
-          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+        var estado;
+        if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído")
+          dados.etapa === "Validação 1"
+            ? (estado = "Apreciado")
+            : (estado = "Apreciado2v");
+        else
+          dados.etapa === "Validação 1"
+            ? (estado = "Reapreciado")
+            : (estado = "Reapreciado2v");
 
         pedido.estado = estado;
 
@@ -245,17 +249,13 @@ export default {
         if (k != "ts") {
           this.novoHistorico[k].nota = null;
           n_vermelhos =
-            this.novoHistorico[k].cor === "vermelho"
-              ? n_vermelhos + 1
-              : n_vermelhos;
+            this.novoHistorico[k].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
         }
       });
       Object.keys(this.novoHistorico.ts).map((k) => {
         this.novoHistorico.ts[k].nota = null;
         n_vermelhos =
-          this.novoHistorico.ts[k].cor === "vermelho"
-            ? n_vermelhos + 1
-            : n_vermelhos;
+          this.novoHistorico.ts[k].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
       });
 
       this.novoHistorico.ts.classes.dados.forEach((classe) => {
@@ -365,7 +365,6 @@ export default {
     //    }
     //  });
     //});
-
   },
 };
 </script>
