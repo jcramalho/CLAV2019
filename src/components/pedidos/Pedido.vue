@@ -3,9 +3,20 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="6" md="7">
         <span class="clav-content-title-2">
-          Consulta do pedido: {{ Pedido.codigo }} <v-spacer />
+          Consulta do pedido: {{ Pedido.codigo }}
         </span>
+        <br />
+        <v-chip
+          :color="this.avisos[this.Pedido.objeto.tipo] <= dias ? 'primary' : 'error'"
+          class="mt-1"
+          label
+          :outlined="this.avisos[this.Pedido.objeto.tipo] <= dias"
+        >
+          Prazo: {{ dias }} dias
+          <v-icon class="mr-1">date_range</v-icon>
+        </v-chip>
       </v-col>
+      <v-spacer></v-spacer>
       <v-col cols="12" sm="6" md="5" align="right" justify="center">
         <v-chip color="primary" text-color="white" label>
           <v-icon class="mr-1">label</v-icon>
@@ -224,6 +235,28 @@ export default {
         tipo: "a carregar",
       },
     },
+    prazos: {
+      Classe_N1: 60,
+      Classe_N2: 60,
+      Classe_N3: 60,
+      RADA: 60,
+      PPD: 60,
+      "Auto de Eliminação": 30,
+      Tipologia: 20,
+      Legislação: 20,
+      Entidade: 20,
+    },
+    avisos: {
+      Classe_N1: 25,
+      Classe_N2: 25,
+      Classe_N3: 25,
+      RADA: 15,
+      PPD: 20,
+      "Auto de Eliminação": 30,
+      Tipologia: 5,
+      Legislação: 5,
+      Entidade: 5,
+    },
     distHeaders: [
       { text: "Estado", value: "estado", class: "subtitle-1" },
       { text: "Data", value: "data", class: "subtitle-1" },
@@ -283,6 +316,36 @@ export default {
       }
       return value;
     },
+    diasDevolvido() {
+      var dd = 0;
+      var sd = false;
+      var ld = "";
+
+      if (this.Pedido.distribuicao && this.Pedido.distribuicao.length)
+        this.Pedido.distribuicao.map((value) => {
+          if (value.estado == "Devolvido") {
+            if (this.mesmoDia(new Date(ld), new Date(value.data))) sd = true;
+            else {
+              sd = false;
+              ld = value.data;
+            }
+          } else if (value.estado == "Ressubmetido" && !sd) {
+            const date1 = new Date(ld);
+            const date2 = new Date(value.data);
+            const diffTime = Math.abs(date2 - date1);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            dd += diffDays;
+          }
+        });
+      return dd;
+    },
+    dias() {
+      const date1 = new Date();
+      const date2 = new Date(this.Pedido.data);
+      const diffTime = Math.abs(date2 - date1);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return this.prazos[this.Pedido.objeto.tipo] - (diffDays - this.diasDevolvido);
+    },
   },
   async created() {
     await this.listaUtilizadores();
@@ -295,6 +358,13 @@ export default {
       });
   },
   methods: {
+    mesmoDia(d1, d2) {
+      return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+      );
+    },
     async listaUtilizadores() {
       const response = await this.$request("get", "/users");
 

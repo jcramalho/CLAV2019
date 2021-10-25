@@ -629,8 +629,13 @@ export default {
     },
 
     cancelarCriacaoClasse: function () {
-      this.$router.push("/");
-      this.$emit("limpar");
+      if (this.pendenteId) {
+        this.$request("delete", "/pendentes/" + this.pendenteId)
+          .then(() => this.$router.push("/"))
+          .catch((err) => console.error(err));
+      } else {
+        this.$router.push("/");
+      }
     },
   },
 };

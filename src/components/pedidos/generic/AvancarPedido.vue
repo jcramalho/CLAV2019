@@ -52,7 +52,20 @@
     </v-card-text>
 
     <v-card-text v-else>
-      <v-row>
+      <v-tabs
+        v-if="
+          pedidoAuxiliar.estado !== 'Submetido' &&
+          pedidoAuxiliar.estado !== 'Ressubmetido' &&
+          pedidoAuxiliar.estado !== 'Apreciado' &&
+          pedidoAuxiliar.estado !== 'Reapreciado'
+        "
+        v-model="tab"
+      >
+        <v-tab v-for="t in tabs" :key="t">
+          {{ t }}
+        </v-tab>
+      </v-tabs>
+      <v-row class="my-2">
         <v-col>
           <!-- Menssagem -->
           <Campo nome="Mensagem" infoHeader="Mensagem" color="neutralpurple">
@@ -102,11 +115,17 @@ export default {
   components: {
     Campo,
   },
+  async beforeMount() {
+    this.pedidoAuxiliar = (await this.$request("get", "/pedidos/" + this.pedido)).data;
+  },
   data() {
     return {
       procuraUtilizador: null,
       utilizadorSelecionado: null,
       mensagemDespacho: null,
+      pedidoAuxiliar: "",
+      tabs: ["Validação 1", "Validação 2"],
+      tab: "Validação 1",
       usersHeaders: [
         { text: "Nome", value: "name", class: "title" },
         { text: "Entidade", value: "entidade", class: "title" },
@@ -131,6 +150,12 @@ export default {
       const despacho = {
         utilizadorSelecionado: this.utilizadorSelecionado,
       };
+
+      if (
+        this.pedidoAuxiliar.estado !== "Submetido" &&
+        this.pedidoAuxiliar.estado !== "Ressubmetido"
+      )
+        despacho.etapa = this.tabs[this.tab];
 
       if (this.mensagemDespacho !== null)
         despacho.mensagemDespacho = this.mensagemDespacho;

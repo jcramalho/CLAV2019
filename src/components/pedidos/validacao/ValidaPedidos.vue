@@ -220,6 +220,8 @@ export default {
       if (
         data.estado !== "Apreciado" &&
         data.estado !== "Reapreciado" &&
+        data.estado !== "Apreciado2v" &&
+        data.estado !== "Reapreciado2v" &&
         data.estado !== "Devolvido para validação"
       )
         throw new URIError("Este pedido não pertence a este estado.");

@@ -26,34 +26,34 @@ import { adicionarNotaComRemovidos } from "@/utils/utils";
 export default {
   components: {
     PO,
-    ConfirmacaoOperacao
+    ConfirmacaoOperacao,
   },
   props: {
     p: Object,
     historico: Array,
     novoHistorico: Object,
-    validar: Boolean
+    validar: Boolean,
   },
   data() {
     return {
       erroDialog: {
         visivel: false,
-        mensagem: null
+        mensagem: null,
       },
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
-        dados: null
-      }
+        dados: null,
+      },
     };
   },
   computed: {
-    utilizador: function() {
+    utilizador: function () {
       return this.$verifyTokenUser();
     },
-    pedido: function() {
+    pedido: function () {
       return JSON.parse(JSON.stringify(this.p));
-    }
+    },
   },
   methods: {
     async despachar(estado, { mensagemDespacho, utilizadorSelecionado }) {
@@ -70,7 +70,7 @@ export default {
         estado: estado,
         responsavel: this.utilizador.email,
         data: new Date(),
-        despacho: mensagemDespacho
+        despacho: mensagemDespacho,
       };
 
       if (utilizadorSelecionado)
@@ -78,12 +78,17 @@ export default {
 
       await this.$request("put", "/pedidos", {
         pedido: this.pedido,
-        distribuicao: novaDistribuicao
+        distribuicao: novaDistribuicao,
       });
     },
     async encaminharPedido(dados) {
-      const estado =
-        this.pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+      var estado;
+      if (this.pedido.estado === "Distribuído" || this.pedido.estado === "Redistribuído")
+        dados.etapa === "Validação 1" ? (estado = "Apreciado") : (estado = "Apreciado2v");
+      else
+        dados.etapa === "Validação 1"
+          ? (estado = "Reapreciado")
+          : (estado = "Reapreciado2v");
 
       dados.utilizadorSelecionado.nome = dados.utilizadorSelecionado.name;
       await this.despachar(estado, dados);
@@ -95,7 +100,7 @@ export default {
     },
     async verificaEstadoCampos(dados) {
       const haVermelhos = Object.keys(this.novoHistorico).some(
-        key => this.novoHistorico[key].cor === "vermelho"
+        (key) => this.novoHistorico[key].cor === "vermelho"
       );
 
       if (haVermelhos) {
@@ -103,7 +108,7 @@ export default {
           visivel: true,
           mensagem:
             "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
-          dados: dados
+          dados: dados,
         };
       } else await this.finalizarPedido(dados);
     },
@@ -121,24 +126,24 @@ export default {
 
         if (parsedError !== undefined) {
           if (parsedError.status === 422) {
-            parsedError.data.forEach(erro => {
+            parsedError.data.forEach((erro) => {
               this.erros.push({
                 parametro: mapKeys(erro.param),
-                mensagem: erro.msg
+                mensagem: erro.msg,
               });
             });
           }
         } else {
           this.erros.push({
             sobre: "Acesso à Ontologia",
-            mensagem: "Ocorreu um erro ao aceder à ontologia."
+            mensagem: "Ocorreu um erro ao aceder à ontologia.",
           });
         }
       }
     },
     closeDialog(dialog) {
       dialog.visivel = false;
-    }
-  }
+    },
+  },
 };
 </script>

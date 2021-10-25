@@ -29,6 +29,18 @@
             />
           </template>
         </Campo>
+        <Campo nome="Sigla" color="neutralpurple">
+          <template v-slot:conteudo>
+            <v-text-field
+              clearable
+              label="Sigla"
+              single-line
+              hide-details
+              dense
+              v-model="entidade.sigla"
+            />
+          </template>
+        </Campo>
         <Campo nome="Internacional" color="neutralpurple">
           <template v-slot:conteudo>
             <v-select
@@ -63,6 +75,16 @@
               :d="entidade.dataCriacao"
               :label="'Data: AAAA-MM-DD'"
               @dataSelecionada="entidade.dataCriacao = $event"
+            />
+          </template>
+        </Campo>
+
+        <Campo nome="Data de extinção" color="neutralpurple" class="mb-3">
+          <template v-slot:conteudo>
+            <SelecionarData
+              :d="entidade.dataExtincao"
+              :label="'Data: AAAA-MM-DD'"
+              @dataSelecionada="entidade.dataExtincao = $event"
             />
           </template>
         </Campo>

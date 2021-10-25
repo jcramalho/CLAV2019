@@ -308,6 +308,7 @@ export default {
 
     async ressubmeterPedido() {
       try {
+        this.pedido.objeto.dados = this.l;
         let pedido = JSON.parse(JSON.stringify(this.pedido));
         let estado = "Ressubmetido";
 
@@ -332,15 +333,42 @@ export default {
       }
     },
 
+    async cancelarPedido() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        let estado = "Cancelado";
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: "Cancelar",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.$router.push(`/pedidos/submissao/${pedido.codigo}`);
+      } catch (e) {
+        console.log(e);
+      }
+    },
     // Cancela a criação da Legislacao
     eliminarLegislacao: function () {
       this.pedidoEliminado = true;
     },
 
     cancelarCriacaoLegislacao: function () {
-      this.$request("delete", "/pedidos/" + this.pedido.codigo)
-        .then(() => this.$router.push("/"))
-        .catch((err) => console.error(err));
+      if (this.pedido) {
+        this.cancelarPedido();
+        this.$router.push("/");
+      } else this.$router.push("/");
     },
   },
 };
