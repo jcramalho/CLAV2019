@@ -1,66 +1,65 @@
 <template>
-  <v-card class="ma-4">
+  <v-card class="pa-3" flat>
     <Loading v-if="!noticiaReady" :message="'a notícia'" />
-    <v-card-title v-else class="indigo darken-4 white--text">{{
-      this.titulo
-    }}</v-card-title>
-    <v-card-text>
-      <p>{{ this.noticia.data }}</p>
-      <p class="text-justify" v-html="compiledMarkdown" />
-      <v-spacer />
-
-      <v-row>
+    <div v-else>
+      <v-row align="center" class="mb-5">
         <v-col>
-          <v-btn
-            class="indigo accent-4 white--text mr-4"
-            @click="$router.go(-1)"
-            >Voltar</v-btn
-          >
+          <span class="clav-content-title-2">
+            {{ this.titulo }}
+          </span>
+        </v-col>
+        <v-col cols="2" align="center" justify="center">
+          {{ this.noticia.data }}
         </v-col>
       </v-row>
-    </v-card-text>
+      <p class="text-justify" v-html="compiledMarkdown" />
+
+      <Voltar class="mt-5" />
+    </div>
   </v-card>
 </template>
 
 <script>
 import marked from "marked";
 import Loading from "@/components/generic/Loading";
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   components: {
-    Loading
+    Loading,
+    Voltar,
   },
   data: () => ({
     idNoticia: "",
     noticia: {
       titulo: "",
       data: "",
-      desc: ""
+      desc: "",
     },
     titulo: "",
-    noticiaReady: false
+    noticiaReady: false,
   }),
   computed: {
-    compiledMarkdown: function() {
+    compiledMarkdown: function () {
       //return marked(this.noticia.desc, { sanitize: true });
       return marked(this.noticia.desc);
-    }
+    },
   },
   methods: {
-    preparaNoticia: async function(not) {
+    preparaNoticia: async function (not) {
       try {
         var myNoticia = {
           titulo: not.titulo,
           data: not.data,
-          desc: not.desc
+          desc: not.desc,
         };
         return myNoticia;
       } catch (e) {
         return {};
       }
-    }
+    },
   },
-  created: async function() {
+  created: async function () {
     try {
       this.idNoticia = window.location.pathname.split("/")[2];
 
@@ -73,6 +72,6 @@ export default {
     } catch (e) {
       return e;
     }
-  }
+  },
 };
 </script>

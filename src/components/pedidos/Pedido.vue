@@ -12,7 +12,7 @@
           label
           :outlined="this.avisos[this.Pedido.objeto.tipo] <= dias"
         >
-          Prazo: {{ dias }} dias
+          Prazo: {{ dias > -1 ? dias : 0 }} dias
           <v-icon class="mr-1">date_range</v-icon>
         </v-chip>
       </v-col>

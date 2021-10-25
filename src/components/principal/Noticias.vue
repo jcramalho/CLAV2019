@@ -1,6 +1,6 @@
 <template>
   <Loading v-if="!noticiasReady" :message="'notícias'" />
-  <div v-else class="noticias ma-12">
+  <div v-else class="noticias mx-7">
     <div class="separador">
       <v-icon class="icon">mdi-newspaper</v-icon>
       <span class="noticias">Notícias</span>
@@ -21,9 +21,10 @@
       :cycle="hover"
       progress
       progress-color="secondary"
-      height="200"
+      height="300"
       hide-delimiter-background
       show-arrows-on-hover
+      style="border: solid 1px var(--v-primary-base)"
     >
       <v-carousel-item v-for="(n, index) in this.noticias" :key="index">
         <v-sheet class="conteudo clav-info-content" height="100%" tile>
@@ -31,6 +32,15 @@
           <data class="data">{{ n.data }}</data>
           <div class="info">
             <p v-html="compiledMarkdown(n.desc)" />
+            <v-btn
+              fab
+              dark
+              color="primary"
+              style="position: sticky; left: 100%; bottom: 3%"
+              @click="$router.push('/noticias/' + n._id)"
+            >
+              <v-icon> mdi-plus </v-icon>
+            </v-btn>
           </div>
         </v-sheet>
       </v-carousel-item>
@@ -51,7 +61,7 @@ export default {
     publicPath: process.env.BASE_URL,
     operacoes: [
       {
-        label: "Ver Mais",
+        label: "Ver Todas",
         url: "/noticias",
         level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
       },
@@ -161,12 +171,12 @@ export default {
   grid-area: titulopainel;
   padding: 1%;
   align-self: center;
-  justify-self: center;
+  justify-self: left;
   font-weight: bold;
 }
 .data {
   align-self: center;
-  justify-self: center;
+  justify-self: right;
   color: black;
   grid-area: data;
 }
