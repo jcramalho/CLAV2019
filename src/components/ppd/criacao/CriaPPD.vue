@@ -538,14 +538,14 @@ export default {
         this.validaOutsourcing(this.ppd.si.identificacao.outsourcing, this.ppd.si.identificacao.outsourcingCheck) &&
         this.validaAll("O campo notas", this.ppd.si.identificacao.notas) &&
         this.validaAll("O campo de utilizadores",this.ppd.si.identificacao.userList)*/
-        this.$refs.form.validate()
-        && !isNaN(this.ppd.si.numeroSI)
-        && this.ppd.si.identificacao.adminSistema.length > 0
-        && this.ppd.si.avaliacao.descricao != ""
-        && this.ppd.si.caracterizacao.formatos != ""
-        && this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao != ""
+        //this.$refs.form.validate()
+        //&& !isNaN(this.ppd.si.numeroSI)
+        //&& this.ppd.si.identificacao.adminSistema.length > 0
+        //&& this.ppd.si.avaliacao.descricao != ""
+        //&& this.ppd.si.caracterizacao.formatos != ""
+        //&& this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao != ""
          //para verificar se os campos obrigatorios tao preenchidos
-        //true
+        true
       ){
         var sistema = {
           visto: true,

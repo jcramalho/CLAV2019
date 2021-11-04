@@ -43,7 +43,7 @@
       <v-col v-if="this.ppd.geral.entSel.length > 0">
         <v-card-title>
           <v-text-field
-            v-model="searchSI"
+            v-model="searchEnt"
             append-icon="search"
             label="Procura filtra entidades"
             single-line
@@ -55,7 +55,7 @@
           :items="this.ppd.geral.entSel"
           :items-per-page="5"
           item-key="id"
-          :search="searchSI"
+          :search="searchEnt"
           :sort-by="['sigla']"
           class="elevation-1"
           :footer-props="footer_propsEnt"
@@ -207,6 +207,7 @@ export default {
 	data: () => ({
     ppd: {},
     searchSI: "",
+    searchEnt: "",
     entidades: [],
     siSpec: {
       numeroSI: [],
