@@ -17,7 +17,7 @@
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="12" sm="2" >
-      <div class="info-label">Identificação dos métodos de preservação</div>
+      <div class="info-label">Fundamentação da escolha do método de preservação</div>
     </v-col>
     <v-col cols="12" xs="12" sm="4" v-if=siSpec.estrategia.utilizacaoOperacional>
       <v-text-field
@@ -29,7 +29,7 @@
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="12" sm="2" >
-      <div class="info-label">Identificação dos métodos de preservação</div>
+      <div class="info-label">Identificação de lacunas e necessidade de desenvolvimento</div>
     </v-col>
     <v-col cols="12" xs="12" sm="4" v-if=siSpec.estrategia.utilizacaoOperacional>
       <v-text-field
@@ -56,7 +56,7 @@
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="12" sm="2" >
-      <div class="info-label">Identificação dos métodos de preservação</div>
+      <div class="info-label">Fundamentação da escolha do método de preservação</div>
     </v-col>
     <v-col cols="12" xs="12" sm="4" v-if=siSpec.estrategia.utilizacaoMemoria>
       <v-text-field
@@ -68,7 +68,7 @@
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="12" sm="2" >
-      <div class="info-label">Identificação dos métodos de preservação</div>
+      <div class="info-label">Identificação de lacunas e necessidade de desenvolvimento</div>
     </v-col>
     <v-col cols="12" xs="12" sm="4" v-if=siSpec.estrategia.utilizacaoMemoria>
       <v-text-field
