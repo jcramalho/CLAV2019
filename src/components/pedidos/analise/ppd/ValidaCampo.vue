@@ -50,192 +50,8 @@
               ><slot></slot>
             </span>
             <span
-              v-else-if="
-                tipo == 'procTrans' && !!novoHistorico[campoValue].dados
-              "
-            >
-              {{ novoHistorico[campoValue].dados == "S" ? "Sim" : "Não" }}
-            </span>
-
-            <span
-              v-else-if="tipo == 'justPCA' && !!novoHistorico[campoValue].dados"
-            >
-              <div v-for="c in novoHistorico[campoValue].dados" :key="c.tipoId">
-                <!-- Critério Gestionário ...............................-->
-                <v-row v-if="c.tipoId == 'CriterioJustificacaoGestionario'">
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">Critério Gestionário</div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{
-                        /* texto normalizado:
-                                          mylabels.textoCriterioJustificacaoGestionario
-                                          texto proveniente da FRD: */
-                        c.conteudo
-                      }}
-                    </div>
-                  </v-col>
-                </v-row>
-
-                <!-- Critério Utilidade Administrativa .................-->
-                <v-row
-                  v-if="
-                    c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'
-                  "
-                >
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">
-                      Critério de Utilidade Administrativa
-                    </div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{ c.conteudo }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="p in c.processos" :key="p.procId">
-                          <a :href="'/classes/consultar/' + p.procId">
-                            {{ p.procId.split("c")[1] }} -
-                            {{ p.nome }}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-
-                <!-- Critério Legal ...................................-->
-                <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">Critério Legal</div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{ c.conteudo }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="l in c.legislacao" :key="l.legId">
-                          <a :href="'/legislacao/' + l.legId"
-                            >{{ l.tipo }} {{ l.numero }}</a
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-              </div>
-            </span>
-            <span
-              v-else-if="tipo == 'prazo' && !!novoHistorico[campoValue].dados"
-            >
-              <div v-if="novoHistorico[campoValue].dados > 1">
-                {{ novoHistorico[campoValue].dados }} anos
-              </div>
-              <div v-else-if="novoHistorico[campoValue].dados == 1">
-                {{ novoHistorico[campoValue].dados }} ano
-              </div>
-              <div v-else>Não específicado</div>
-            </span>
-            <span v-else-if="tipo == 'df' && !!novoHistorico[campoValue].dados">
-              <span v-if="novoHistorico[campoValue].dados == 'E'"
-                >Eliminação</span
-              >
-              <span v-else-if="novoHistorico[campoValue].dados == 'C'"
-                >Conservação</span
-              >
-              <span v-else-if="novoHistorico[campoValue].dados == 'CP'"
-                >Conservação Parcial</span
-              >
-              <span v-else>Não Especificado</span>
-            </span>
-            <span
-              v-else-if="tipo == 'justDF' && !!novoHistorico[campoValue].dados"
-            >
-              <div v-for="c in novoHistorico[campoValue].dados" :key="c.tipoId">
-                <!-- Critério Legal ...................................-->
-                <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">Critério Legal</div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{ c.conteudo }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="l in c.legislacao" :key="l.legId">
-                          <a :href="'/legislacao/' + l.legId"
-                            >{{ l.tipo }} {{ l.numero }}</a
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-
-                <!-- Critério de Densidade Informacional ..............-->
-                <v-row v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'">
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">
-                      Critério de Densidade Informacional
-                    </div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{
-                        /* texto normalizado:
-                                          mylabels.textoCriterioDensidadeInfo
-                                          texto proveniente da FRD: */
-                        c.conteudo
-                      }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="p in c.processos" :key="p.procId">
-                          <a :href="'/classes/consultar/' + p.procId">
-                            {{ p.procId.split("c")[1] }} -
-                            {{ p.nome }}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-
-                <!-- Critério de Complementaridade Informacional ..............-->
-                <v-row
-                  v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'"
-                >
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">
-                      Critério de Complementaridade Informacional
-                    </div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{
-                        /* texto normalizado:
-                                          mylabels.textoCriterioComplementaridade
-                                          texto proveniente da FRD: */
-                        c.conteudo
-                      }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="p in c.processos" :key="p.procId">
-                          <a :href="'/classes/consultar/' + p.procId">
-                            {{ p.procId.split("c")[1] }} -
-                            {{ p.nome }}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-              </div>
+              v-else-if="tipo == 'classeFL' && !!novoHistorico[campoValue].dados"
+              ><slot></slot>
             </span>
             <span
               v-else-if="
@@ -510,6 +326,13 @@
           >create</v-icon
         >
         <v-icon
+          v-if="permitirEditar && (tipo == 'classeFL')"
+          class="mr-1"
+          color="orange"
+          @click="modelClasses()"
+          >create</v-icon
+        >
+        <v-icon
           v-if="
             permitirEditar && (tipo == 'procsAselecionar' || tipo == 'classes')
           "
@@ -664,6 +487,10 @@ export default {
     listaProcessosKey: 0,
     editaBlocoDescritivoFlag: false,
   }),
+
+  created() {
+    //alert(JSON.stringify(this.dadosOriginais))
+  },
   methods: {
     forceRender() {
       this.listaProcessosKey += 1;

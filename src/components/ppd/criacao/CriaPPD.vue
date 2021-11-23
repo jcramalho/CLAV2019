@@ -143,13 +143,10 @@
               <v-btn color="indigo darken-2" dark class="ma-2" @click="submeterPPD">
                 Submeter
               </v-btn>
-              <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
-                Finalizar
-              </v-btn>
               <v-btn color="red" dark class="ma-2" rounded @click="changeE1(1)">
                 Voltar
               </v-btn>
-            </v-stepper-content>
+            </v-stepper-content> 
           </v-stepper>
         </v-card-text>
       </v-card>
@@ -297,6 +294,7 @@ export default {
         estrategia:{}
     },
     verSI: false,
+    sisHistorico: "",
     importarSI: false,
     addSI: false,
     idPendente: null,
@@ -556,11 +554,14 @@ export default {
           caracterizacao: {},
           estrategia: {},
         };
-        //alert(JSON.stringify(this.ppd.si.avaliacao))
-        Object.assign(sistema.identificacao,this.ppd.si.identificacao)
+        //Object.assign(sistema.identificacao,this.ppd.si.identificacao)
         Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
-        Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
-        Object.assign(sistema.estrategia,this.ppd.si.estrategia)
+        //Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
+        //Object.assign(sistema.estrategia,this.ppd.si.estrategia)
+        sistema.identificacao = JSON.parse(JSON.stringify(this.ppd.si.identificacao))
+        //sistema.avaliacao = JSON.parse(JSON.stringify(this.ppd.si.avaliacao))
+        sistema.caracterizacao = JSON.parse(JSON.stringify(this.ppd.si.caracterizacao))
+        sistema.estrategia = JSON.parse(JSON.stringify(this.ppd.si.estrategia))
         /*this.ppd.si.numeroSI = "",
         this.ppd.si.nomeSI = "",
         this.ppd.si.identificacao.adminSistema = [],
@@ -641,7 +642,7 @@ export default {
         this.ppd.si.avaliacao.selecionadosTabelaFL = [];
         await this.consultaFT();
       } else {
-        
+
         if(isNaN(this.ppd.si.numeroSI)){
            this.mensagemErroSI = this.mensagemErroSI.concat("- Número de SI não pode conter letras ")
         }
@@ -823,6 +824,7 @@ export default {
             auxPPD.geral = this.ppd.geral;
             auxPPD.sistemasInfo = this.ppd.sistemasInfo;
             var userBD = this.$verifyTokenUser();
+            await this.criarSIHistorico()
             var pedidoParams = {
               tipoPedido: "Criação",
               tipoObjeto: "PPD",
@@ -851,7 +853,6 @@ export default {
     },
 
     criaHistorico: async function () {
-      //alert(JSON.stringify(this.ppd.geral.entSel))
       let historico = [
         {
             numeroPPD: {
@@ -892,19 +893,51 @@ export default {
             },
             sistemasInfo: {
               cor: "verde",
-              dados: this.ppd.sistemasInfo.map((c) => {
-                return {
-                  cor: "verde",
-                  dados: JSON.parse(JSON.stringify(c)),
-                  nota: null,
-                };
-              }),
+              dados: this.sisHistorico,
               nota: null,
             },
           },
       ]
-      //alert(JSON.stringify(historico))
       return historico
+    },
+
+    criarSIHistorico: async function () {
+      this.sisHistorico = JSON.parse(JSON.stringify(this.ppd.sistemasInfo))
+      for(var i=0 ; i<this.sisHistorico.length; i++){
+        Object.keys(this.sisHistorico[i]).forEach(key => {
+          if(key == 'identificacao' || key == 'avaliacao' || key == 'caracterizacao'){
+            Object.keys(this.sisHistorico[i][key]).forEach(anotherkey => {
+              this.sisHistorico[i][key][anotherkey] = {
+              cor:"verde",
+              dados: this.sisHistorico[i][key][anotherkey],
+              nota: null
+            }
+            })
+          }
+          else if(key == 'estrategia'){
+            Object.keys(this.sisHistorico[i][key]).forEach(anotherkey => {
+              if(anotherkey != null){
+                Object.keys(this.sisHistorico[i][key][anotherkey]).forEach(lastkey => {
+                  if(this.sisHistorico[i][key][anotherkey][lastkey] != null){
+                    this.sisHistorico[i][key][anotherkey][lastkey] = {
+                      cor:"verde",
+                      dados: this.sisHistorico[i][key][anotherkey][lastkey],
+                      nota: null
+                    }
+                  }
+                })
+              }
+            })
+          }
+          else{
+            this.sisHistorico[i][key] = {
+              cor:"verde",
+              dados: this.sisHistorico[i][key],
+              nota: null
+            }
+          }
+        });
+      }
     }
 
 

@@ -2,7 +2,7 @@
   <v-row>
     <div class="separador">Caracterização</div>
     <v-col cols="12" xs="12" sm="12">
-        <div class="separadorMini">Dependência</div>
+        <div class="separadorMini">Dependência tecnológica</div>
     </v-col>
     <v-col cols="12" xs="12" sm="3" >
       <div class="info-label">Nível de dependência do Software</div>
@@ -34,14 +34,14 @@
     <v-col cols="12" xs="12" sm="4" >
       <v-text-field
         label="Não possui"
-        :value="siSpec.caracterizacao.formatos"
+        :value="siSpec.caracterizacao.formatosUtilizados"
         readonly
         solo
         dense
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="12" sm="12">
-        <div class="separadorMini">Crescimento do</div>
+        <div class="separadorMini">Crescimento do sistema</div>
     </v-col>
     <v-col cols="12" xs="12" sm="2" >
       <div class="info-label">Modelo de crescimento</div>

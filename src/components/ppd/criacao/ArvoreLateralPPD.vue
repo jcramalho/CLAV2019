@@ -3,7 +3,7 @@
     <v-sheet class="indigo lighten-2">
       <v-text-field
         v-model="search"
-        label="Filtrar por título ou número SI"
+        label="Filtrar por título do SI"
         dark
         flat
         solo-inverted
@@ -48,6 +48,7 @@ export default {
     items: [],
     open: [1, 2],
     search: null,
+    caseSensitive: false,
   }),
 
   methods: {
@@ -68,8 +69,10 @@ export default {
 
   computed: {
       filter () {
-          return (item, search, textKey) => item[textKey].indexOf(search) > -1
-        },
+        return this.caseSensitive
+          ? (item, search, textKey) => item[textKey].indexOf(search) > -1
+          : undefined
+      },
     }
 };
 </script>
