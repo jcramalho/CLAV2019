@@ -639,18 +639,6 @@ export default {
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
               url: "/exportar",
             },
-            {
-              opcao: "API de dados",
-              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-              url: "/docs",
-              acoes: [
-                {
-                  url: "http://clav.di.uminho.pt/v2/docs/",
-                  level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                  icon: "api-icon",
-                },
-              ],
-            },
           ],
         },
         {
@@ -753,6 +741,18 @@ export default {
               opcao: "Importação/Exportação de Dados",
               level: [4, 5, 6, 7],
               url: "/importExportInfo",
+            },
+            {
+              opcao: "API de dados",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/docs",
+              acoes: [
+                {
+                  url: "http://clav.di.uminho.pt/v2/docs/",
+                  level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                  icon: "api-icon",
+                },
+              ],
             },
           ],
         },
