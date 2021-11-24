@@ -1,6 +1,16 @@
 <template>
   <v-card flat class="ma-3 pa-2">
-    <p class="clav-content-title-1">Painel de controlo</p>
+    <v-row>
+      <v-col cols="9">
+        <p class="clav-content-title-1">Painel de controlo</p>
+      </v-col>
+      <v-col cols="3" align="right">
+        <p class="clav-content-title-2">
+          {{ user.entidade.split("_")[1] }}
+        </p>
+        <p class="clav-content-title-2">Nível: {{ user.level }}</p>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col :cols="notificacoes.length ? '9' : '12'">
         <TogglePanelsCLAV :n="2" @alternar="panelsArr = $event" />
@@ -168,7 +178,11 @@ export default {
       notificacoes: [],
     };
   },
-
+  computed: {
+    user() {
+      return this.$verifyTokenUser();
+    },
+  },
   async created() {
     try {
       let { email } = this.$verifyTokenUser();
