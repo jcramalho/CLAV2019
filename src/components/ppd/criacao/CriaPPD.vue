@@ -882,13 +882,7 @@ export default {
             },
             entSel: {
               cor: "verde",
-              dados: this.ppd.geral.entSel.map((c) => {
-                return {
-                  cor: "verde",
-                  dados: JSON.parse(JSON.stringify(c)),
-                  nota: null,
-                };
-              }),
+              dados: this.ppd.geral.entSel,
               nota: null,
             },
             sistemasInfo: {

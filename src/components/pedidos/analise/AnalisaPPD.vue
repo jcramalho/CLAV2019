@@ -18,6 +18,23 @@
       <ValidaCampo
         :dadosOriginais="p.objeto.dados.geral"
         :novoHistorico="novoHistorico"
+        campoValue="entSel"
+        campoText="Entidades"
+        tipo="ents"
+        arrayValue="label"
+        :entidades="entidades"
+      >
+        <template v-slot:input="props">
+          <v-text-field
+            :rules="[(v) => !!v || 'Campo obrigatório']"
+            solo
+            v-model="props.items.campoEditado"
+            @input="props.items.updateValue"
+          ></v-text-field> </template
+      ></ValidaCampo>
+      <ValidaCampo
+        :dadosOriginais="p.objeto.dados.geral"
+        :novoHistorico="novoHistorico"
         campoValue="mencaoResp"
         campoText="Menção de responsabilidade"
         tipo="string"
@@ -35,8 +52,7 @@
         :novoHistorico="novoHistorico"
         campoValue="tipoFonteL"
         campoText="Tipo da fonte de legitimação"
-        tipo="string"
-        :permitirEditar="false"
+        tipo="tipofl"
       >
         <template v-slot:input="props">
           <v-text-field
@@ -51,35 +67,10 @@
         :novoHistorico="novoHistorico"
         campoValue="fonteLegitimacao"
         campoText="Fonte de legitimação"
-        tipo="object"
-        :permitirEditar="false"
-        arrayValue="label"
-      >
-        <template v-slot:input="props">
-          <v-text-field
-            :rules="[(v) => !!v || 'Campo obrigatório']"
-            solo
-            v-model="props.items.campoEditado"
-            @input="props.items.updateValue"
-          ></v-text-field> </template
-      ></ValidaCampo>
-      <ValidaCampo
-        :dadosOriginais="p.objeto.dados.geral"
-        :novoHistorico="novoHistorico"
-        campoValue="entSel"
-        campoText="Entidades"
-        tipo="array"
-        :permitirEditar="false"
-        arrayValue="label"
-      >
-        <template v-slot:input="props">
-          <v-text-field
-            :rules="[(v) => !!v || 'Campo obrigatório']"
-            solo
-            v-model="props.items.campoEditado"
-            @input="props.items.updateValue"
-          ></v-text-field> </template
-      ></ValidaCampo>
+        :permitirEditar="true"
+        tipo="fonteLeg"
+        :flLista="flLista"
+      />
       <ValidaCampo
         :dadosOriginais="p.objeto.dados"
         :novoHistorico="novoHistorico"
@@ -127,7 +118,7 @@
                   <td>{{ props.item.nomeSI }}</td>
                   <td>
                     <v-btn small color="blue darken-2" dark rounded @click="item2Show(props.item)">
-                      <v-icon dark>visibility</v-icon>
+                      <v-icon dark>mdi-wrench</v-icon>
                     </v-btn>
                   </td>
                 </tr>
@@ -156,6 +147,8 @@
                   <editarBlocoAvaliacao
                     :siSpec="siSpec"
                     :novoHistorico="this.novoHistorico"
+                    :classesSI="this.classesSI"
+                    :classesDaFonteL="this.classesDaFonteL"
                     :indexSI="indexSI"
                   />
                   <editarBlocoCaracterizacao
@@ -200,7 +193,7 @@
         <v-spacer />
 
         <v-btn
-          @click="guardarPedido()"
+          @click="test()"
           rounded
           class="mt-5 clav-linear-background accent-4 white--text"
           ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
@@ -298,6 +291,7 @@ export default {
           estrategia:{}
       },
       siEditar: "",
+      entidades: "",
       indexSI: "",
       verSI: false,
       search: "",
@@ -308,6 +302,9 @@ export default {
       expandedProc: {},
       listaProcs: false,
       dialogGuardado: false,
+      flLista: [],
+      classesDaFonteL: "",
+      classesSI: [],
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
@@ -316,7 +313,7 @@ export default {
       headers: [
         { text: "Número", value: "numeroSI" },
         { text: "Nome", value: "nomeSI" },
-        { text: "Ver", value: ""},
+        { text: "Editar", value: ""},
       ],
       footer_props: {
         "items-per-page-text": "Sistemas por página",
@@ -348,6 +345,34 @@ export default {
     };
   },
   methods: {
+    async test() {
+      alert(JSON.stringify(this.novoHistorico.fonteLegitimacao.dados))
+      alert(JSON.stringify(this.novoHistorico.fonteLegitimacao.dados.length))
+      alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
+    },
+
+    consultaFT: async function() {
+      try {
+        var tipo = this.novoHistorico.fonteLegitimacao.dados.id.split("_");
+        if(tipo[0] == 'pgd'){
+          var response = await this.$request("get", "/pgd/"+this.novoHistorico.fonteLegitimacao.dados.id);
+          this.classesDaFonteL = response.data;
+          for (var c of response.data) {
+            if(c.pca){
+              if(c.codigo){
+                this.classesSI.push({info:"Cod: " + c.codigo + " - " + c.titulo , classe:c.classe});
+              }
+              else{
+                this.classesSI.push({info:"Ref: " + c.referencia + " - " + c.titulo , classe:c.classe})
+              }
+            }
+          }
+        }
+      }catch (err) {
+        return err;
+      }
+    },
+
     async guardarPedido() {
       try {
         let dadosUtilizador = this.$verifyTokenUser();
@@ -505,7 +530,33 @@ export default {
       // Caso contrário segue para a finalização do pedido
       else await this.finalizarPedido(dados);
     },
-
+    loadEntidades: async function() {
+      try {
+        var response = await this.$request("get", "/entidades");
+        this.entidades = response.data.map(function(item) {
+          return {
+            sigla: item.sigla,
+            identificacao: item.designacao,
+            id: item.id,
+            label: item.sigla + " - " + item.designacao
+          };
+        });
+      }
+        catch (err) {
+          return err;
+      }
+    },
+    prepararLeg: async function(leg) {
+      try {
+        var myPortarias = [];
+        for (var l of leg) {
+          myPortarias.push({id: l.idPGD , titulo: l.tipo + " " + l.numero + " - " + l.sumario});
+        }
+        return myPortarias;
+      } catch (error) {
+        return [];
+      }
+    },
     async finalizarPedido(dados) {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
@@ -547,16 +598,55 @@ export default {
     },
   },
 
+  watch:{
+    "novoHistorico.fonteLegitimacao.dados": async function(){
+      await this.consultaFT()
+    },
+
+    "novoHistorico.tipoFonteL.dados": async function(){
+      try{
+        if(this.novoHistorico.tipoFonteL.dados == "TS/LC"){
+          var response = await this.$request("get","/tabelasSelecao")
+          this.flLista = response.data.map(ts=>{return {
+              titulo: ts.designacao,
+              codigo: ts.id.split("clav#")[1]
+            }
+          });
+        }
+        if(this.novoHistorico.tipoFonteL.dados == "PGD/LC"){
+          var response = await this.$request("get", "/pgd/lc");
+          this.flLista = await this.prepararLeg(response.data);
+        }
+        else if(this.novoHistorico.tipoFonteL.dados == "PGD"){
+          var response = await this.$request("get", "/pgd");
+          this.flLista = await this.prepararLeg(response.data);
+        }
+        else if(this.novoHistorico.tipoFonteL.dados == "RADA"){
+          var response = await this.$request("get", "/legislacao?fonte=RADA");
+          this.flLista = await this.prepararLeg(response.data);
+        }
+        else{
+          var response = await this.$request("get","/rada");
+          this.flLista = response.data
+        }
+      }
+       catch(e){
+        this.flLista = [];
+        console.log('Erro ao carregar a informação inicial: ' + e);
+      }
+    }
+  },
+
   mounted() {
     this.json = JSON.stringify(this.p, null, 2);
   },
-  created() {
+  created(){
     //alert(JSON.stringify(this.p.historico))
     //alert(JSON.stringify(this.p.objeto.dados.geral))
     //alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
     //alert(JSON.stringify(this.p.objeto.dados.sistemasInfo))
     //alert(JSON.stringify(this.p.historico))
-
+    this.loadEntidades()
     this.novoHistorico = JSON.parse(
       JSON.stringify(this.p.historico[this.p.historico.length - 1])
     );

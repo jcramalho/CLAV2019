@@ -29,11 +29,11 @@
         <div class="info-conteudo" v-else>
           <slot name="campo">
             <span
-              v-if="tipo == 'string' && !!novoHistorico[campoValue].dados"
+              v-if="(tipo == 'string' || tipo == 'tipofl' || tipo == 'classe')  && !!novoHistorico[campoValue].dados"
               >{{ novoHistorico[campoValue].dados }}</span
             >
-             <span
-              v-else-if="tipo == 'object' && !!novoHistorico[campoValue].dados.titulo"
+            <span
+              v-else-if="(tipo == 'object' || tipo == 'fonteLeg') && !!novoHistorico[campoValue].dados.titulo"
               >{{ novoHistorico[campoValue].dados.titulo }}</span
             >
             <span
@@ -55,12 +55,12 @@
             </span>
             <span
               v-else-if="
-                tipo == 'array' && !!novoHistorico[campoValue].dados
+                (tipo == 'array' || tipo == 'ents') && !!novoHistorico[campoValue].dados
               "
             >
               <ul>
                 <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
-                  {{ v.dados.label }}
+                  {{ v.label }}
                   <v-badge
                     v-if="!dadosOriginais[campoValue].some((e) => e == v)"
                     right
@@ -319,6 +319,27 @@
           >create</v-icon
         >
         <v-icon
+          v-if="permitirEditar && (tipo == 'ents')"
+          class="mr-1"
+          color="orange"
+          @click="verEntidades = true"
+          >create</v-icon
+        >
+        <v-icon
+          v-if="permitirEditar && (tipo == 'tipofl')"
+          class="mr-1"
+          color="orange"
+          @click="verTipoFontesLeg = true"
+          >create</v-icon
+        >
+        <v-icon
+          v-if="permitirEditar && (tipo == 'classe')"
+          class="mr-1"
+          color="orange"
+          @click="verClasses = true"
+          >create</v-icon
+        >
+        <v-icon
           v-if="permitirEditar && (tipo == 'object')"
           class="mr-1"
           color="orange"
@@ -330,6 +351,15 @@
           class="mr-1"
           color="orange"
           @click="modelClasses()"
+          >create</v-icon
+        >
+        <v-icon
+          v-if="
+            permitirEditar && (tipo == 'fonteLeg')
+          "
+          class="mr-1"
+          color="orange"
+          @click="loadFonteLegitimacao()"
           >create</v-icon
         >
         <v-icon
@@ -423,6 +453,145 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="verClasses" transition="dialog-bottom-transition">
+      <v-card>
+        <v-toolbar
+              color="primary"
+              dark
+            >Classes</v-toolbar>
+            <v-card-text>
+              <v-data-table
+                :headers="headersSelecionados"
+                :items="dadosOriginais.avaliacao"
+                class="elevation-1"
+                :footer-props="footer_Classes"
+                :page.sync="paginaSelect"
+                >
+                  <template v-slot:header="props">
+                      <tr>
+                      <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
+                      </tr>
+                  </template>
+
+                  <template v-slot:item="props">
+                    <tr>
+                    <td>{{ props.item.codigo}}</td>
+                    <td>{{ props.item.referencia}}</td>
+                    <td>{{ props.item.titulo}}</td>
+                    <td>
+                      <v-btn small color="red darken-2" dark rounded @click="">
+                      <v-icon dark>remove_circle_outline</v-icon>
+                      </v-btn>
+                    </td>
+                    </tr>
+                  </template>
+                </v-data-table>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn
+                text
+                @click="verClasses = false"
+              >Cancelar</v-btn>
+              <v-btn
+                text
+                @click="confirmaClasses"
+              >Confirmar</v-btn>
+            </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="verEntidades" transition="dialog-bottom-transition">
+      <v-card>
+        <v-toolbar
+              color="primary"
+              dark
+            >Selecione as entidades</v-toolbar>
+            <v-card-text>
+              <v-autocomplete
+                label="Selecione as entidades abrangidas pelo PPD"
+                :items="entidades"
+                item-text="label"
+                return-object
+                v-model="entSel"
+                placeholder="Selecione as entidades abrangidas pelo PPD"
+                multiple
+                chips
+                deletable-chips
+                :rules="[(v) => !!v || 'Tem de escolher pelo menos uma entidade']"
+              >
+              </v-autocomplete>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn
+                text
+                @click="verEntidades = false"
+              >Cancelar</v-btn>
+              <v-btn
+                text
+                @click="confirmaEntidades"
+              >Confirmar</v-btn>
+            </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="verTipoFontesLeg" transition="dialog-bottom-transition">
+      <v-card>
+        <v-toolbar
+              color="primary"
+              dark
+            >Selecione o tipo da fonte de legitimação</v-toolbar>
+            <v-card-text>
+              <v-autocomplete
+                label="Selecione o tipo da fonte de legitimação"
+                :items="this.tiposFL"
+                item-text="titulo"
+                return-object
+                v-model="tipoFonteLegSelected"
+                solo
+                dense
+                :rules="[(v) => !!v || 'Tem de escolher um tipo de fonte de legitimação']"
+              ></v-autocomplete>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn
+                text
+                @click="verTipoFontesLeg = false"
+              >Cancelar</v-btn>
+              <v-btn
+                text
+                @click="confirmaTipoFonteLeg"
+              >Confirmar</v-btn>
+            </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="verFontesLeg" transition="dialog-bottom-transition">
+      <v-card>
+        <v-toolbar
+              color="primary"
+              dark
+            >Selecione a fonte de legitimação</v-toolbar>
+            <v-card-text>
+              <v-autocomplete
+                label="Selecione a fonte de legitimação"
+                :items="this.flLista"
+                item-text="titulo"
+                return-object
+                v-model="fonteLegitimacaoSelected"
+                solo
+                dense
+                :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
+              ></v-autocomplete>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn
+                text
+                @click="verFontesLeg = false"
+              >Cancelar</v-btn>
+              <v-btn
+                text
+                @click="confirmaFonteLeg"
+              >Confirmar</v-btn>
+            </v-card-actions>
+      </v-card>
+    </v-dialog>
     <EditDescritivo
       v-if="editaBlocoDescritivoFlag"
       :p="dadosOriginais"
@@ -454,6 +623,8 @@ export default {
     novoHistorico: {},
     campoValue: {},
     campoText: {},
+    flLista: {},
+    entidades: {},
     arrayValue: {},
     info: { text: "", header: "" },
     tabelaSelecao: {},
@@ -474,11 +645,18 @@ export default {
   },
   data: () => ({
     campoEditado: null,
+    verFontesLeg: false,
+    verTipoFontesLeg: false,
+    verEntidades: false,
+    verClasses: false,
+    tipoFonteLegSelected: "",
+    fonteLegitimacaoSelected: "",
     editaCampo: null,
     foiEditado: false,
     notaVisivel: false,
     notaCampo: null,
     verListaProcessos: false,
+    entSel: [],
     listaProcessos: {},
     listaProcessosReady: false,
     participante: [],
@@ -486,12 +664,46 @@ export default {
     fechoTransitivo: {},
     listaProcessosKey: 0,
     editaBlocoDescritivoFlag: false,
+    tiposFL: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
+    paginaSelect: 1,
+    headersSelecionados:[
+        {text: "Código", sortable: false, value: "codigo"},
+        {text: "Referência", sortable: false, value: "referencia"},
+        {text: "Título", sortable: false, value: "titulo"},
+        {text: "Remover", align: "left", sortable: false, value: "" },
+    ],
+    footer_Classes: {
+        "items-per-page-text": "Classes por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todos"
+    },
   }),
 
   created() {
     //alert(JSON.stringify(this.dadosOriginais))
   },
+
   methods: {
+    confirmaClasses(){
+      alert(JSON.stringify(this.dadosOriginais))
+      this.verClasses = false
+    },
+    confirmaEntidades(){
+      this.novoHistorico[this.campoValue].dados = this.entSel
+      this.novoHistorico[this.campoValue].cor = "amarelo"
+      this.verEntidades = false
+    },
+    confirmaTipoFonteLeg(){
+      this.novoHistorico[this.campoValue].dados = this.tipoFonteLegSelected
+      this.novoHistorico[this.campoValue].cor = "amarelo"
+      this.verTipoFontesLeg = false
+    },
+    confirmaFonteLeg(){
+      this.novoHistorico[this.campoValue].dados = this.fonteLegitimacaoSelected
+      this.novoHistorico[this.campoValue].cor = "amarelo"
+      this.verFontesLeg = false
+    },
+
     forceRender() {
       this.listaProcessosKey += 1;
     },
@@ -502,6 +714,31 @@ export default {
       if (this.$refs.form.validate()) {
         switch (this.tipo) {
           case "string":
+            if (
+              this.campoEditado !== this.novoHistorico[this.campoValue].dados
+            ) {
+              this.novoHistorico[this.campoValue].dados = this.campoEditado;
+              if (this.campoEditado !== this.dadosOriginais[this.campoValue]) {
+                this.novoHistorico[this.campoValue].cor = "amarelo";
+                this.$emit(
+                  "corAlterada",
+                  this.novoHistorico[this.campoValue].cor
+                );
+                this.foiEditado = true;
+              } else {
+                this.novoHistorico[this.campoValue].cor = "verde";
+                this.$emit(
+                  "corAlterada",
+                  this.novoHistorico[this.campoValue].cor
+                );
+                this.foiEditado = false;
+              }
+              this.editaCampo = null;
+              this.campoEditado = null;
+            }
+
+            break;
+          case "tipofl":
             if (
               this.campoEditado !== this.novoHistorico[this.campoValue].dados
             ) {
@@ -822,6 +1059,10 @@ export default {
       } catch (e) {
         console.log("Erro ao carregar o fecho transitivo: " + e);
       }
+    },
+
+    loadFonteLegitimacao: async function () {
+      this.verFontesLeg = true;
     },
     loadSelecao: async function () {
       this.$emit("listaProcessos", true);

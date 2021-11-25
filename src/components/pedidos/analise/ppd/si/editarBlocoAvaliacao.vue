@@ -37,7 +37,7 @@
         :novoHistorico=novoHistorico.sistemasInfo.dados[indexSI].avaliacao
         campoValue="codClasse"
         campoText="Código de classificação da classe / série"
-        tipo="string"
+        tipo="classe"
       >
         <template v-slot:input="props">
           <v-text-field
