@@ -42,7 +42,7 @@
 import ImportarFicheiro from "@/components/ppd/criacao/sistemaInformacao/importacao/ImportarFicheiro.vue";
 const conversor = require("@/plugins/ppd/ConversorSI.js").importarSI;
 export default {
-  props: ["ppd", "dialog"],
+  props: ["ppd", "dialog", "classesDaFonteL"],
   components: {
     ImportarFicheiro,
   },
@@ -87,6 +87,12 @@ export default {
             this.ppd.sistemasInfo[index].identificacao = allSI[i].identificacao;
           }
           else if(allSI[i].avaliacao.descricao){
+            var ids = allSI[i].avaliacao.codClasse.split("#")
+            var selecionadosTabelaFL = []
+            for(var id in ids){
+              selecionadosTabelaFL.push(JSON.parse(JSON.stringify(this.classesDaFonteL[id])))
+            }
+            allSI[i].avaliacao.selecionadosTabelaFL = selecionadosTabelaFL
             this.ppd.sistemasInfo[index].avaliacao = allSI[i].avaliacao;
           }
           else if(allSI[i].caracterizacao.dependenciaSoft){
@@ -97,6 +103,12 @@ export default {
           }
         }
         else{
+          var ids = allSI[i].avaliacao.codClasse.split("#")
+            var selecionadosTabelaFL = []
+            for(var id in ids){
+              selecionadosTabelaFL.push(JSON.parse(JSON.stringify(this.classesDaFonteL[id])))
+            }
+          allSI[i].avaliacao.selecionadosTabelaFL = selecionadosTabelaFL
           auxSistemasInfo.push(allSI[i]);
         }
       }

@@ -12,6 +12,7 @@ export default {
     },
 
     item2Show: function(item){
+      alert(JSON.stringify(item.avaliacao))
       this.siSpec = item;
       if(item.visto){
         item.visto=false;

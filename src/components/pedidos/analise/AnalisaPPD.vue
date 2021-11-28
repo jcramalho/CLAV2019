@@ -77,7 +77,7 @@
         campoValue="sistemasInfo"
         campoText="Sistemas de Informação"
         :permitirEditar="false"
-        tipo="classes"
+        tipo="sis"
       >
         <v-row>
           <v-col>
@@ -149,6 +149,7 @@
                     :novoHistorico="this.novoHistorico"
                     :classesSI="this.classesSI"
                     :classesDaFonteL="this.classesDaFonteL"
+                    :listaClasses="this.listaClasses"
                     :indexSI="indexSI"
                   />
                   <editarBlocoCaracterizacao
@@ -305,6 +306,7 @@ export default {
       flLista: [],
       classesDaFonteL: "",
       classesSI: [],
+      listaClasses: [],
       dialogConfirmacao: {
         visivel: false,
         mensagem: "",
@@ -353,6 +355,7 @@ export default {
 
     consultaFT: async function() {
       try {
+        alert(JSON.stringify( this.novoHistorico.fonteLegitimacao.dados.id))
         var tipo = this.novoHistorico.fonteLegitimacao.dados.id.split("_");
         if(tipo[0] == 'pgd'){
           var response = await this.$request("get", "/pgd/"+this.novoHistorico.fonteLegitimacao.dados.id);
@@ -398,28 +401,12 @@ export default {
       }
     },
 
-    item2Show: function(item){
+    item2Show: async function(item){
       this.siSpec = item;
       this.siEditar = item.nomeSI
       this.indexSI = this.p.objeto.dados.sistemasInfo.findIndex(x => x.nomeSI ===item.nomeSI)
       this.verSI = true;
-      if(item.visto){
-        item.visto=false;
-        this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
-        this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
-        this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
-        this.siSpec.identificacao.propDados= item.identificacao.propDados.map(e => e.sigla).toString(),
-        this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString(),
-        this.siSpec.avaliacao.decomposicao= item.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.codClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.codigo).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.numeroClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.referencia).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.tituloClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.titulo).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.pcaClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.pca).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.destinoFinalClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.df).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.formaContagemPrazos= item.avaliacao.selecionadosTabelaFL.map(e=> e.formaContagem).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.siRelacionado= item.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
-        this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
-      }
+      this.listaClasses = item.avaliacao.selecionadosTabelaFL
     },
     async clicked({ item }) {
       if (!this.expandedProc.codigo || this.expandedProc.codigo != item.codigo) {

@@ -28,8 +28,9 @@
             </div>
           </v-col>
           <v-col>
-            <v-text-field solo dense :value="classeShow.formaContagem">
+            <v-text-field v-if="classeShow.formaContagem "  solo dense :value="classeShow.formaContagem">
             </v-text-field>
+            <v-text-field v-else solo dense disabled ></v-text-field>
           </v-col>
         </v-row>
         <v-row>

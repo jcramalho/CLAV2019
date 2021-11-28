@@ -29,7 +29,7 @@
         <div class="info-conteudo" v-else>
           <slot name="campo">
             <span
-              v-if="(tipo == 'string' || tipo == 'tipofl' || tipo == 'classe')  && !!novoHistorico[campoValue].dados"
+              v-if="(tipo == 'string' || tipo == 'tipofl' || tipo == 'classe' || tipo == 'campoHerdado')  && (!!novoHistorico[campoValue].dados || (novoHistorico[campoValue].dados == '0' && campoValue == 'pcaSI') )"
               >{{ novoHistorico[campoValue].dados }}</span
             >
             <span
@@ -46,7 +46,7 @@
               <div v-else>Inativa</div>
             </span>
             <span
-              v-else-if="tipo == 'classes' && !!novoHistorico[campoValue].dados"
+              v-else-if="tipo == 'sis' && !!novoHistorico[campoValue].dados"
               ><slot></slot>
             </span>
             <span
@@ -301,8 +301,8 @@
           </slot>
         </div>
       </v-col>
-      <v-col cols="auto" v-if="editaCampo != campoValue">
-        <span v-if="!foiEditado">
+      <v-col cols="auto" v-if="editaCampo != campoValue  ">
+        <span v-if="!foiEditado && tipo != 'campoHerdado' && tipo != 'sis' ">
           <v-icon class="mr-1" color="green" @click="verifica(campoValue)"
             >check</v-icon
           >
@@ -336,7 +336,7 @@
           v-if="permitirEditar && (tipo == 'classe')"
           class="mr-1"
           color="orange"
-          @click="verClasses = true"
+          @click="createclasse()"
           >create</v-icon
         >
         <v-icon
@@ -364,7 +364,7 @@
         >
         <v-icon
           v-if="
-            permitirEditar && (tipo == 'procsAselecionar' || tipo == 'classes')
+            permitirEditar && (tipo == 'procsAselecionar' || tipo == 'sis')
           "
           class="mr-1"
           color="orange"
@@ -386,6 +386,7 @@
         >
 
         <v-badge
+          v-if="tipo != 'sis' && tipo != 'campoHerdado'"
           color="indigo darken-4"
           content="1"
           :value="!!novoHistorico[campoValue].nota"
@@ -462,7 +463,7 @@
             <v-card-text>
               <v-data-table
                 :headers="headersSelecionados"
-                :items="dadosOriginais.avaliacao"
+                :items="listaClasses"
                 class="elevation-1"
                 :footer-props="footer_Classes"
                 :page.sync="paginaSelect"
@@ -479,23 +480,63 @@
                     <td>{{ props.item.referencia}}</td>
                     <td>{{ props.item.titulo}}</td>
                     <td>
-                      <v-btn small color="red darken-2" dark rounded @click="">
-                      <v-icon dark>remove_circle_outline</v-icon>
+                      <v-btn small color="red darken-2" dark rounded @click="unselectClasse(props.item)">
+                        <v-icon dark>remove_circle_outline</v-icon>
                       </v-btn>
                     </td>
                     </tr>
                   </template>
                 </v-data-table>
+                <v-col>
+                  <hr style="border: 3px solid indigo; border-radius: 2px;" />
+                </v-col>
+                <v-row>
+                  <v-col :md="2">
+                      <div class="info-label">Classe</div>
+                  </v-col>
+                  <v-col>
+                    <v-autocomplete
+                      :items="classesSI"
+                      item-text="info"
+                      v-model="classeSelecionada"
+                      placeholder="Selecione a classe"
+                      solo
+                      return-object
+                    >
+                    </v-autocomplete>
+                  </v-col>
+                </v-row>
+                <v-row align="center" justify="space-around">
+                  <v-btn
+                  color="indigo darken-2"
+                  dark
+                  class="ma-2"
+                  rounded
+                  @click="adicionaClasse()"
+                  >
+                    Adicionar
+                  </v-btn>
+                  <v-btn
+                  color="red darken-2"
+                  dark
+                  class="ma-2"
+                  rounded
+                  @click=""
+                  >
+                    Cancelar
+                  </v-btn>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <hr style="border: 3px solid indigo; border-radius: 2px;" />
+                  </v-col>
+                </v-row>
             </v-card-text>
             <v-card-actions class="justify-end">
               <v-btn
                 text
-                @click="verClasses = false"
-              >Cancelar</v-btn>
-              <v-btn
-                text
                 @click="confirmaClasses"
-              >Confirmar</v-btn>
+              >Fechar</v-btn>
             </v-card-actions>
       </v-card>
     </v-dialog>
@@ -621,6 +662,9 @@ export default {
     tipo: {},
     dadosOriginais: {},
     novoHistorico: {},
+    classesSI: "",
+    classesDaFonteL: {},
+    listaClasses: {},
     campoValue: {},
     campoText: {},
     flLista: {},
@@ -663,6 +707,9 @@ export default {
     listaCodigosEsp: [],
     fechoTransitivo: {},
     listaProcessosKey: 0,
+    auxPCA: 0,
+    auxDF: "",
+    classeSelecionada: "",
     editaBlocoDescritivoFlag: false,
     tiposFL: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
     paginaSelect: 1,
@@ -680,12 +727,69 @@ export default {
   }),
 
   created() {
-    //alert(JSON.stringify(this.dadosOriginais))
+    //alert(JSON.stringify(this.dadosOriginais.sistemasInfo[0].avaliacao))
   },
 
   methods: {
+    adicionaClasse: function(){
+      if(this.classeSelecionada.classe != null){
+        var indexAux = this.classesSI.findIndex(e => e.classe === this.classeSelecionada.classe);
+        var index = this.classesDaFonteL.findIndex(e => e.classe === this.classeSelecionada.classe);
+        var selectedClasse = JSON.parse(JSON.stringify(this.classesDaFonteL[index]));
+        this.classesSI.splice(indexAux,1);
+        this.classeSelecionada="";
+        this.novoHistorico.selecionadosTabelaFL.dados.push(selectedClasse);
+        alert(JSON.stringify(this.novoHistorico))
+        this.listaClasses.push(selectedClasse)
+        if(parseInt(selectedClasse.pca) > parseInt(this.novoHistorico.pcaSI.dados)){
+          this.novoHistorico.pcaSI.dados = parseInt(selectedClasse.pca);
+        }
+        if(this.novoHistorico.destinoSI.dados != "C"){
+          alert("A")
+          alert(selectedClasse.df)
+          alert("B")
+          this.novoHistorico.destinoSI.dados = selectedClasse.df;
+        }
+      }
+    },
+    unselectClasse: function(item) {
+      //alert(JSON.stringify(this.novoHistorico))
+      //alert(JSON.stringify(this.novoHistorico.pcaSI.dados))
+      this.auxDF = this.novoHistorico.destinoSI.dados
+      if(item.codigo){
+        this.classesSI.push({info:"Cod: " + item.codigo + " - " + item.titulo , classe:item.classe});
+      }
+      else{
+        this.classesSI.push({info:"Ref: " + item.referencia + " - " + item.titulo , classe:item.classe})
+      }
+      var index = this.listaClasses.findIndex(e => e.classe === item.classe);
+      this.listaClasses.splice(index, 1);
+      this.auxPCA = 0;
+      this.auxDF = "";
+      this.listaClasses.forEach(element => {
+        //alert(JSON.stringify(this.classesDaFonteL))
+        if(parseInt(element.pca) > this.auxPCA){
+          alert(parseInt(element.pca))
+          this.auxPCA = parseInt(element.pca)
+        }
+        if(this.auxDF != "C"){
+          this.auxDF = element.df
+        }
+      });
+      this.novoHistorico.pcaSI.dados = this.auxPCA;
+      this.novoHistorico.destinoSI.dados = this.auxDF;
+    },
+    createclasse: function(){
+      this.verClasses = true
+    },
     confirmaClasses(){
-      alert(JSON.stringify(this.dadosOriginais))
+      //reconstruir Código class / ref class / Título / PCA  / forma contagem / df
+      this.novoHistorico.codClasse.dados = this.listaClasses.map(e=> e.codigo).toString().replaceAll(",","#")
+      this.novoHistorico.numeroClasse.dados = this.listaClasses.map(e=> e.referencia).toString().replaceAll(",","#")
+      this.novoHistorico.tituloClasse.dados = this.listaClasses.map(e=> e.titulo).toString().replaceAll(",","#")
+      this.novoHistorico.pcaClasse.dados = this.listaClasses.map(e=> e.pca).toString().replaceAll(",","#")
+      this.novoHistorico.destinoFinalClasse.dados = this.listaClasses.map(e=> e.df).toString().replaceAll(",","#")
+      this.novoHistorico.formaContagemPrazos.dados = this.listaClasses.map(e=> e.formaContagem).toString().replaceAll(",","#")
       this.verClasses = false
     },
     confirmaEntidades(){
@@ -824,8 +928,8 @@ export default {
       }
     },
     abrirNotaDialog() {
-      this.notaVisivel = true;
-      this.notaCampo = this.campoText;
+        this.notaVisivel = true;
+        this.notaCampo = this.campoText;
     },
     verifica(campo) {
       this.novoHistorico[campo].cor = "verde";

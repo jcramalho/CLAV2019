@@ -154,6 +154,7 @@
     <ImportarSI
       :ppd = "ppd"
       :dialog="importarSI"
+      :classesDaFonteL="classesDaFonteL"
       @fecharDialog="importarSI = false"
     />
     <template>
@@ -347,7 +348,7 @@ export default {
         caracterizacao:{
           dependenciaSoft: "",
           categoriaDados: "",
-          formatos:"",
+          formatosUtilizados:"",
           modeloCres: "",
           dimensao:"",
           crescimento: "",
@@ -540,7 +541,7 @@ export default {
         //&& !isNaN(this.ppd.si.numeroSI)
         //&& this.ppd.si.identificacao.adminSistema.length > 0
         //&& this.ppd.si.avaliacao.descricao != ""
-        //&& this.ppd.si.caracterizacao.formatos != ""
+        //&& this.ppd.si.caracterizacao.formatosUtilizados != ""
         //&& this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao != ""
          //para verificar se os campos obrigatorios tao preenchidos
         true
@@ -562,6 +563,20 @@ export default {
         //sistema.avaliacao = JSON.parse(JSON.stringify(this.ppd.si.avaliacao))
         sistema.caracterizacao = JSON.parse(JSON.stringify(this.ppd.si.caracterizacao))
         sistema.estrategia = JSON.parse(JSON.stringify(this.ppd.si.estrategia))
+        sistema.identificacao.adminSistema= this.ppd.si.identificacao.adminSistema.map(e => e.sigla).toString()
+        sistema.identificacao.adminDados= this.ppd.si.identificacao.adminDados.map(e => e.sigla).toString(),
+        sistema.identificacao.propSistemaPublico= this.ppd.si.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
+        sistema.identificacao.propDados= this.ppd.si.identificacao.propDados.map(e => e.sigla).toString(),
+        sistema.identificacao.localDadosPublico= this.ppd.si.identificacao.localDadosPublico.map(e => e.sigla).toString(),
+        sistema.avaliacao.decomposicao= this.ppd.si.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
+        sistema.avaliacao.codClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.codigo).toString().replaceAll(",","#")
+        sistema.avaliacao.numeroClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.referencia).toString().replaceAll(",","#")
+        sistema.avaliacao.tituloClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.titulo).toString().replaceAll(",","#")
+        sistema.avaliacao.pcaClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.pca).toString().replaceAll(",","#")
+        sistema.avaliacao.destinoFinalClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.df).toString().replaceAll(",","#")
+        sistema.avaliacao.formaContagemPrazos= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.formaContagem).toString().replaceAll(",","#")
+        sistema.avaliacao.siRelacionado= this.ppd.si.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
+        sistema.avaliacao.siRelacionadoRelacao= this.ppd.si.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
         /*this.ppd.si.numeroSI = "",
         this.ppd.si.nomeSI = "",
         this.ppd.si.identificacao.adminSistema = [],
@@ -591,7 +606,7 @@ export default {
         this.ppd.si.avaliacao.legislacoes = "",
         this.ppd.si.caracterizacao.dependenciaSoft = "",
         this.ppd.si.caracterizacao.categoriaDados = "",
-        this.ppd.si.caracterizacao.formatos = "",
+        this.ppd.si.caracterizacao.formatosUtilizados = "",
         this.ppd.si.caracterizacao.modeloCres = "",
         this.ppd.si.caracterizacao.dimensao = "",
         this.ppd.si.caracterizacao.crescimento = "",
@@ -653,7 +668,7 @@ export default {
         if(this.ppd.si.avaliacao.descricao == ""){
           this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Avaliação ")
         }
-        if(this.ppd.si.caracterizacao.formatos == ""){
+        if(this.ppd.si.caracterizacao.formatosUtilizados == ""){
           this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Caracterização ")
         }
         if(this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao == ""){
@@ -776,12 +791,6 @@ export default {
           }
           else{
               child = [];
-              if(sis.avaliacao.decomposicao.length>0){
-                let aux = sis.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + "-" + e.nomeSub).toString().replaceAll(",","#")
-                child = aux.split("#").map(e=> e=({"id": e.split("-")[0], "name":e.split("-").slice(1).toString()}));
-                //child.sort();
-                child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));
-              }
               this.ppd.arvore.push({"id": sis.numeroSI, "name": sis.nomeSI, "titulo": sis.nomeSI, children: child })
               this.ppd.arvore.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
           }

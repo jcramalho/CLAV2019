@@ -38,6 +38,9 @@
         campoValue="codClasse"
         campoText="Código de classificação da classe / série"
         tipo="classe"
+        :classesSI="classesSI"
+        :classesDaFonteL="classesDaFonteL"
+        :listaClasses="listaClasses"
       >
         <template v-slot:input="props">
           <v-text-field
@@ -52,7 +55,7 @@
         :novoHistorico=novoHistorico.sistemasInfo.dados[indexSI].avaliacao
         campoValue="numeroClasse"
         campoText="N.º de ref.ª da classe / série"
-        tipo="string"
+        tipo="campoHerdado"
         :permitirEditar="false"
       >
         <template v-slot:input="props">
@@ -68,7 +71,7 @@
         :novoHistorico=novoHistorico.sistemasInfo.dados[indexSI].avaliacao
         campoValue="tituloClasse"
         campoText="Título da classe / série"
-        tipo="string"
+        tipo="campoHerdado"
         :permitirEditar="false"
       >
         <template v-slot:input="props">
@@ -84,7 +87,7 @@
         :novoHistorico=novoHistorico.sistemasInfo.dados[indexSI].avaliacao
         campoValue="pcaClasse"
         campoText="PCA da classe / série"
-        tipo="string"
+        tipo="campoHerdado"
         :permitirEditar="false"
       >
         <template v-slot:input="props">
@@ -100,7 +103,7 @@
         :novoHistorico=novoHistorico.sistemasInfo.dados[indexSI].avaliacao
         campoValue="formaContagemPrazos"
         campoText="Forma de contagem dos prazos"
-        tipo="string"
+        tipo="campoHerdado"
         :permitirEditar="false"
       >
         <template v-slot:input="props">
@@ -116,7 +119,7 @@
         :novoHistorico=novoHistorico.sistemasInfo.dados[indexSI].avaliacao
         campoValue="destinoFinalClasse"
         campoText="Destino final da classe / série"
-        tipo="string"
+        tipo="campoHerdado"
         :permitirEditar="false"
       >
         <template v-slot:input="props">
@@ -257,7 +260,7 @@ import ValidaCampo from "@/components/pedidos/analise/ppd/ValidaCampo";
 
 
 export default {
-  props: ["siSpec", "novoHistorico", "indexSI"],
+  props: ["siSpec", "novoHistorico", "indexSI", "classesSI", "classesDaFonteL", "listaClasses"],
   components: {
     ValidaCampo,
   },
@@ -283,11 +286,15 @@ export default {
     },
 
   }),
+  created(){
+    //alert(JSON.stringify(this.classesSI))
+    //alert(typeof(this.classesSI))
+  },
   methods: {
     class2Show: function(item){
       this.classeSpec = item;
       this.verClasse = true;
-    },
+    }
   }
 }
 
