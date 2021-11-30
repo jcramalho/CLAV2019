@@ -48,6 +48,9 @@ export default {
         case "TS Pluriorganizacional":
           this.sumario = newValue.objeto.dados.designacao;
           break;
+        case "PPD":
+          this.sumario = newValue.objeto.dados.geral.nomePPD;
+          break;
         default:
           this.sumario = newValue.objeto.dados.titulo;
           break;
@@ -206,7 +209,21 @@ export default {
           this.numeroDespacho =
             res.data.valor.toString() + "/" + new Date().getFullYear();
 
-          
+
+        }
+        else if (this.pedido.objeto.tipo == 'PPD') {
+          //for (const key in this.pedido.objeto.dados) {
+          //  if (
+          //    this.pedido.objeto.dados[key] === undefined ||
+          //    this.pedido.objeto.dados[key] === null ||
+          //    this.pedido.objeto.dados[key] === ""
+          //  ) {
+          //    delete this.pedido.objeto.dados[key];
+          //  }
+          //}
+          alert(JSON.stringify(this.pedido.objeto))
+          await this.$request("post", "/ppds/registar",  this.pedido.objeto );
+
         }
 
         await this.$request("post", "/legislacao", despachoAprovacao);

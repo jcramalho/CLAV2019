@@ -637,7 +637,7 @@ export default {
 
   },
   watch:{
-    "metodoCheck": function() {
+    "modeloCresCheck": function() {
 
       if(this.modeloCresCheck !='Outra situação'){
         this.ppd.si.caracterizacao.modeloCres = this.modeloCresCheck;

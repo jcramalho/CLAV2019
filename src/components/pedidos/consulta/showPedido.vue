@@ -76,7 +76,7 @@
 
       <ShowTSPluri v-if="p.objeto.tipo == 'TS Pluriorganizacional'" :p="p" />
       <ShowTSOrg v-else-if="p.objeto.tipo == 'TS Organizacional'" :p="p" />
-      <ShowPPD v-else-if="p.objeto.tipo == 'PPD'" :p="p" />
+      <ShowPPD v-else-if="p.objeto.tipo == 'PPD'" :p="p" @verHistorico="verHistorico()"/>
       <ShowClasse v-else-if="p.objeto.tipo == 'Classe_N3'" :p="p" />
       <ShowClasseL1
         v-else-if="p.objeto.tipo == 'Classe_N1' || p.objeto.tipo == 'Classe_N2'"

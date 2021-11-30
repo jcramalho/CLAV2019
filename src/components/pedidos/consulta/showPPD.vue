@@ -251,7 +251,7 @@ export default {
     item2Show: function(item){
       this.siSpec = item;
       this.verSI = true;
-      if(item.visto){
+      if(item.visto && typeof(item.identificacao.adminSistema) != 'string'){
         item.visto=false;
         this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
         this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
