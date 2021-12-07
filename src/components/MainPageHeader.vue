@@ -879,11 +879,12 @@ export default {
 .v-tab {
   text-transform: none !important;
   font-weight: bold !important;
-  color: var(--v-secondary-base) i !important;
+  color: var(--v-secondary-base) !important;
   fill: var(--v-secondary-base) !important;
   min-width: 250px !important;
 }
 
+/*CSS Ações rápidas*/
 .acoes {
   position: absolute;
   left: 50%;

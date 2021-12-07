@@ -234,11 +234,6 @@ export default {
 .v-text-field--filled > .v-input__control > .v-input__slot {
   background: none !important;
 }
-/*
-.v-input__slot::before {
-  border-color: var(--v-info-base) !important;
-}
-*/
 .v-input--selection-controls {
   margin-top: 0 !important;
   padding-top: 0 !important;
@@ -262,18 +257,4 @@ export default {
 label {
   margin-bottom: 0 !important;
 }
-
-/* .v-expansion-panels
-  .v-expansion-panel-header
-  .v-expansion-panel-header__icon
-  .v-text-field.v-input--is-disabled {
-  border-image: repeating-linear-gradient(
-      to right,
-      rgba(1, 85, 181, 0.38) 0px,
-      rgba(1, 85, 181, 0.38) 2px,
-      transparent 2px,
-      transparent 4px
-    )
-    1 repeat !important;
-} */
 </style>
