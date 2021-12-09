@@ -17,6 +17,17 @@
             <v-icon color="secondary">account_circle</v-icon>
           </v-list-item-icon>
         </v-list-item>
+
+        <v-list-item @click="$vuetify.theme.dark = !$vuetify.theme.dark">
+          <v-list-item-content>
+            <p class="font-weight-medium white--text">Tema</p>
+          </v-list-item-content>
+          <v-icon v-if="$vuetify.theme.dark" size="32" class="white--text"
+            >lightbulb</v-icon
+          >
+          <v-icon v-else size="28" class="white--text">lightbulb_outline</v-icon>
+        </v-list-item>
+
         <v-list-item @click="$router.push('/users/alteracaoPassword')">
           <v-list-item-content>
             <p class="font-weight-medium" id="alterarPasswordText">Alterar Password</p>

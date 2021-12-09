@@ -165,11 +165,6 @@ export default {
 </script>
 
 <style>
-#app {
-  --v-textshadow-base: rgba(0, 0, 0, 0.32);
-  --v-textshadow1-base: rgba(255, 255, 255, 0.4);
-}
-
 /* Classes genéricas */
 
 /* Gradiente de azul */
@@ -222,14 +217,6 @@ export default {
 
 /* TODO /* TODO /* TODO /* TODO
 /* TODO Para remover depois de remover todas as utilizações */
-#botao-shadow {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-  outline: none !important;
-}
-
-.v-application--is-ltr .v-treeview-node__toggle--open {
-  color: var(--v-success-base) !important;
-}
 
 .v-text-field--filled > .v-input__control > .v-input__slot {
   background: none !important;
@@ -252,9 +239,5 @@ export default {
 .v-input--is-disabled input,
 .v-input--is-disabled textarea {
   color: var(--v-textshadow-base) !important;
-}
-
-label {
-  margin-bottom: 0 !important;
 }
 </style>
