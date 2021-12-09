@@ -166,7 +166,11 @@
                 </v-expansion-panel>
 
                 <v-expansion-panel
-                  v-if="item.codigo.split('.').length === 3"
+                  v-if="
+                    (item.codigo.split('.').length === 3 &&
+                      !item.temSubclasses4Nivel) ||
+                    item.codigo.split('.').length === 4
+                  "
                   popout
                 >
                   <!-- DECISÔES DE AVALIAÇÂO DA CLASSE -->
@@ -210,7 +214,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="item.pca.notas != ''"
+                      v-if="item.pca.notas && item.pca.notas != ''"
                       color="neutralpurple"
                       nome="Nota"
                       infoHeader="Nota"
@@ -221,7 +225,9 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="item.pca.formaContagem != ''"
+                      v-if="
+                        item.pca.formaContagem && item.pca.formaContagem != ''
+                      "
                       color="neutralpurple"
                       nome="Forma de Contagem"
                       infoHeader="Forma de Contagem"
@@ -246,7 +252,10 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="item.pca.justificacao.length > 0"
+                      v-if="
+                        item.pca.justificacao &&
+                        item.pca.justificacao.length > 0
+                      "
                       color="neutralpurple"
                       nome="Justificação"
                       infoHeader="Justificação"
@@ -364,7 +373,9 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="item.df.justificacao.length > 0"
+                      v-if="
+                        item.df.justificacao && item.df.justificacao.length > 0
+                      "
                       color="neutralpurple"
                       nome="Justificação"
                       infoHeader="Justificação"
@@ -511,6 +522,12 @@ export default {
       "get",
       "/classes?estrutura=arvore&nivel=2&info=esqueleto"
     );
+
+    const lvl4 = await this.$request(
+      "get",
+      "/classes?estrutura=arvore&nivel=4&info=esqueleto"
+    );
+
     let aux = [];
     this.procs = JSON.parse(
       JSON.stringify(this.p.objeto.dados.ts.listaProcessos.procs)
@@ -518,6 +535,21 @@ export default {
     this.procs.map((proc) => {
       !aux.some((pr) => pr && proc.pai.codigo === pr.codigo)
         ? aux.push(lvl2.data.find((p) => p.codigo === proc.pai.codigo))
+        : "";
+
+      proc.temSubclasses4Nivel
+        ? (aux = aux.concat(
+            lvl4.data
+              .filter((p) => p.codigo.includes(proc.codigo))
+              .map((p) => {
+                var pca = p.pca;
+                var df = p.df;
+                p.pca = { valores: pca };
+                p.df = { valor: df };
+
+                return p;
+              })
+          ))
         : "";
     });
     aux.map((proc) => {
@@ -527,7 +559,26 @@ export default {
         ? this.procs.push(lvl1.data.find((p) => p.codigo === codigo))
         : "";
     });
-    this.procs.sort((p1, p2) => p1.codigo > p2.codigo);
+    this.procs.sort((p1, p2) => {
+      var c1 = p1.codigo.split(".");
+      var c2 = p2.codigo.split(".");
+      return c1.length - c2.length;
+    });
+    this.procs.sort((p1, p2) => {
+      var c1 = p1.codigo.split(".");
+      var c2 = p2.codigo.split(".");
+      return c1[0] - c2[0];
+    });
+    this.procs.sort((p1, p2) => {
+      var c1 = p1.codigo.split(".");
+      var c2 = p2.codigo.split(".");
+      if (c1[0] === c2[0]) return c1[1] - c2[1];
+    });
+    this.procs.sort((p1, p2) => {
+      var c1 = p1.codigo.split(".");
+      var c2 = p2.codigo.split(".");
+      if (c1[0] === c2[0] && c1[1] === c2[1]) return c1[2] - c2[2];
+    });
   },
 };
 </script>
