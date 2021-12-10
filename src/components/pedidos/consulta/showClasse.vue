@@ -241,7 +241,7 @@ import ShowDecisoesPCA from "@/components/pedidos/consulta/classes/ShowDecisoesP
 import ShowDecisoesDF from "@/components/pedidos/consulta/classes/ShowDecisoesDF";
 import Subclasses4Nivel from "@/components/classes/criacao/Subclasses4Nivel";
 
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["p"],

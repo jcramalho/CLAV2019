@@ -74,9 +74,7 @@
               <v-expansion-panels>
                 <v-expansion-panel popout>
                   <!-- DESCRITIVO DA CLASSE -->
-                  <v-expansion-panel-header
-                    class="clav-linear-background white--text"
-                  >
+                  <v-expansion-panel-header class="clav-linear-background white--text">
                     <div>
                       <font size="4"><b> Descritivo da Classe</b></font>
                       <InfoBox
@@ -113,9 +111,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="
-                        item.exemplosNotasAp && item.exemplosNotasAp.length > 0
-                      "
+                      v-if="item.exemplosNotasAp && item.exemplosNotasAp.length > 0"
                       color="neutralpurple"
                       nome="Exemplos de Notas de Aplicação"
                       infoHeader="Exemplos de Notas de Aplicação"
@@ -123,10 +119,7 @@
                     >
                       <template v-slot:conteudo>
                         <ul>
-                          <li
-                            v-for="n in item.exemplosNotasAp"
-                            :key="n.idExemplo"
-                          >
+                          <li v-for="n in item.exemplosNotasAp" :key="n.idExemplo">
                             {{ n.exemplo }}
                           </li>
                         </ul>
@@ -165,6 +158,7 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
 
+<<<<<<< HEAD
                 <v-expansion-panel
                   v-if="
                     (item.codigo.split('.').length === 3 &&
@@ -173,10 +167,11 @@
                   "
                   popout
                 >
+=======
+                <v-expansion-panel v-if="item.codigo.split('.').length === 3" popout>
+>>>>>>> 22dfc46a (remoção de css && mudança de nome CampoCLAV)
                   <!-- DECISÔES DE AVALIAÇÂO DA CLASSE -->
-                  <v-expansion-panel-header
-                    class="clav-linear-background white--text"
-                  >
+                  <v-expansion-panel-header class="clav-linear-background white--text">
                     <div>
                       <font size="4"><b>Decisões de Avaliação</b></font>
                       <InfoBox
@@ -264,9 +259,7 @@
                       <template v-slot:conteudo>
                         <div v-for="c in item.pca.justificacao" :key="c.tipoId">
                           <!-- Critério Gestionário ...............................-->
-                          <v-row
-                            v-if="c.tipoId == 'CriterioJustificacaoGestionario'"
-                          >
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoGestionario'">
                             <v-col xs="2" sm="2">
                               <div class="info-label">Critério Gestionário</div>
                             </v-col>
@@ -285,8 +278,7 @@
                           <!-- Critério Utilidade Administrativa .................-->
                           <v-row
                             v-if="
-                              c.tipoId ==
-                              'CriterioJustificacaoUtilidadeAdministrativa'
+                              c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'
                             "
                           >
                             <v-col xs="2" sm="2">
@@ -405,11 +397,7 @@
                           </v-row>
 
                           <!-- Critério de Densidade Informacional ..............-->
-                          <v-row
-                            v-if="
-                              c.tipoId == 'CriterioJustificacaoDensidadeInfo'
-                            "
-                          >
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'">
                             <v-col xs="2" sm="2">
                               <div class="info-label">
                                 Critério de Densidade Informacional
@@ -431,10 +419,7 @@
 
                           <!-- Critério de Complementaridade Informacional ..............-->
                           <v-row
-                            v-if="
-                              c.tipoId ==
-                              'CriterioJustificacaoComplementaridadeInfo'
-                            "
+                            v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'"
                           >
                             <v-col xs="2" sm="2">
                               <div class="info-label">
@@ -479,7 +464,7 @@
 
 <script>
 import InfoBox from "@/components/generic/infoBox.vue";
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 
 export default {
   props: ["p"],
@@ -529,9 +514,7 @@ export default {
     );
 
     let aux = [];
-    this.procs = JSON.parse(
-      JSON.stringify(this.p.objeto.dados.ts.listaProcessos.procs)
-    );
+    this.procs = JSON.parse(JSON.stringify(this.p.objeto.dados.ts.listaProcessos.procs));
     this.procs.map((proc) => {
       !aux.some((pr) => pr && proc.pai.codigo === pr.codigo)
         ? aux.push(lvl2.data.find((p) => p.codigo === proc.pai.codigo))

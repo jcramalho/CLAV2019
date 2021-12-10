@@ -81,9 +81,7 @@
                       - {{ item.titulo }}</span
                     ></v-list-item-title
                   >
-                  <v-list-item-title
-                    v-else-if="item.codigo"
-                    v-text="item.codigo"
+                  <v-list-item-title v-else-if="item.codigo" v-text="item.codigo"
                     ><span v-if="item.titulo">
                       - {{ item.titulo }}</span
                     ></v-list-item-title
@@ -151,9 +149,13 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
+<<<<<<< HEAD
                       <span>
                         {{ item.numAgregacoes ? item.numAgregacoes : 0 }}</span
                       >
+=======
+                      <span> {{ item.nrAgregacoes ? item.nrAgregacoes : 0 }}</span>
+>>>>>>> 22dfc46a (remoção de css && mudança de nome CampoCLAV)
                     </template>
                   </Campo>
                   <Campo
@@ -249,10 +251,7 @@
                           <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
                         </tr-->
                   </table>
-                  <div
-                    class="ma-1"
-                    v-if="item.agregacoes && item.agregacoes.length > 0"
-                  >
+                  <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
                     <v-row justify="space-between" class="info-label">
                       <v-col>Lista de Agregações</v-col>
                       <v-col>
@@ -285,7 +284,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["p"],
@@ -346,13 +345,6 @@ export default {
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 

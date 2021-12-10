@@ -84,7 +84,7 @@
 import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 import PainelOpsTip from "@/components/tipologias/PainelOperacoesTipologias";
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 
 const help = require("@/config/help").help;

@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 

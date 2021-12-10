@@ -193,7 +193,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 import Voltar from "@/components/generic/Voltar";
 
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";

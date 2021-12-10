@@ -79,7 +79,7 @@
 
 <script>
 import marked from "marked";
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 import PainelOpsNot from "@/components/noticias/PainelOperacoesNoticias.vue";
 import Editor from "@/components/generic/EditorMarkdown.vue";
 
@@ -151,11 +151,6 @@ export default {
   background-color: #283593 !important;
   color: #fff;
   font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
   font-weight: bold;
 }
 

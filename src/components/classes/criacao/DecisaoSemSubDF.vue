@@ -211,7 +211,7 @@
 const help = require("@/config/help").help;
 
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 
 export default {
   props: ["c", "semaforos"],

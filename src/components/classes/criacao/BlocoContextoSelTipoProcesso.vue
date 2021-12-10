@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 const help = require("@/config/help").help;
 
 export default {

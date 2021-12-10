@@ -50,7 +50,7 @@
 const labels = require("@/config/labels").classeCriacaoDonosOps;
 const help = require("@/config/help").help;
 
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["entidades"],

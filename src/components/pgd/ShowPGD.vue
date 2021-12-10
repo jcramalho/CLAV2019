@@ -248,8 +248,7 @@
                   <span class="ml-5">{{ filho.titulo }}</span></span
                 >
                 <span v-else-if="filho.codigo"
-                  >{{ filho.codigo }}
-                  <span class="ml-7">{{ filho.titulo }}</span></span
+                  >{{ filho.codigo }} <span class="ml-7">{{ filho.titulo }}</span></span
                 >
                 <span v-else-if="filho.referencia"
                   ><span class="ml-2"
@@ -269,7 +268,7 @@
   </v-card>
 </template>
 <script>
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 import ShowPGD from "./ShowPGD.vue";
 
 export default {

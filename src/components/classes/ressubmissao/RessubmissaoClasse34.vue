@@ -148,7 +148,7 @@ const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
 import Voltar from "@/components/generic/Voltar.vue";
 
