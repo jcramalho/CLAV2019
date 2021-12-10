@@ -13,7 +13,7 @@
           </template>
           <span>Exportar Tabela de Seleção</span>
         </v-tooltip>
-        <v-tooltip v-if="$verifyTokenUser().level === 7" left>
+        <v-tooltip v-if="$verifyTokenUser().level >= 4" left>
           <template v-slot:activator="{ on }">
             <v-btn @click="remove()" color="white" icon v-on="on">
               <v-icon>delete</v-icon>
