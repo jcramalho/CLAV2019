@@ -10,9 +10,10 @@ export default new Vuetify({
       light: {
         primary: "#1a237e",
         secondary: "#f3f7fc",
-        accent: "#1976d2", 
+        accent: "#1976d2",
         success: "#46c354",
         error: "#b71c1c",
+        warning: "#FFC107",
         neutral: "#d8d8d8",
         neutralpurple: "#dee2f8",
         neutralblue: "#09337f",
@@ -21,14 +22,15 @@ export default new Vuetify({
         gradientright: "#0056b6",
         h1color: "#4da0d0",
         textshadow: "#807575",
-        textshadow2: "#8f8989",
+        textshadow2: "#8f8989"
       },
       dark: {
         primary: "#010a69",
         secondary: "#3e5878",
-        accent: "#1976d2", 
+        accent: "#1976d2",
         success: "#46c354",
         error: "#b71c1c",
+        warning: "#FFC107",
         neutral: "#535d78",
         neutralpurple: "#dee2f8",
         neutralblue: "#09337f",
@@ -37,9 +39,9 @@ export default new Vuetify({
         gradientright: "#002b5c",
         h1color: "#c4daf5",
         textshadow: "#e4eaed",
-        textshadow2: "#94a0a6",
-      },
-    },
+        textshadow2: "#ffffff"
+      }
+    }
   },
   icons: {
     iconfont: "md"

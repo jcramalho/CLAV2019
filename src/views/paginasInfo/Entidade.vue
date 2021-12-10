@@ -1,18 +1,18 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Entidades</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Catálogo de entidades públicas que intervêm nos processos de negócio (classes de 3º
       nível da Lista Consolidada). Podem integrar uma ou mais tipologias de entidades.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para aceder ao catálogo de entidades, selecione a opção <b>CONSULTAR</b>.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para adicionar entidades, selecione a opção
       <b>ADICIONAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para editar entidades, selecione a opção
       <b>EDITAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>

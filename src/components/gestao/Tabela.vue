@@ -17,7 +17,7 @@
           </download-csv>
         </template>
 
-        <span> Download da tabela de indicadores em CSV</span>
+        <span>Download da tabela de indicadores em CSV</span>
       </v-tooltip>
     </v-card-title>
 

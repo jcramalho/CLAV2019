@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Adicionar Documentação Técnica de Apoio</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Área reservada à adição de documentação técnica de Apoio para a plataforma.
     </p>
 

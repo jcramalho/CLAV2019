@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Autos de Eliminação</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Quando a documentação atinge o término do seu prazo de conservação administrativa e
       o seu destino final é a eliminação, a ação de eliminar deve ser concretizada
       seguindo as boas práticas. Na CLAV é possível criar os autos de eliminação ao abrigo
@@ -12,16 +12,16 @@
     <p class="content-title px-8 py-2">
       Para aceder a autos de eliminação, selecione a opção <b>CONSULTAR</b>.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para criar autos de eliminação, selecione a opção
       <b>CRIAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para importar autos de eliminação, selecione a opção
       <b>IMPORTAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
 
-    <p class="content-text px-8 pb-4">
+    <p class="clav-content-text px-8 pb-4">
       <b
         >Consulte as instruções em
         <a @click="$router.push('/forminstr')">Formulários e instruções</a>.</b

@@ -22,7 +22,7 @@
         <v-row>
           <v-col cols="9">
             <div class="clav-content-title-2">{{ tipoPedido }}</div>
-            <div class="content-text ml-1">{{ dataPedido }}</div>
+            <div class="clav-content-text ml-1">{{ dataPedido }}</div>
           </v-col>
           <v-spacer />
           <v-col cols="3" align="right">

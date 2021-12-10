@@ -165,56 +165,6 @@ export default {
 </script>
 
 <style>
-/* Classes genéricas */
-
-/* Gradiente de azul */
-.clav-linear-background {
-  background: linear-gradient(
-    to right,
-    var(--v-gradientleft-base) 0%,
-    var(--v-gradientright-base) 100%
-  );
-}
-
-/* Usado em v-text-field */
-.clav-info-content {
-  padding: 8px;
-  background-color: var(--v-infocontent-base) !important;
-  text-shadow: 0px 1px 2px var(--v-textshadow-base) !important;
-}
-
-/* Titulo */
-.clav-content-title-1 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--v-h1color-base);
-  text-shadow: 0px 2px 3px var(--v-textshadow-base);
-  text-align: center;
-}
-
-/* Subtitulo */
-.clav-content-title-2 {
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: var(--v-h1color-base);
-  text-shadow: 0px 1px 2px var(--v-textshadow-base);
-}
-
-/* Subtitulo */
-.content-text {
-  font-size: 1rem;
-  word-spacing: 2px;
-}
-
-.clav-info-label {
-  color: var(--v-primary-base);
-  font-weight: bold;
-}
-
-.clav-text-shadow {
-  text-shadow: var(--v-textshadow-base);
-}
-
 /* TODO /* TODO /* TODO /* TODO
 /* TODO Para remover depois de remover todas as utilizações */
 
