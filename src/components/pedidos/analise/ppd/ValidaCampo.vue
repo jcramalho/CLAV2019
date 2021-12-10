@@ -29,11 +29,11 @@
         <div class="info-conteudo" v-else>
           <slot name="campo">
             <span
-              v-if="tipo == 'string' && !!novoHistorico[campoValue].dados"
+              v-if="(tipo == 'string' || tipo == 'tipofl' || tipo == 'classe' || tipo == 'campoHerdado')  && (!!novoHistorico[campoValue].dados || (novoHistorico[campoValue].dados == '0' && campoValue == 'pcaSI') )"
               >{{ novoHistorico[campoValue].dados }}</span
             >
-             <span
-              v-else-if="tipo == 'object' && !!novoHistorico[campoValue].dados.titulo"
+            <span
+              v-else-if="(tipo == 'object' || tipo == 'fonteLeg') && !!novoHistorico[campoValue].dados.titulo"
               >{{ novoHistorico[campoValue].dados.titulo }}</span
             >
             <span
@@ -46,205 +46,21 @@
               <div v-else>Inativa</div>
             </span>
             <span
-              v-else-if="tipo == 'classes' && !!novoHistorico[campoValue].dados"
+              v-else-if="tipo == 'sis' && !!novoHistorico[campoValue].dados"
+              ><slot></slot>
+            </span>
+            <span
+              v-else-if="tipo == 'classeFL' && !!novoHistorico[campoValue].dados"
               ><slot></slot>
             </span>
             <span
               v-else-if="
-                tipo == 'procTrans' && !!novoHistorico[campoValue].dados
-              "
-            >
-              {{ novoHistorico[campoValue].dados == "S" ? "Sim" : "Não" }}
-            </span>
-
-            <span
-              v-else-if="tipo == 'justPCA' && !!novoHistorico[campoValue].dados"
-            >
-              <div v-for="c in novoHistorico[campoValue].dados" :key="c.tipoId">
-                <!-- Critério Gestionário ...............................-->
-                <v-row v-if="c.tipoId == 'CriterioJustificacaoGestionario'">
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">Critério Gestionário</div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{
-                        /* texto normalizado:
-                                          mylabels.textoCriterioJustificacaoGestionario
-                                          texto proveniente da FRD: */
-                        c.conteudo
-                      }}
-                    </div>
-                  </v-col>
-                </v-row>
-
-                <!-- Critério Utilidade Administrativa .................-->
-                <v-row
-                  v-if="
-                    c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'
-                  "
-                >
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">
-                      Critério de Utilidade Administrativa
-                    </div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{ c.conteudo }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="p in c.processos" :key="p.procId">
-                          <a :href="'/classes/consultar/' + p.procId">
-                            {{ p.procId.split("c")[1] }} -
-                            {{ p.nome }}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-
-                <!-- Critério Legal ...................................-->
-                <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">Critério Legal</div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{ c.conteudo }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="l in c.legislacao" :key="l.legId">
-                          <a :href="'/legislacao/' + l.legId"
-                            >{{ l.tipo }} {{ l.numero }}</a
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-              </div>
-            </span>
-            <span
-              v-else-if="tipo == 'prazo' && !!novoHistorico[campoValue].dados"
-            >
-              <div v-if="novoHistorico[campoValue].dados > 1">
-                {{ novoHistorico[campoValue].dados }} anos
-              </div>
-              <div v-else-if="novoHistorico[campoValue].dados == 1">
-                {{ novoHistorico[campoValue].dados }} ano
-              </div>
-              <div v-else>Não específicado</div>
-            </span>
-            <span v-else-if="tipo == 'df' && !!novoHistorico[campoValue].dados">
-              <span v-if="novoHistorico[campoValue].dados == 'E'"
-                >Eliminação</span
-              >
-              <span v-else-if="novoHistorico[campoValue].dados == 'C'"
-                >Conservação</span
-              >
-              <span v-else-if="novoHistorico[campoValue].dados == 'CP'"
-                >Conservação Parcial</span
-              >
-              <span v-else>Não Especificado</span>
-            </span>
-            <span
-              v-else-if="tipo == 'justDF' && !!novoHistorico[campoValue].dados"
-            >
-              <div v-for="c in novoHistorico[campoValue].dados" :key="c.tipoId">
-                <!-- Critério Legal ...................................-->
-                <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">Critério Legal</div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{ c.conteudo }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="l in c.legislacao" :key="l.legId">
-                          <a :href="'/legislacao/' + l.legId"
-                            >{{ l.tipo }} {{ l.numero }}</a
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-
-                <!-- Critério de Densidade Informacional ..............-->
-                <v-row v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'">
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">
-                      Critério de Densidade Informacional
-                    </div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{
-                        /* texto normalizado:
-                                          mylabels.textoCriterioDensidadeInfo
-                                          texto proveniente da FRD: */
-                        c.conteudo
-                      }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="p in c.processos" :key="p.procId">
-                          <a :href="'/classes/consultar/' + p.procId">
-                            {{ p.procId.split("c")[1] }} -
-                            {{ p.nome }}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-
-                <!-- Critério de Complementaridade Informacional ..............-->
-                <v-row
-                  v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'"
-                >
-                  <v-col xs="2" sm="2">
-                    <div class="info-label">
-                      Critério de Complementaridade Informacional
-                    </div>
-                  </v-col>
-                  <v-col xs="10" sm="10">
-                    <div class="info-content">
-                      {{
-                        /* texto normalizado:
-                                          mylabels.textoCriterioComplementaridade
-                                          texto proveniente da FRD: */
-                        c.conteudo
-                      }}
-                      <br />
-                      <br />
-                      <ul>
-                        <li v-for="p in c.processos" :key="p.procId">
-                          <a :href="'/classes/consultar/' + p.procId">
-                            {{ p.procId.split("c")[1] }} -
-                            {{ p.nome }}
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </v-col>
-                </v-row>
-              </div>
-            </span>
-            <span
-              v-else-if="
-                tipo == 'array' && !!novoHistorico[campoValue].dados
+                (tipo == 'array' || tipo == 'ents') && !!novoHistorico[campoValue].dados
               "
             >
               <ul>
                 <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
-                  {{ v.dados.label }}
+                  {{ v.label }}
                   <v-badge
                     v-if="!dadosOriginais[campoValue].some((e) => e == v)"
                     right
@@ -485,8 +301,8 @@
           </slot>
         </div>
       </v-col>
-      <v-col cols="auto" v-if="editaCampo != campoValue">
-        <span v-if="!foiEditado">
+      <v-col cols="auto" v-if="editaCampo != campoValue  ">
+        <span v-if="!foiEditado && tipo != 'campoHerdado' && tipo != 'sis' ">
           <v-icon class="mr-1" color="green" @click="verifica(campoValue)"
             >check</v-icon
           >
@@ -503,6 +319,27 @@
           >create</v-icon
         >
         <v-icon
+          v-if="permitirEditar && (tipo == 'ents')"
+          class="mr-1"
+          color="orange"
+          @click="verEntidades = true"
+          >create</v-icon
+        >
+        <v-icon
+          v-if="permitirEditar && (tipo == 'tipofl')"
+          class="mr-1"
+          color="orange"
+          @click="verTipoFontesLeg = true"
+          >create</v-icon
+        >
+        <v-icon
+          v-if="permitirEditar && (tipo == 'classe')"
+          class="mr-1"
+          color="orange"
+          @click="createclasse()"
+          >create</v-icon
+        >
+        <v-icon
           v-if="permitirEditar && (tipo == 'object')"
           class="mr-1"
           color="orange"
@@ -510,8 +347,24 @@
           >create</v-icon
         >
         <v-icon
+          v-if="permitirEditar && (tipo == 'classeFL')"
+          class="mr-1"
+          color="orange"
+          @click="modelClasses()"
+          >create</v-icon
+        >
+        <v-icon
           v-if="
-            permitirEditar && (tipo == 'procsAselecionar' || tipo == 'classes')
+            permitirEditar && (tipo == 'fonteLeg')
+          "
+          class="mr-1"
+          color="orange"
+          @click="loadFonteLegitimacao()"
+          >create</v-icon
+        >
+        <v-icon
+          v-if="
+            permitirEditar && (tipo == 'procsAselecionar' || tipo == 'sis')
           "
           class="mr-1"
           color="orange"
@@ -533,6 +386,7 @@
         >
 
         <v-badge
+          v-if="tipo != 'sis' && tipo != 'campoHerdado'"
           color="indigo darken-4"
           content="1"
           :value="!!novoHistorico[campoValue].nota"
@@ -600,6 +454,185 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="verClasses" transition="dialog-bottom-transition">
+      <v-card>
+        <v-toolbar
+              color="primary"
+              dark
+            >Classes</v-toolbar>
+            <v-card-text>
+              <v-data-table
+                :headers="headersSelecionados"
+                :items="listaClasses"
+                class="elevation-1"
+                :footer-props="footer_Classes"
+                :page.sync="paginaSelect"
+                >
+                  <template v-slot:header="props">
+                      <tr>
+                      <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
+                      </tr>
+                  </template>
+
+                  <template v-slot:item="props">
+                    <tr>
+                    <td>{{ props.item.codigo}}</td>
+                    <td>{{ props.item.referencia}}</td>
+                    <td>{{ props.item.titulo}}</td>
+                    <td>
+                      <v-btn small color="red darken-2" dark rounded @click="unselectClasse(props.item)">
+                        <v-icon dark>remove_circle_outline</v-icon>
+                      </v-btn>
+                    </td>
+                    </tr>
+                  </template>
+                </v-data-table>
+                <v-col>
+                  <hr style="border: 3px solid indigo; border-radius: 2px;" />
+                </v-col>
+                <v-row>
+                  <v-col :md="2">
+                      <div class="info-label">Classe</div>
+                  </v-col>
+                  <v-col>
+                    <v-autocomplete
+                      :items="classesSI"
+                      item-text="info"
+                      v-model="classeSelecionada"
+                      placeholder="Selecione a classe"
+                      solo
+                      return-object
+                    >
+                    </v-autocomplete>
+                  </v-col>
+                </v-row>
+                <v-row align="center" justify="space-around">
+                  <v-btn
+                  color="indigo darken-2"
+                  dark
+                  class="ma-2"
+                  rounded
+                  @click="adicionaClasse()"
+                  >
+                    Adicionar
+                  </v-btn>
+                  <v-btn
+                  color="red darken-2"
+                  dark
+                  class="ma-2"
+                  rounded
+                  @click=""
+                  >
+                    Cancelar
+                  </v-btn>
+                </v-row>
+                <v-row>
+                  <v-col>
+                    <hr style="border: 3px solid indigo; border-radius: 2px;" />
+                  </v-col>
+                </v-row>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn
+                text
+                @click="confirmaClasses"
+              >Fechar</v-btn>
+            </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="verEntidades" transition="dialog-bottom-transition">
+      <v-card>
+        <v-toolbar
+              color="primary"
+              dark
+            >Selecione as entidades</v-toolbar>
+            <v-card-text>
+              <v-autocomplete
+                label="Selecione as entidades abrangidas pelo PPD"
+                :items="entidades"
+                item-text="label"
+                return-object
+                v-model="entSel"
+                placeholder="Selecione as entidades abrangidas pelo PPD"
+                multiple
+                chips
+                deletable-chips
+                :rules="[(v) => !!v || 'Tem de escolher pelo menos uma entidade']"
+              >
+              </v-autocomplete>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn
+                text
+                @click="verEntidades = false"
+              >Cancelar</v-btn>
+              <v-btn
+                text
+                @click="confirmaEntidades"
+              >Confirmar</v-btn>
+            </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="verTipoFontesLeg" transition="dialog-bottom-transition">
+      <v-card>
+        <v-toolbar
+              color="primary"
+              dark
+            >Selecione o tipo da fonte de legitimação</v-toolbar>
+            <v-card-text>
+              <v-autocomplete
+                label="Selecione o tipo da fonte de legitimação"
+                :items="this.tiposFL"
+                item-text="titulo"
+                return-object
+                v-model="tipoFonteLegSelected"
+                solo
+                dense
+                :rules="[(v) => !!v || 'Tem de escolher um tipo de fonte de legitimação']"
+              ></v-autocomplete>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn
+                text
+                @click="verTipoFontesLeg = false"
+              >Cancelar</v-btn>
+              <v-btn
+                text
+                @click="confirmaTipoFonteLeg"
+              >Confirmar</v-btn>
+            </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="verFontesLeg" transition="dialog-bottom-transition">
+      <v-card>
+        <v-toolbar
+              color="primary"
+              dark
+            >Selecione a fonte de legitimação</v-toolbar>
+            <v-card-text>
+              <v-autocomplete
+                label="Selecione a fonte de legitimação"
+                :items="this.flLista"
+                item-text="titulo"
+                return-object
+                v-model="fonteLegitimacaoSelected"
+                solo
+                dense
+                :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
+              ></v-autocomplete>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn
+                text
+                @click="verFontesLeg = false"
+              >Cancelar</v-btn>
+              <v-btn
+                text
+                @click="confirmaFonteLeg"
+              >Confirmar</v-btn>
+            </v-card-actions>
+      </v-card>
+    </v-dialog>
     <EditDescritivo
       v-if="editaBlocoDescritivoFlag"
       :p="dadosOriginais"
@@ -629,8 +662,13 @@ export default {
     tipo: {},
     dadosOriginais: {},
     novoHistorico: {},
+    classesSI: "",
+    classesDaFonteL: {},
+    listaClasses: {},
     campoValue: {},
     campoText: {},
+    flLista: {},
+    entidades: {},
     arrayValue: {},
     info: { text: "", header: "" },
     tabelaSelecao: {},
@@ -651,20 +689,125 @@ export default {
   },
   data: () => ({
     campoEditado: null,
+    verFontesLeg: false,
+    verTipoFontesLeg: false,
+    verEntidades: false,
+    verClasses: false,
+    tipoFonteLegSelected: "",
+    fonteLegitimacaoSelected: "",
     editaCampo: null,
     foiEditado: false,
     notaVisivel: false,
     notaCampo: null,
     verListaProcessos: false,
+    entSel: [],
     listaProcessos: {},
     listaProcessosReady: false,
     participante: [],
     listaCodigosEsp: [],
     fechoTransitivo: {},
     listaProcessosKey: 0,
+    auxPCA: 0,
+    auxDF: "",
+    classeSelecionada: "",
     editaBlocoDescritivoFlag: false,
+    tiposFL: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
+    paginaSelect: 1,
+    headersSelecionados:[
+        {text: "Código", sortable: false, value: "codigo"},
+        {text: "Referência", sortable: false, value: "referencia"},
+        {text: "Título", sortable: false, value: "titulo"},
+        {text: "Remover", align: "left", sortable: false, value: "" },
+    ],
+    footer_Classes: {
+        "items-per-page-text": "Classes por página",
+        "items-per-page-options": [5, 10, 20, -1],
+        "items-per-page-all-text": "Todos"
+    },
   }),
+
+  created() {
+    //alert(JSON.stringify(this.dadosOriginais.sistemasInfo[0].avaliacao))
+  },
+
   methods: {
+    adicionaClasse: function(){
+      if(this.classeSelecionada.classe != null){
+        var indexAux = this.classesSI.findIndex(e => e.classe === this.classeSelecionada.classe);
+        var index = this.classesDaFonteL.findIndex(e => e.classe === this.classeSelecionada.classe);
+        var selectedClasse = JSON.parse(JSON.stringify(this.classesDaFonteL[index]));
+        this.classesSI.splice(indexAux,1);
+        this.classeSelecionada="";
+        this.novoHistorico.selecionadosTabelaFL.dados.push(selectedClasse);
+        alert(JSON.stringify(this.novoHistorico))
+        this.listaClasses.push(selectedClasse)
+        if(parseInt(selectedClasse.pca) > parseInt(this.novoHistorico.pcaSI.dados)){
+          this.novoHistorico.pcaSI.dados = parseInt(selectedClasse.pca);
+        }
+        if(this.novoHistorico.destinoSI.dados != "C"){
+          alert("A")
+          alert(selectedClasse.df)
+          alert("B")
+          this.novoHistorico.destinoSI.dados = selectedClasse.df;
+        }
+      }
+    },
+    unselectClasse: function(item) {
+      //alert(JSON.stringify(this.novoHistorico))
+      //alert(JSON.stringify(this.novoHistorico.pcaSI.dados))
+      this.auxDF = this.novoHistorico.destinoSI.dados
+      if(item.codigo){
+        this.classesSI.push({info:"Cod: " + item.codigo + " - " + item.titulo , classe:item.classe});
+      }
+      else{
+        this.classesSI.push({info:"Ref: " + item.referencia + " - " + item.titulo , classe:item.classe})
+      }
+      var index = this.listaClasses.findIndex(e => e.classe === item.classe);
+      this.listaClasses.splice(index, 1);
+      this.auxPCA = 0;
+      this.auxDF = "";
+      this.listaClasses.forEach(element => {
+        //alert(JSON.stringify(this.classesDaFonteL))
+        if(parseInt(element.pca) > this.auxPCA){
+          alert(parseInt(element.pca))
+          this.auxPCA = parseInt(element.pca)
+        }
+        if(this.auxDF != "C"){
+          this.auxDF = element.df
+        }
+      });
+      this.novoHistorico.pcaSI.dados = this.auxPCA;
+      this.novoHistorico.destinoSI.dados = this.auxDF;
+    },
+    createclasse: function(){
+      this.verClasses = true
+    },
+    confirmaClasses(){
+      //reconstruir Código class / ref class / Título / PCA  / forma contagem / df
+      this.novoHistorico.codClasse.dados = this.listaClasses.map(e=> e.codigo).toString().replaceAll(",","#")
+      this.novoHistorico.numeroClasse.dados = this.listaClasses.map(e=> e.referencia).toString().replaceAll(",","#")
+      this.novoHistorico.tituloClasse.dados = this.listaClasses.map(e=> e.titulo).toString().replaceAll(",","#")
+      this.novoHistorico.pcaClasse.dados = this.listaClasses.map(e=> e.pca).toString().replaceAll(",","#")
+      this.novoHistorico.destinoFinalClasse.dados = this.listaClasses.map(e=> e.df).toString().replaceAll(",","#")
+      this.novoHistorico.formaContagemPrazos.dados = this.listaClasses.map(e=> e.formaContagem).toString().replaceAll(",","#")
+      this.verClasses = false
+    },
+    confirmaEntidades(){
+      this.novoHistorico[this.campoValue].dados = this.entSel
+      this.novoHistorico[this.campoValue].cor = "amarelo"
+      this.verEntidades = false
+    },
+    confirmaTipoFonteLeg(){
+      this.novoHistorico[this.campoValue].dados = this.tipoFonteLegSelected
+      this.novoHistorico[this.campoValue].cor = "amarelo"
+      this.verTipoFontesLeg = false
+    },
+    confirmaFonteLeg(){
+      this.novoHistorico[this.campoValue].dados = this.fonteLegitimacaoSelected
+      this.novoHistorico[this.campoValue].cor = "amarelo"
+      this.verFontesLeg = false
+    },
+
     forceRender() {
       this.listaProcessosKey += 1;
     },
@@ -675,6 +818,31 @@ export default {
       if (this.$refs.form.validate()) {
         switch (this.tipo) {
           case "string":
+            if (
+              this.campoEditado !== this.novoHistorico[this.campoValue].dados
+            ) {
+              this.novoHistorico[this.campoValue].dados = this.campoEditado;
+              if (this.campoEditado !== this.dadosOriginais[this.campoValue]) {
+                this.novoHistorico[this.campoValue].cor = "amarelo";
+                this.$emit(
+                  "corAlterada",
+                  this.novoHistorico[this.campoValue].cor
+                );
+                this.foiEditado = true;
+              } else {
+                this.novoHistorico[this.campoValue].cor = "verde";
+                this.$emit(
+                  "corAlterada",
+                  this.novoHistorico[this.campoValue].cor
+                );
+                this.foiEditado = false;
+              }
+              this.editaCampo = null;
+              this.campoEditado = null;
+            }
+
+            break;
+          case "tipofl":
             if (
               this.campoEditado !== this.novoHistorico[this.campoValue].dados
             ) {
@@ -760,8 +928,8 @@ export default {
       }
     },
     abrirNotaDialog() {
-      this.notaVisivel = true;
-      this.notaCampo = this.campoText;
+        this.notaVisivel = true;
+        this.notaCampo = this.campoText;
     },
     verifica(campo) {
       this.novoHistorico[campo].cor = "verde";
@@ -995,6 +1163,10 @@ export default {
       } catch (e) {
         console.log("Erro ao carregar o fecho transitivo: " + e);
       }
+    },
+
+    loadFonteLegitimacao: async function () {
+      this.verFontesLeg = true;
     },
     loadSelecao: async function () {
       this.$emit("listaProcessos", true);

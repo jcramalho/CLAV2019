@@ -84,6 +84,12 @@
               :p="pedido"
               fase="validacao"
             />
+
+            <ValidaPPD
+              v-if="pedido.objeto.tipo == 'PPD'"
+              :p="pedido"
+              fase="validacao"
+            />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
@@ -160,6 +166,7 @@ import ValidaTSPluri from "@/components/pedidos/analise/AnalisaTSPluri";
 import ValidaTSOrg from "@/components/pedidos/analise/AnalisaTSOrg";
 import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
 import ValidaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
+import ValidaPPD from "@/components/pedidos/validacao/ValidaPPD";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
@@ -184,6 +191,7 @@ export default {
     ValidaEditaTipologiaEntidade,
     ValidaClasseN1,
     ValidaAE,
+    ValidaPPD,
     ValidaTSPluri,
     ValidaTSOrg,
     Loading,

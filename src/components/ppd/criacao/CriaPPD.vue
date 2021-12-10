@@ -143,13 +143,10 @@
               <v-btn color="indigo darken-2" dark class="ma-2" @click="submeterPPD">
                 Submeter
               </v-btn>
-              <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
-                Finalizar
-              </v-btn>
               <v-btn color="red" dark class="ma-2" rounded @click="changeE1(1)">
                 Voltar
               </v-btn>
-            </v-stepper-content>
+            </v-stepper-content> 
           </v-stepper>
         </v-card-text>
       </v-card>
@@ -157,6 +154,7 @@
     <ImportarSI
       :ppd = "ppd"
       :dialog="importarSI"
+      :classesDaFonteL="classesDaFonteL"
       @fecharDialog="importarSI = false"
     />
     <template>
@@ -297,6 +295,7 @@ export default {
         estrategia:{}
     },
     verSI: false,
+    sisHistorico: "",
     importarSI: false,
     addSI: false,
     idPendente: null,
@@ -349,7 +348,7 @@ export default {
         caracterizacao:{
           dependenciaSoft: "",
           categoriaDados: "",
-          formatos:"",
+          formatosUtilizados:"",
           modeloCres: "",
           dimensao:"",
           crescimento: "",
@@ -542,7 +541,7 @@ export default {
         //&& !isNaN(this.ppd.si.numeroSI)
         //&& this.ppd.si.identificacao.adminSistema.length > 0
         //&& this.ppd.si.avaliacao.descricao != ""
-        //&& this.ppd.si.caracterizacao.formatos != ""
+        //&& this.ppd.si.caracterizacao.formatosUtilizados != ""
         //&& this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao != ""
          //para verificar se os campos obrigatorios tao preenchidos
         true
@@ -556,11 +555,28 @@ export default {
           caracterizacao: {},
           estrategia: {},
         };
-        //alert(JSON.stringify(this.ppd.si.avaliacao))
-        Object.assign(sistema.identificacao,this.ppd.si.identificacao)
+        //Object.assign(sistema.identificacao,this.ppd.si.identificacao)
         Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
-        Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
-        Object.assign(sistema.estrategia,this.ppd.si.estrategia)
+        //Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
+        //Object.assign(sistema.estrategia,this.ppd.si.estrategia)
+        sistema.identificacao = JSON.parse(JSON.stringify(this.ppd.si.identificacao))
+        //sistema.avaliacao = JSON.parse(JSON.stringify(this.ppd.si.avaliacao))
+        sistema.caracterizacao = JSON.parse(JSON.stringify(this.ppd.si.caracterizacao))
+        sistema.estrategia = JSON.parse(JSON.stringify(this.ppd.si.estrategia))
+        sistema.identificacao.adminSistema= this.ppd.si.identificacao.adminSistema.map(e => e.sigla).toString()
+        sistema.identificacao.adminDados= this.ppd.si.identificacao.adminDados.map(e => e.sigla).toString(),
+        sistema.identificacao.propSistemaPublico= this.ppd.si.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
+        sistema.identificacao.propDados= this.ppd.si.identificacao.propDados.map(e => e.sigla).toString(),
+        sistema.identificacao.localDadosPublico= this.ppd.si.identificacao.localDadosPublico.map(e => e.sigla).toString(),
+        sistema.avaliacao.decomposicao= this.ppd.si.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
+        sistema.avaliacao.codClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.codigo).toString().replaceAll(",","#")
+        sistema.avaliacao.numeroClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.referencia).toString().replaceAll(",","#")
+        sistema.avaliacao.tituloClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.titulo).toString().replaceAll(",","#")
+        sistema.avaliacao.pcaClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.pca).toString().replaceAll(",","#")
+        sistema.avaliacao.destinoFinalClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.df).toString().replaceAll(",","#")
+        sistema.avaliacao.formaContagemPrazos= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.formaContagem).toString().replaceAll(",","#")
+        sistema.avaliacao.siRelacionado= this.ppd.si.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
+        sistema.avaliacao.siRelacionadoRelacao= this.ppd.si.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
         /*this.ppd.si.numeroSI = "",
         this.ppd.si.nomeSI = "",
         this.ppd.si.identificacao.adminSistema = [],
@@ -590,7 +606,7 @@ export default {
         this.ppd.si.avaliacao.legislacoes = "",
         this.ppd.si.caracterizacao.dependenciaSoft = "",
         this.ppd.si.caracterizacao.categoriaDados = "",
-        this.ppd.si.caracterizacao.formatos = "",
+        this.ppd.si.caracterizacao.formatosUtilizados = "",
         this.ppd.si.caracterizacao.modeloCres = "",
         this.ppd.si.caracterizacao.dimensao = "",
         this.ppd.si.caracterizacao.crescimento = "",
@@ -641,7 +657,7 @@ export default {
         this.ppd.si.avaliacao.selecionadosTabelaFL = [];
         await this.consultaFT();
       } else {
-        
+
         if(isNaN(this.ppd.si.numeroSI)){
            this.mensagemErroSI = this.mensagemErroSI.concat("- Número de SI não pode conter letras ")
         }
@@ -652,7 +668,7 @@ export default {
         if(this.ppd.si.avaliacao.descricao == ""){
           this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Avaliação ")
         }
-        if(this.ppd.si.caracterizacao.formatos == ""){
+        if(this.ppd.si.caracterizacao.formatosUtilizados == ""){
           this.mensagemErroSI = this.mensagemErroSI.concat("- Separador Caracterização ")
         }
         if(this.ppd.si.estrategia.utilizacaoOperacional.fundMetodoPreservacao == ""){
@@ -775,12 +791,6 @@ export default {
           }
           else{
               child = [];
-              if(sis.avaliacao.decomposicao.length>0){
-                let aux = sis.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + "-" + e.nomeSub).toString().replaceAll(",","#")
-                child = aux.split("#").map(e=> e=({"id": e.split("-")[0], "name":e.split("-").slice(1).toString()}));
-                //child.sort();
-                child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));
-              }
               this.ppd.arvore.push({"id": sis.numeroSI, "name": sis.nomeSI, "titulo": sis.nomeSI, children: child })
               this.ppd.arvore.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
           }
@@ -823,6 +833,7 @@ export default {
             auxPPD.geral = this.ppd.geral;
             auxPPD.sistemasInfo = this.ppd.sistemasInfo;
             var userBD = this.$verifyTokenUser();
+            await this.criarSIHistorico()
             var pedidoParams = {
               tipoPedido: "Criação",
               tipoObjeto: "PPD",
@@ -851,7 +862,6 @@ export default {
     },
 
     criaHistorico: async function () {
-      //alert(JSON.stringify(this.ppd.geral.entSel))
       let historico = [
         {
             numeroPPD: {
@@ -881,30 +891,56 @@ export default {
             },
             entSel: {
               cor: "verde",
-              dados: this.ppd.geral.entSel.map((c) => {
-                return {
-                  cor: "verde",
-                  dados: JSON.parse(JSON.stringify(c)),
-                  nota: null,
-                };
-              }),
+              dados: this.ppd.geral.entSel,
               nota: null,
             },
             sistemasInfo: {
               cor: "verde",
-              dados: this.ppd.sistemasInfo.map((c) => {
-                return {
-                  cor: "verde",
-                  dados: JSON.parse(JSON.stringify(c)),
-                  nota: null,
-                };
-              }),
+              dados: this.sisHistorico,
               nota: null,
             },
           },
       ]
-      //alert(JSON.stringify(historico))
       return historico
+    },
+
+    criarSIHistorico: async function () {
+      this.sisHistorico = JSON.parse(JSON.stringify(this.ppd.sistemasInfo))
+      for(var i=0 ; i<this.sisHistorico.length; i++){
+        Object.keys(this.sisHistorico[i]).forEach(key => {
+          if(key == 'identificacao' || key == 'avaliacao' || key == 'caracterizacao'){
+            Object.keys(this.sisHistorico[i][key]).forEach(anotherkey => {
+              this.sisHistorico[i][key][anotherkey] = {
+              cor:"verde",
+              dados: this.sisHistorico[i][key][anotherkey],
+              nota: null
+            }
+            })
+          }
+          else if(key == 'estrategia'){
+            Object.keys(this.sisHistorico[i][key]).forEach(anotherkey => {
+              if(anotherkey != null){
+                Object.keys(this.sisHistorico[i][key][anotherkey]).forEach(lastkey => {
+                  if(this.sisHistorico[i][key][anotherkey][lastkey] != null){
+                    this.sisHistorico[i][key][anotherkey][lastkey] = {
+                      cor:"verde",
+                      dados: this.sisHistorico[i][key][anotherkey][lastkey],
+                      nota: null
+                    }
+                  }
+                })
+              }
+            })
+          }
+          else{
+            this.sisHistorico[i][key] = {
+              cor:"verde",
+              dados: this.sisHistorico[i][key],
+              nota: null
+            }
+          }
+        });
+      }
     }
 
 

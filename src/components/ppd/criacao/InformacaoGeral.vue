@@ -209,11 +209,11 @@ export default {
           var response = await this.$request("get", "/pgd/lc");
           this.portariaLC = await this.prepararLeg(response.data);
         }
-        if(this.loadCheck == "PGD"){
+        else if(this.loadCheck == "PGD"){
           var response = await this.$request("get", "/pgd");
           this.portaria = await this.prepararLeg(response.data);
         }
-        if(this.loadCheck == "RADA"){
+        else if(this.loadCheck == "RADA"){
           var response = await this.$request("get", "/legislacao?fonte=RADA");
           this.portariaRada = await this.prepararLeg(response.data);
         }
