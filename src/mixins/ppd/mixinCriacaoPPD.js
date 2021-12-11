@@ -12,7 +12,7 @@ export default {
     },
 
     item2Show: function(item){
-      alert(JSON.stringify(item.avaliacao))
+      //alert(JSON.stringify(item.avaliacao))
       this.siSpec = item;
       if(item.visto && typeof(item.identificacao.adminSistema) != 'string'){
         item.visto=false;
