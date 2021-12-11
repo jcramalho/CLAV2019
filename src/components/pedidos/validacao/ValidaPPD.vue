@@ -350,14 +350,14 @@ export default {
   },
   methods: {
     async test() {
-      alert(JSON.stringify(this.novoHistorico.fonteLegitimacao.dados))
-      alert(JSON.stringify(this.novoHistorico.fonteLegitimacao.dados.length))
-      alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
+      //alert(JSON.stringify(this.novoHistorico.fonteLegitimacao.dados))
+      //alert(JSON.stringify(this.novoHistorico.fonteLegitimacao.dados.length))
+      //alert(JSON.stringify(this.p.objeto.dados.geral.fonteLegitimacao))
     },
 
     consultaFT: async function() {
       try {
-        alert(JSON.stringify( this.novoHistorico.fonteLegitimacao.dados.id))
+        //alert(JSON.stringify( this.novoHistorico.fonteLegitimacao.dados.id))
         var tipo = this.novoHistorico.fonteLegitimacao.dados.id.split("_");
         if(tipo[0] == 'pgd'){
           var response = await this.$request("get", "/pgd/"+this.novoHistorico.fonteLegitimacao.dados.id);
@@ -404,7 +404,7 @@ export default {
     },
 
     item2Show: async function(item){
-      alert(JSON.stringify(item))
+      //alert(JSON.stringify(item))
       this.siSpec = item;
       this.siEditar = item.nomeSI
       this.indexSI = this.p.objeto.dados.sistemasInfo.findIndex(x => x.nomeSI === this.siEditar)

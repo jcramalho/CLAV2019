@@ -221,7 +221,7 @@ export default {
           //    delete this.pedido.objeto.dados[key];
           //  }
           //}
-          alert(JSON.stringify(this.pedido.objeto))
+          //alert(JSON.stringify(this.pedido.objeto))
           await this.$request("post", "/ppds/registar",  this.pedido.objeto );
 
         }
