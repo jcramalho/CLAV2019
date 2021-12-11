@@ -497,7 +497,9 @@
                         >Código do pedido: {{ item.id }}
                         <p>Estatísticas:</p>
                         <ol>
-                          <li>{{ loadStats(item.stats) }}</li>
+                          <li v-for="(stat, i) in item.stats" v-bind:key="i">
+                            {{ loadStats(stat, i) }}
+                          </li>
                         </ol>
                         <v-btn
                           v-if="multImport"
@@ -518,7 +520,9 @@
                   Código do pedido: {{ codigo }}
                   <p>Estatísticas:</p>
                   <ol>
-                    <li>{{ loadStats(stats) }}</li>
+                    <li v-for="(stat, i) in stats" v-bind:key="i">
+                      {{ loadStats(stat, i) }}
+                    </li>
                   </ol>
                 </div>
               </v-card-text>
@@ -698,48 +702,14 @@ export default {
     goBack() {
       this.$router.push("/tsInfo");
     },
-    loadStats(fstats) {
-      for (var k in fstats) {
-        switch (k) {
-          case "processos":
-            return "Número de Processos: " + fstats[k];
-          case "donos":
-            return "Número de Processos Donos: " + fstats[k];
-          case "participantes":
-            return "Número de Processos Participantes: " + fstats[k];
-          /*
-          default:
-            stats += "<li>Entidade: " + k + "<ul>";
-            for (var kb in fstats[k]) {
-              switch (kb) {
-                case "processos":
-                  stats +=
-                    "<li>Número de Processos: " +
-                    response.data.stats[k][kb] +
-                    "</li>";
-                  break;
-                case "donos":
-                  stats +=
-                    "<li>Número de Processos Donos: " +
-                    response.data.stats[k][kb] +
-                    "</li>";
-                  break;
-                case "participantes":
-                  stats +=
-                    "<li>Número de Processos Participantes: " +
-                    response.data.stats[k][kb] +
-                    "</li>";
-                  break;
-                default:
-                  break;
-              }
-            }
-            stats += "</ul>";
-        }
-      }
-      stats += "</ul>";
-      */
-        }
+    loadStats(stat, k) {
+      switch (k) {
+        case "processos":
+          return "Número de Processos: " + stat + "\n";
+        case "donos":
+          return "Número de Processos Donos: " + stat + "\n";
+        case "participantes":
+          return "Número de Processos Participantes: " + stat + "\n";
       }
     },
     enviarFicheiro: async function () {

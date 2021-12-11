@@ -247,7 +247,7 @@ export default new Router({
       path: "/ts/importar/csv",
       name: "importaCSV",
       component: () => import("./views/tabSel/TabSelImportaCSV.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [4, 5, 6, 7] }
     },
     {
       path: "/ts/:id",

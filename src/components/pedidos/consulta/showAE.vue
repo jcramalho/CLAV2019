@@ -54,11 +54,11 @@
           <span v-else>{{ p.objeto.dados.referencial.split("#")[0] }}</span>
         </template>
       </Campo>
-      <Campo nome="Fundo" infoHeader="Fundo" color="neutralpurple">
+      <Campo nome="Entidades" infoHeader="Entidades" color="neutralpurple">
         <template v-slot:conteudo>
           <ul>
-            <li v-for="(f, i) in p.objeto.dados.fundo" :key="i">
-              <a :href="'/entidades/ent_' + f.split(' - ')[0]">{{ f }}</a>
+            <li v-for="(e, i) in p.objeto.dados.entidades" :key="i">
+              <a :href="'/entidades/' + e.entidade">{{e.entidade}}: {{e.designacao}}</a>
             </li>
           </ul>
         </template>
@@ -68,7 +68,7 @@
         <template v-slot:conteudo>
           <v-list dense color="secondary">
             <v-list-group
-              v-for="(item, index) in p.objeto.dados.zonaControlo"
+              v-for="(item, index) in p.objeto.dados.classes"
               :key="index"
               no-action
             >
@@ -128,21 +128,21 @@
                     </template>
                   </Campo>
                   <Campo
-                    nome="Data de Início"
-                    infoHeader="Data de Início"
+                    nome="Ano de Início"
+                    infoHeader="Ano de Início"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.dataInicio }}</span>
+                      <span> {{ item.anoInicio }}</span>
                     </template>
                   </Campo>
                   <Campo
-                    nome="Data de Fim"
-                    infoHeader="Data de Fim"
+                    nome="Ano de Fim"
+                    infoHeader="Ano de Fim"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.dataFim }}</span>
+                      <span> {{ item.anoFim }}</span>
                     </template>
                   </Campo>
                   <Campo
@@ -152,38 +152,38 @@
                   >
                     <template v-slot:conteudo>
                       <span>
-                        {{ item.nrAgregacoes ? item.nrAgregacoes : 0 }}</span
+                        {{ item.numAgregacoes ? item.numAgregacoes : 0 }}</span
                       >
                     </template>
                   </Campo>
                   <Campo
-                    v-if="item.uiPapel"
+                    v-if="item.dimensaoSuporte && item.dimensaoSuporte.papel"
                     nome="Medição das UI em papel (m.l.)"
                     infoHeader="Medição das UI em papel (m.l.)"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.uiPapel }}</span>
+                      <span> {{ item.dimensaoSuporte.papel }}</span>
                     </template>
                   </Campo>
                   <Campo
-                    v-if="item.uiDigital"
+                    v-if="item.dimensaoSuporte && item.dimensaoSuporte.digital"
                     nome="Medição das UI em digital (Gb)"
                     infoHeader="Medição das UI em digital (Gb)"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.uiDigital }}</span>
+                      <span> {{ item.dimensaoSuporte.digital }}</span>
                     </template>
                   </Campo>
                   <Campo
-                    v-if="item.uiOutros"
+                    v-if="item.dimensaoSuporte && item.dimensaoSuporte.outro"
                     nome="Medição das UI noutros suportes"
                     infoHeader="Medição das UI noutros suportes"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.uiOutros }}</span>
+                      <span> {{ item.dimensaoSuporte.outro.valor }} - {{ item.dimensaoSuporte.outro.unidade }}</span>
                     </template>
                   </Campo>
                   <table class="consulta mx-5">
@@ -298,8 +298,8 @@ export default {
     cabecalho: [
       { text: "Código", align: "left", sortable: false, value: "codigo" },
       { text: "Título", align: "left", value: "titulo" },
-      { text: "Data de Contagem", align: "center", value: "dataContagem" },
-      { text: "Natureza de Intervenção", align: "center", value: "ni" },
+      { text: "Ano", align: "center", value: "ano" },
+      { text: "Natureza de Intervenção", align: "center", value: "naturezaIntervencao" },
     ],
     footer_props: {
       "items-per-page-text": "Mostrar",
