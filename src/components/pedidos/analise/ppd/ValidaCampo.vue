@@ -739,15 +739,15 @@ export default {
         this.classesSI.splice(indexAux,1);
         this.classeSelecionada="";
         this.novoHistorico.selecionadosTabelaFL.dados.push(selectedClasse);
-        alert(JSON.stringify(this.novoHistorico))
+        //alert(JSON.stringify(this.novoHistorico))
         this.listaClasses.push(selectedClasse)
         if(parseInt(selectedClasse.pca) > parseInt(this.novoHistorico.pcaSI.dados)){
           this.novoHistorico.pcaSI.dados = parseInt(selectedClasse.pca);
         }
         if(this.novoHistorico.destinoSI.dados != "C"){
-          alert("A")
-          alert(selectedClasse.df)
-          alert("B")
+          //alert("A")
+          //alert(selectedClasse.df)
+          //alert("B")
           this.novoHistorico.destinoSI.dados = selectedClasse.df;
         }
       }
@@ -769,7 +769,7 @@ export default {
       this.listaClasses.forEach(element => {
         //alert(JSON.stringify(this.classesDaFonteL))
         if(parseInt(element.pca) > this.auxPCA){
-          alert(parseInt(element.pca))
+          //alert(parseInt(element.pca))
           this.auxPCA = parseInt(element.pca)
         }
         if(this.auxDF != "C"){
