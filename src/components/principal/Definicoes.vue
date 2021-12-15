@@ -1,17 +1,10 @@
 <template>
-  <v-navigation-drawer
-    style="z-index: 2 !important"
-    :value="drawer"
-    width="320px"
-    right
-    absolute
-    clipped
-  >
+  <v-navigation-drawer app :value="drawer" width="320px" clipped right>
     <v-list dense rounded>
       <v-list-item-group color="primary">
         <v-list-item @click="$router.push('/users/pedidos')">
           <v-list-item-content class="font-weight-medium white--text">
-            {{ this.$store.state.name }}</v-list-item-content
+            {{ $store.state.name }}</v-list-item-content
           >
           <v-list-item-icon>
             <v-icon color="secondary">account_circle</v-icon>

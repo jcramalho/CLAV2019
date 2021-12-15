@@ -1,7 +1,11 @@
 <template>
   <div>
     <!--Navbar para sm/md/lg/xl screens-->
-    <v-app-bar app class="white--text clav-linear-background hidden-xs-only">
+    <v-app-bar
+      app
+      clipped-right
+      class="white--text clav-linear-background hidden-xs-only"
+    >
       <!--Logotipo CLAV-->
       <v-tooltip bottom color="info">
         <template v-slot:activator="{ on }">

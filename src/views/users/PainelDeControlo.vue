@@ -21,7 +21,7 @@
         </v-expansion-panels>
       </v-col>
       <v-col v-if="notificacoes.length" cols="3" align="center" class="pt-0 pl-0">
-        <v-card class="fill-height pa-0">
+        <v-card class="fill-height pa-0" max-height="2000px" style="overflow: scroll">
           <v-card-title class="clav-content-title-2 justify-center my-2">
             Notificações
           </v-card-title>
