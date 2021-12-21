@@ -106,14 +106,8 @@ export default {
       novoHistorico: {},
       esconderOperacoes: {},
       notasAppHeader: [
-        { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center"
+        { text: "Notas", value: "nota", class: "subtitle-1" },
+        { text: "Operação", value: "operacao", class: "subtitle-1", sortable: false, width: "10%", align: "center"
         }
       ],
       /**
