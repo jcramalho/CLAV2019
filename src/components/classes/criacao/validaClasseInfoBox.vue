@@ -90,6 +90,7 @@ export default {
     notaDuplicada: function (notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
+        lastNota = lastNota.trim();
         var duplicados = notas.filter((n) => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
@@ -247,6 +248,11 @@ export default {
 
     validaNotasAp: async function () {
       // Notas de Aplicação
+      if(this.c.notasAp.length > 0){
+        this.c.notasAp = this.c.notasAp.map(function(n){ 
+          n.nota = n.nota.trim();
+          return n;});
+      }
       for (var i = 0; i < this.c.notasAp.length; i++) {
         try {
           var existeNotaAp = await this.$request(
@@ -279,6 +285,11 @@ export default {
 
     validaExemplosNotasAp: async function () {
       // Exemplos de notas de Aplicação
+      if(this.c.exemplosNotasAp.length > 0){
+        this.c.exemplosNotasAp = this.c.exemplosNotasAp.map(function(e){ 
+          e.exemplo = e.exemplo.trim();
+          return n;});
+      }
       for (var i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
           var existeExemploNotaAp = await this.$request(

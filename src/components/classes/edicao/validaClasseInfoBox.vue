@@ -101,6 +101,7 @@ export default {
     notaDuplicada: async function(notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
+        lastNota = lastNota.trim();
         var duplicados = notas.filter(n => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
@@ -113,7 +114,8 @@ export default {
     exemploDuplicado: async function(exemplos) {
       if (exemplos.length > 1) {
         var lastExemplo = exemplos[exemplos.length - 1].exemplo;
-        var duplicados = exemplos.filter(e => e.exemplo == lastExemplo);
+        var semEspacos = lastExemplo.trim();
+        var duplicados = exemplos.filter(e => e.exemplo == semEspacos);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -125,6 +127,7 @@ export default {
     tiDuplicado: function(termos) {
       if (termos.length > 1) {
         var lastTermo = termos[termos.length - 1].termo;
+        lastTermo = lastTermo.trim()
         var duplicados = termos.filter(t => t.termo == lastTermo);
         if (duplicados.length > 1) {
           return true;
@@ -151,6 +154,9 @@ export default {
       }
 
       // Notas de Aplicação
+      if(this.c.notasAp.length > 0){
+        this.c.notasAp = this.c.notasAp.map(s => s.trim());
+      }
       for (var i = 0; i < this.c.notasAp.length; i++) {
         let index = this.original.notasAp.findIndex(
           x => x.nota === this.c.notasAp[i].nota
@@ -188,6 +194,9 @@ export default {
       }
 
       // Exemplos de notas de Aplicação
+      if(this.c.exemplosNotasAp.length > 0){
+        this.c.exemplosNotasAp.map(s => s.trim());
+      }
       for (i = 0; i < this.c.exemplosNotasAp.length; i++) {
         let obj = this.original.exemplosNotasAp.find(
           x => x.exemplo === this.c.exemplosNotasAp[i].exemplo
