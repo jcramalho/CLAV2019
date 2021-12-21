@@ -127,7 +127,8 @@ export default {
     notaDuplicada: function (notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1][this.campo];
-        var duplicados = notas.filter((n) => n[this.campo] == lastNota);
+        var semEspacos = lastNota.trim();
+        var duplicados = notas.filter((n) => n[this.campo] == semEspacos);
         if (duplicados.length > 1) {
           return true;
         } else return false;
