@@ -236,7 +236,7 @@
       id="mobile-toolbar"
       class="clav-linear-background hidden-sm-and-up toolbar white--text"
     >
-      <v-toolbar-title @click="goRoute('/')" style="cursor: pointer">
+      <v-toolbar-title @click="goRoute('/')">
         <p class="title-letters-md font-weight-bold d-inline">CLAV -</p>
         <p
           class="subtitle-letter-md font-weight-light d-inline text-wrap"
@@ -299,12 +299,8 @@
           </v-btn>
         </template>
         <v-card class="toolbar">
-          <v-app-bar flat id="mobile-toolbar" class="toolbar">
-            <v-toolbar-title
-              v-if="this.$store.state.name == ''"
-              @click="goRoute('/')"
-              style="cursor: pointer"
-            >
+          <v-app-bar flat class="clav-linear-background white--text">
+            <v-toolbar-title v-if="this.$store.state.name == ''" @click="goRoute('/')">
               <p class="title-letters-md font-weight-bold d-inline">CLAV</p>
             </v-toolbar-title>
             <v-toolbar-title
@@ -340,12 +336,12 @@
               <v-icon color="error">close</v-icon>
             </v-btn>
           </v-app-bar>
-          <v-list rounded color="rgba(0,0,0,0)" dark two-line>
+          <v-list rounded two-line>
             <v-container class="pa-0" v-for="tab in tabsAcessiveis" :key="tab.titulo">
               <v-list-item
                 v-if="!tab.menu"
                 @click="
-                  goRoute(tab.url);
+                  go(tab.url);
                   dialog = false;
                 "
               >
@@ -356,42 +352,73 @@
                     width="24"
                     height="24"
                     :viewBox="tab.icon.viewbox"
-                    fill="#f3f7fc"
+                    fill="black"
                   />
-                  <p class="d-inline mobile-menu-link">{{ tab.titulo }}</p>
+                  <p class="ml-2 d-inline mobile-menu-link">{{ tab.titulo }}</p>
                 </v-list-item-title>
               </v-list-item>
 
-              <v-list-item v-if="tab.menu" no-action>
+              <v-list-group v-if="tab.menu">
                 <template v-slot:activator>
-                  <v-list-item-content>
-                    <v-list-item-title class="px-2 font-weight-bold">
-                      <unicon
-                        v-if="tab.icon"
-                        :name="tab.icon.nome"
-                        width="24"
-                        height="24"
-                        :viewBox="tab.icon.viewbox"
-                      />
-                      <p class="d-inline mobile-menu-link">{{ tab.titulo }}</p>
-                    </v-list-item-title>
-                  </v-list-item-content>
+                  <v-list-item-title class="px-2 font-weight-bold">
+                    <unicon
+                      v-if="tab.icon"
+                      :name="tab.icon.nome"
+                      width="24"
+                      height="24"
+                      :viewBox="tab.icon.viewbox"
+                    />
+                    <p class="ml-2 d-inline mobile-menu-link">{{ tab.titulo }}</p>
+                  </v-list-item-title>
                 </template>
                 <v-list-item
                   v-for="menuLink in tab.menu"
                   :key="menuLink.opcao"
                   @click="
-                    goRoute(menuLink.url);
+                    go(menuLink.url);
                     dialog = false;
                   "
                 >
                   <v-list-item-content>
                     <v-list-item-title class="text-wrap">
-                      {{ menuLink.opcao }}
+                      <v-row align="center">
+                        <v-col cols="8"> {{ menuLink.opcao }}</v-col>
+                        <!--Subopções-->
+                        <v-col
+                          cols="1"
+                          v-for="action in menuLink.acoes"
+                          :key="action.name"
+                        >
+                          <!--Utiliza caixa de dialogo para alterar legislação/tipologia/entidade-->
+                          <v-btn
+                            v-if="action.url.includes('alterar')"
+                            @click.prevent="openDialog(action)"
+                            icon
+                          >
+                            <unicon
+                              :name="action.icon"
+                              width="22"
+                              height="22"
+                              viewBox="0 0 20.71 20.697"
+                              fill="#000000"
+                            />
+                          </v-btn>
+                          <!--Subopção-->
+                          <v-btn v-else @click.prevent="go(action.url)" icon>
+                            <unicon
+                              :name="action.icon"
+                              width="22"
+                              height="22"
+                              viewBox="0 0 20.71 20.697"
+                              fill="#000000"
+                            />
+                          </v-btn>
+                        </v-col>
+                      </v-row>
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
-              </v-list-item>
+              </v-list-group>
             </v-container>
           </v-list>
         </v-card>
@@ -869,17 +896,6 @@ export default {
 </script>
 
 <style scoped>
-/*Nota: Testar compatibilidade entre browsers*/
-
-/*Web css*/
-#authenticate-button,
-#authenticate-button-mobile {
-  box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.4),
-    0 2px 4px -1px rgba(255, 255, 255, 0.36);
-  background-color: var(--v-success-base) !important;
-  text-decoration: none;
-}
-
 .v-tab {
   text-transform: none !important;
   font-weight: bold !important;
@@ -888,29 +904,19 @@ export default {
   min-width: 250px !important;
 }
 
-/*CSS Ações rápidas*/
-.acoes {
-  position: absolute;
-  left: 50%;
-  bottom: -30%;
+.active {
+  color: #0057b7 !important;
+  background-color: #f3f7fc !important;
+  border-radius: 10px 10px 0px 0px;
+  fill: #0057b7 !important;
 }
-
-.acao {
-  display: inline-block;
-  position: relative;
-  left: -50%;
-}
-
-.opcoes-enter-active {
-  transition: all 0.3s ease;
-}
-.opcoes-leave-active {
-  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.opcoes-enter,
-.opcoes-leave-to {
-  transform: translateY(10px);
-  opacity: 0;
+/*Web css*/
+#authenticate-button,
+#authenticate-button-mobile {
+  box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.4),
+    0 2px 4px -1px rgba(255, 255, 255, 0.36);
+  background-color: var(--v-success-base) !important;
+  text-decoration: none;
 }
 
 /* Mobile CSS */
@@ -993,13 +999,6 @@ export default {
   color: #e5e5e5 !important;
 }
 
-.active {
-  color: #0057b7 !important;
-  background-color: #f3f7fc !important;
-  border-radius: 10px 10px 0px 0px;
-  fill: #0057b7 !important;
-}
-
 .v-menu__content {
   text-align: center;
   background-color: #09337f !important;
@@ -1023,5 +1022,30 @@ export default {
 .v-application .primary--text {
   color: #3899b7 !important;
   fill: #3899b7 !important;
+}
+
+/*CSS Ações rápidas*/
+.acoes {
+  position: absolute;
+  left: 50%;
+  bottom: -30%;
+}
+
+.acao {
+  display: inline-block;
+  position: relative;
+  left: -50%;
+}
+
+.opcoes-enter-active {
+  transition: all 0.3s ease;
+}
+.opcoes-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.opcoes-enter,
+.opcoes-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
 }
 </style>
