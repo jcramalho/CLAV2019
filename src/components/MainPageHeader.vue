@@ -371,18 +371,19 @@
                     <p class="ml-2 d-inline mobile-menu-link">{{ tab.titulo }}</p>
                   </v-list-item-title>
                 </template>
-                <v-list-item
-                  v-for="menuLink in tab.menu"
-                  :key="menuLink.opcao"
-                  @click="
-                    go(menuLink.url);
-                    dialog = false;
-                  "
-                >
+                <v-list-item v-for="menuLink in tab.menu" :key="menuLink.opcao">
                   <v-list-item-content>
                     <v-list-item-title class="text-wrap">
                       <v-row align="center">
-                        <v-col cols="8"> {{ menuLink.opcao }}</v-col>
+                        <v-col
+                          cols="8"
+                          @click="
+                            go(menuLink.url);
+                            dialog = false;
+                          "
+                        >
+                          {{ menuLink.opcao }}</v-col
+                        >
                         <!--Subopções-->
                         <v-col
                           cols="1"
@@ -392,7 +393,10 @@
                           <!--Utiliza caixa de dialogo para alterar legislação/tipologia/entidade-->
                           <v-btn
                             v-if="action.url.includes('alterar')"
-                            @click.prevent="openDialog(action)"
+                            @click.prevent="
+                              openDialog(action);
+                              dialog = false;
+                            "
                             icon
                           >
                             <unicon
@@ -404,7 +408,14 @@
                             />
                           </v-btn>
                           <!--Subopção-->
-                          <v-btn v-else @click.prevent="go(action.url)" icon>
+                          <v-btn
+                            v-else
+                            @click.prevent="
+                              go(action.url);
+                              dialog = false;
+                            "
+                            icon
+                          >
                             <unicon
                               :name="action.icon"
                               width="22"
