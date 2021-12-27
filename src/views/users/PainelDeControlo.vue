@@ -103,8 +103,8 @@
                           Movido para <strong>{{ item.novoEstado }}</strong
                           >.
                         </li>
-                        <li v-if="item.realizadoPor">
-                          Realizado por <strong>{{ item.realizadoPor }}</strong
+                        <li v-if="item.criadoPor">
+                          Realizado por <strong>{{ item.criadoPor }}</strong
                           >.
                         </li>
                         <li v-if="item.responsavel">
