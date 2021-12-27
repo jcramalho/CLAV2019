@@ -58,7 +58,9 @@
         <template v-slot:conteudo>
           <ul>
             <li v-for="(e, i) in p.objeto.dados.entidades" :key="i">
-              <a :href="'/entidades/' + e.entidade">{{e.entidade}}: {{e.designacao}}</a>
+              <a :href="'/entidades/' + e.entidade"
+                >{{ e.entidade }}: {{ e.designacao }}</a
+              >
             </li>
           </ul>
         </template>
@@ -134,11 +136,7 @@
                       <span> {{ item.anoInicio }}</span>
                     </template>
                   </Campo>
-                  <Campo
-                    nome="Ano de Fim"
-                    infoHeader="Ano de Fim"
-                    color="neutralpurple"
-                  >
+                  <Campo nome="Ano de Fim" infoHeader="Ano de Fim" color="neutralpurple">
                     <template v-slot:conteudo>
                       <span> {{ item.anoFim }}</span>
                     </template>
@@ -149,13 +147,7 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-<<<<<<< HEAD
-                      <span>
-                        {{ item.numAgregacoes ? item.numAgregacoes : 0 }}</span
-                      >
-=======
                       <span> {{ item.nrAgregacoes ? item.nrAgregacoes : 0 }}</span>
->>>>>>> 22dfc46a (remoção de css && mudança de nome CampoCLAV)
                     </template>
                   </Campo>
                   <Campo
@@ -185,7 +177,10 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.dimensaoSuporte.outro.valor }} - {{ item.dimensaoSuporte.outro.unidade }}</span>
+                      <span>
+                        {{ item.dimensaoSuporte.outro.valor }} -
+                        {{ item.dimensaoSuporte.outro.unidade }}</span
+                      >
                     </template>
                   </Campo>
                   <table class="consulta mx-5">

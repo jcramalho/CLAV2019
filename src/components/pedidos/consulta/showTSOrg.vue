@@ -158,18 +158,7 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
 
-<<<<<<< HEAD
-                <v-expansion-panel
-                  v-if="
-                    (item.codigo.split('.').length === 3 &&
-                      !item.temSubclasses4Nivel) ||
-                    item.codigo.split('.').length === 4
-                  "
-                  popout
-                >
-=======
                 <v-expansion-panel v-if="item.codigo.split('.').length === 3" popout>
->>>>>>> 22dfc46a (remoção de css && mudança de nome CampoCLAV)
                   <!-- DECISÔES DE AVALIAÇÂO DA CLASSE -->
                   <v-expansion-panel-header class="clav-linear-background white--text">
                     <div>
@@ -220,9 +209,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="
-                        item.pca.formaContagem && item.pca.formaContagem != ''
-                      "
+                      v-if="item.pca.formaContagem && item.pca.formaContagem != ''"
                       color="neutralpurple"
                       nome="Forma de Contagem"
                       infoHeader="Forma de Contagem"
@@ -247,10 +234,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="
-                        item.pca.justificacao &&
-                        item.pca.justificacao.length > 0
-                      "
+                      v-if="item.pca.justificacao && item.pca.justificacao.length > 0"
                       color="neutralpurple"
                       nome="Justificação"
                       infoHeader="Justificação"
@@ -365,9 +349,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="
-                        item.df.justificacao && item.df.justificacao.length > 0
-                      "
+                      v-if="item.df.justificacao && item.df.justificacao.length > 0"
                       color="neutralpurple"
                       nome="Justificação"
                       infoHeader="Justificação"
