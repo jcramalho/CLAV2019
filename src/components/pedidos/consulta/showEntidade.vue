@@ -79,7 +79,7 @@
 <script>
 import { mapKeys } from "@/utils/utils";
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["p"],

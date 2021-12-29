@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 const help = require("@/config/help").help;
 
 export default {
@@ -128,27 +128,5 @@ a:link {
 a:hover {
   color: white;
   background-color: #1a237e;
-}
-
-.info-label {
-  color: #1a237e;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #dee2f8;
-  font-weight: bold;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.table-header {
-  color: #1a237e;
-  font-weight: 400;
-  background-color: #dee2f8;
-  font-weight: bold;
 }
 </style>

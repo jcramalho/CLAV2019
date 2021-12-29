@@ -126,7 +126,7 @@
 
 <script>
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV.vue";
 import TogglePanelsCLAV from "@/components/generic/TogglePanelsCLAV";
 
 const lhost = require("@/config/global").host;

@@ -11,7 +11,7 @@
     <!-- CONTENT -->
     <v-row justify="center">
       <v-col cols="12" md="8">
-        <p class="content-text">Pretende importar múltiplos ficheiros:</p>
+        <p class="clav-content-text">Pretende importar múltiplos ficheiros:</p>
         <v-row justify="center">
           <v-tooltip top color="info" open-delay="500">
             <template v-slot:activator="{ on }">
@@ -25,7 +25,7 @@
             <span> Fonte de legitimação</span>
           </v-tooltip>
         </v-row>
-        <p class="content-text">
+        <p class="clav-content-text">
           Selecione a fonte de legitimação da Tabela de Seleção a importar:
         </p>
         <v-row justify="center">
@@ -54,7 +54,7 @@
             <span> Fonte de legitimação</span>
           </v-tooltip>
         </v-row>
-        <p class="content-text">Selecione o tipo de Tabela de Seleção:</p>
+        <p class="clav-content-text">Selecione o tipo de Tabela de Seleção:</p>
         <v-row justify="center">
           <v-tooltip top color="info" open-delay="500">
             <template v-slot:activator="{ on }">
@@ -100,7 +100,7 @@
         </v-row>
         <div v-if="tipo != null">
           <div class="pa-0 ma-0" v-if="!multImport && tipo == 'Organizacional'">
-            <p class="content-text">
+            <p class="clav-content-text">
               Identifique a entidade ou tipologia da Tabela de Seleção:
             </p>
             <v-tooltip top color="info" open-delay="500">
@@ -129,7 +129,7 @@
             </v-tooltip>
           </div>
           <div class="pa-0 ma-0" v-else-if="!multImport">
-            <p class="content-text">
+            <p class="clav-content-text">
               Identifique as entidades e tipologias da Tabela de Seleção:
             </p>
             <v-tooltip top color="info" open-delay="500">
@@ -153,7 +153,7 @@
             </v-tooltip>
           </div>
           <div v-if="!multImport">
-            <p class="content-text">
+            <p class="clav-content-text">
               Insira a designação para a Tabela de Seleção:
             </p>
             <v-tooltip top color="info" open-delay="500">
@@ -174,7 +174,7 @@
             </v-tooltip>
           </div>
 
-          <p class="content-text">
+          <p class="clav-content-text">
             Selecione o ficheiro com a Tabela de Seleção a importar:
           </p>
           <v-tooltip top color="info" open-delay="500">
@@ -196,7 +196,7 @@
             <span> Ficheiro com a Tabela de Seleção a importar</span>
           </v-tooltip>
 
-          <v-card id="info-import-file" class="mx-auto pa-4 content-text">
+          <v-card id="info-import-file" class="mx-auto pa-4 clav-content-text">
             <div v-if="tipo == 'Organizacional'">
               <b>Caso o ficheiro seja CSV deve respeitar o seguinte:</b>
 

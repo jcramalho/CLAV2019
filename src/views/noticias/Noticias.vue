@@ -1,8 +1,8 @@
 <template>
   <div>
     <Loading v-if="!noticiasReady" :message="'notícias'" />
-    <v-card v-else class="ma-2" flat>
-      <v-card-title class="clav-linear-background white--text">
+    <v-card v-else class="pa-2" flat>
+      <v-card-title class="clav-content-title-1">
         {{ tipo }}
       </v-card-title>
 

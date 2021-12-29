@@ -69,7 +69,7 @@
 const help = require("@/config/help").help;
 
 import Voltar from "@/components/generic/Voltar.vue";
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 import BlocoDescritivo from "@/components/classes/criacao/BlocoDescritivo.vue";
 import PainelOperacoesCont from "@/components/classes/criacao/PainelOperacoesCont.vue";
 

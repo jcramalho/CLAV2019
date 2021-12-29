@@ -58,7 +58,9 @@
         <template v-slot:conteudo>
           <ul>
             <li v-for="(e, i) in p.objeto.dados.entidades" :key="i">
-              <a :href="'/entidades/' + e.entidade">{{e.entidade}}: {{e.designacao}}</a>
+              <a :href="'/entidades/' + e.entidade"
+                >{{ e.entidade }}: {{ e.designacao }}</a
+              >
             </li>
           </ul>
         </template>
@@ -81,9 +83,7 @@
                       - {{ item.titulo }}</span
                     ></v-list-item-title
                   >
-                  <v-list-item-title
-                    v-else-if="item.codigo"
-                    v-text="item.codigo"
+                  <v-list-item-title v-else-if="item.codigo" v-text="item.codigo"
                     ><span v-if="item.titulo">
                       - {{ item.titulo }}</span
                     ></v-list-item-title
@@ -136,11 +136,7 @@
                       <span> {{ item.anoInicio }}</span>
                     </template>
                   </Campo>
-                  <Campo
-                    nome="Ano de Fim"
-                    infoHeader="Ano de Fim"
-                    color="neutralpurple"
-                  >
+                  <Campo nome="Ano de Fim" infoHeader="Ano de Fim" color="neutralpurple">
                     <template v-slot:conteudo>
                       <span> {{ item.anoFim }}</span>
                     </template>
@@ -151,9 +147,7 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span>
-                        {{ item.numAgregacoes ? item.numAgregacoes : 0 }}</span
-                      >
+                      <span> {{ item.nrAgregacoes ? item.nrAgregacoes : 0 }}</span>
                     </template>
                   </Campo>
                   <Campo
@@ -183,7 +177,10 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.dimensaoSuporte.outro.valor }} - {{ item.dimensaoSuporte.outro.unidade }}</span>
+                      <span>
+                        {{ item.dimensaoSuporte.outro.valor }} -
+                        {{ item.dimensaoSuporte.outro.unidade }}</span
+                      >
                     </template>
                   </Campo>
                   <table class="consulta mx-5">
@@ -249,10 +246,7 @@
                           <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
                         </tr-->
                   </table>
-                  <div
-                    class="ma-1"
-                    v-if="item.agregacoes && item.agregacoes.length > 0"
-                  >
+                  <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
                     <v-row justify="space-between" class="info-label">
                       <v-col>Lista de Agregações</v-col>
                       <v-col>
@@ -285,7 +279,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["p"],
@@ -346,13 +340,6 @@ export default {
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 

@@ -562,7 +562,7 @@ import ClassesArvoreLateral from "@/components/classes/ClassesArvoreLateral.vue"
 import Voltar from "@/components/generic/Voltar.vue";
 
 import PainelCLAV from "@/components/generic/PainelCLAV";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["idc", "savedSearch"],

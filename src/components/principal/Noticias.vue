@@ -24,7 +24,6 @@
       height="300"
       hide-delimiter-background
       show-arrows-on-hover
-      style="border: solid 1px var(--v-primary-base)"
     >
       <v-carousel-item v-for="(n, index) in this.noticias" :key="index">
         <v-sheet class="conteudo clav-info-content" height="100%" tile>
