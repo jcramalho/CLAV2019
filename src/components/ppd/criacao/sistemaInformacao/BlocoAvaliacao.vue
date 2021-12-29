@@ -208,7 +208,7 @@
                 <v-text-field
                   v-model="searchProcessos"
                   append-icon="search"
-                  label="Procura filtra sistemas informação"
+                  label="Procurar/filtrar sistemas informação"
                   single-line
                   hide-details
                 ></v-text-field>

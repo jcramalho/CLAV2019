@@ -11,6 +11,9 @@
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
       <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
     </v-dialog>
+    <v-dialog v-model="showPedido">
+      <span>{{pedido}}</span>
+    </v-dialog>
   </div>
 </template>
 
@@ -25,6 +28,7 @@ export default {
   props: ["idPedido"],
   data() {
     return {
+      showPedido: false,
       pedido: null,
       sumario: null,
       erroDialog: {
@@ -111,6 +115,7 @@ export default {
       }
     },
     async finalizarPedido(despacho) {
+      alert(this.pedido.objeto.tipo)
       let res;
       let despachoAprovacao;
       try {
@@ -222,11 +227,12 @@ export default {
           //  }
           //}
           //alert(JSON.stringify(this.pedido.objeto))
-          await this.$request("post", "/ppds/registar",  this.pedido.objeto );
-
+          alert(JSON.stringify(this.pedido.objeto.dados))
+          this.showPedido = true
+          //await this.$request("post", "/ppd/registar",  this.pedido.objeto.dados );
         }
 
-        await this.$request("post", "/legislacao", despachoAprovacao);
+        /*await this.$request("post", "/legislacao", despachoAprovacao);
 
         let dadosUtilizador = this.$verifyTokenUser();
 
@@ -250,6 +256,7 @@ export default {
         await this.$request("put", "/contador/despacho");
 
         this.$router.push(`/pedidos/finalizacao/${this.idPedido}`);
+        */
       } catch (e) {
         console.log(e);
         this.erroDialog.visivel = true;

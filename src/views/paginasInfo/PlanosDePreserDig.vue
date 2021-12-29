@@ -37,7 +37,7 @@
     <v-row justify="center" align="center">
       <v-col cols="12" md="4" justify="center" align="center">
         <v-btn
-          @click="$router.push('/ppd/consultar')"
+          @click="$router.push('/ppd/lista')"
           rounded
           class="white--text clav-linear-background"
           :class="{

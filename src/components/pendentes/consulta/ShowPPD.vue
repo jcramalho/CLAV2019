@@ -39,7 +39,7 @@
           <v-text-field
             v-model="searchEnt"
             append-icon="search"
-            label="Procura filtra entidades"
+            label="Procurar/filtrar entidades"
             single-line
             hide-details
           ></v-text-field>
@@ -83,7 +83,7 @@
           <v-text-field
             v-model="searchSI"
             append-icon="search"
-            label="Procura filtra sistemas informação"
+            label="Procurar/filtrar sistemas informação"
             single-line
             hide-details
           ></v-text-field>
