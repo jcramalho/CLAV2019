@@ -556,11 +556,11 @@ export default {
           estrategia: {},
         };
         //Object.assign(sistema.identificacao,this.ppd.si.identificacao)
-        Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
+        //Object.assign(sistema.avaliacao,this.ppd.si.avaliacao)
         //Object.assign(sistema.caracterizacao,this.ppd.si.caracterizacao)
         //Object.assign(sistema.estrategia,this.ppd.si.estrategia)
         sistema.identificacao = JSON.parse(JSON.stringify(this.ppd.si.identificacao))
-        //sistema.avaliacao = JSON.parse(JSON.stringify(this.ppd.si.avaliacao))
+        sistema.avaliacao = JSON.parse(JSON.stringify(this.ppd.si.avaliacao))
         sistema.caracterizacao = JSON.parse(JSON.stringify(this.ppd.si.caracterizacao))
         sistema.estrategia = JSON.parse(JSON.stringify(this.ppd.si.estrategia))
         sistema.identificacao.adminSistema= this.ppd.si.identificacao.adminSistema.map(e => e.sigla).toString()
@@ -568,6 +568,9 @@ export default {
         sistema.identificacao.propSistemaPublico= this.ppd.si.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
         sistema.identificacao.propDados= this.ppd.si.identificacao.propDados.map(e => e.sigla).toString(),
         sistema.identificacao.localDadosPublico= this.ppd.si.identificacao.localDadosPublico.map(e => e.sigla).toString(),
+        delete sistema.identificacao.defCheck
+        delete sistema.identificacao.insourcingCheck
+        delete sistema.identificacao.outsourcingCheck
         sistema.avaliacao.decomposicao= this.ppd.si.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
         sistema.avaliacao.codClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.codigo).toString().replaceAll(",","#")
         sistema.avaliacao.numeroClasse= this.ppd.si.avaliacao.selecionadosTabelaFL.map(e=> e.referencia).toString().replaceAll(",","#")
