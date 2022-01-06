@@ -193,7 +193,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 import Voltar from "@/components/generic/Voltar";
 
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
@@ -252,7 +252,7 @@ export default {
       Classe_N3: 25,
       RADA: 15,
       PPD: 20,
-      "Auto de Eliminação": 30,
+      "Auto de Eliminação": 10,
       Tipologia: 5,
       Legislação: 5,
       Entidade: 5,

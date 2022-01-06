@@ -22,6 +22,59 @@ $expansion-panel-border-radius: 10px 10px 0px 0px;
 $expansion-panel-header-padding: 10px;
 $expansion-panel-content-padding: 10px;
 
+/* Classes genéricas */
+
+// Gradiente de azul 
+.clav-linear-background {
+  background: linear-gradient(
+    to right,
+    var(--v-gradientleft-base) 0%,
+    var(--v-gradientright-base) 100%
+  );
+}
+
+// Titulo
+.clav-content-title-1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--v-h1color-base);
+  text-shadow: 0px 2px 3px var(--v-textshadow-base);
+  text-align: center;
+}
+
+// Subtitulo
+.clav-content-title-2 {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--v-h1color-base);
+  text-shadow: 0px 1px 2px var(--v-textshadow-base);
+}
+
+// Realçar conteúdo
+.clav-info-content {
+  padding: 8px;
+  background-color: var(--v-infocontent-base) !important;
+  text-shadow: 0px 1px 2px var(--v-textshadow-base) !important;
+}
+
+// Texto de informação (padrão)
+.clav-content-text {
+  font-size: 1rem;
+  word-spacing: 2px;
+}
+
+// Labels
+.clav-info-label {
+  color: var(--v-primary-base);
+  font-weight: bold;
+}
+
+// Texto de cabeçalhos (padrão)
+.clav-header-text {
+  font-weight: bold;
+  font-size: 14pt;
+}
+
 // global styles
 .v-application {
   // html resets
@@ -41,9 +94,14 @@ $expansion-panel-content-padding: 10px;
     padding-top: 125px;
   }
 
+  // Treeview
+  .v-treeview-node__toggle--open {
+    color: var(--v-success-base) !important;
+  }
+
   //alertas
   .v-alert {
-    text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
+    text-shadow: 0px 1px 2px var(--v-textshadow2-base) !important;
   }
 
   // cards
@@ -71,6 +129,7 @@ $expansion-panel-content-padding: 10px;
 
   // tabs
   .v-tabs {
+
     .v-tab:hover::before {
       border-radius: 10px 10px 0 0 !important;
     }
@@ -80,7 +139,7 @@ $expansion-panel-content-padding: 10px;
   }
 
   .v-radio {
-    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+    text-shadow: 0px 1px 2px var(--v-textshadow-base) !important;
   }
 
   //text fields
@@ -103,7 +162,7 @@ $expansion-panel-content-padding: 10px;
   .v-list {
     .v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
       fill: #ffffff !important;
-      text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+      text-shadow: 0px 1px 2px var(--v-textshadow-base) !important;
       border-radius: 10px;
     }
 

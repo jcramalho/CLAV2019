@@ -30,12 +30,21 @@
       sort-desc
     >
       <template v-slot:no-data>
-        <v-alert outlined type="warning" icon="warning" class="font-weight-medium ma-2">
+        <v-alert
+          border="left"
+          type="warning"
+          icon="warning"
+          class="font-weight-medium ma-2"
+        >
           Não existem pedidos neste estado.
         </v-alert>
       </template>
       <template v-slot:no-results>
-        <v-alert outlined type="warning" icon="warning" class="font-weight-medium ma-2"
+        <v-alert
+          border="left"
+          type="warning"
+          icon="warning"
+          class="font-weight-medium ma-2"
           >Não foram encontrados resultados para "{{ procurar }}".</v-alert
         >
       </template>

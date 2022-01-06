@@ -1,64 +1,50 @@
 <template>
-  <v-container fluid>
-    <v-row row wrap justify-center>
-      <v-col cols="12">
-        <v-card>
-          <v-toolbar color="indigo darken-4" dark>
-            <v-toolbar-title>Exportação de Coleções</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-autocomplete
-              :items="exportacoesDisponiveis"
-              label="Coleção a exportar"
-              v-model="tipo"
-              :rules="regraTipo"
-              required
-              @change="id = ''"
-            >
-            </v-autocomplete>
+  <v-card flat class="pa-3">
+    <v-card-title class="clav-content-title-1" dark>
+      Exportação de coleções
+    </v-card-title>
+    <v-card-text>
+      <v-autocomplete
+        :items="exportacoesDisponiveis"
+        label="Coleção a exportar"
+        v-model="tipo"
+        :rules="regraTipo"
+        required
+        @change="id = ''"
+      >
+      </v-autocomplete>
 
-            <v-card v-if="tipo != '' && tipo.path.includes('/')" class="mb-4">
-              <v-card-title class="indigo darken-4 white--text subtitle-1">
-                Parâmetros do pedido
-              </v-card-title>
-              <v-card-text>
-                <v-row>
-                  <v-col cols="12">
-                    <v-form ref="id">
-                      <v-autocomplete
-                        :items="this[singToPlu(tipo.filename)]"
-                        label="Identificador"
-                        v-model="id"
-                        :rules="regraId"
-                        required
-                      >
-                      </v-autocomplete>
-                    </v-form>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
+      <v-card v-if="tipo != '' && tipo.path.includes('/')" class="pa-4">
+        <v-card-title class="clav-content-title-2"> Parâmetros do pedido </v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12">
+              <v-form ref="id">
+                <v-autocomplete
+                  :items="this[singToPlu(tipo.filename)]"
+                  label="Identificador"
+                  v-model="id"
+                  :rules="regraId"
+                  required
+                >
+                </v-autocomplete>
+              </v-form>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="red" dark @click="cancelar">
-                Cancelar
-              </v-btn>
-              <v-btn color="indigo darken-4" dark @click="executar">
-                Exportar
-              </v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card-text>
-        </v-card>
-      </v-col>
-      <v-col>
-        <v-alert :value="text != ''" :type="alertType">
-          {{ text }}
-        </v-alert>
-      </v-col>
-    </v-row>
-  </v-container>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn rounded color="error" dark @click="cancelar"> Cancelar </v-btn>
+        <v-btn rounded color="primary" dark @click="executar"> Exportar </v-btn>
+        <v-spacer></v-spacer>
+      </v-card-actions>
+    </v-card-text>
+    <v-alert :value="text != ''" :type="alertType">
+      {{ text }}
+    </v-alert>
+  </v-card>
 </template>
 
 <script>
@@ -75,55 +61,49 @@ export default {
         { text: "Pedido", value: { filename: "pedido", path: "pedidos/" } },
         {
           text: "Pendentes",
-          value: { filename: "pendentes", path: "pendentes" }
+          value: { filename: "pendentes", path: "pendentes" },
         },
         {
           text: "Pendente",
-          value: { filename: "pendente", path: "pendentes/" }
+          value: { filename: "pendente", path: "pendentes/" },
         },
         {
           text: "Utilizadores",
-          value: { filename: "users", path: "users" }
+          value: { filename: "users", path: "users" },
         },
         {
           text: "Utilizador",
-          value: { filename: "user", path: "users/" }
-        }
+          value: { filename: "user", path: "users/" },
+        },
       ],
       tipo: "",
       id: "",
-      regraTipo: [v => !!v || "Tipo de dados a exportar é obrigatório."],
-      regraId: [v => !!v || "Identificador é obrigatório."],
+      regraTipo: [(v) => !!v || "Tipo de dados a exportar é obrigatório."],
+      regraId: [(v) => !!v || "Identificador é obrigatório."],
       text: "",
-      alertType: "success"
+      alertType: "success",
     };
   },
 
-  mounted: async function() {
+  mounted: async function () {
     try {
       var response = await this.$request("get", "/pedidos");
-      this.pedidos = response.data.map(p => p.codigo).sort();
+      this.pedidos = response.data.map((p) => p.codigo).sort();
 
       response = await this.$request("get", "/pendentes");
       this.pendentes = response.data
-        .map(p => {
+        .map((p) => {
           return {
             text:
-              p.acao +
-              " de " +
-              p.tipo +
-              " por " +
-              p.criadoPor +
-              " a " +
-              p.dataCriacao,
-            value: p._id
+              p.acao + " de " + p.tipo + " por " + p.criadoPor + " a " + p.dataCriacao,
+            value: p._id,
           };
         })
         .sort((a, b) => a.text.localeCompare(b.text));
 
       response = await this.$request("get", "/users");
       this.users = response.data
-        .map(u => {
+        .map((u) => {
           return { text: u.email, value: u._id };
         })
         .sort((a, b) => a.text.localeCompare(b.text));
@@ -154,7 +134,7 @@ export default {
     },
     downloadData(filename, content, format) {
       var blob = new Blob([content], {
-        type: format + ";charset=utf-8;"
+        type: format + ";charset=utf-8;",
       });
 
       if (window.navigator.msSaveBlob) {
@@ -213,7 +193,7 @@ export default {
       }
 
       return ret;
-    }
-  }
+    },
+  },
 };
 </script>

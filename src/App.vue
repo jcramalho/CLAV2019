@@ -165,80 +165,12 @@ export default {
 </script>
 
 <style>
-#app {
-  --v-textshadow-base: rgba(0, 0, 0, 0.32);
-  --v-textshadow1-base: rgba(255, 255, 255, 0.4);
-}
-
-/* Classes genéricas */
-
-/* Gradiente de azul */
-.clav-linear-background {
-  background: linear-gradient(
-    to right,
-    var(--v-gradientleft-base) 0%,
-    var(--v-gradientright-base) 100%
-  );
-}
-
-/* Usado em v-text-field */
-.clav-info-content {
-  padding: 8px;
-  background-color: var(--v-infocontent-base) !important;
-  text-shadow: 0px 1px 2px var(--v-textshadow-base) !important;
-}
-
-/* Titulo */
-.clav-content-title-1 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--v-h1color-base);
-  text-shadow: 0px 2px 3px var(--v-textshadow-base);
-  text-align: center;
-}
-
-/* Subtitulo */
-.clav-content-title-2 {
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: var(--v-h1color-base);
-  text-shadow: 0px 1px 2px var(--v-textshadow-base);
-}
-
-/* Subtitulo */
-.content-text {
-  font-size: 1rem;
-  word-spacing: 2px;
-}
-
-.clav-info-label {
-  color: var(--v-primary-base);
-  font-weight: bold;
-}
-
-.clav-text-shadow {
-  text-shadow: var(--v-textshadow-base);
-}
-
 /* TODO /* TODO /* TODO /* TODO
 /* TODO Para remover depois de remover todas as utilizações */
-#botao-shadow {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-  outline: none !important;
-}
-
-.v-application--is-ltr .v-treeview-node__toggle--open {
-  color: var(--v-success-base) !important;
-}
 
 .v-text-field--filled > .v-input__control > .v-input__slot {
   background: none !important;
 }
-/*
-.v-input__slot::before {
-  border-color: var(--v-info-base) !important;
-}
-*/
 .v-input--selection-controls {
   margin-top: 0 !important;
   padding-top: 0 !important;
@@ -258,22 +190,4 @@ export default {
 .v-input--is-disabled textarea {
   color: var(--v-textshadow-base) !important;
 }
-
-label {
-  margin-bottom: 0 !important;
-}
-
-/* .v-expansion-panels
-  .v-expansion-panel-header
-  .v-expansion-panel-header__icon
-  .v-text-field.v-input--is-disabled {
-  border-image: repeating-linear-gradient(
-      to right,
-      rgba(1, 85, 181, 0.38) 0px,
-      rgba(1, 85, 181, 0.38) 2px,
-      transparent 2px,
-      transparent 4px
-    )
-    1 repeat !important;
-} */
 </style>

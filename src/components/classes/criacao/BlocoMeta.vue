@@ -93,7 +93,7 @@
 <script>
 const help = require("@/config/help").help;
 
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 
 export default {
   props: ["c"],

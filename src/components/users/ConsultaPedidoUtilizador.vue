@@ -22,7 +22,7 @@
         <v-row>
           <v-col cols="9">
             <div class="clav-content-title-2">{{ tipoPedido }}</div>
-            <div class="content-text ml-1">{{ dataPedido }}</div>
+            <div class="clav-content-text ml-1">{{ dataPedido }}</div>
           </v-col>
           <v-spacer />
           <v-col cols="3" align="right">
@@ -264,7 +264,7 @@ import ShowClasse from "@/components/pedidos/consulta/showClasse.vue";
 import ShowClasseL1 from "@/components/pedidos/consulta/showClasseL1.vue";
 import { mapKeys } from "@/utils/utils";
 import PedidosDevolvidosVue from "../pedidos/PedidosDevolvidos.vue";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 import { bus } from "../../main";
 
 export default {
@@ -468,12 +468,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.cardTitle {
-  background-color: #f0f0f0;
-}
-
-.cardTitle:hover {
-  background-color: #e0e0e0;
-}
-</style>
+<style scoped></style>

@@ -36,7 +36,7 @@
 <script>
 import ShowDecisoesPCAJustificacao from "@/components/pedidos/consulta/classes/ShowDecisoesPCAJustificacao";
 
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["pca"],

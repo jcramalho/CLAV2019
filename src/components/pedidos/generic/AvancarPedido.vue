@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 export default {
   props: ["texto", "utilizadores", "pedido"],
   components: {

@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 const nanoid = require("nanoid");
 
 export default {

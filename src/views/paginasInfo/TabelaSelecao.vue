@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Tabelas de Seleção</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Uma tabela de seleção é um instrumento utilizado pelas entidades para a gestão da
       informação. Permite organizar e estruturar a informação desde o momento da sua
       produção, através da atribuição de um código de classificação. A esse código de
@@ -10,19 +10,19 @@
       aplicar findo esse prazo (conservação permanente ou eliminação) e a
       responsabilização pela guarda da informação de conservação permanente.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       As tabelas de seleção podem ser organizacionais (de uma entidade ou de uma tipologia
       de entidades) ou pluriorganizacionais (de um conjunto de entidades, por exemplo de
       âmbito ministerial). Constituem as fontes de legitimação para a eliminação da
       informação pública.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para aceder ao catálogo de tabelas de seleção aprovadas, selecione a opção
       <b>CONSULTAR</b>. As tabelas de seleção encontram-se organizadas por fonte de
       legitimação: TS publicadas em Portaria de Gestão de Documentos (PGD) ou proveniente
       de Relatório de Avaliação de Documentação Acumulada (RADA).
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para propor uma tabela de seleção derivada da Lista Consolidada, selecione uma das
       opções:
     </p>
@@ -41,7 +41,7 @@
         </li>
       </ul>
     </v-container>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Consulte as instruções em
       <a @click="$router.push('/forminstr')"> Formulários e instruções</a>.
     </p>

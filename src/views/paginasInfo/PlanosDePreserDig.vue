@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Planos de preservação digital</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       <i
         >«Um Plano de Preservação Digital é um documento estratégico que contém políticas
         e procedimentos orientados para a constituição de uma estrutura técnica e
@@ -18,11 +18,11 @@
       pluriorganizacionais (de um conjunto de entidades, por exemplo, de âmbito
       ministerial).
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para a elaboração de um PPD, é necessário que a entidade tenha uma fonte de
       legitimação (portaria ou despacho que estabelece as decisões de avaliação).
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       A CLAV disponibiliza 3 ficheiros que correspondem às 3 Fases da FRD (Folha de
       Recolha de Dados) para a elaboração de um Plano de Preservação Digital. A
       consultoria técnica e a aprovação do PPD é efetuada pela DGLAB, através do Serviço
@@ -30,7 +30,7 @@
       técnicos de apoio à elaboração de planos de preservação digital.
     </p>
 
-    <p class="content-text px-8 pb-4">
+    <p class="clav-content-text px-8 pb-4">
       Para propor um Plano de Preservação Digital, selecione a opção
       <b>IMPORTAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>

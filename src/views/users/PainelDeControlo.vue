@@ -1,6 +1,16 @@
 <template>
   <v-card flat class="ma-3 pa-2">
-    <p class="clav-content-title-1">Painel de controlo</p>
+    <v-row>
+      <v-col cols="9">
+        <p class="clav-content-title-1">Painel de controlo</p>
+      </v-col>
+      <v-col cols="3" align="right">
+        <p class="clav-content-title-2">
+          {{ user.entidade.split("_")[1] }}
+        </p>
+        <p class="clav-content-title-2">Nível: {{ user.level }}</p>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col :cols="notificacoes.length ? '9' : '12'">
         <TogglePanelsCLAV :n="2" @alternar="panelsArr = $event" />
@@ -11,7 +21,7 @@
         </v-expansion-panels>
       </v-col>
       <v-col v-if="notificacoes.length" cols="3" align="center" class="pt-0 pl-0">
-        <v-card class="fill-height pa-0">
+        <v-card class="fill-height pa-0" max-height="1000px" style="overflow: scroll">
           <v-card-title class="clav-content-title-2 justify-center my-2">
             Notificações
           </v-card-title>
@@ -93,8 +103,8 @@
                           Movido para <strong>{{ item.novoEstado }}</strong
                           >.
                         </li>
-                        <li v-if="item.realizadoPor">
-                          Realizado por <strong>{{ item.realizadoPor }}</strong
+                        <li v-if="item.criadoPor">
+                          Realizado por <strong>{{ item.criadoPor }}</strong
                           >.
                         </li>
                         <li v-if="item.responsavel">
@@ -168,7 +178,11 @@ export default {
       notificacoes: [],
     };
   },
-
+  computed: {
+    user() {
+      return this.$verifyTokenUser();
+    },
+  },
   async created() {
     try {
       let { email } = this.$verifyTokenUser();
