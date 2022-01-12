@@ -454,14 +454,16 @@ export default {
             "/classes?nivel=3&info=completa"
           );
           for (let i = 0; i < response.data.length; i++) {
-            this.listaProcessos.procs.push(response.data[i]);
-            this.listaProcessos.procs[i].chave = i;
-            this.listaProcessos.procs[i].edited = false;
-            this.listaProcessos.procs[i].descriptionEdited = false;
-            this.listaProcessos.procs[i].preSelected = 0;
-            // Para poder ser filtrado na tabela
-            this.listaProcessos.procs[i].preSelectedLabel = "";
-            this.listaProcessos.procs[i].entidades = [];
+            if(response.data[i].status == 'A'){
+              this.listaProcessos.procs.push(response.data[i]);
+              this.listaProcessos.procs[i].chave = i;
+              this.listaProcessos.procs[i].edited = false;
+              this.listaProcessos.procs[i].descriptionEdited = false;
+              this.listaProcessos.procs[i].preSelected = 0;
+              // Para poder ser filtrado na tabela
+              this.listaProcessos.procs[i].preSelectedLabel = "";
+              this.listaProcessos.procs[i].entidades = [];
+            }
           }
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
         }

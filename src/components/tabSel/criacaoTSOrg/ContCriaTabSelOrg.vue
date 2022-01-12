@@ -548,27 +548,29 @@ export default {
           this.listaProcessos.procs = [];
           var response = await this.$request("get", "/classes?nivel=3&info=completa");
           for (let i = 0; i < response.data.length; i++) {
-            this.listaProcessos.procs.push(response.data[i]);
-            this.listaProcessos.procs[i].chave = i;
-            this.listaProcessos.procs[i].edited = false;
-            this.listaProcessos.procs[i].descriptionEMergedited = false;
-            this.listaProcessos.procs[i].preSelected = 0;
-            // Para poder ser filtrado na tabela
-            this.listaProcessos.procs[i].preSelectedLabel = "";
-            this.listaProcessos.procs[i].dono = false;
-            this.listaProcessos.procs[i].participante = "NP";
-            this.listaProcessos.procs[i].notasAp = this.listaProcessos.procs[
-              i
-            ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
-              i
-            ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[i].exemplosNotasAp = this.listaProcessos.procs[
-              i
-            ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
-            this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
-              i
-            ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
+            if(response.data[i].status == 'A'){
+              this.listaProcessos.procs.push(response.data[i]);
+              this.listaProcessos.procs[i].chave = i;
+              this.listaProcessos.procs[i].edited = false;
+              this.listaProcessos.procs[i].descriptionEMergedited = false;
+              this.listaProcessos.procs[i].preSelected = 0;
+              // Para poder ser filtrado na tabela
+              this.listaProcessos.procs[i].preSelectedLabel = "";
+              this.listaProcessos.procs[i].dono = false;
+              this.listaProcessos.procs[i].participante = "NP";
+              this.listaProcessos.procs[i].notasAp = this.listaProcessos.procs[
+                i
+              ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
+              this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
+                i
+              ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
+              this.listaProcessos.procs[i].exemplosNotasAp = this.listaProcessos.procs[
+                i
+              ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
+              this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
+                i
+              ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
+            }
           }
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcessosReady = true;
