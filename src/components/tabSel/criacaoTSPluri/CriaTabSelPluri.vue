@@ -13,7 +13,7 @@
 
     <v-stepper v-model="stepNo" vertical style="background-color: #f3f7fc">
       <v-stepper-step :complete="stepNo > 1" step="1">
-        <b> Identificação das entidades ou tipologias da Tabela de Seleção</b>
+        <b> Identificação das entidades da Tabela de Seleção</b>
       </v-stepper-step>
 
       <span v-if="stepNo > 1">

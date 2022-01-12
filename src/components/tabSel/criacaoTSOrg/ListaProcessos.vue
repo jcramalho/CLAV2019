@@ -24,14 +24,14 @@
               label="Específicos"
               value="Processo Específico"
             ></v-radio>
-            <v-radio
+            <!--v-radio
               color="indigo darken-4"
               label="Restantes"
               value="Processo Restante"
-            ></v-radio>
+            ></v-radio-->
             <v-radio
               color="indigo darken-4"
-              label="A Selecionar"
+              label="Relacionados"
               value="Pré-Selecionado"
             ></v-radio>
           </v-radio-group>
