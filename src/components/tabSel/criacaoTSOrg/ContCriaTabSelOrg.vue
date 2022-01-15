@@ -547,28 +547,31 @@ export default {
           this.listaProcessos.procsAselecionar = [];
           this.listaProcessos.procs = [];
           var response = await this.$request("get", "/classes?nivel=3&info=completa");
+
+          var p = -1
           for (let i = 0; i < response.data.length; i++) {
             if(response.data[i].status == 'A'){
               this.listaProcessos.procs.push(response.data[i]);
-              this.listaProcessos.procs[i].chave = i;
-              this.listaProcessos.procs[i].edited = false;
-              this.listaProcessos.procs[i].descriptionEMergedited = false;
-              this.listaProcessos.procs[i].preSelected = 0;
+              p ++;
+              this.listaProcessos.procs[p].chave = i;
+              this.listaProcessos.procs[p].edited = false;
+              this.listaProcessos.procs[p].descriptionEMergedited = false;
+              this.listaProcessos.procs[p].preSelected = 0;
               // Para poder ser filtrado na tabela
-              this.listaProcessos.procs[i].preSelectedLabel = "";
-              this.listaProcessos.procs[i].dono = false;
-              this.listaProcessos.procs[i].participante = "NP";
-              this.listaProcessos.procs[i].notasAp = this.listaProcessos.procs[
-                i
+              this.listaProcessos.procs[p].preSelectedLabel = "";
+              this.listaProcessos.procs[p].dono = false;
+              this.listaProcessos.procs[p].participante = "NP";
+              this.listaProcessos.procs[p].notasAp = this.listaProcessos.procs[
+                p
               ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
-              this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
-                i
+              this.listaProcessos.procs[p].notasEx = this.listaProcessos.procs[
+                p
               ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
-              this.listaProcessos.procs[i].exemplosNotasAp = this.listaProcessos.procs[
-                i
+              this.listaProcessos.procs[p].exemplosNotasAp = this.listaProcessos.procs[
+                p
               ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
-              this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
-                i
+              this.listaProcessos.procs[p].termosInd = this.listaProcessos.procs[
+                p
               ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
             }
           }
