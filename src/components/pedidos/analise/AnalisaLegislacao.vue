@@ -7,7 +7,7 @@
           v-if="campo !== 'estado'"
           :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
           :nome="transformaKeys(campo)"
-          :color="coversorDeCor[novoHistorico[campo].cor] + ' lighten-1'"
+          :color="conversorDeCor[novoHistorico[campo].cor] + ' lighten-1'"
         >
           <template v-slot:conteudo>
             <v-row dense>
@@ -293,7 +293,7 @@ export default {
       dialogProcessos: false,
       entidades: [],
       processos: [],
-      coversorDeCor: {
+      conversorDeCor: {
         verde: "success",
         amarelo: "warning",
         vermelho: "error",

@@ -1,415 +1,372 @@
 <template>
   <div>
-    <v-row dense class="ma-1">
-      <v-col cols="2">
-        <div
-          :class="[
-            'info-descricao',
-            `info-descricao-${novoHistorico[campoValue].cor}`,
-          ]"
-        >
-          {{ campoText }}
-          <InfoBox
-            v-if="!!info"
-            :header="info.header"
-            :text="info.text"
-            helpColor="indigo darken-4"
-          />
-        </div>
-      </v-col>
-      <v-col>
-        <div v-if="editaCampo == campoValue">
-          <v-form ref="form">
-            <slot
-              name="input"
-              v-bind:items="{ campoEditado, updateValue }"
-            ></slot>
-          </v-form>
-        </div>
-        <div class="info-conteudo" v-else>
-          <slot name="campo">
-            <span
-              v-if="(tipo == 'string' || tipo == 'tipofl' || tipo == 'classe' || tipo == 'campoHerdado')  && (!!novoHistorico[campoValue].dados || (novoHistorico[campoValue].dados == '0' && campoValue == 'pcaSI') )"
-              >{{ novoHistorico[campoValue].dados }}</span
-            >
-            <span
-              v-else-if="(tipo == 'object' || tipo == 'fonteLeg') && !!novoHistorico[campoValue].dados.titulo"
-              >{{ novoHistorico[campoValue].dados.titulo }}</span
-            >
-            <span
-              v-else-if="tipo == 'estado' && !!novoHistorico[campoValue].dados"
-            >
-              <div v-if="novoHistorico[campoValue].dados == 'A'">Ativa</div>
-              <div v-else-if="novoHistorico[campoValue].dados == 'H'">
-                Em revisão...
-              </div>
-              <div v-else>Inativa</div>
+    <Campo
+      :nome="campoText"
+      :color="conversorDeCor[novoHistorico[campoValue].cor] + ' lighten-1'"
+      :infoHeader="!!info ? info.header : ''"
+      :infoBody="!!info ? info.text : ''"
+    >
+      <template v-slot:conteudo>
+        <v-row dense>
+          <v-col>
+            <div v-if="editaCampo == campoValue">
+              <v-form ref="form">
+                <slot name="input" v-bind:items="{ campoEditado, updateValue }"></slot>
+              </v-form>
+            </div>
+            <div v-else>
+              <slot name="campo">
+                <span
+                  v-if="
+                    (tipo == 'string' ||
+                      tipo == 'tipofl' ||
+                      tipo == 'classe' ||
+                      tipo == 'campoHerdado') &&
+                    (!!novoHistorico[campoValue].dados ||
+                      (novoHistorico[campoValue].dados == '0' && campoValue == 'pcaSI'))
+                  "
+                  >{{ novoHistorico[campoValue].dados }}</span
+                >
+                <span
+                  v-else-if="
+                    (tipo == 'object' || tipo == 'fonteLeg') &&
+                    !!novoHistorico[campoValue].dados.titulo
+                  "
+                  >{{ novoHistorico[campoValue].dados.titulo }}</span
+                >
+                <span v-else-if="tipo == 'estado' && !!novoHistorico[campoValue].dados">
+                  <div v-if="novoHistorico[campoValue].dados == 'A'">Ativa</div>
+                  <div v-else-if="novoHistorico[campoValue].dados == 'H'">
+                    Em revisão...
+                  </div>
+                  <div v-else>Inativa</div>
+                </span>
+                <span v-else-if="tipo == 'sis' && !!novoHistorico[campoValue].dados"
+                  ><slot></slot>
+                </span>
+                <span v-else-if="tipo == 'classeFL' && !!novoHistorico[campoValue].dados"
+                  ><slot></slot>
+                </span>
+                <span
+                  v-else-if="
+                    (tipo == 'array' || tipo == 'ents') &&
+                    !!novoHistorico[campoValue].dados
+                  "
+                >
+                  <ul>
+                    <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
+                      {{ v.label }}
+                      <v-badge
+                        v-if="!dadosOriginais[campoValue].some((e) => e == v)"
+                        right
+                        dot
+                        inline
+                      ></v-badge>
+                    </li>
+                  </ul>
+                </span>
+                <span v-else-if="tipo == 'si' && !!novoHistorico[campoValue].dados">
+                  <ul>
+                    <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
+                      {{ v.dados.numeroSI + " - " + v.dados.nomeSI }}
+                      <v-badge
+                        v-if="!dadosOriginais[campoValue].some((e) => e == v)"
+                        right
+                        dot
+                        inline
+                      ></v-badge>
+                    </li>
+                  </ul>
+                </span>
+                <span
+                  v-else-if="
+                    (tipo == 'notasAp' || tipo == 'notasEx') &&
+                    (!!novoHistorico[campoValue].dados[0] || loadNotas().length > 0)
+                  "
+                >
+                  <ul>
+                    <li v-for="(v, i) in loadNotas()" :key="i">
+                      <span
+                        v-if="!dadosOriginais[campoValue].some((e) => e.nota == v.nota)"
+                        class="text-decoration-line-through"
+                      >
+                        {{ v[arrayValue] }}
+                        <v-btn
+                          icon
+                          x-small
+                          color="error"
+                          @click="dadosOriginais[campoValue].push(v)"
+                          ><v-icon>done</v-icon></v-btn
+                        >
+                      </span>
+                      <span
+                        v-else-if="
+                          !notas.some((n) => n.nota == v[arrayValue]) ||
+                          (dadosOriginais[campoValue].some((e) => e.nota == v.nota) &&
+                            !novoHistorico[campoValue].dados.some(
+                              (e) => e.nota == v.nota
+                            ))
+                        "
+                        >{{ v[arrayValue] }}
+                        <v-badge right dot inline color="orange"></v-badge>
+                      </span>
+                      <span
+                        v-else-if="
+                          dadosOriginais[campoValue].some((e) => e.nota == v.nota)
+                        "
+                        >{{ v[arrayValue] }}</span
+                      >
+                      <span v-else-if="notas.some((e) => e.nota == v.nota)">{{
+                        v[arrayValue]
+                      }}</span>
+                    </li>
+                  </ul>
+                </span>
+                <span
+                  v-else-if="
+                    tipo == 'exemplosNotasAp' &&
+                    (!!novoHistorico[campoValue].dados[0] || loadExemplos().length > 0)
+                  "
+                >
+                  <ul>
+                    <li v-for="(v, i) in loadExemplos()" :key="i">
+                      <span
+                        v-if="
+                          !dadosOriginais[campoValue].some((e) => e.exemplo == v.exemplo)
+                        "
+                        class="text-decoration-line-through"
+                      >
+                        {{ v[arrayValue] }}
+                        <v-btn
+                          icon
+                          x-small
+                          color="error"
+                          @click="dadosOriginais[campoValue].push(v)"
+                          ><v-icon>done</v-icon></v-btn
+                        >
+                      </span>
+                      <span
+                        v-else-if="
+                          !notas.some((n) => n.exemplo == v[arrayValue]) ||
+                          (dadosOriginais[campoValue].some(
+                            (e) => e.exemplo == v.exemplo
+                          ) &&
+                            !novoHistorico[campoValue].dados.some(
+                              (e) => e.exemplo == v.exemplo
+                            ))
+                        "
+                        >{{ v[arrayValue] }}
+                        <v-badge right dot inline color="orange"></v-badge>
+                      </span>
+                      <span
+                        v-else-if="
+                          dadosOriginais[campoValue].some((e) => e.exemplo == v.exemplo)
+                        "
+                        >{{ v[arrayValue] }}</span
+                      >
+                      <span v-else-if="notas.some((e) => e.exemplo == v.exemplo)">{{
+                        v[arrayValue]
+                      }}</span>
+                    </li>
+                  </ul>
+                </span>
+                <span
+                  v-else-if="
+                    tipo == 'termosInd' &&
+                    (!!novoHistorico[campoValue].dados[0] || loadTermosInd().length > 0)
+                  "
+                >
+                  <ul>
+                    <li v-for="(v, i) in loadTermosInd()" :key="i">
+                      <span
+                        v-if="!dadosOriginais[campoValue].some((e) => e.termo == v.termo)"
+                        class="text-decoration-line-through"
+                      >
+                        {{ v[arrayValue] }}
+                        <v-btn
+                          icon
+                          x-small
+                          color="error"
+                          @click="dadosOriginais[campoValue].push(v)"
+                          ><v-icon>done</v-icon></v-btn
+                        >
+                      </span>
+                      <span
+                        v-else-if="
+                          !notas.some((n) => n.termo == v[arrayValue]) ||
+                          (dadosOriginais[campoValue].some((e) => e.termo == v.termo) &&
+                            !novoHistorico[campoValue].dados.some(
+                              (e) => e.termo == v.termo
+                            ))
+                        "
+                        >{{ v[arrayValue] }}
+                        <v-badge right dot inline color="orange"></v-badge>
+                      </span>
+                      <span
+                        v-else-if="
+                          dadosOriginais[campoValue].some((e) => e.termo == v.termo)
+                        "
+                        >{{ v[arrayValue] }}</span
+                      >
+                      <span v-else-if="notas.some((e) => e.termo == v.termo)">{{
+                        v[arrayValue]
+                      }}</span>
+                    </li>
+                  </ul>
+                </span>
+                <span v-else-if="tipo == 'procsAselecionar'">
+                  <ul v-if="novoHistorico[campoValue].dados.length > 0">
+                    <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
+                      {{ v.codigo }} - {{ v.titulo }}
+                      <v-badge
+                        v-if="
+                          dadosOriginais[campoValue].some((e) => e.codigo == v.codigo)
+                        "
+                        right
+                        dot
+                        inline
+                        color="error"
+                      ></v-badge>
+                      <v-icon v-else class="mr-1" color="green">check</v-icon>
+                    </li>
+                  </ul>
+                  <span v-else>[Sem processos a selecionar]</span>
+                </span>
+                <span
+                  v-else-if="
+                    tipo == 'participantes' && !!novoHistorico[campoValue].dados[0]
+                  "
+                >
+                  <Participantes
+                    :entidades="novoHistorico[campoValue].dados"
+                    :valida="true"
+                  />
+                </span>
+                <span v-else-if="tipo == 'donos' && !!novoHistorico[campoValue].dados[0]">
+                  <Donos :entidades="novoHistorico[campoValue].dados" :valida="true" />
+                </span>
+                <span
+                  v-else-if="tipo == 'procRel' && !!novoHistorico[campoValue].dados[0]"
+                >
+                  <ProcessosRelacionados
+                    :processos="novoHistorico[campoValue].dados"
+                    :valida="true"
+                  />
+                </span>
+                <span v-else-if="tipo == 'legs' && !!novoHistorico[campoValue].dados[0]">
+                  <Legislacao :legs="novoHistorico[campoValue].dados" :valida="true" />
+                </span>
+                <span v-else>[Campo não preenchido na submissão do pedido]</span>
+              </slot>
+            </div>
+          </v-col>
+          <v-col cols="auto" v-if="editaCampo != campoValue">
+            <span v-if="!foiEditado && tipo != 'campoHerdado' && tipo != 'sis'">
+              <v-icon class="mr-1" color="green" @click="verifica(campoValue)"
+                >check</v-icon
+              >
+              <v-icon class="mr-1" color="red" @click="anula(campoValue)">clear</v-icon>
             </span>
-            <span
-              v-else-if="tipo == 'sis' && !!novoHistorico[campoValue].dados"
-              ><slot></slot>
-            </span>
-            <span
-              v-else-if="tipo == 'classeFL' && !!novoHistorico[campoValue].dados"
-              ><slot></slot>
-            </span>
-            <span
-              v-else-if="
-                (tipo == 'array' || tipo == 'ents') && !!novoHistorico[campoValue].dados
+            <!-- Ver como vai ser a edição. -->
+            <v-icon
+              v-if="
+                permitirEditar && (tipo == 'array' || tipo == 'string' || tipo == 'si')
               "
+              class="mr-1"
+              color="orange"
+              @click="edita()"
+              >create</v-icon
             >
-              <ul>
-                <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
-                  {{ v.label }}
-                  <v-badge
-                    v-if="!dadosOriginais[campoValue].some((e) => e == v)"
-                    right
-                    dot
-                    inline
-                  ></v-badge>
-                </li>
-              </ul>
-            </span>
-            <span
-              v-else-if="
-                tipo == 'si' && !!novoHistorico[campoValue].dados
+            <v-icon
+              v-if="permitirEditar && tipo == 'ents'"
+              class="mr-1"
+              color="orange"
+              @click="verEntidades = true"
+              >create</v-icon
+            >
+            <v-icon
+              v-if="permitirEditar && tipo == 'tipofl'"
+              class="mr-1"
+              color="orange"
+              @click="verTipoFontesLeg = true"
+              >create</v-icon
+            >
+            <v-icon
+              v-if="permitirEditar && tipo == 'classe'"
+              class="mr-1"
+              color="orange"
+              @click="createclasse()"
+              >create</v-icon
+            >
+            <v-icon
+              v-if="permitirEditar && tipo == 'object'"
+              class="mr-1"
+              color="orange"
+              @click="edita()"
+              >create</v-icon
+            >
+            <v-icon
+              v-if="permitirEditar && tipo == 'classeFL'"
+              class="mr-1"
+              color="orange"
+              @click="modelClasses()"
+              >create</v-icon
+            >
+            <v-icon
+              v-if="permitirEditar && tipo == 'fonteLeg'"
+              class="mr-1"
+              color="orange"
+              @click="loadFonteLegitimacao()"
+              >create</v-icon
+            >
+            <v-icon
+              v-if="permitirEditar && (tipo == 'procsAselecionar' || tipo == 'sis')"
+              class="mr-1"
+              color="orange"
+              @click="loadSelecao()"
+              >create</v-icon
+            >
+            <v-icon
+              v-if="
+                permitirEditar &&
+                (tipo == 'notasAp' ||
+                  tipo == 'exemplosNotasAp' ||
+                  tipo == 'notasEx' ||
+                  tipo == 'termosInd')
               "
+              class="mr-1"
+              color="orange"
+              @click="editaBlocoDescritivoFlag = true"
+              >create</v-icon
             >
-              <ul>
-                <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
-                  {{ v.dados.numeroSI + " - "+ v.dados.nomeSI }}
-                  <v-badge
-                    v-if="!dadosOriginais[campoValue].some((e) => e == v)"
-                    right
-                    dot
-                    inline
-                  ></v-badge>
-                </li>
-              </ul>
-            </span>
-            <span
-              v-else-if="
-                (tipo == 'notasAp' || tipo == 'notasEx') &&
-                (!!novoHistorico[campoValue].dados[0] || loadNotas().length > 0)
-              "
-            >
-              <ul>
-                <li v-for="(v, i) in loadNotas()" :key="i">
-                  <span
-                    v-if="
-                      !dadosOriginais[campoValue].some((e) => e.nota == v.nota)
-                    "
-                    class="text-decoration-line-through"
-                  >
-                    {{ v[arrayValue] }}
-                    <v-btn
-                      icon
-                      x-small
-                      color="error"
-                      @click="dadosOriginais[campoValue].push(v)"
-                      ><v-icon>done</v-icon></v-btn
-                    >
-                  </span>
-                  <span
-                    v-else-if="
-                      !notas.some((n) => n.nota == v[arrayValue]) ||
-                      (dadosOriginais[campoValue].some(
-                        (e) => e.nota == v.nota
-                      ) &&
-                        !novoHistorico[campoValue].dados.some(
-                          (e) => e.nota == v.nota
-                        ))
-                    "
-                    >{{ v[arrayValue] }}
-                    <v-badge right dot inline color="orange"></v-badge>
-                  </span>
-                  <span
-                    v-else-if="
-                      dadosOriginais[campoValue].some((e) => e.nota == v.nota)
-                    "
-                    >{{ v[arrayValue] }}</span
-                  >
-                  <span v-else-if="notas.some((e) => e.nota == v.nota)">{{
-                    v[arrayValue]
-                  }}</span>
-                </li>
-              </ul>
-            </span>
-            <span
-              v-else-if="
-                tipo == 'exemplosNotasAp' &&
-                (!!novoHistorico[campoValue].dados[0] ||
-                  loadExemplos().length > 0)
-              "
-            >
-              <ul>
-                <li v-for="(v, i) in loadExemplos()" :key="i">
-                  <span
-                    v-if="
-                      !dadosOriginais[campoValue].some(
-                        (e) => e.exemplo == v.exemplo
-                      )
-                    "
-                    class="text-decoration-line-through"
-                  >
-                    {{ v[arrayValue] }}
-                    <v-btn
-                      icon
-                      x-small
-                      color="error"
-                      @click="dadosOriginais[campoValue].push(v)"
-                      ><v-icon>done</v-icon></v-btn
-                    >
-                  </span>
-                  <span
-                    v-else-if="
-                      !notas.some((n) => n.exemplo == v[arrayValue]) ||
-                      (dadosOriginais[campoValue].some(
-                        (e) => e.exemplo == v.exemplo
-                      ) &&
-                        !novoHistorico[campoValue].dados.some(
-                          (e) => e.exemplo == v.exemplo
-                        ))
-                    "
-                    >{{ v[arrayValue] }}
-                    <v-badge right dot inline color="orange"></v-badge>
-                  </span>
-                  <span
-                    v-else-if="
-                      dadosOriginais[campoValue].some(
-                        (e) => e.exemplo == v.exemplo
-                      )
-                    "
-                    >{{ v[arrayValue] }}</span
-                  >
-                  <span v-else-if="notas.some((e) => e.exemplo == v.exemplo)">{{
-                    v[arrayValue]
-                  }}</span>
-                </li>
-              </ul>
-            </span>
-            <span
-              v-else-if="
-                tipo == 'termosInd' &&
-                (!!novoHistorico[campoValue].dados[0] ||
-                  loadTermosInd().length > 0)
-              "
-            >
-              <ul>
-                <li v-for="(v, i) in loadTermosInd()" :key="i">
-                  <span
-                    v-if="
-                      !dadosOriginais[campoValue].some(
-                        (e) => e.termo == v.termo
-                      )
-                    "
-                    class="text-decoration-line-through"
-                  >
-                    {{ v[arrayValue] }}
-                    <v-btn
-                      icon
-                      x-small
-                      color="error"
-                      @click="dadosOriginais[campoValue].push(v)"
-                      ><v-icon>done</v-icon></v-btn
-                    >
-                  </span>
-                  <span
-                    v-else-if="
-                      !notas.some((n) => n.termo == v[arrayValue]) ||
-                      (dadosOriginais[campoValue].some(
-                        (e) => e.termo == v.termo
-                      ) &&
-                        !novoHistorico[campoValue].dados.some(
-                          (e) => e.termo == v.termo
-                        ))
-                    "
-                    >{{ v[arrayValue] }}
-                    <v-badge right dot inline color="orange"></v-badge>
-                  </span>
-                  <span
-                    v-else-if="
-                      dadosOriginais[campoValue].some((e) => e.termo == v.termo)
-                    "
-                    >{{ v[arrayValue] }}</span
-                  >
-                  <span v-else-if="notas.some((e) => e.termo == v.termo)">{{
-                    v[arrayValue]
-                  }}</span>
-                </li>
-              </ul>
-            </span>
-            <span v-else-if="tipo == 'procsAselecionar'">
-              <ul v-if="novoHistorico[campoValue].dados.length > 0">
-                <li v-for="(v, i) in novoHistorico[campoValue].dados" :key="i">
-                  {{ v.codigo }} - {{ v.titulo }}
-                  <v-badge
-                    v-if="
-                      dadosOriginais[campoValue].some(
-                        (e) => e.codigo == v.codigo
-                      )
-                    "
-                    right
-                    dot
-                    inline
-                    color="error"
-                  ></v-badge>
-                  <v-icon v-else class="mr-1" color="green">check</v-icon>
-                </li>
-              </ul>
-              <span v-else>[Sem processos a selecionar]</span>
-            </span>
-            <span
-              v-else-if="
-                tipo == 'participantes' && !!novoHistorico[campoValue].dados[0]
-              "
-            >
-              <Participantes
-                :entidades="novoHistorico[campoValue].dados"
-                :valida="true"
-              />
-            </span>
-            <span
-              v-else-if="
-                tipo == 'donos' && !!novoHistorico[campoValue].dados[0]
-              "
-            >
-              <Donos
-                :entidades="novoHistorico[campoValue].dados"
-                :valida="true"
-              />
-            </span>
-            <span
-              v-else-if="
-                tipo == 'procRel' && !!novoHistorico[campoValue].dados[0]
-              "
-            >
-              <ProcessosRelacionados
-                :processos="novoHistorico[campoValue].dados"
-                :valida="true"
-              />
-            </span>
-            <span
-              v-else-if="tipo == 'legs' && !!novoHistorico[campoValue].dados[0]"
-            >
-              <Legislacao
-                :legs="novoHistorico[campoValue].dados"
-                :valida="true"
-              />
-            </span>
-            <span v-else>[Campo não preenchido na submissão do pedido]</span>
-          </slot>
-        </div>
-      </v-col>
-      <v-col cols="auto" v-if="editaCampo != campoValue  ">
-        <span v-if="!foiEditado && tipo != 'campoHerdado' && tipo != 'sis' ">
-          <v-icon class="mr-1" color="green" @click="verifica(campoValue)"
-            >check</v-icon
-          >
-          <v-icon class="mr-1" color="red" @click="anula(campoValue)"
-            >clear</v-icon
-          >
-        </span>
-        <!-- Ver como vai ser a edição. -->
-        <v-icon
-          v-if="permitirEditar && (tipo == 'array' || tipo == 'string' || tipo == 'si')"
-          class="mr-1"
-          color="orange"
-          @click="edita()"
-          >create</v-icon
-        >
-        <v-icon
-          v-if="permitirEditar && (tipo == 'ents')"
-          class="mr-1"
-          color="orange"
-          @click="verEntidades = true"
-          >create</v-icon
-        >
-        <v-icon
-          v-if="permitirEditar && (tipo == 'tipofl')"
-          class="mr-1"
-          color="orange"
-          @click="verTipoFontesLeg = true"
-          >create</v-icon
-        >
-        <v-icon
-          v-if="permitirEditar && (tipo == 'classe')"
-          class="mr-1"
-          color="orange"
-          @click="createclasse()"
-          >create</v-icon
-        >
-        <v-icon
-          v-if="permitirEditar && (tipo == 'object')"
-          class="mr-1"
-          color="orange"
-          @click="edita()"
-          >create</v-icon
-        >
-        <v-icon
-          v-if="permitirEditar && (tipo == 'classeFL')"
-          class="mr-1"
-          color="orange"
-          @click="modelClasses()"
-          >create</v-icon
-        >
-        <v-icon
-          v-if="
-            permitirEditar && (tipo == 'fonteLeg')
-          "
-          class="mr-1"
-          color="orange"
-          @click="loadFonteLegitimacao()"
-          >create</v-icon
-        >
-        <v-icon
-          v-if="
-            permitirEditar && (tipo == 'procsAselecionar' || tipo == 'sis')
-          "
-          class="mr-1"
-          color="orange"
-          @click="loadSelecao()"
-          >create</v-icon
-        >
-        <v-icon
-          v-if="
-            permitirEditar &&
-            (tipo == 'notasAp' ||
-              tipo == 'exemplosNotasAp' ||
-              tipo == 'notasEx' ||
-              tipo == 'termosInd')
-          "
-          class="mr-1"
-          color="orange"
-          @click="editaBlocoDescritivoFlag = true"
-          >create</v-icon
-        >
 
-        <v-badge
-          v-if="tipo != 'sis' && tipo != 'campoHerdado'"
-          color="indigo darken-4"
-          content="1"
-          :value="!!novoHistorico[campoValue].nota"
-          overlap
-        >
-          <v-icon @click="abrirNotaDialog">add_comment</v-icon>
-        </v-badge>
-      </v-col>
-      <v-col cols="auto" v-else>
-        <span>
-          <v-icon class="mr-1" color="green" @click="editarCampo">check</v-icon>
-          <v-icon
-            class="mr-1"
-            color="red"
-            @click="
-              editaCampo = null;
-              campoEditado = null;
-            "
-            >clear</v-icon
-          >
-        </span>
-      </v-col>
-    </v-row>
+            <v-badge
+              v-if="tipo != 'sis' && tipo != 'campoHerdado'"
+              color="indigo darken-4"
+              content="1"
+              :value="!!novoHistorico[campoValue].nota"
+              overlap
+            >
+              <v-icon @click="abrirNotaDialog">add_comment</v-icon>
+            </v-badge>
+          </v-col>
+          <v-col cols="auto" v-else>
+            <span>
+              <v-icon class="mr-1" color="green" @click="editarCampo">check</v-icon>
+              <v-icon
+                class="mr-1"
+                color="red"
+                @click="
+                  editaCampo = null;
+                  campoEditado = null;
+                "
+                >clear</v-icon
+              >
+            </span>
+          </v-col>
+        </v-row>
+      </template>
+    </Campo>
 
     <AdicionarNota
       :dialog="notaVisivel"
@@ -437,11 +394,7 @@
         />
         <v-card-actions>
           <v-spacer />
-          <v-btn
-            class="white--text ma-2"
-            rounded
-            color="red darken-4"
-            @click="cancelar()"
+          <v-btn class="white--text ma-2" rounded color="red darken-4" @click="cancelar()"
             >Cancelar</v-btn
           >
           <v-btn
@@ -456,181 +409,151 @@
     </v-dialog>
     <v-dialog v-model="verClasses" transition="dialog-bottom-transition">
       <v-card>
-        <v-toolbar
-              color="primary"
-              dark
-            >Classes</v-toolbar>
-            <v-card-text>
-              <v-data-table
-                :headers="headersSelecionados"
-                :items="listaClasses"
-                class="elevation-1"
-                :footer-props="footer_Classes"
-                :page.sync="paginaSelect"
-                >
-                  <template v-slot:header="props">
-                      <tr>
-                      <th v-for="h in props.headers" :key="h.text" class="subtitle-2">{{ h.text }}</th>
-                      </tr>
-                  </template>
+        <v-toolbar color="primary" dark>Classes</v-toolbar>
+        <v-card-text>
+          <v-data-table
+            :headers="headersSelecionados"
+            :items="listaClasses"
+            :footer-props="footer_Classes"
+            :page.sync="paginaSelect"
+          >
+            <template v-slot:header="props">
+              <tr>
+                <th v-for="h in props.headers" :key="h.text" class="subtitle-2">
+                  {{ h.text }}
+                </th>
+              </tr>
+            </template>
 
-                  <template v-slot:item="props">
-                    <tr>
-                    <td>{{ props.item.codigo}}</td>
-                    <td>{{ props.item.referencia}}</td>
-                    <td>{{ props.item.titulo}}</td>
-                    <td>
-                      <v-btn small color="red darken-2" dark rounded @click="unselectClasse(props.item)">
-                        <v-icon dark>remove_circle_outline</v-icon>
-                      </v-btn>
-                    </td>
-                    </tr>
-                  </template>
-                </v-data-table>
-                <v-col>
-                  <hr style="border: 3px solid indigo; border-radius: 2px;" />
-                </v-col>
-                <v-row>
-                  <v-col :md="2">
-                      <div class="info-label">Classe</div>
-                  </v-col>
-                  <v-col>
-                    <v-autocomplete
-                      :items="classesSI"
-                      item-text="info"
-                      v-model="classeSelecionada"
-                      placeholder="Selecione a classe"
-                      solo
-                      return-object
-                    >
-                    </v-autocomplete>
-                  </v-col>
-                </v-row>
-                <v-row align="center" justify="space-around">
+            <template v-slot:item="props">
+              <tr>
+                <td>{{ props.item.codigo }}</td>
+                <td>{{ props.item.referencia }}</td>
+                <td>{{ props.item.titulo }}</td>
+                <td>
                   <v-btn
-                  color="indigo darken-2"
-                  dark
-                  class="ma-2"
-                  rounded
-                  @click="adicionaClasse()"
+                    small
+                    color="red darken-2"
+                    dark
+                    rounded
+                    @click="unselectClasse(props.item)"
                   >
-                    Adicionar
+                    <v-icon dark>remove_circle_outline</v-icon>
                   </v-btn>
-                  <v-btn
-                  color="red darken-2"
-                  dark
-                  class="ma-2"
-                  rounded
-                  @click=""
-                  >
-                    Cancelar
-                  </v-btn>
-                </v-row>
-                <v-row>
-                  <v-col>
-                    <hr style="border: 3px solid indigo; border-radius: 2px;" />
-                  </v-col>
-                </v-row>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn
-                text
-                @click="confirmaClasses"
-              >Fechar</v-btn>
-            </v-card-actions>
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+          <v-col>
+            <hr style="border: 3px solid indigo; border-radius: 2px" />
+          </v-col>
+          <v-row>
+            <v-col :md="2">
+              <div class="info-label">Classe</div>
+            </v-col>
+            <v-col>
+              <v-autocomplete
+                :items="classesSI"
+                item-text="info"
+                v-model="classeSelecionada"
+                placeholder="Selecione a classe"
+                solo
+                return-object
+              >
+              </v-autocomplete>
+            </v-col>
+          </v-row>
+          <v-row align="center" justify="space-around">
+            <v-btn
+              color="indigo darken-2"
+              dark
+              class="ma-2"
+              rounded
+              @click="adicionaClasse()"
+            >
+              Adicionar
+            </v-btn>
+            <v-btn color="red darken-2" dark class="ma-2" rounded @click="">
+              Cancelar
+            </v-btn>
+          </v-row>
+          <v-row>
+            <v-col>
+              <hr style="border: 3px solid indigo; border-radius: 2px" />
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="confirmaClasses">Fechar</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="verEntidades" transition="dialog-bottom-transition">
       <v-card>
-        <v-toolbar
-              color="primary"
-              dark
-            >Selecione as entidades</v-toolbar>
-            <v-card-text>
-              <v-autocomplete
-                label="Selecione as entidades abrangidas pelo PPD"
-                :items="entidades"
-                item-text="label"
-                return-object
-                v-model="entSel"
-                placeholder="Selecione as entidades abrangidas pelo PPD"
-                multiple
-                chips
-                deletable-chips
-                :rules="[(v) => !!v || 'Tem de escolher pelo menos uma entidade']"
-              >
-              </v-autocomplete>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn
-                text
-                @click="verEntidades = false"
-              >Cancelar</v-btn>
-              <v-btn
-                text
-                @click="confirmaEntidades"
-              >Confirmar</v-btn>
-            </v-card-actions>
+        <v-toolbar color="primary" dark>Selecione as entidades</v-toolbar>
+        <v-card-text>
+          <v-autocomplete
+            label="Selecione as entidades abrangidas pelo PPD"
+            :items="entidades"
+            item-text="label"
+            return-object
+            v-model="entSel"
+            placeholder="Selecione as entidades abrangidas pelo PPD"
+            multiple
+            chips
+            deletable-chips
+            :rules="[(v) => !!v || 'Tem de escolher pelo menos uma entidade']"
+          >
+          </v-autocomplete>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="verEntidades = false">Cancelar</v-btn>
+          <v-btn text @click="confirmaEntidades">Confirmar</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="verTipoFontesLeg" transition="dialog-bottom-transition">
       <v-card>
-        <v-toolbar
-              color="primary"
-              dark
-            >Selecione o tipo da fonte de legitimação</v-toolbar>
-            <v-card-text>
-              <v-autocomplete
-                label="Selecione o tipo da fonte de legitimação"
-                :items="this.tiposFL"
-                item-text="titulo"
-                return-object
-                v-model="tipoFonteLegSelected"
-                solo
-                dense
-                :rules="[(v) => !!v || 'Tem de escolher um tipo de fonte de legitimação']"
-              ></v-autocomplete>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn
-                text
-                @click="verTipoFontesLeg = false"
-              >Cancelar</v-btn>
-              <v-btn
-                text
-                @click="confirmaTipoFonteLeg"
-              >Confirmar</v-btn>
-            </v-card-actions>
+        <v-toolbar color="primary" dark
+          >Selecione o tipo da fonte de legitimação</v-toolbar
+        >
+        <v-card-text>
+          <v-autocomplete
+            label="Selecione o tipo da fonte de legitimação"
+            :items="this.tiposFL"
+            item-text="titulo"
+            return-object
+            v-model="tipoFonteLegSelected"
+            solo
+            dense
+            :rules="[(v) => !!v || 'Tem de escolher um tipo de fonte de legitimação']"
+          ></v-autocomplete>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="verTipoFontesLeg = false">Cancelar</v-btn>
+          <v-btn text @click="confirmaTipoFonteLeg">Confirmar</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="verFontesLeg" transition="dialog-bottom-transition">
       <v-card>
-        <v-toolbar
-              color="primary"
-              dark
-            >Selecione a fonte de legitimação</v-toolbar>
-            <v-card-text>
-              <v-autocomplete
-                label="Selecione a fonte de legitimação"
-                :items="this.flLista"
-                item-text="titulo"
-                return-object
-                v-model="fonteLegitimacaoSelected"
-                solo
-                dense
-                :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
-              ></v-autocomplete>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn
-                text
-                @click="verFontesLeg = false"
-              >Cancelar</v-btn>
-              <v-btn
-                text
-                @click="confirmaFonteLeg"
-              >Confirmar</v-btn>
-            </v-card-actions>
+        <v-toolbar color="primary" dark>Selecione a fonte de legitimação</v-toolbar>
+        <v-card-text>
+          <v-autocomplete
+            label="Selecione a fonte de legitimação"
+            :items="this.flLista"
+            item-text="titulo"
+            return-object
+            v-model="fonteLegitimacaoSelected"
+            solo
+            dense
+            :rules="[(v) => !!v || 'Tem de escolher uma fonte de legitimação']"
+          ></v-autocomplete>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn text @click="verFontesLeg = false">Cancelar</v-btn>
+          <v-btn text @click="confirmaFonteLeg">Confirmar</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <EditDescritivo
@@ -652,6 +575,7 @@ import Legislacao from "@/components/classes/consulta/Legislacao.vue";
 import ListaProcessosOrg from "@/components/tabSel/criacaoTSOrg/ListaProcessos.vue";
 import ListaProcessosPluri from "@/components/tabSel/criacaoTSPluri/ListaProcessos.vue";
 import EditDescritivo from "@/components/tabSel/parteDescritiva/EditDescritivo.vue";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: {
@@ -686,6 +610,7 @@ export default {
     ListaProcessosOrg,
     ListaProcessosPluri,
     EditDescritivo,
+    Campo,
   },
   data: () => ({
     campoEditado: null,
@@ -713,16 +638,21 @@ export default {
     editaBlocoDescritivoFlag: false,
     tiposFL: ["TS/LC", "PGD/LC", "PGD", "RADA", "RADA/CLAV"],
     paginaSelect: 1,
-    headersSelecionados:[
-        {text: "Código", sortable: false, value: "codigo"},
-        {text: "Referência", sortable: false, value: "referencia"},
-        {text: "Título", sortable: false, value: "titulo"},
-        {text: "Remover", align: "left", sortable: false, value: "" },
+    headersSelecionados: [
+      { text: "Código", sortable: false, value: "codigo" },
+      { text: "Referência", sortable: false, value: "referencia" },
+      { text: "Título", sortable: false, value: "titulo" },
+      { text: "Remover", align: "left", sortable: false, value: "" },
     ],
     footer_Classes: {
-        "items-per-page-text": "Classes por página",
-        "items-per-page-options": [5, 10, 20, -1],
-        "items-per-page-all-text": "Todos"
+      "items-per-page-text": "Classes por página",
+      "items-per-page-options": [5, 10, 20, -1],
+      "items-per-page-all-text": "Todos",
+    },
+    conversorDeCor: {
+      verde: "success",
+      amarelo: "warning",
+      vermelho: "error",
     },
   }),
 
@@ -731,20 +661,24 @@ export default {
   },
 
   methods: {
-    adicionaClasse: function(){
-      if(this.classeSelecionada.classe != null){
-        var indexAux = this.classesSI.findIndex(e => e.classe === this.classeSelecionada.classe);
-        var index = this.classesDaFonteL.findIndex(e => e.classe === this.classeSelecionada.classe);
+    adicionaClasse: function () {
+      if (this.classeSelecionada.classe != null) {
+        var indexAux = this.classesSI.findIndex(
+          (e) => e.classe === this.classeSelecionada.classe
+        );
+        var index = this.classesDaFonteL.findIndex(
+          (e) => e.classe === this.classeSelecionada.classe
+        );
         var selectedClasse = JSON.parse(JSON.stringify(this.classesDaFonteL[index]));
-        this.classesSI.splice(indexAux,1);
-        this.classeSelecionada="";
+        this.classesSI.splice(indexAux, 1);
+        this.classeSelecionada = "";
         this.novoHistorico.selecionadosTabelaFL.dados.push(selectedClasse);
         //alert(JSON.stringify(this.novoHistorico))
-        this.listaClasses.push(selectedClasse)
-        if(parseInt(selectedClasse.pca) > parseInt(this.novoHistorico.pcaSI.dados)){
+        this.listaClasses.push(selectedClasse);
+        if (parseInt(selectedClasse.pca) > parseInt(this.novoHistorico.pcaSI.dados)) {
           this.novoHistorico.pcaSI.dados = parseInt(selectedClasse.pca);
         }
-        if(this.novoHistorico.destinoSI.dados != "C"){
+        if (this.novoHistorico.destinoSI.dados != "C") {
           //alert("A")
           //alert(selectedClasse.df)
           //alert("B")
@@ -752,60 +686,83 @@ export default {
         }
       }
     },
-    unselectClasse: function(item) {
+    unselectClasse: function (item) {
       //alert(JSON.stringify(this.novoHistorico))
       //alert(JSON.stringify(this.novoHistorico.pcaSI.dados))
-      this.auxDF = this.novoHistorico.destinoSI.dados
-      if(item.codigo){
-        this.classesSI.push({info:"Cod: " + item.codigo + " - " + item.titulo , classe:item.classe});
+      this.auxDF = this.novoHistorico.destinoSI.dados;
+      if (item.codigo) {
+        this.classesSI.push({
+          info: "Cod: " + item.codigo + " - " + item.titulo,
+          classe: item.classe,
+        });
+      } else {
+        this.classesSI.push({
+          info: "Ref: " + item.referencia + " - " + item.titulo,
+          classe: item.classe,
+        });
       }
-      else{
-        this.classesSI.push({info:"Ref: " + item.referencia + " - " + item.titulo , classe:item.classe})
-      }
-      var index = this.listaClasses.findIndex(e => e.classe === item.classe);
+      var index = this.listaClasses.findIndex((e) => e.classe === item.classe);
       this.listaClasses.splice(index, 1);
       this.auxPCA = 0;
       this.auxDF = "";
-      this.listaClasses.forEach(element => {
+      this.listaClasses.forEach((element) => {
         //alert(JSON.stringify(this.classesDaFonteL))
-        if(parseInt(element.pca) > this.auxPCA){
+        if (parseInt(element.pca) > this.auxPCA) {
           //alert(parseInt(element.pca))
-          this.auxPCA = parseInt(element.pca)
+          this.auxPCA = parseInt(element.pca);
         }
-        if(this.auxDF != "C"){
-          this.auxDF = element.df
+        if (this.auxDF != "C") {
+          this.auxDF = element.df;
         }
       });
       this.novoHistorico.pcaSI.dados = this.auxPCA;
       this.novoHistorico.destinoSI.dados = this.auxDF;
     },
-    createclasse: function(){
-      this.verClasses = true
+    createclasse: function () {
+      this.verClasses = true;
     },
-    confirmaClasses(){
+    confirmaClasses() {
       //reconstruir Código class / ref class / Título / PCA  / forma contagem / df
-      this.novoHistorico.codClasse.dados = this.listaClasses.map(e=> e.codigo).toString().replaceAll(",","#")
-      this.novoHistorico.numeroClasse.dados = this.listaClasses.map(e=> e.referencia).toString().replaceAll(",","#")
-      this.novoHistorico.tituloClasse.dados = this.listaClasses.map(e=> e.titulo).toString().replaceAll(",","#")
-      this.novoHistorico.pcaClasse.dados = this.listaClasses.map(e=> e.pca).toString().replaceAll(",","#")
-      this.novoHistorico.destinoFinalClasse.dados = this.listaClasses.map(e=> e.df).toString().replaceAll(",","#")
-      this.novoHistorico.formaContagemPrazos.dados = this.listaClasses.map(e=> e.formaContagem).toString().replaceAll(",","#")
-      this.verClasses = false
+      this.novoHistorico.codClasse.dados = this.listaClasses
+        .map((e) => e.codigo)
+        .toString()
+        .replaceAll(",", "#");
+      this.novoHistorico.numeroClasse.dados = this.listaClasses
+        .map((e) => e.referencia)
+        .toString()
+        .replaceAll(",", "#");
+      this.novoHistorico.tituloClasse.dados = this.listaClasses
+        .map((e) => e.titulo)
+        .toString()
+        .replaceAll(",", "#");
+      this.novoHistorico.pcaClasse.dados = this.listaClasses
+        .map((e) => e.pca)
+        .toString()
+        .replaceAll(",", "#");
+      this.novoHistorico.destinoFinalClasse.dados = this.listaClasses
+        .map((e) => e.df)
+        .toString()
+        .replaceAll(",", "#");
+      this.novoHistorico.formaContagemPrazos.dados = this.listaClasses
+        .map((e) => e.formaContagem)
+        .toString()
+        .replaceAll(",", "#");
+      this.verClasses = false;
     },
-    confirmaEntidades(){
-      this.novoHistorico[this.campoValue].dados = this.entSel
-      this.novoHistorico[this.campoValue].cor = "amarelo"
-      this.verEntidades = false
+    confirmaEntidades() {
+      this.novoHistorico[this.campoValue].dados = this.entSel;
+      this.novoHistorico[this.campoValue].cor = "amarelo";
+      this.verEntidades = false;
     },
-    confirmaTipoFonteLeg(){
-      this.novoHistorico[this.campoValue].dados = this.tipoFonteLegSelected
-      this.novoHistorico[this.campoValue].cor = "amarelo"
-      this.verTipoFontesLeg = false
+    confirmaTipoFonteLeg() {
+      this.novoHistorico[this.campoValue].dados = this.tipoFonteLegSelected;
+      this.novoHistorico[this.campoValue].cor = "amarelo";
+      this.verTipoFontesLeg = false;
     },
-    confirmaFonteLeg(){
-      this.novoHistorico[this.campoValue].dados = this.fonteLegitimacaoSelected
-      this.novoHistorico[this.campoValue].cor = "amarelo"
-      this.verFontesLeg = false
+    confirmaFonteLeg() {
+      this.novoHistorico[this.campoValue].dados = this.fonteLegitimacaoSelected;
+      this.novoHistorico[this.campoValue].cor = "amarelo";
+      this.verFontesLeg = false;
     },
 
     forceRender() {
@@ -818,23 +775,15 @@ export default {
       if (this.$refs.form.validate()) {
         switch (this.tipo) {
           case "string":
-            if (
-              this.campoEditado !== this.novoHistorico[this.campoValue].dados
-            ) {
+            if (this.campoEditado !== this.novoHistorico[this.campoValue].dados) {
               this.novoHistorico[this.campoValue].dados = this.campoEditado;
               if (this.campoEditado !== this.dadosOriginais[this.campoValue]) {
                 this.novoHistorico[this.campoValue].cor = "amarelo";
-                this.$emit(
-                  "corAlterada",
-                  this.novoHistorico[this.campoValue].cor
-                );
+                this.$emit("corAlterada", this.novoHistorico[this.campoValue].cor);
                 this.foiEditado = true;
               } else {
                 this.novoHistorico[this.campoValue].cor = "verde";
-                this.$emit(
-                  "corAlterada",
-                  this.novoHistorico[this.campoValue].cor
-                );
+                this.$emit("corAlterada", this.novoHistorico[this.campoValue].cor);
                 this.foiEditado = false;
               }
               this.editaCampo = null;
@@ -843,23 +792,15 @@ export default {
 
             break;
           case "tipofl":
-            if (
-              this.campoEditado !== this.novoHistorico[this.campoValue].dados
-            ) {
+            if (this.campoEditado !== this.novoHistorico[this.campoValue].dados) {
               this.novoHistorico[this.campoValue].dados = this.campoEditado;
               if (this.campoEditado !== this.dadosOriginais[this.campoValue]) {
                 this.novoHistorico[this.campoValue].cor = "amarelo";
-                this.$emit(
-                  "corAlterada",
-                  this.novoHistorico[this.campoValue].cor
-                );
+                this.$emit("corAlterada", this.novoHistorico[this.campoValue].cor);
                 this.foiEditado = true;
               } else {
                 this.novoHistorico[this.campoValue].cor = "verde";
-                this.$emit(
-                  "corAlterada",
-                  this.novoHistorico[this.campoValue].cor
-                );
+                this.$emit("corAlterada", this.novoHistorico[this.campoValue].cor);
                 this.foiEditado = false;
               }
               this.editaCampo = null;
@@ -884,22 +825,15 @@ export default {
                   this.campoEditado.length ==
                     this.dadosOriginais[this.campoValue].length &&
                   this.campoEditado.every(
-                    (val, index) =>
-                      val === this.dadosOriginais[this.campoValue][index]
+                    (val, index) => val === this.dadosOriginais[this.campoValue][index]
                   )
                 ) {
                   this.novoHistorico[this.campoValue].cor = "verde";
-                  this.$emit(
-                    "corAlterada",
-                    this.novoHistorico[this.campoValue].cor
-                  );
+                  this.$emit("corAlterada", this.novoHistorico[this.campoValue].cor);
                   this.foiEditado = false;
                 } else {
                   this.novoHistorico[this.campoValue].cor = "amarelo";
-                  this.$emit(
-                    "corAlterada",
-                    this.novoHistorico[this.campoValue].cor
-                  );
+                  this.$emit("corAlterada", this.novoHistorico[this.campoValue].cor);
                   this.foiEditado = true;
                 }
                 this.editaCampo = null;
@@ -913,9 +847,7 @@ export default {
                     this.novoHistorico[this.campoValue].dados.length &&
                   this.campoEditado.every((val, index) => {
                     val ===
-                      this.novoHistorico[this.campoValue].dados[index][
-                        this.arrayValue
-                      ];
+                      this.novoHistorico[this.campoValue].dados[index][this.arrayValue];
                   })
                 )
               ) {
@@ -928,8 +860,8 @@ export default {
       }
     },
     abrirNotaDialog() {
-        this.notaVisivel = true;
-        this.notaCampo = this.campoText;
+      this.notaVisivel = true;
+      this.notaCampo = this.campoText;
     },
     verifica(campo) {
       this.novoHistorico[campo].cor = "verde";
@@ -950,10 +882,7 @@ export default {
           this.listaProcessos.numProcessosPreSelecionados = 0;
           this.listaProcessos.procsAselecionar = [];
           this.listaProcessos.procs = [];
-          var response = await this.$request(
-            "get",
-            "/classes?nivel=3&info=completa"
-          );
+          var response = await this.$request("get", "/classes?nivel=3&info=completa");
           for (let i = 0; i < response.data.length; i++) {
             this.listaProcessos.procs.push(response.data[i]);
             this.listaProcessos.procs[i].chave = i;
@@ -999,17 +928,12 @@ export default {
         var index;
         for (let j = 0; j < this.listaProcessos.procs.length; j++) {
           if (this.listaProcessos.procs[j].tipoProc != "Processo Comum") {
-            index = this.listaCodigosEsp.indexOf(
-              this.listaProcessos.procs[j].codigo
-            );
-            if (index == -1)
-              this.listaProcessos.procs[j].tipoProc = "Processo Restante";
+            index = this.listaCodigosEsp.indexOf(this.listaProcessos.procs[j].codigo);
+            if (index == -1) this.listaProcessos.procs[j].tipoProc = "Processo Restante";
           }
         }
       } catch (e) {
-        console.log(
-          "Erro ao calcular os processos específicos das entidades: " + e
-        );
+        console.log("Erro ao calcular os processos específicos das entidades: " + e);
       }
     },
     loadProcessosOrg: async function () {
@@ -1020,10 +944,7 @@ export default {
           this.listaProcessos.processosPreSelecionados = 0;
           this.listaProcessos.procsAselecionar = [];
           this.listaProcessos.procs = [];
-          var response = await this.$request(
-            "get",
-            "/classes?nivel=3&info=completa"
-          );
+          var response = await this.$request("get", "/classes?nivel=3&info=completa");
           for (let i = 0; i < response.data.length; i++) {
             this.listaProcessos.procs.push(response.data[i]);
             this.listaProcessos.procs[i].chave = i;
@@ -1040,22 +961,16 @@ export default {
             this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
               i
             ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[
-              i
-            ].exemplosNotasAp = this.listaProcessos.procs[
+            this.listaProcessos.procs[i].exemplosNotasAp = this.listaProcessos.procs[
               i
             ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
             this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
               i
             ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
           }
-          this.participante = new Array(this.listaProcessos.procs.length).fill(
-            "NP"
-          );
+          this.participante = new Array(this.listaProcessos.procs.length).fill("NP");
           this.tabelaSelecao.listaProcessos.procs.map((p) => {
-            let index = this.listaProcessos.procs.findIndex(
-              (e) => p.codigo == e.codigo
-            );
+            let index = this.listaProcessos.procs.findIndex((e) => p.codigo == e.codigo);
             this.participante[index] = p.participante;
           });
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
@@ -1068,18 +983,12 @@ export default {
     mergeProcsPluri: async function () {
       try {
         var index;
-        for (
-          let i = 0;
-          i < this.tabelaSelecao.listaProcessos.procs.length;
-          i++
-        ) {
+        for (let i = 0; i < this.tabelaSelecao.listaProcessos.procs.length; i++) {
           index = this.listaProcessos.procs.findIndex(
             (p) => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
           );
           if (index != -1) {
-            this.listaProcessos.procs[
-              index
-            ] = this.tabelaSelecao.listaProcessos.procs[i];
+            this.listaProcessos.procs[index] = this.tabelaSelecao.listaProcessos.procs[i];
 
             if (
               this.tabelaSelecao.listaProcessos.procs[i].entidades.filter(
@@ -1108,9 +1017,7 @@ export default {
           (p) => p.codigo == this.tabelaSelecao.listaProcessos.procs[i].codigo
         );
         if (index != -1) {
-          this.listaProcessos.procs[
-            index
-          ] = this.tabelaSelecao.listaProcessos.procs[i];
+          this.listaProcessos.procs[index] = this.tabelaSelecao.listaProcessos.procs[i];
           if (
             this.tabelaSelecao.listaProcessos.procs[i].dono ||
             this.tabelaSelecao.listaProcessos.procs[i].participante != "NP"
@@ -1129,9 +1036,7 @@ export default {
       var fecho = this.fechoTransitivo[processo.codigo];
       !fecho.includes(processo.codigo) ? fecho.push(processo.codigo) : "";
       for (let i = 0; i < fecho.length; i++) {
-        var index = this.listaProcessos.procs.findIndex(
-          (p) => p.codigo == fecho[i]
-        );
+        var index = this.listaProcessos.procs.findIndex((p) => p.codigo == fecho[i]);
         //Só acrescenta processos a selecionar que não tenham sido selecionados antes de guardar o trabalho
         if (
           (this.tipoTS == "Organizacional" &&
@@ -1149,8 +1054,7 @@ export default {
           this.listaProcessos.procs[index].preSelected++;
           if (this.listaProcessos.procs[index].preSelected == 1) {
             this.listaProcessos.numProcessosPreSelecionados++;
-            this.listaProcessos.procs[index].preSelectedLabel =
-              "Pré-Selecionado";
+            this.listaProcessos.procs[index].preSelectedLabel = "Pré-Selecionado";
           }
         }
       }
@@ -1197,9 +1101,7 @@ export default {
         this.listaProcessos.procsAselecionar = this.listaProcessos.procs.filter(
           (p) => !p.edited && p.preSelected > 0
         );
-        this.listaProcessos.procs = this.listaProcessos.procs.filter(
-          (p) => p.edited
-        );
+        this.listaProcessos.procs = this.listaProcessos.procs.filter((p) => p.edited);
       }
 
       this.novoHistorico.procsAselecionar.dados = this.novoHistorico.procsAselecionar.dados
@@ -1243,16 +1145,12 @@ export default {
       this.novoHistorico.classes.dados = JSON.parse(
         JSON.stringify(this.listaProcessos.procs)
       );
-      this.novoHistorico.classes.dados = this.novoHistorico.classes.dados.map(
-        (p) => {
-          return { cor: "verde", dados: p, nota: null };
-        }
-      );
+      this.novoHistorico.classes.dados = this.novoHistorico.classes.dados.map((p) => {
+        return { cor: "verde", dados: p, nota: null };
+      });
 
       this.novoHistorico.classes.dados.map((p) => {
-        let i = aux.findIndex(
-          (proc) => proc.dados.codigo.dados == p.dados.codigo
-        );
+        let i = aux.findIndex((proc) => proc.dados.codigo.dados == p.dados.codigo);
 
         Object.keys(p.dados).map((e) => {
           p.dados[e] = {
@@ -1286,8 +1184,7 @@ export default {
       this.dadosOriginais.termosInd = p.termosInd;
 
       !(
-        this.novoHistorico.notasAp.dados.length ===
-          this.dadosOriginais.notasAp.length &&
+        this.novoHistorico.notasAp.dados.length === this.dadosOriginais.notasAp.length &&
         this.novoHistorico.notasAp.dados.every((n) =>
           this.dadosOriginais.notasAp.some((nota) => nota.nota == n.nota)
         )
@@ -1299,17 +1196,14 @@ export default {
         this.novoHistorico.exemplosNotasAp.dados.length ===
           this.dadosOriginais.exemplosNotasAp.length &&
         this.novoHistorico.exemplosNotasAp.dados.every((n) =>
-          this.dadosOriginais.exemplosNotasAp.some(
-            (nota) => nota.exemplo == n.exemplo
-          )
+          this.dadosOriginais.exemplosNotasAp.some((nota) => nota.exemplo == n.exemplo)
         )
       )
         ? (this.novoHistorico.exemplosNotasAp.cor = "amarelo")
         : "";
 
       !(
-        this.novoHistorico.notasEx.dados.length ===
-          this.dadosOriginais.notasEx.length &&
+        this.novoHistorico.notasEx.dados.length === this.dadosOriginais.notasEx.length &&
         this.novoHistorico.notasEx.dados.every((n) =>
           this.dadosOriginais.notasEx.some((nota) => nota.nota == n.nota)
         )
@@ -1352,9 +1246,7 @@ export default {
       let array = this.notas.filter(
         (n) =>
           n.exemplo.replace(" ", "") != "" &&
-          !this.dadosOriginais[this.campoValue].some(
-            (n1) => n1.exemplo == n.exemplo
-          )
+          !this.dadosOriginais[this.campoValue].some((n1) => n1.exemplo == n.exemplo)
       );
       return array.concat(this.dadosOriginais[this.campoValue]);
     },
@@ -1362,9 +1254,7 @@ export default {
       let array = this.notas.filter(
         (n) =>
           n.termo.replace(" ", "") != "" &&
-          !this.dadosOriginais[this.campoValue].some(
-            (n1) => n1.termo == n.termo
-          )
+          !this.dadosOriginais[this.campoValue].some((n1) => n1.termo == n.termo)
       );
       return array.concat(this.dadosOriginais[this.campoValue]);
     },

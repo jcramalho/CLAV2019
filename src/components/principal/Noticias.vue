@@ -8,6 +8,7 @@
         <v-btn
           v-for="item in this.fops"
           rounded
+          small
           class="panelbtn"
           @click="go(item.url)"
           :key="item.url"
@@ -158,7 +159,7 @@ export default {
 
 .conteudo {
   display: grid;
-  grid-template-columns: 0.7fr 0.3fr;
+  grid-template-columns: 0.8fr 0.2fr;
   grid-template-rows: 0.05fr 0.95fr;
   grid-template-areas:
     "titulopainel data"
