@@ -26,11 +26,11 @@
 
           <p>
             Consulte
-            <a
+            <!--a
               :href="`${publicPath}documentos/Instrucoes_preenchimento_AE_por_submissao.pdf`"
-              >aqui</a
-            >
-            as instruções de preenchimento.
+              -->aqui<!--/a>
+            -->
+            as instruções de preenchimento em breve.
           </p>
         </div>
 
