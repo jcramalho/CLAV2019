@@ -115,7 +115,7 @@ export default {
       }
     },
     async finalizarPedido(despacho) {
-      alert(this.pedido.objeto.tipo)
+      //alert(this.pedido.objeto.tipo)
       let res;
       let despachoAprovacao;
       try {
@@ -227,7 +227,7 @@ export default {
           //  }
           //}
           //alert(JSON.stringify(this.pedido.objeto))
-          alert(JSON.stringify(this.pedido.objeto.dados))
+          //alert(JSON.stringify(this.pedido.objeto.dados))
           this.showPedido = true
           //await this.$request("post", "/ppd/registar",  this.pedido.objeto.dados );
         }
