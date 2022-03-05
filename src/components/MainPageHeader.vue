@@ -574,6 +574,11 @@ export default {
                   level: [1, 2, 3, 3.5, 4, 5, 6, 7],
                   icon: "importar-icon",
                 },
+                {
+                  url: "/autosEliminacao/importarCSV",
+                  level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+                  icon: "importar2-icon",
+                }
               ],
             },
             {
@@ -1037,6 +1042,7 @@ export default {
 
 /*CSS Ações rápidas*/
 .acoes {
+  min-width: 150px !important; /*Para os 4 itens na opção de "Autos de Eliminição" ficarem na mesma linha*/
   position: absolute;
   left: 50%;
   bottom: -30%;

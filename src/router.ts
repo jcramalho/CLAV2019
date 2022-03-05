@@ -353,6 +353,13 @@ export default new Router({
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
     {
+      path: "/autosEliminacao/importarCSV",
+      name: "importarCSVAutosEliminacao",
+      component: () =>
+        import("./views/autosEliminacao/AutosEliminacaoImportarCSV.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
       path: "/autosEliminacao/:idAE",
       name: "consultaAutoEliminacao",
       component: () =>
