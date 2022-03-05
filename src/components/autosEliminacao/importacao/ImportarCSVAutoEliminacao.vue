@@ -396,10 +396,6 @@ export default {
       formData.append('file', this.fileSerie)
       formData.append('agreg', this.fileAgreg)
 
-      for (var key of formData.entries()) {
-        console.log(key[0] + ', ' + key[1]);
-      }
-
       this.$request("post", "/autosEliminacao/importarCSV", formData)
        .then(res => {
           this.codigoPedido = res.data.codigoPedido
