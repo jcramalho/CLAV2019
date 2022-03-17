@@ -1194,23 +1194,14 @@ export default {
       try {
         var formData = new FormData();
         formData.append("file", file);
-        formData.append("designacao", this.tabelaSelecao.designacao);
-        if (this.tipoTS != "tipologia")
-          formData.append("entidade_ts", this.tabelaSelecao.designacaoEntidade);
-        else
-          formData.append(
-            "entidade_ts",
-            this.tabelaSelecao.designacaoTipologia
-          );
-        formData.append("tipo_ts", "TS Organizacional");
-        formData.append("fonteL", "TS/LC");
         var response = await this.$request(
           "post",
-          "/tabelasSelecao/importar",
+          "/tabelasSelecao/importarProcessos",
           formData
         );
-        this.listaProcessos.procs = response.data.ts.processos;
-        this.importadoFlag = true;
+        console.log(JSON.stringify(response.data))
+        // this.listaProcessos.procs = response.data.ts.processos;
+        // this.importadoFlag = true;
       } catch (e) {
         this.erro = e.response.data[0].msg || e.response.data;
         this.erroDialog = true;

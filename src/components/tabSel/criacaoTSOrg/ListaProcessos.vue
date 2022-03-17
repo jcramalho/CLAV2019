@@ -166,48 +166,46 @@
 
           <v-card-text>
             <v-file-input
-              label="Ficheiro CSV/Excel"
-              placeholder="Selecione o ficheiro CSV/Excel com a Tabela de Seleção"
+              label="Ficheiro CSV"
+              placeholder="Selecione o ficheiro CSV com a Lista de Processos a Importar"
               show-size
               truncate-length="100"
-              accept="text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              accept="text/csv"
               color="indigo darken-4"
               @change="selecionaFicheiro($event)"
             ></v-file-input>
 
             <v-alert type="info">
-              Caso o ficheiro seja CSV deve respeitar o seguinte:
+              O ficheiro CSV deve respeitar o seguinte:
 
               <ul>
-                <li>Os delimitadores podem ser ',' ou ';' ou '\t' ou '|'</li>
-                <li>O quote e o escape são realizados através de "</li>
-                <li>O encoding do ficheiro tem de ser UTF-8</li>
+                <li>Os delimitadores podem ser ',' ou ';';</li>
+                <li>O quote e o escape são realizados através de '"';</li>
+                <li>O encoding do ficheiro tem de ser UTF-8.</li>
               </ul>
 
-              O ficheiro (seja CSV ou Excel(xslx)) tem de possuir uma sheet em
-              que tenha:
+              O ficheiro terá de possuir:
 
               <ul>
-                <li>Uma coluna 'Código' com os códigos dos processos</li>
-                <li>Uma coluna 'Título' com os títulos dos processos</li>
-                <li>
-                  Uma coluna 'Dono' com:
-                  <ul>
-                    <li>x ou X nos processos selecionados</li>
-                    <li>Nada para os processos não selecionados</li>
-                  </ul>
+                <li>Uma coluna 'codigo' preenchida com os códigos dos processos que se pretendem importar.
+                  Estes devem constar da Lista Consolidade e estar <i>"Ativos"</i>;
                 </li>
                 <li>
-                  Uma coluna 'Participante' com o tipo de participação:
+                  Uma coluna <i>'dono'</i> com 'x' ou 'X' caso a entidade seja dona do processo (esta informação, caso
+                  esteja omissa na Lista Consolidada, será adicionada no ato de criação desta TS);
+                </li>
+                <li>
+                  Uma coluna 'participante' preenchida com o tipo de participação:
                   <ul>
-                    <li>Apreciador</li>
-                    <li>Assessor</li>
-                    <li>Comunicador</li>
-                    <li>Decisor</li>
-                    <li>Executor</li>
-                    <li>Iniciador</li>
-                    <li>Nada para os processos não selecionados</li>
+                    <li>Apreciar</li>
+                    <li>Assessorar</li>
+                    <li>Comunicar</li>
+                    <li>Decidir</li>
+                    <li>Executar</li>
+                    <li>Iniciar</li>
                   </ul>
+                  para os processos em que a entidade é participante (esta informação, caso
+                  esteja omissa na Lista Consolidada, será adicionada no ato de criação desta TS).
                 </li>
               </ul>
             </v-alert>
