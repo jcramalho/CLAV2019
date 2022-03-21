@@ -22,7 +22,7 @@
     "jest": "^25.3.0",
     "jquery": "^3.5.0",
     "jsonwebtoken": "^8.5.1",
-    "marked": "^0.8.2",
+    "marked": "^4.0.10",
     "nanoid": "^3.1.31",
     "odometer": "^0.4.8",
     "papaparse": "^5.2.0",
