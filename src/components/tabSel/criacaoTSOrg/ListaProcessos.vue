@@ -24,11 +24,6 @@
               label="Específicos"
               value="Processo Específico"
             ></v-radio>
-            <!--v-radio
-              color="indigo darken-4"
-              label="Restantes"
-              value="Processo Restante"
-            ></v-radio-->
             <v-radio
               color="indigo darken-4"
               label="Relacionados"
@@ -355,6 +350,7 @@ export default {
         "/vocabularios/vc_processoTipoParticipacao"
       );
       this.participacao = resPar.data;
+      console.log(this.participacao)
     } catch (e) {
       console.log("Erro no carregamento dos tipos de participação: " + e);
     }
@@ -506,9 +502,36 @@ export default {
       this.file = file;
     },
     //Importação de processos
-    enviarFicheiro: function () {
-      this.$emit("importar", this.file);
+    enviarFicheiro: async function () {
       this.importFlag = false;
+      try {
+        var formData = new FormData();
+        formData.append("file", this.file);
+        var response = await this.$request(
+          "post",
+          "/tabelasSelecao/importarProcessos",
+          formData
+        );
+        var importados = response.data
+        importados.forEach(pn => {
+          var pindex = this.listaProcs.procs.findIndex(p => p.codigo === pn.codigo);
+          if(pindex != -1){
+            if(pn.dono == 'x' || pn.dono == 'X'){
+              this.selecionaDono(this.listaProcs.procs[pindex])
+            }
+            if(pn.participante != ""){
+              if(/Apreciar|Assessorar|Comunicar|Decidir|Executar|Iniciar/.test(pn.participante)){
+                this.participante[pindex] = pn.participante
+                this.selecionaParticipacao(this.listaProcs.procs[pindex], pn.participante)
+              }  
+            }
+          }
+          
+        });
+      } catch (e) {
+        this.erro = e.response.data[0].msg || e.response.data;
+        this.erroDialog = true;
+      }
     },
   },
 };

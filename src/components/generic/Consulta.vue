@@ -383,15 +383,15 @@ export default {
     voltar() {
       switch (this.tipo) {
         case "Tipologias":
-          this.$router.push("/tipologias");
+          this.$router.push("/tipologias/consultar");
           break;
 
         case "Entidades":
-          this.$router.push("/entidades");
+          this.$router.push("/entidades/consultar");
           break;
 
         case "Legislação":
-          this.$router.push("/legislacao");
+          this.$router.push("/legislacao/consultar");
           break;
 
         default:

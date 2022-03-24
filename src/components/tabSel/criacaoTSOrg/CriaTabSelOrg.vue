@@ -300,7 +300,6 @@
               :listaProcs="listaProcessos"
               :listaCodigosEsp="listaCodigosEsp"
               :participante="participante"
-              @importar="enviarFicheiro($event)"
             />
             <ListaProcessosImportados v-else :procs="listaProcessos.procs" />
           </div>
@@ -558,7 +557,7 @@ export default {
       listaProcessosReady: false,
       // Lista com os códigos dos processos específicos da entidade selecionada
       listaCodigosEsp: [],
-      // Array que determina a seleção de paticipante de cada processo
+      // Array que determina a seleção de participante de cada processo
       participante: [],
       // Tratamento de erros da validação
       mensagensErro: [],
@@ -1188,25 +1187,7 @@ export default {
         };
       }
       return historico;
-    },
-    //Importação de processos
-    enviarFicheiro: async function (file) {
-      try {
-        var formData = new FormData();
-        formData.append("file", file);
-        var response = await this.$request(
-          "post",
-          "/tabelasSelecao/importarProcessos",
-          formData
-        );
-        console.log(JSON.stringify(response.data))
-        // this.listaProcessos.procs = response.data.ts.processos;
-        // this.importadoFlag = true;
-      } catch (e) {
-        this.erro = e.response.data[0].msg || e.response.data;
-        this.erroDialog = true;
-      }
-    },
+    }
   },
   created: async function () {
     try {
