@@ -2,15 +2,12 @@
   <v-card flat class="pa-3">
     <!-- Header -->
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="3" align="center" justify="center">
-        <Voltar />
-      </v-col>
-      <v-col cols="12" sm="9" align="center" justify="center">
-        <p class="clav-content-title-1">Alterar Diploma</p>
-        <p class="clav-content-title-2">
+      <v-col align="center" justify="center">
+        <div class="clav-content-title-1">Alterar Diploma</div>
+        <div class="clav-content-title-2">
           {{ legislacaoOriginal.tipo }} -
           {{ legislacaoOriginal.numero }}
-        </p>
+        </div>
       </v-col>
     </v-row>
 

@@ -1,16 +1,13 @@
 <template>
   <v-card flat class="pa-3">
     <!-- Header -->
-    <v-row align="center" justify="center">
-      <v-col cols="12" sm="3" align="center" justify="center">
-        <Voltar />
-      </v-col>
-      <v-col cols="12" sm="9" align="center" justify="center">
-        <p class="clav-content-title-1">Alterar Entidade</p>
-        <p class="clav-content-title-2">
+    <v-row align="center" justify="center" class="ma-2">
+      <v-col align="center" justify="center">
+        <div class="clav-content-title-1 ma-2">Alterar Entidade</div>
+        <div class="clav-content-title-2 ma-2">
           {{ entidadeOriginal.sigla }} -
           {{ entidadeOriginal.designacao }}
-        </p>
+        </div>
       </v-col>
     </v-row>
 
