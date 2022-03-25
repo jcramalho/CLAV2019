@@ -129,7 +129,7 @@
     <ShowDefault v-else :p="Pedido" />
 
     <v-row>
-      <v-col align="left">
+      <v-col style="margin-top: 10px;"align="left">
         <Voltar />
       </v-col>
       <v-spacer></v-spacer>
