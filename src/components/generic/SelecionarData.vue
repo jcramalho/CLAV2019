@@ -18,7 +18,9 @@
           v-on="on"
           hide-details
           clearable
-          @click:clear="dataValor = d;"
+          @click:clear="
+            dataValor = '';
+            dataSelecionada();"
         />
       </slot>
     </template>
