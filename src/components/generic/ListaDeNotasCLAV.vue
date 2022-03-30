@@ -140,6 +140,7 @@ export default {
     insereNovaNota: async function (notas) {
       if(notas.length > 0) 
         notas[notas.length - 1][this.campo] = (notas[notas.length - 1][this.campo]).trim()
+        //console.log('['+ notas[notas.length - 1][this.campo] + ']')
       if (notas.length > 0 && notas[notas.length - 1][this.campo] == "") {
         this.vaziaFlag = true;
       } else if (this.notaDuplicada(notas)) {
