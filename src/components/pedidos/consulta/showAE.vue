@@ -11,6 +11,7 @@
         fill="white"
       />
     </v-card-title>
+    </br>
     <v-card-text>
       <Campo
         nome="Entidade Responsável"
@@ -133,12 +134,12 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.anoInicio }}</span>
+                      <span> {{ item.dataInicio }}</span>
                     </template>
                   </Campo>
                   <Campo nome="Ano de Fim" infoHeader="Ano de Fim" color="neutralpurple">
                     <template v-slot:conteudo>
-                      <span> {{ item.anoFim }}</span>
+                      <span> {{ item.dataFim }}</span>
                     </template>
                   </Campo>
                   <Campo
@@ -292,8 +293,8 @@ export default {
     cabecalho: [
       { text: "Código", align: "left", sortable: false, value: "codigo" },
       { text: "Título", align: "left", value: "titulo" },
-      { text: "Ano", align: "center", value: "ano" },
-      { text: "Natureza de Intervenção", align: "center", value: "naturezaIntervencao" },
+      { text: "Ano", align: "center", value: "dataContagem" },
+      { text: "Natureza de Intervenção", align: "center", value: "ni" },
     ],
     footer_props: {
       "items-per-page-text": "Mostrar",
