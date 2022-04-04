@@ -129,7 +129,7 @@
     <ShowDefault v-else :p="Pedido" />
 
     <v-row>
-      <v-col style="margin-top: 10px;"align="left">
+      <v-col style="margin-top: 10px;" align="left">
         <Voltar />
       </v-col>
       <v-spacer></v-spacer>
@@ -143,7 +143,7 @@
         "
         align="center"
       >
-        <v-btn color="primary" @click="substituirResponsavelDialog = true" rounded
+        <v-btn style="margin-top: 10px;" color="primary" @click="substituirResponsavelDialog = true" rounded
           >Substituir Responsável</v-btn
         >
       </v-col>
