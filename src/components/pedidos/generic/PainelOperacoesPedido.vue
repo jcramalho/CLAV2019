@@ -68,8 +68,6 @@ export default {
 
       this.pedido.historico.push(novoHistorico);
 
-      console.log(JSON.stringify(this.pedido))
-
       const novaDistribuicao = {
         estado: estado,
         responsavel: this.utilizador.email,

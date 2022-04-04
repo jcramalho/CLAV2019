@@ -3,12 +3,11 @@
     <!-- Infobox com os resultados da VALIDAÇÂO -->
     <v-btn
       v-bind:disabled="c.codigo == ''"
-      dark
       rounded
-      class="ma-2 indigo darken-4"
+      class="white--text clav-linear-background"
       @click="validarClasse"
     >
-      Validar classe
+      <p class="ml-2">Validar classe</p>
     </v-btn>
 
     <!-- Erros na Validação ....................... -->
@@ -141,9 +140,7 @@ export default {
 
     validarClasse: async function() {
       // Codigo: não pode ser alterado
-
       // Título: não pode ser alterado
-
       // Descrição: qq valor exceto vazio
       if (this.c.descricao == "") {
         this.mensagensErro.push({

@@ -205,7 +205,8 @@
             </v-row>
           </div>
           
-          </br> 
+          <br/> 
+
           <v-btn
             class="ma-2"
             color="indigo darken-4"
@@ -279,11 +280,11 @@
         >
 
         
-        <v-card-text> </br>
+        <v-card-text>
           <span> <b> {{ erroTipo }} </b> </span>
           <div v-if="erro.length">
             <ol class="mt-4">
-              <li v-for="(e,index) in erro">
+              <li v-for="(e,index) in erro" :key="index">
                 Não foi possível importar o <b>{{erroFile[index]}}</b> {{erroCont[index]}} <b>{{erroLinh[index]}}</b>
               </li>
             </ol>
