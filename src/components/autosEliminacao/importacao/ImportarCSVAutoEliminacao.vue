@@ -375,7 +375,7 @@ export default {
     },
     getRADA: async function () {
       try {
-        var response3 = /*await this.$request("get", "/legislacao?fonte=RADA");*/ []
+        var response3 = await this.$request("get", "/legislacao?fonte=RADA");
         this.portariaRada = await this.prepararLeg(response3.data);
       } catch (e) {
         this.portariaRada = [];
