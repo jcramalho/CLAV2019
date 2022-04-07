@@ -243,9 +243,9 @@ export default {
   methods: {
     filterDono(dono) {
       if(dono[dono.length-1] == "#")
-        return dono.slice(0,-1).replace(/#/,', ')
+        return dono.slice(0,-1).replaceAll(/#/,', ')
       else
-        return dono.replace(/#/,', ')
+        return dono.replaceAll(/#/,', ')
     }
   }
 };
