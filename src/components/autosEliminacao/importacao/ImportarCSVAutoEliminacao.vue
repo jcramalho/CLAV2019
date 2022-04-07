@@ -281,11 +281,12 @@
 
         
         <v-card-text>
+          </br>
           <span> <b> {{ erroTipo }} </b> </span>
-          <div v-if="erro.length">
+          <div v-if="erros.length">
             <ol class="mt-4">
-              <li v-for="(e,index) in erro" :key="index">
-                Não foi possível importar o <b>{{erroFile[index]}}</b> {{erroCont[index]}} <b>{{erroLinh[index]}}</b>
+              <li v-for="(e,index) in erros" :key="index">
+                {{e}}
               </li>
             </ol>
           </div>
@@ -334,11 +335,10 @@ export default {
     tipo: "TS_LC",
     successDialog: false,
     erroDialog: false,
+
     erroTipo: "",
-    erro: "",
-    erroFile: [],
-    erroCont: [],
-    erroLinh: [],
+    erros: [],
+
     valDialog: false,
     publicPath: process.env.BASE_URL,
     myhelp: help,
@@ -404,7 +404,10 @@ export default {
           this.cleanFiles()
         })
         .catch(e => {
-          var er = e.response.data.split("&&&")
+          console.log(e.response.data.erros)
+          this.erros = e.response.data.erros
+          this.erroTipo = e.response.data.mensagem
+          /*var er = e.response.data.split("&&&")
           this.erroTipo = er[0]
           this.erro = []
           if(er[1] != '') {
@@ -416,7 +419,7 @@ export default {
               this.erroCont.push(cont[2])
               this.erroLinh.push(cont[3])
             }         
-          } 
+          } */
           this.erroDialog = true
           this.cleanFiles()
         });
