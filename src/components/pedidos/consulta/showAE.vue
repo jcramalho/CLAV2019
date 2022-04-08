@@ -59,7 +59,7 @@
         <template v-slot:conteudo>
           <ul>
             <li v-for="(e, i) in p.objeto.dados.entidades" :key="i">
-              <a :href="'/entidades/' + e.entidade"
+              <a :href="'/entidades/ent_' + e.entidade"
                 >{{ e.entidade }}: {{ e.designacao }}</a
               >
             </li>
@@ -183,7 +183,16 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ filterDono(item.dono) }} </span>
+                      <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
+                        <li v-for="(l, index) in listaDonos[item.codigo]" v-bind:key="index">
+                          <a :href="'/entidades/ent_' + l">{{ l }}</a>
+                        </li>
+                      </ul>
+                      <a @click="entCollapsed = !entCollapsed" v-if="listaDonos.length > 6">
+                        <span v-if="entCollapsed" style="color:#283593;"
+                        >Mostrar mais...</span>
+                        <span v-else style="color:#283593;">Mostrar menos...</span>
+                      </a>
                     </template>
                   </Campo>
                   <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
@@ -238,15 +247,17 @@ export default {
     footer_props: {
       "items-per-page-text": "Mostrar",
     },
+    entCollapsed: true,
+    listaDonos: {}
   }),
 
-  methods: {
-    filterDono(dono) {
-      if(dono[dono.length-1] == "#")
-        return dono.slice(0,-1).replaceAll(/#/,', ')
-      else
-        return dono.replaceAll(/#/,', ')
-    }
+  created: function(){
+    this.p.objeto.dados.classes.forEach(
+      c => {
+        if(c.dono)
+          this.listaDonos[c.codigo] = c.dono.split("#")
+      }
+    )
   }
 };
 </script>
