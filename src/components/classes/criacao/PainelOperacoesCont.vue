@@ -1,7 +1,37 @@
 <template>
   <div>
     <v-row>
-      <!-- Guardar trabalho......................... -->
+
+      <!-- Guardar: grava e mantem-se......................... -->
+      <v-col>
+        <v-btn
+          dark
+          rounded
+          class="ma-2 indigo darken-4"
+          @click="gravarTrabalho"
+          v-bind:disabled="c.codigo == ''"
+        >
+          Guardar
+        </v-btn>
+      </v-col>
+
+      <!-- Validar ......................................... -->
+      <valida-classe-info-box :c="o.objeto" />
+
+      <!-- Submeter: criar a classe....................... -->
+      <v-col>
+        <v-btn
+          v-bind:disabled="o.objeto.codigo == ''"
+          dark
+          rounded
+          class="ma-2 teal darken-4"
+          @click="criarClasse"
+        >
+          Criar classe
+        </v-btn>
+      </v-col>
+
+      <!-- Sair: grava e sai......................... -->
       <v-col>
         <v-btn
           dark
@@ -10,21 +40,7 @@
           @click="guardarTrabalho"
           :disabled="o.objeto.codigo == ''"
         >
-          Guardar trabalho
-        </v-btn>
-      </v-col>
-      <valida-classe-info-box :c="o.objeto" />
-
-      <!-- Criar classe......................... -->
-      <v-col>
-        <v-btn
-          v-bind:disabled="o.objeto.codigo == ''"
-          dark
-          rounded
-          class="ma-2 indigo darken-4"
-          @click="criarClasse"
-        >
-          Criar classe
+          Sair
         </v-btn>
       </v-col>
 
@@ -37,7 +53,7 @@
           class="ma-2 red darken-4"
           @click="eliminarClasse"
         >
-          Cancelar criação
+          Cancelar
         </v-btn>
       </v-col>
     </v-row>
@@ -146,7 +162,10 @@ export default {
   data() {
     return {
       c: {},
-
+      estadoAtual: {}, // Vai ser guardado em pendentes
+      estadoAtualGravado: false,
+      trabalhoGuardado: false,
+      idTrabalho: "???",
       pendenteGuardado: false,
       pendenteGuardadoInfo: "",
       dialogClasseCriada: false,
@@ -178,6 +197,63 @@ export default {
   },
 
   methods: {
+    // Gravar o que se fez até ao momento para continuar a trabalhar
+    gravarTrabalho: async function(){
+      try {
+        if (this.$store.state.name === "") {
+          this.loginErrorSnackbar = true;
+        } else {
+          if(!this.estadoAtualGravado){ // Se for a primeira vez faz um POST
+            var userBD = this.$verifyTokenUser();
+            this.estadoAtual = {
+              numInterv: 1,
+              acao: "Criação",
+              tipo: "Classe",
+              objeto: this.o,
+              criadoPor: userBD.email,
+              user: { email: userBD.email },
+              token: this.$store.state.token,
+            };
+            try{
+              var response = await this.$request("post", "/pendentes", this.estadoAtual);
+              this.estadoAtual._id = response.data._id;
+              this.estadoAtualGravado = true;
+              this.trabalhoGuardado = true;
+              this.idTrabalho = response.data._id;
+            }
+            catch(e){
+              console.log("Erro: " + e)
+              return(e)
+            }
+          }
+          else{ // Se o pendente já existe faz um PUT incrementando as intervenções
+            var userBD = this.$verifyTokenUser();
+            this.estadoAtual = {
+              _id: this.estadoAtual._id,
+              numInterv: this.estadoAtual.numInterv + 1,
+              acao: "Criação",
+              tipo: "Classe",
+              objeto: this.o,
+              criadoPor: userBD.email,
+              user: { email: userBD.email },
+              token: this.$store.state.token,
+            };
+            try{
+              var response = await this.$request("put", "/pendentes", this.estadoAtual);
+              this.trabalhoGuardado = true;
+              this.idTrabalho = response.data._id;
+            }
+            catch(e){
+              console.log("Erro: " + e)
+              return(e)
+            }
+          }
+        }
+      } catch (error) {
+        return error;
+      }
+    },
+
     // Permite guardar o trabalho para ser retomado depois
     guardarTrabalho: async function () {
       try {
@@ -664,11 +740,8 @@ export default {
     async cancelarPedido() {
       try {
         let pedido = JSON.parse(JSON.stringify(this.pedido));
-
         let dadosUtilizador = this.$verifyTokenUser();
-
         let estado = "Cancelado";
-
         pedido.estado = estado;
 
         const novaDistribuicao = {

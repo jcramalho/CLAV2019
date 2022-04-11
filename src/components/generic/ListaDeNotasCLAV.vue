@@ -3,7 +3,7 @@
     <template v-slot:lateral>
       <v-row>
         <v-col align="right">
-          <v-btn small color="success" rounded @click="insereNovaNota(lista)">
+          <v-btn small color="info" rounded @click="insereNovaNota(lista)">
             {{ acrescentar[tipo] }}
             <v-icon right>add_circle_outline</v-icon>
           </v-btn>
@@ -81,10 +81,10 @@ export default {
       mensagemNotaDuplicada:
         "A última nota introduzida é um duplicado de outra já introduzida previamente!",
       acrescentar: {
-        na: "Acrescentar nota",
-        exna: "Acrescentar nota",
-        ne: "Acrescentar nota",
-        ti: "Acrescentar termo",
+        na: "Adicionar",
+        exna: "Adicionar",
+        ne: "Adicionar",
+        ti: "Adicionar",
       },
       aviso: {
         na: "Sem Notas de Aplicação!",
