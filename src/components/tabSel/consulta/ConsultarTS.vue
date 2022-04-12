@@ -672,6 +672,7 @@
   </div>
 </template>
 <script>
+import Voltar from "@/components/generic/Voltar";
 import Donos from "@/components/classes/consulta/Donos.vue";
 import Participantes from "@/components/classes/consulta/Participantes.vue";
 import ProcessosRelacionados from "@/components/classes/consulta/ProcessosRelacionados.vue";

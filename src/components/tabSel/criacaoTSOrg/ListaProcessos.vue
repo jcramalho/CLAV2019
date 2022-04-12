@@ -32,7 +32,7 @@
           </v-radio-group>
         </v-col>
 
-        <v-btn class="mx-5" dark color="green" @click="importFlag = true">
+        <v-btn class="mx-5" dark color="clav-linear-background" @click="importFlag = true">
           <unicon
             class="mt-2 mr-1"
             name="importar-icon"
@@ -350,7 +350,6 @@ export default {
         "/vocabularios/vc_processoTipoParticipacao"
       );
       this.participacao = resPar.data;
-      console.log(this.participacao)
     } catch (e) {
       console.log("Erro no carregamento dos tipos de participação: " + e);
     }

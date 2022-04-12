@@ -1,5 +1,11 @@
 <template>
   <div>
+    <v-row align="left">
+          <v-col>
+            <Voltar />
+          </v-col>
+    </v-row>
+
     <Loading v-if="loading" :message="''" />
     <v-card v-else class="ma-4">
       <v-card-title class="clav-linear-background white--text">
@@ -507,6 +513,7 @@
   </div>
 </template>
 <script>
+import Voltar from "@/components/generic/Voltar";
 import ShowPGD from "@/components/pgd/ShowPGD.vue";
 import Campo from "@/components/generic/CampoCLAV.vue";
 import InfoBox from "@/components/generic/infoBox.vue";
@@ -519,6 +526,7 @@ export default {
     Campo,
     InfoBox,
     Loading,
+    Voltar
   },
   data: () => ({
     search: "",

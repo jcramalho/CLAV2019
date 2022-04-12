@@ -79,10 +79,11 @@
                   </Campo>
 
                   <TermosIndiceOps v-if="!disable" :c="subClasse" />
+
                   <Campo
                     v-else
-                    nome="Processo transversal"
-                    infoHeader="Processo transversal"
+                    nome="Termos de Índice"
+                    infoHeader="Termos de Índice"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>

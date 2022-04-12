@@ -2,11 +2,9 @@
   <v-card flat class="pa-3">
     <!-- HEADER -->
     <v-row align="center" justify="center">
-      <v-col cols="12" md="3" align="center"> <Voltar /></v-col>
-      <v-col cols="12" md="6" align="center">
+      <v-col cols="12" align="center">
         <p class="clav-content-title-1">Nova Tabela de Seleção Organizacional</p>
       </v-col>
-      <v-col cols="0" md="3"> </v-col>
     </v-row>
     <!-- CONTENT -->
 
@@ -103,7 +101,7 @@
           "
           rounded
           class="white--text my-5 ml-4"
-          color="success darken-1"
+          color="clav-linear-background"
         >
           <unicon
             name="continuar-icon"
@@ -143,7 +141,7 @@
               @click="stepNo--"
               rounded
               class="white--text"
-              color="error darken-1"
+              color="clav-linear-background"
             >
               <unicon
                 name="arrow-back-icon"
@@ -156,36 +154,11 @@
             </v-btn>
           </v-col>
 
-          <!-- Sair da criação da TS sem abortar o processo .........................-->
-          <v-col cols="12" md="4" lg="2">
-            <v-btn
-              v-if="stepNo > 2"
-              @click="sairOperacao = true"
-              block
-              rounded
-              class="clav-linear-background white--text"
-            >
-              <unicon
-                name="relogio-icon"
-                width="20"
-                height="20"
-                viewBox="0 0 20.71 20.71"
-                fill="#ffffff"
-              />
-              <DialogSair
-                v-if="sairOperacao"
-                @continuar="sairOperacao = false"
-                @sair="sair"
-              />
-              <p class="ml-2">Sair</p>
-            </v-btn>
-          </v-col>
-
           <!-- Guardar o trabalho para continuar depois ..........................-->
           <v-col cols="12" md="4" lg="2">
             <v-btn
               v-if="stepNo > 2"
-              @click="guardarTrabalho"
+              @click="guardarTrabalho(false)"
               block
               rounded
               class="clav-linear-background white--text"
@@ -252,6 +225,30 @@
                 fill="#ffffff"
               />
               <p class="ml-2">Submeter</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Sair da criação da TS sem abortar o processo .........................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="sair"
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="relogio-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <DialogSair
+                v-if="sairOperacao"
+                @fechar="sair2"
+              />
+              <p class="ml-2">Sair</p>
             </v-btn>
           </v-col>
 
@@ -323,7 +320,7 @@ import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPen
 import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vue";
 import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue";
 import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValidacaoErros.vue";
-import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
+import DialogSair from "@/components/tabSel/criacaoTSOrg/DialogSair.vue";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 import Voltar from "@/components/generic/Voltar";
 export default {
@@ -890,7 +887,8 @@ export default {
       }
     },
     // Guarda o trabalho de criação de uma TS
-    guardarTrabalho: async function () {
+    // Se saida = true vai sair a seguir, não abre dialog de gravação
+    guardarTrabalho: async function (saida) {
       try {
         var response;
         var userBD = this.$verifyTokenUser();
@@ -926,7 +924,8 @@ export default {
           var response = await this.$request("post", "/pendentes", pendenteParams);
         }
         this.pendente = response.data;
-        this.pendenteGuardado = true;
+        if(!saida)
+          this.pendenteGuardado = true;
       } catch (e) {
         console.log("Erro ao guardar trabalho: " + e);
       }
@@ -980,8 +979,19 @@ export default {
       //this.termosIndSet = [];
       this.validacaoTerminada = false;
     },
-    // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
+    // Abandonar a operação gravando o trabalho...
     sair: async function () {
+      try{
+        await this.guardarTrabalho(true);
+        this.sairOperacao = true;
+      }
+      catch(e){
+        console.log("Erro ao gravar trabalho para sair...")
+      }
+    },
+
+    sair2: function (){
+      this.sairOperacao = false;
       this.$router.push("/");
     },
     // Abortar a operação apagando o pendente se existir

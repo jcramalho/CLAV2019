@@ -1,7 +1,7 @@
 <template>
   <Campo
-    nome="Processo transversal"
-    infoHeader="Processo transversal"
+    nome="Termos de Índice"
+    infoHeader="Termos de Índice"
     :infoBody="myhelp.Classe.Campos.TermosIndice"
     color="neutralpurple"
   >
@@ -10,11 +10,11 @@
         <v-col align="right">
           <v-btn
             class="white-text"
-            color="success"
+            color="info"
             rounded
             @click="insereNovoTI(c.termosInd)"
           >
-            Novo termo
+            Adicionar
             <v-icon right>add_circle_outline</v-icon>
           </v-btn>
         </v-col>
