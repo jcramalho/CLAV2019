@@ -82,7 +82,7 @@
             @click="entidadesSelecionadas()"
             rounded
             class="white--text mt-5 ml-4"
-            color="success darken-1"
+            color="clav-linear-background"
           >
             <unicon
               name="continuar-icon"
@@ -149,7 +149,7 @@
           <v-col cols="auto">
             <v-btn
               @click="stepNo = 1"
-              color="error darken-1"
+              color="clav-linear-background"
               rounded
               class="white--text mt-5 mb-2"
             >
@@ -168,7 +168,7 @@
               @click="validaTSnome"
               rounded
               class="white--text mt-5 mb-2"
-              color="success darken-1"
+              color="clav-linear-background"
             >
               <unicon
                 name="continuar-icon"
