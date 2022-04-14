@@ -17,13 +17,13 @@
     <v-row>
       <v-col cols="auto">
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_area = true">
-          <v-icon dark left>add</v-icon>área orgânico-funcional
+          adicionar área orgânico-funcional
         </v-btn>
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_serie = true">
-          <v-icon dark left>add</v-icon>Série
+          adicionar série
         </v-btn>
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="criar_subserie = true">
-          <v-icon dark left>add</v-icon>Subsérie
+          adicionar subsérie
         </v-btn>
       </v-col>
       <v-spacer></v-spacer>
@@ -222,28 +222,27 @@
       color="amber accent-3"
       indeterminate
     ></v-progress-circular>
+
     <div v-else>
       <v-row no-gutters>
         <v-col cols="12">
+
           <v-btn color="indigo darken-4" dark @click="$emit('voltar', 2)">Voltar</v-btn>
+
           <v-btn
             style="margin-left: 10px"
             color="indigo darken-4"
             dark
             @click="$emit('guardar', 'sim')"
           >
-            Guardar Trabalho
+            Guardar
             <v-icon right>save</v-icon>
           </v-btn>
-          <v-btn
-            style="margin-left: 10px"
-            color="indigo darken-4"
-            dark
-            @click="$emit('guardar', 'nao')"
-          >Continuar Depois</v-btn>
+
           <v-btn style="margin-left: 10px" color="indigo darken-4" @click="$emit('validar')">
             <font style="color: white">Validar</font>
           </v-btn>
+
           <v-btn
             style="margin-left: 10px"
             :disabled="
@@ -260,11 +259,18 @@
 
           <v-btn
             style="margin-left: 10px"
+            color="indigo darken-4"
+            dark
+            @click="$emit('guardar', 'nao')"
+          >Sair</v-btn>
+
+          <v-btn
+            style="margin-left: 10px"
             color="red darken-4"
             dark
             v-if="pode_remover"
             @click="$emit('remover')"
-          >Eliminar</v-btn>
+          >Cancelar</v-btn>
         </v-col>
       </v-row>
     </div>
