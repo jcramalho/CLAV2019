@@ -209,7 +209,7 @@
 
           <v-btn
             class="ma-2"
-            color="indigo darken-4"
+            color="green darken-4"
             dark
             @click="submit()"
             :disabled="!fileSerie || !auto.legislacao || !auto.fundo"
@@ -224,7 +224,7 @@
             >Limpar
           </v-btn>
           
-          </br> 
+          <br/> 
           
         </div>
       </v-card-text>

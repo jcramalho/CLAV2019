@@ -1,20 +1,35 @@
 <template>
-  <Listagem
-    v-bind:lista="autosEliminacao"
-    tipo="Autos de Eliminação"
-    v-bind:cabecalho="[
-      'Identificação',
-      'Fonte de Legitimação',
-      'Diploma Legislativo',
-      'Entidade Produtora',
-      'Data'
-    ]"
-    v-bind:campos="['id', 'tipo', 'numero', 'entidade', 'data']"
-  />
+  <v-card flat class="ma-3">
+    <v-row>
+          <v-col cols="3" align="center" justify="center">
+            <Voltar />
+          </v-col>
+          <v-col cols="6" align="center" justify="center">
+            <p class="clav-content-title-1">Autos de Eliminação</p>
+          </v-col>
+          <v-col cols="3"> </v-col>
+        </v-row>
+    <v-row>
+      <v-col cols="12" align="center" justify="center">
+        <Listagem
+          v-bind:lista="autosEliminacao"
+          v-bind:cabecalho="[
+            'Identificação',
+            'Fonte de Legitimação',
+            'Diploma Legislativo',
+            'Entidade Produtora',
+            'Data'
+          ]"
+          v-bind:campos="['id', 'tipo', 'numero', 'entidade', 'data']"
+        />
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   data: () => ({
@@ -22,7 +37,7 @@ export default {
     campos: []
   }),
   components: {
-    Listagem
+    Listagem, Voltar
   },
 
   mounted: async function() {
