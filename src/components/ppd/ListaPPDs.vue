@@ -101,10 +101,7 @@ export default {
   props: [],
   components: {
     ConsultaPPD,
-<<<<<<< HEAD
-=======
     Listagem,
->>>>>>> master
     Voltar
   },
   data: () => ({
