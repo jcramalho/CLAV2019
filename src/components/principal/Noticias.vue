@@ -8,6 +8,7 @@
         <v-btn
           v-for="item in this.fops"
           rounded
+          small
           class="panelbtn"
           @click="go(item.url)"
           :key="item.url"
@@ -24,7 +25,6 @@
       height="300"
       hide-delimiter-background
       show-arrows-on-hover
-      style="border: solid 1px var(--v-primary-base)"
     >
       <v-carousel-item v-for="(n, index) in this.noticias" :key="index">
         <v-sheet class="conteudo clav-info-content" height="100%" tile>
@@ -159,7 +159,7 @@ export default {
 
 .conteudo {
   display: grid;
-  grid-template-columns: 0.7fr 0.3fr;
+  grid-template-columns: 0.8fr 0.2fr;
   grid-template-rows: 0.05fr 0.95fr;
   grid-template-areas:
     "titulopainel data"

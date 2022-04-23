@@ -2,11 +2,9 @@
   <v-card flat class="pa-3">
     <!-- HEADER -->
     <v-row align="center" justify="center">
-      <v-col cols="12" md="3" align="center"> <Voltar /></v-col>
-      <v-col cols="12" md="6" align="center">
+      <v-col cols="12" align="center">
         <p class="clav-content-title-1">Nova Tabela de Seleção Organizacional</p>
       </v-col>
-      <v-col cols="0" md="3"> </v-col>
     </v-row>
     <!-- CONTENT -->
 
@@ -103,7 +101,7 @@
           "
           rounded
           class="white--text my-5 ml-4"
-          color="success darken-1"
+          color="clav-linear-background"
         >
           <unicon
             name="continuar-icon"
@@ -127,7 +125,6 @@
               :listaProcs="listaProcessos"
               :listaCodigosEsp="listaCodigosEsp"
               :participante="participante"
-              @importar="enviarFicheiro($event)"
             />
             <ListaProcessosImportados v-else :procs="listaProcessos.procs" />
           </div>
@@ -144,7 +141,7 @@
               @click="stepNo--"
               rounded
               class="white--text"
-              color="error darken-1"
+              color="clav-linear-background"
             >
               <unicon
                 name="arrow-back-icon"
@@ -157,36 +154,11 @@
             </v-btn>
           </v-col>
 
-          <!-- Sair da criação da TS sem abortar o processo .........................-->
-          <v-col cols="12" md="4" lg="2">
-            <v-btn
-              v-if="stepNo > 2"
-              @click="sairOperacao = true"
-              block
-              rounded
-              class="clav-linear-background white--text"
-            >
-              <unicon
-                name="relogio-icon"
-                width="20"
-                height="20"
-                viewBox="0 0 20.71 20.71"
-                fill="#ffffff"
-              />
-              <DialogSair
-                v-if="sairOperacao"
-                @continuar="sairOperacao = false"
-                @sair="sair"
-              />
-              <p class="ml-2">Sair</p>
-            </v-btn>
-          </v-col>
-
           <!-- Guardar o trabalho para continuar depois ..........................-->
           <v-col cols="12" md="4" lg="2">
             <v-btn
               v-if="stepNo > 2"
-              @click="guardarTrabalho"
+              @click="guardarTrabalho(false)"
               block
               rounded
               class="clav-linear-background white--text"
@@ -253,6 +225,30 @@
                 fill="#ffffff"
               />
               <p class="ml-2">Submeter</p>
+            </v-btn>
+          </v-col>
+
+          <!-- Sair da criação da TS sem abortar o processo .........................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="sair"
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="relogio-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <DialogSair
+                v-if="sairOperacao"
+                @fechar="sair2"
+              />
+              <p class="ml-2">Sair</p>
             </v-btn>
           </v-col>
 
@@ -324,7 +320,7 @@ import DialogPendenteGuardado from "@/components/tabSel/criacaoTSPluri/DialogPen
 import DialogCancelar from "@/components/tabSel/criacaoTSPluri/DialogCancelar.vue";
 import DialogValidacaoOK from "@/components/tabSel/criacaoTSPluri/DialogValidacaoOK.vue";
 import DialogValidacaoErros from "@/components/tabSel/criacaoTSPluri/DialogValidacaoErros.vue";
-import DialogSair from "@/components/tabSel/criacaoTSPluri/DialogSair.vue";
+import DialogSair from "@/components/tabSel/criacaoTSOrg/DialogSair.vue";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 import Voltar from "@/components/generic/Voltar";
 export default {
@@ -547,28 +543,33 @@ export default {
           this.listaProcessos.procsAselecionar = [];
           this.listaProcessos.procs = [];
           var response = await this.$request("get", "/classes?nivel=3&info=completa");
+
+          var p = -1
           for (let i = 0; i < response.data.length; i++) {
-            this.listaProcessos.procs.push(response.data[i]);
-            this.listaProcessos.procs[i].chave = i;
-            this.listaProcessos.procs[i].edited = false;
-            this.listaProcessos.procs[i].descriptionEMergedited = false;
-            this.listaProcessos.procs[i].preSelected = 0;
-            // Para poder ser filtrado na tabela
-            this.listaProcessos.procs[i].preSelectedLabel = "";
-            this.listaProcessos.procs[i].dono = false;
-            this.listaProcessos.procs[i].participante = "NP";
-            this.listaProcessos.procs[i].notasAp = this.listaProcessos.procs[
-              i
-            ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
-              i
-            ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[i].exemplosNotasAp = this.listaProcessos.procs[
-              i
-            ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
-            this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
-              i
-            ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
+            if(response.data[i].status == 'A'){
+              this.listaProcessos.procs.push(response.data[i]);
+              p ++;
+              this.listaProcessos.procs[p].chave = i;
+              this.listaProcessos.procs[p].edited = false;
+              this.listaProcessos.procs[p].descriptionEMergedited = false;
+              this.listaProcessos.procs[p].preSelected = 0;
+              // Para poder ser filtrado na tabela
+              this.listaProcessos.procs[p].preSelectedLabel = "";
+              this.listaProcessos.procs[p].dono = false;
+              this.listaProcessos.procs[p].participante = "NP";
+              this.listaProcessos.procs[p].notasAp = this.listaProcessos.procs[
+                p
+              ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
+              this.listaProcessos.procs[p].notasEx = this.listaProcessos.procs[
+                p
+              ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
+              this.listaProcessos.procs[p].exemplosNotasAp = this.listaProcessos.procs[
+                p
+              ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
+              this.listaProcessos.procs[p].termosInd = this.listaProcessos.procs[
+                p
+              ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
+            }
           }
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcessosReady = true;
@@ -886,7 +887,8 @@ export default {
       }
     },
     // Guarda o trabalho de criação de uma TS
-    guardarTrabalho: async function () {
+    // Se saida = true vai sair a seguir, não abre dialog de gravação
+    guardarTrabalho: async function (saida) {
       try {
         var response;
         var userBD = this.$verifyTokenUser();
@@ -922,7 +924,8 @@ export default {
           var response = await this.$request("post", "/pendentes", pendenteParams);
         }
         this.pendente = response.data;
-        this.pendenteGuardado = true;
+        if(!saida)
+          this.pendenteGuardado = true;
       } catch (e) {
         console.log("Erro ao guardar trabalho: " + e);
       }
@@ -976,8 +979,19 @@ export default {
       //this.termosIndSet = [];
       this.validacaoTerminada = false;
     },
-    // Abandonar a operação deixando o estado como estiver: se houver pendente não é apagado...
+    // Abandonar a operação gravando o trabalho...
     sair: async function () {
+      try{
+        await this.guardarTrabalho(true);
+        this.sairOperacao = true;
+      }
+      catch(e){
+        console.log("Erro ao gravar trabalho para sair...")
+      }
+    },
+
+    sair2: function (){
+      this.sairOperacao = false;
       this.$router.push("/");
     },
     // Abortar a operação apagando o pendente se existir
@@ -1043,26 +1057,7 @@ export default {
       this.listaProcessos.processosPreSelecionados = this.tabelaSelecao.listaProcessos.processosPreSelecionados;
       this.listaProcessos.procsAselecionar = this.tabelaSelecao.listaProcessos.procsAselecionar;
       this.listaProcessosReady = true;
-    },
-    //Importação de processos
-    enviarFicheiro: async function (file) {
-      try {
-        var formData = new FormData();
-        formData.append("file", file);
-        formData.append("designacao", this.tabelaSelecao.designacao);
-        if (this.tipoTS != "tipologia")
-          formData.append("entidade_ts", this.tabelaSelecao.designacaoEntidade);
-        else formData.append("entidade_ts", this.tabelaSelecao.designacaoTipologia);
-        formData.append("tipo_ts", "TS Organizacional");
-        formData.append("fonteL", "TS/LC");
-        var response = await this.$request("post", "/tabelasSelecao/importar", formData);
-        this.listaProcessos.procs = response.data.ts.processos;
-        this.importadoFlag = true;
-      } catch (e) {
-        this.erro = e.response.data[0].msg || e.response.data;
-        this.erroDialog = true;
-      }
-    },
+    }
   },
   created: async function () {
     this.pendente = this.obj;

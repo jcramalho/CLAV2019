@@ -129,7 +129,7 @@
     <ShowDefault v-else :p="Pedido" />
 
     <v-row>
-      <v-col align="left">
+      <v-col style="margin-top: 10px;" align="left">
         <Voltar />
       </v-col>
       <v-spacer></v-spacer>
@@ -143,7 +143,7 @@
         "
         align="center"
       >
-        <v-btn color="primary" @click="substituirResponsavelDialog = true" rounded
+        <v-btn style="margin-top: 10px;" color="primary" @click="substituirResponsavelDialog = true" rounded
           >Substituir Responsável</v-btn
         >
       </v-col>
@@ -193,7 +193,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 import Voltar from "@/components/generic/Voltar";
 
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
@@ -252,7 +252,7 @@ export default {
       Classe_N3: 25,
       RADA: 15,
       PPD: 20,
-      "Auto de Eliminação": 30,
+      "Auto de Eliminação": 10,
       Tipologia: 5,
       Legislação: 5,
       Entidade: 5,

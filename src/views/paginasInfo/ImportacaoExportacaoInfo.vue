@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Importação/Exportação de Dados</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Área reservada à importação e/ou exportação de informação relativa a
       colaborações/equipas de trabalho, de documentação de apoio e técnica/científica e
       também de notícias sobre a plataforma.

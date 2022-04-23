@@ -2,15 +2,12 @@
   <v-card flat class="pa-3">
     <!-- Header -->
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="3" align="center" justify="center">
-        <Voltar />
-      </v-col>
-      <v-col cols="12" sm="9" align="center" justify="center">
-        <p class="clav-content-title-1">Alterar Tipologia de Entidade</p>
-        <p class="clav-content-title-2">
+      <v-col align="center" justify="center">
+        <div class="clav-content-title-1">Alterar Tipologia de Entidade</div>
+        <div class="clav-content-title-2">
           {{ tipologiaOriginal.sigla }} -
           {{ tipologiaOriginal.designacao }}
-        </p>
+        </div>
       </v-col>
     </v-row>
 
@@ -64,7 +61,7 @@ import DesSelEnt from "@/components/generic/selecao/DesSelecionarEntidades.vue";
 import SelEnt from "@/components/generic/selecao/SelecionarEntidades.vue";
 import PainelOpsTip from "@/components/tipologias/PainelOperacoesTipologias";
 import PainelCLAV from "@/components/generic/PainelCLAV";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 import Voltar from "@/components/generic/Voltar";
 
 export default {
@@ -162,39 +159,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.separador {
-  color: white;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #1a237e;
-  font-size: 14pt;
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
-}
-
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-</style>
+<style scoped></style>

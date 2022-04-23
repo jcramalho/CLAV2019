@@ -232,7 +232,7 @@ export default {
           //await this.$request("post", "/ppd/registar",  this.pedido.objeto.dados );
         }
 
-        /*await this.$request("post", "/legislacao", despachoAprovacao);
+        await this.$request("post", "/legislacao", despachoAprovacao);
 
         let dadosUtilizador = this.$verifyTokenUser();
 
@@ -256,7 +256,7 @@ export default {
         await this.$request("put", "/contador/despacho");
 
         this.$router.push(`/pedidos/finalizacao/${this.idPedido}`);
-        */
+        
       } catch (e) {
         console.log(e);
         this.erroDialog.visivel = true;

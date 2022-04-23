@@ -13,7 +13,7 @@
 
     <v-stepper v-model="stepNo" vertical style="background-color: #f3f7fc">
       <v-stepper-step :complete="stepNo > 1" step="1">
-        <b> Identificação das entidades ou tipologias da Tabela de Seleção</b>
+        <b> Identificação das entidades da Tabela de Seleção</b>
       </v-stepper-step>
 
       <span v-if="stepNo > 1">
@@ -82,7 +82,7 @@
             @click="entidadesSelecionadas()"
             rounded
             class="white--text mt-5 ml-4"
-            color="success darken-1"
+            color="clav-linear-background"
           >
             <unicon
               name="continuar-icon"
@@ -149,7 +149,7 @@
           <v-col cols="auto">
             <v-btn
               @click="stepNo = 1"
-              color="error darken-1"
+              color="clav-linear-background"
               rounded
               class="white--text mt-5 mb-2"
             >
@@ -168,7 +168,7 @@
               @click="validaTSnome"
               rounded
               class="white--text mt-5 mb-2"
-              color="success darken-1"
+              color="clav-linear-background"
             >
               <unicon
                 name="continuar-icon"
@@ -461,29 +461,34 @@ export default {
             "get",
             "/classes?nivel=3&info=completa"
           );
+
+          var p = -1
           for (let i = 0; i < response.data.length; i++) {
-            this.listaProcessos.procs.push(response.data[i]);
-            this.listaProcessos.procs[i].chave = i;
-            this.listaProcessos.procs[i].edited = false;
-            this.listaProcessos.procs[i].descriptionEdited = false;
-            this.listaProcessos.procs[i].preSelected = 0;
-            // Para poder ser filtrado na tabela
-            this.listaProcessos.procs[i].preSelectedLabel = "";
-            this.listaProcessos.procs[i].entidades = [];
-            this.listaProcessos.procs[i].notasAp = this.listaProcessos.procs[
-              i
-            ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
-              i
-            ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[
-              i
-            ].exemplosNotasAp = this.listaProcessos.procs[
-              i
-            ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
-            this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
-              i
-            ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
+            if(response.data[i].status == 'A'){
+              this.listaProcessos.procs.push(response.data[i]);
+              p ++;
+              this.listaProcessos.procs[p].chave = i;
+              this.listaProcessos.procs[p].edited = false;
+              this.listaProcessos.procs[p].descriptionEdited = false;
+              this.listaProcessos.procs[p].preSelected = 0;
+              // Para poder ser filtrado na tabela
+              this.listaProcessos.procs[p].preSelectedLabel = "";
+              this.listaProcessos.procs[p].entidades = [];
+              this.listaProcessos.procs[p].notasAp = this.listaProcessos.procs[
+                p
+              ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
+              this.listaProcessos.procs[p].notasEx = this.listaProcessos.procs[
+                p
+              ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
+              this.listaProcessos.procs[
+                p
+              ].exemplosNotasAp = this.listaProcessos.procs[
+                p
+              ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
+              this.listaProcessos.procs[p].termosInd = this.listaProcessos.procs[
+                p
+              ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
+            }
           }
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcessosReady = true;

@@ -44,7 +44,7 @@
               >
                 <template v-slot:no-data>
                   <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined>
-                    Nenhuma Nota selecionada...
+                    Nenhuma nota adicionada.
                   </v-alert>
                 </template>
 
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 

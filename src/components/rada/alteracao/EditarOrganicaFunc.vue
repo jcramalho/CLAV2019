@@ -101,7 +101,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="indigo darken-4" dark @click="dialogState = false">Voltar</v-btn>
-        <v-btn color="indigo darken-4" dark @click="save">Atualizar</v-btn>
+        <v-btn color="indigo darken-4" dark @click="save">Adicionar</v-btn>
         <v-btn dark color="red darken-4" @click="toDelete = true">Eliminar</v-btn>
       </v-card-actions>
     </v-card>

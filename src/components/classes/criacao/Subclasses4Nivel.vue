@@ -79,10 +79,11 @@
                   </Campo>
 
                   <TermosIndiceOps v-if="!disable" :c="subClasse" />
+
                   <Campo
                     v-else
-                    nome="Processo transversal"
-                    infoHeader="Processo transversal"
+                    nome="Termos de Índice"
+                    infoHeader="Termos de Índice"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
@@ -118,7 +119,7 @@ const help = require("@/config/help").help;
 import BlocoDecisoes4Nivel from "@/components/classes/criacao/BlocoDecisoes4Nivel.vue";
 import TermosIndiceOps from "@/components/classes/criacao/TermosIndiceOps.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV.vue";
 
 export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem", "disable"],
@@ -359,33 +360,6 @@ export default {
 };
 </script>
 <style>
-.separador {
-  color: white;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #1a237e;
-  font-size: 14pt;
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-label {
-  color: #00695c;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e0f2f1;
-  font-weight: bold;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
 .is-collapsed li:nth-child(n + 5) {
   display: none;
 }

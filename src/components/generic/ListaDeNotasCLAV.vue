@@ -3,7 +3,7 @@
     <template v-slot:lateral>
       <v-row>
         <v-col align="right">
-          <v-btn small color="success" rounded @click="insereNovaNota(lista)">
+          <v-btn small color="info" rounded @click="insereNovaNota(lista)">
             {{ acrescentar[tipo] }}
             <v-icon right>add_circle_outline</v-icon>
           </v-btn>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 const nanoid = require("nanoid");
 
 export default {
@@ -81,10 +81,10 @@ export default {
       mensagemNotaDuplicada:
         "A última nota introduzida é um duplicado de outra já introduzida previamente!",
       acrescentar: {
-        na: "Acrescentar nota",
-        exna: "Acrescentar nota",
-        ne: "Acrescentar nota",
-        ti: "Acrescentar termo",
+        na: "Adicionar",
+        exna: "Adicionar",
+        ne: "Adicionar",
+        ti: "Adicionar",
       },
       aviso: {
         na: "Sem Notas de Aplicação!",
@@ -127,7 +127,8 @@ export default {
     notaDuplicada: function (notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1][this.campo];
-        var duplicados = notas.filter((n) => n[this.campo] == lastNota);
+        var semEspacos = lastNota.trim();
+        var duplicados = notas.filter((n) => n[this.campo] == semEspacos);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -137,6 +138,9 @@ export default {
     },
 
     insereNovaNota: async function (notas) {
+      if(notas.length > 0) 
+        notas[notas.length - 1][this.campo] = (notas[notas.length - 1][this.campo]).trim()
+        //console.log('['+ notas[notas.length - 1][this.campo] + ']')
       if (notas.length > 0 && notas[notas.length - 1][this.campo] == "") {
         this.vaziaFlag = true;
       } else if (this.notaDuplicada(notas)) {

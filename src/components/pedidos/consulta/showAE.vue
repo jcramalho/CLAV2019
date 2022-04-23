@@ -11,6 +11,7 @@
         fill="white"
       />
     </v-card-title>
+    </br>
     <v-card-text>
       <Campo
         nome="Entidade Responsável"
@@ -58,7 +59,9 @@
         <template v-slot:conteudo>
           <ul>
             <li v-for="(e, i) in p.objeto.dados.entidades" :key="i">
-              <a :href="'/entidades/' + e.entidade">{{e.entidade}}: {{e.designacao}}</a>
+              <a :href="'/entidades/ent_' + e.entidade"
+                >{{ e.entidade }}: {{ e.designacao }}</a
+              >
             </li>
           </ul>
         </template>
@@ -77,22 +80,15 @@
                   <v-list-item-title
                     v-if="item.codigo && item.referencia"
                     v-text="item.codigo + ', ' + item.referencia"
-                    ><span v-if="item.titulo">
-                      - {{ item.titulo }}</span
-                    ></v-list-item-title
-                  >
-                  <v-list-item-title
-                    v-else-if="item.codigo"
+                  ></v-list-item-title>
+                  <v-list-item-title 
+                    v-else-if="item.codigo" 
                     v-text="item.codigo"
-                    ><span v-if="item.titulo">
-                      - {{ item.titulo }}</span
-                    ></v-list-item-title
-                  >
-                  <v-list-item-title v-else v-text="item.referencia"
-                    ><span v-if="item.titulo">
-                      - {{ item.titulo }}</span
-                    ></v-list-item-title
-                  >
+                  ></v-list-item-title>
+                  <v-list-item-title 
+                    v-else 
+                    v-text="item.referencia"
+                  ></v-list-item-title>
                 </v-list-item-content>
               </template>
               <v-list-item-content>
@@ -133,16 +129,12 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.anoInicio }}</span>
+                      <span> {{ item.dataInicio }}</span>
                     </template>
                   </Campo>
-                  <Campo
-                    nome="Ano de Fim"
-                    infoHeader="Ano de Fim"
-                    color="neutralpurple"
-                  >
+                  <Campo nome="Ano de Fim" infoHeader="Ano de Fim" color="neutralpurple">
                     <template v-slot:conteudo>
-                      <span> {{ item.anoFim }}</span>
+                      <span> {{ item.dataFim }}</span>
                     </template>
                   </Campo>
                   <Campo
@@ -151,108 +143,59 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span>
-                        {{ item.numAgregacoes ? item.numAgregacoes : 0 }}</span
-                      >
+                      <span> {{ item.numAgregacoes }}</span>
                     </template>
                   </Campo>
                   <Campo
-                    v-if="item.dimensaoSuporte && item.dimensaoSuporte.papel"
-                    nome="Medição das UI em papel (m.l.)"
+                    v-if="item.medicaoPapel"
+                    nome="Medição das UI em papel"
                     infoHeader="Medição das UI em papel (m.l.)"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.dimensaoSuporte.papel }}</span>
+                      <span> {{ item.medicaoPapel }} </span>
                     </template>
                   </Campo>
                   <Campo
-                    v-if="item.dimensaoSuporte && item.dimensaoSuporte.digital"
-                    nome="Medição das UI em digital (Gb)"
+                    v-if="item.medicaoDigital"
+                    nome="Medição das UI em digital"
                     infoHeader="Medição das UI em digital (Gb)"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.dimensaoSuporte.digital }}</span>
+                      <span> {{ item.medicaoDigital }} </span>
                     </template>
                   </Campo>
                   <Campo
-                    v-if="item.dimensaoSuporte && item.dimensaoSuporte.outro"
-                    nome="Medição das UI noutros suportes"
+                    v-if="item.medicaoOutro"
+                    nome="Medição noutros suportes"
                     infoHeader="Medição das UI noutros suportes"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.dimensaoSuporte.outro.valor }} - {{ item.dimensaoSuporte.outro.unidade }}</span>
+                      <span> {{ item.medicaoOutro }} </span>
                     </template>
                   </Campo>
-                  <table class="consulta mx-5">
-                    <!--tr v-if="item.prazoConservacao">
-                          <td style="width:20%;">
-                            <div class="info-label">Prazo de Conservação Administrativa</div>
-                          </td>
-                          <td style="width:80%;">
-                            {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
-                          </td>
-                        </tr-->
-                    <!--tr v-if="item.notasPCA">
-                          <td style="width:20%;">
-                            <div class="info-label">
-                              Notas do PCA
-                            </div>
-                          </td>
-                          <td style="width:80%;">{{ item.notasPCA }}</td>
-                        </tr-->
-                    <!--tr v-if="item.destino">
-                          <td style="width:20%;">
-                            <div class="info-label">Destino final</div>
-                          </td>
-                          <td v-if="item.destino === 'E'" style="width:80%;">
-                            Eliminação
-                          </td>
-                          <td v-else-if="item.destino === 'C'" style="width:80%;">
-                            Conservação
-                          </td>
-                          <td v-else style="width:80%;">
-                            {{ item.destino }}
-                          </td>
-                        </tr-->
-                    <!--tr v-if="item.notaDF">
-                          <td style="width:20%;">
-                            <div class="info-label">
-                              Nota do DF
-                            </div>
-                          </td>
-                          <td style="width:80%;">{{ item.notaDF }}</td>
-                        </tr-->
-
-                    <!--tr v-if="item.destino=='CP' && item.justificaDF">
-                          <td style="width:20%;">
-                            <div class="info-label">
-                              Justificação do DF
-                            </div>
-                          </td>
-                          <td style="width:80%;"><span v-for="(just,index) in item.justificaDF" :key="index">{{ just }}</span></td>
-                        </tr-->
-                    <!--tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
-                          <td style="width:20%;">
-                            <div class="info-label">
-                              Natureza de intervenção
-                            </div>
-                          </td>
-                          <td style="width:80%;">{{ item.ni }}</td>
-                        </tr-->
-                    <!--tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
-                          <td style="width:20%;">
-                            <div class="info-label">Donos do PN</div>
-                          </td>
-                          <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
-                        </tr-->
-                  </table>
-                  <div
-                    class="ma-1"
-                    v-if="item.agregacoes && item.agregacoes.length > 0"
+                  <Campo
+                    v-if="item.dono"
+                    nome="Dono"
+                    infoHeader="Dono"
+                    color="neutralpurple"
                   >
+                    <template v-slot:conteudo>
+                      <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
+                        <li v-for="(l, index) in listaDonos[item.codigo]" v-bind:key="index">
+                          <a :href="'/entidades/ent_' + l">{{ l }}</a>
+                        </li>
+                      </ul>
+                      <a @click="entCollapsed = !entCollapsed" v-if="listaDonos.length > 6">
+                        <span v-if="entCollapsed" style="color:#283593;"
+                        >Mostrar mais...</span>
+                        <span v-else style="color:#283593;">Mostrar menos...</span>
+                      </a>
+                    </template>
+                  </Campo>
+                  <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
                     <v-row justify="space-between" class="info-label">
                       <v-col>Lista de Agregações</v-col>
                       <v-col>
@@ -285,7 +228,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["p"],
@@ -296,15 +239,26 @@ export default {
   data: () => ({
     search: "",
     cabecalho: [
-      { text: "Código", align: "left", sortable: false, value: "codigo" },
+      { text: "Código de Agregação", align: "left", value: "codigoAgregacao" },
       { text: "Título", align: "left", value: "titulo" },
-      { text: "Ano", align: "center", value: "ano" },
-      { text: "Natureza de Intervenção", align: "center", value: "naturezaIntervencao" },
+      { text: "Ano", align: "left", value: "dataContagem" },
+      { text: "Natureza de Intervenção", align: "left", value: "ni" },
     ],
     footer_props: {
       "items-per-page-text": "Mostrar",
     },
+    entCollapsed: true,
+    listaDonos: {}
   }),
+
+  created: function(){
+    this.p.objeto.dados.classes.forEach(
+      c => {
+        if(c.dono)
+          this.listaDonos[c.codigo] = c.dono.split("#")
+      }
+    )
+  }
 };
 </script>
 
@@ -346,13 +300,6 @@ export default {
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 

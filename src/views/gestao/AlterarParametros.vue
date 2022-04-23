@@ -1,69 +1,55 @@
 <template>
-  <v-container fluid>
-    <v-row row wrap justify-center>
-      <v-col cols="12">
-        <v-card>
-          <v-toolbar color="indigo darken-4" dark>
-            <v-toolbar-title>Alterar Parâmetros</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-form ref="form">
-              <v-autocomplete
-                :items="parametros"
-                label="Parâmetro a alterar"
-                v-model="parametro"
-                :rules="regraParametro"
+  <v-card flat class="pa-3">
+    <v-card-title class="clav-content-title-1"> Alterar Parâmetros </v-card-title>
+    <v-card-text>
+      <v-form ref="form">
+        <v-autocomplete
+          :items="parametros"
+          label="Parâmetro a alterar"
+          v-model="parametro"
+          :rules="regraParametro"
+          required
+          @change="quandoAltera"
+        >
+        </v-autocomplete>
+
+        <div v-if="parametro != ''">
+          <v-row row wrap>
+            <v-col cols="6">
+              <v-text-field
+                v-model="valor"
+                label="Valor"
+                :rules="regraValor"
                 required
-                @change="quandoAltera"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="6">
+              <v-autocomplete
+                v-if="intervalo != ''"
+                :items="intervalos"
+                label="Intervalo de tempo"
+                v-model="intervalo"
+                :rules="regraIntervalo"
+                required
               >
               </v-autocomplete>
+            </v-col>
+          </v-row>
+        </div>
+      </v-form>
 
-              <div v-if="parametro != ''">
-                <v-row row wrap>
-                  <v-col cols="6">
-                    <v-text-field
-                      v-model="valor"
-                      label="Valor"
-                      :rules="regraValor"
-                      required
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="6">
-                    <v-autocomplete
-                      v-if="intervalo != ''"
-                      :items="intervalos"
-                      label="Intervalo de tempo"
-                      v-model="intervalo"
-                      :rules="regraIntervalo"
-                      required
-                    >
-                    </v-autocomplete>
-                  </v-col>
-                </v-row>
-              </div>
-            </v-form>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="red" dark @click="cancelar">
-                Cancelar
-              </v-btn>
-              <v-btn color="indigo darken-4" dark @click="alterar">
-                Alterar
-              </v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card-text>
-        </v-card>
-      </v-col>
-      <v-col>
-        <v-alert :value="text != ''" :type="alertType">
-          {{ text }}
-        </v-alert>
-      </v-col>
-    </v-row>
-  </v-container>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn rounded color="error" dark @click="cancelar"> Cancelar </v-btn>
+        <v-btn rounded color="primary" dark @click="alterar"> Alterar </v-btn>
+        <v-spacer></v-spacer>
+      </v-card-actions>
+    </v-card-text>
+    <v-alert :value="text != ''" :type="alertType">
+      {{ text }}
+    </v-alert>
+  </v-card>
 </template>
 
 <script>
@@ -75,9 +61,9 @@ export default {
       parametro: "",
       valorTotal: "",
       valor: "",
-      regraParametro: [v => !!v || "Parâmetro a alterar é obrigatório."],
-      regraValor: [v => !!v || "Valor é obrigatório."],
-      regraIntervalo: [v => !!v || "Intervalo de tempo é obrigatório."],
+      regraParametro: [(v) => !!v || "Parâmetro a alterar é obrigatório."],
+      regraValor: [(v) => !!v || "Valor é obrigatório."],
+      regraIntervalo: [(v) => !!v || "Intervalo de tempo é obrigatório."],
       text: "",
       alertType: "success",
       intervalos: [
@@ -86,20 +72,20 @@ export default {
         { text: "Hora(s)", value: "h" },
         { text: "Minuto(s)", value: "m" },
         { text: "Segundo(s)", value: "s" },
-        { text: "Milisegundo(s)", value: "ms" }
+        { text: "Milisegundo(s)", value: "ms" },
       ],
-      intervalo: ""
+      intervalo: "",
     };
   },
 
-  mounted: async function() {
+  mounted: async function () {
     try {
       var response = await this.$request("get", "/parametros");
       this.parametrosDict = response.data;
       this.parametros = Object.entries(this.parametrosDict).map(([k, v]) => {
         return {
           text: v.desc,
-          value: k
+          value: k,
         };
       });
     } catch (erro) {
@@ -128,7 +114,7 @@ export default {
         try {
           var novoValor = this.valor + this.intervalo;
           await this.$request("put", "/parametros/" + this.parametro, {
-            valor: novoValor
+            valor: novoValor,
           });
 
           this.parametrosDict[this.parametro].valor = novoValor;
@@ -143,7 +129,7 @@ export default {
           this.alertType = "error";
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>

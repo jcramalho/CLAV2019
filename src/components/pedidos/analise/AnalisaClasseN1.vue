@@ -106,14 +106,8 @@ export default {
       novoHistorico: {},
       esconderOperacoes: {},
       notasAppHeader: [
-        { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center"
+        { text: "Notas", value: "nota", class: "subtitle-1" },
+        { text: "Operação", value: "operacao", class: "subtitle-1", sortable: false, width: "10%", align: "center"
         }
       ],
       /**
@@ -138,7 +132,6 @@ export default {
       this.novoHistorico = JSON.parse(
         JSON.stringify(this.historico[this.historico.length - 1])
       );
-      this.novoHistorico.codigo = { cor: "verde" };
       Object.keys(this.dados).forEach(key => {
         this.esconderOperacoes[key] = false;
       });
@@ -182,10 +175,10 @@ export default {
       this.esconderOperacoes[campo] = true;
     },
     abrirNotaDialog(campo) {
-      this.notaDialog = true;
       this.dialogCampo = campo;
       if (this.novoHistorico[campo].nota !== undefined)
         this.dialogValue = this.novoHistorico[campo].nota;
+      this.notaDialog = true;
     },
     abrirNotaAplicacao(campo) {
       this.notaDialogApp = true;

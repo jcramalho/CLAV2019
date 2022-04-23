@@ -59,6 +59,8 @@ export default {
     async despachar(estado, { mensagemDespacho, utilizadorSelecionado }) {
       this.pedido.estado = estado;
 
+      console.log("A avançar para o estado: " + estado)
+
       let novoHistorico = adicionarNotaComRemovidos(
         this.historico[this.historico.length - 1],
         this.novoHistorico

@@ -492,6 +492,11 @@ export default {
               label: "Importar",
               url: "/autosEliminacao/importar",
               level: [1, 3, 3.5, 4, 5, 6, 7]
+            },
+            {
+              label: "ImportarCSV",
+              url: "/autosEliminacao/importarCSV",
+              level: [1, 3, 3.5, 4, 5, 6, 7]
             }
           ]
         },

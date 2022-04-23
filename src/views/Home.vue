@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <Info />
-    <Noticias :level="level" />
+    <Noticias class="mt-10" :level="level" />
   </v-card>
 </template>
 

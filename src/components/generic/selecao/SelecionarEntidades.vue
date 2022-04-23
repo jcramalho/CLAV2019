@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 export default {
   props: ["entidades", "entidadesReady"],
   components: {
@@ -74,16 +74,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.info-label {
-  color: #1a237e; /* indigo darken-4 */
-  padding: 5px;
-  font-weight: 400;
-  width: auto;
-  height: auto;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-</style>
+<style scoped></style>

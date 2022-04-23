@@ -37,14 +37,10 @@
         <Campo
           color="neutralpurple"
           :nome="
-            tipo === 'Organizacional'
-              ? 'Entidade abrangida'
-              : 'Entidades abrangidas'
+            tipo === 'Organizacional' ? 'Entidade abrangida' : 'Entidades abrangidas'
           "
           :infoHeader="
-            tipo === 'Organizacional'
-              ? 'Entidade abrangida'
-              : 'Entidades abrangidas'
+            tipo === 'Organizacional' ? 'Entidade abrangida' : 'Entidades abrangidas'
           "
           infoBody="Entidade à qual a tabela de seleção se destina, sendo responsável pela sua aplicação."
         >
@@ -62,10 +58,7 @@
             <v-card class="pa-4" color="neutralpurple">
               <v-row class="pa-0 ma-0" justify="center">
                 <span class="clav-info-label">Tabela de Seleção</span>
-                <InfoBox
-                  header="Tabela de Seleção"
-                  :text="myhelp.TabelasSelecao"
-                />
+                <InfoBox header="Tabela de Seleção" :text="myhelp.TabelasSelecao" />
               </v-row>
             </v-card>
           </v-col>
@@ -117,9 +110,7 @@
 
                 <template v-slot:[`item.participante`]="{ item }">
                   <td v-if="item.codigo.split('.').length === 3">
-                    <span
-                      v-if="item.participantes && item.participantes.length > 0"
-                    >
+                    <span v-if="item.participantes && item.participantes.length > 0">
                       <span v-for="(e, i) in item.participantes" :key="i">
                         <v-chip
                           v-if="tipo === 'Pluriorganizacional'"
@@ -132,9 +123,7 @@
                           {{ e.sigla }} -
                           {{ participacaoLabel(e.participLabel) }}
                         </v-chip>
-                        <span v-else>{{
-                          participacaoLabel(e.participLabel)
-                        }}</span>
+                        <span v-else>{{ participacaoLabel(e.participLabel) }}</span>
                       </span>
                     </span>
                   </td>
@@ -189,9 +178,7 @@
                               class="clav-linear-background white--text"
                             >
                               <div>
-                                <font size="4"
-                                  ><b> Descritivo da Classe</b></font
-                                >
+                                <font size="4"><b> Descritivo da Classe</b></font>
                                 <InfoBox
                                   header="Descritivo da Classe"
                                   :text="myhelp.Classe.BlocoDescritivo"
@@ -239,10 +226,7 @@
                               >
                                 <template v-slot:conteudo>
                                   <ul>
-                                    <li
-                                      v-for="n in item.notasAp"
-                                      :key="n.idNota"
-                                    >
+                                    <li v-for="n in item.notasAp" :key="n.idNota">
                                       {{ n.nota }}
                                     </li>
                                   </ul>
@@ -251,8 +235,7 @@
                               <!-- EXEMPLOS NOTAS AP -->
                               <Campo
                                 v-if="
-                                  item.exemplosNotasAp &&
-                                  item.exemplosNotasAp.length > 0
+                                  item.exemplosNotasAp && item.exemplosNotasAp.length > 0
                                 "
                                 color="neutralpurple"
                                 nome="Exemplos de Notas de Aplicação"
@@ -280,19 +263,14 @@
                               >
                                 <template v-slot:conteudo>
                                   <ul>
-                                    <li
-                                      v-for="n in item.notasEx"
-                                      :key="n.idNota"
-                                    >
+                                    <li v-for="n in item.notasEx" :key="n.idNota">
                                       {{ n.nota }}
                                     </li>
                                   </ul>
                                 </template>
                               </Campo>
                               <Campo
-                                v-if="
-                                  item.termosInd && item.termosInd.length > 0
-                                "
+                                v-if="item.termosInd && item.termosInd.length > 0"
                                 color="neutralpurple"
                                 nome="Termos de Índice"
                                 infoHeader="Termos de Índice"
@@ -300,10 +278,7 @@
                               >
                                 <template v-slot:conteudo>
                                   <ul>
-                                    <li
-                                      v-for="n in item.termosInd"
-                                      :key="n.idTI"
-                                    >
+                                    <li v-for="n in item.termosInd" :key="n.idTI">
                                       {{ n.termo }}
                                     </li>
                                   </ul>
@@ -319,9 +294,7 @@
                               class="clav-linear-background white--text"
                             >
                               <div>
-                                <font size="4"
-                                  ><b>Contexto de Avaliação</b></font
-                                >
+                                <font size="4"><b>Contexto de Avaliação</b></font>
                                 <InfoBox
                                   header="Contexto de Avaliação"
                                   :text="myhelp.Classe.BlocoContexto"
@@ -347,9 +320,7 @@
                                 color="neutralpurple"
                                 nome="Processo Transversal"
                                 infoHeader="Processo Transversal"
-                                :infoBody="
-                                  myhelp.Classe.Campos.ProcessoTransversal
-                                "
+                                :infoBody="myhelp.Classe.Campos.ProcessoTransversal"
                               >
                                 <template v-slot:conteudo>
                                   {{ item.procTrans === "S" ? "Sim" : "Não" }}
@@ -387,9 +358,7 @@
                               class="clav-linear-background white--text"
                             >
                               <div>
-                                <font size="4"
-                                  ><b>Decisões de Avaliação</b></font
-                                >
+                                <font size="4"><b>Decisões de Avaliação</b></font>
                                 <InfoBox
                                   header="Decisões de Avaliação"
                                   :text="myhelp.Classe.BlocoDecisoes"
@@ -406,8 +375,7 @@
                                 height="30%"
                               >
                                 <v-toolbar-title
-                                  >Prazo de Conservação
-                                  Administrativa</v-toolbar-title
+                                  >Prazo de Conservação Administrativa</v-toolbar-title
                                 >
                               </v-toolbar>
 
@@ -445,8 +413,7 @@
                               <!-- FORMA DE CONTAGEM -->
                               <Campo
                                 v-if="
-                                  item.pca.formaContagem &&
-                                  item.pca.formaContagem != ''
+                                  item.pca.formaContagem && item.pca.formaContagem != ''
                                 "
                                 color="neutralpurple"
                                 nome="Forma de Contagem"
@@ -467,9 +434,7 @@
                                 color="neutralpurple"
                                 nome="Subforma de Contagem"
                                 infoHeader="Subforma de Contagem"
-                                :infoBody="
-                                  myhelp.Classe.Campos.SubformaContagem
-                                "
+                                :infoBody="myhelp.Classe.Campos.SubformaContagem"
                               >
                                 <template v-slot:conteudo>
                                   {{ item.pca.subFormaContagem }}
@@ -488,21 +453,13 @@
                                 :infoBody="myhelp.Classe.Campos.JustificacaoPCA"
                               >
                                 <template v-slot:conteudo>
-                                  <div
-                                    v-for="c in item.pca.justificacao"
-                                    :key="c.tipoId"
-                                  >
+                                  <div v-for="c in item.pca.justificacao" :key="c.tipoId">
                                     <!-- Critério Gestionário ...............................-->
                                     <v-row
-                                      v-if="
-                                        c.tipoId ==
-                                        'CriterioJustificacaoGestionario'
-                                      "
+                                      v-if="c.tipoId == 'CriterioJustificacaoGestionario'"
                                     >
                                       <v-col xs="2" sm="2">
-                                        <div class="info-label">
-                                          Critério Gestionário
-                                        </div>
+                                        <div class="info-label">Critério Gestionário</div>
                                       </v-col>
                                       <v-col xs="10" sm="10">
                                         <div class="info-content">
@@ -534,16 +491,8 @@
                                           <br />
                                           <br />
                                           <ul>
-                                            <li
-                                              v-for="p in c.processos"
-                                              :key="p.procId"
-                                            >
-                                              <a
-                                                :href="
-                                                  '/classes/consultar/' +
-                                                  p.procId
-                                                "
-                                              >
+                                            <li v-for="p in c.processos" :key="p.procId">
+                                              <a :href="'/classes/consultar/' + p.procId">
                                                 {{ p.procId.split("c")[1] }} -
                                                 {{ p.nome }}
                                               </a>
@@ -554,15 +503,9 @@
                                     </v-row>
 
                                     <!-- Critério Legal ...................................-->
-                                    <v-row
-                                      v-if="
-                                        c.tipoId == 'CriterioJustificacaoLegal'
-                                      "
-                                    >
+                                    <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
                                       <v-col xs="2" sm="2">
-                                        <div class="info-label">
-                                          Critério Legal
-                                        </div>
+                                        <div class="info-label">Critério Legal</div>
                                       </v-col>
                                       <v-col xs="10" sm="10">
                                         <div class="info-content">
@@ -570,12 +513,8 @@
                                           <br />
                                           <br />
                                           <ul>
-                                            <li
-                                              v-for="l in c.legislacao"
-                                              :key="l.legId"
-                                            >
-                                              <a
-                                                :href="'/legislacao/' + l.legId"
+                                            <li v-for="l in c.legislacao" :key="l.legId">
+                                              <a :href="'/legislacao/' + l.legId"
                                                 >{{ l.tipo }} {{ l.numero }}</a
                                               >
                                             </li>
@@ -634,8 +573,7 @@
                               <!-- JUSTIFICAÇÂO -->
                               <Campo
                                 v-if="
-                                  item.df.justificacao &&
-                                  item.df.justificacao.length > 0
+                                  item.df.justificacao && item.df.justificacao.length > 0
                                 "
                                 color="neutralpurple"
                                 nome="Justificação"
@@ -643,20 +581,11 @@
                                 :infoBody="myhelp.Classe.Campos.JustificacaoDF"
                               >
                                 <template v-slot:conteudo>
-                                  <div
-                                    v-for="c in item.df.justificacao"
-                                    :key="c.tipoId"
-                                  >
+                                  <div v-for="c in item.df.justificacao" :key="c.tipoId">
                                     <!-- Critério Legal ...................................-->
-                                    <v-row
-                                      v-if="
-                                        c.tipoId == 'CriterioJustificacaoLegal'
-                                      "
-                                    >
+                                    <v-row v-if="c.tipoId == 'CriterioJustificacaoLegal'">
                                       <v-col xs="2" sm="2">
-                                        <div class="info-label">
-                                          Critério Legal
-                                        </div>
+                                        <div class="info-label">Critério Legal</div>
                                       </v-col>
                                       <v-col xs="10" sm="10">
                                         <div class="info-content">
@@ -664,12 +593,8 @@
                                           <br />
                                           <br />
                                           <ul>
-                                            <li
-                                              v-for="l in c.legislacao"
-                                              :key="l.legId"
-                                            >
-                                              <a
-                                                :href="'/legislacao/' + l.legId"
+                                            <li v-for="l in c.legislacao" :key="l.legId">
+                                              <a :href="'/legislacao/' + l.legId"
                                                 >{{ l.tipo }} {{ l.numero }}</a
                                               >
                                             </li>
@@ -681,8 +606,7 @@
                                     <!-- Critério de Densidade Informacional ..............-->
                                     <v-row
                                       v-if="
-                                        c.tipoId ==
-                                        'CriterioJustificacaoDensidadeInfo'
+                                        c.tipoId == 'CriterioJustificacaoDensidadeInfo'
                                       "
                                     >
                                       <v-col xs="2" sm="2">
@@ -713,8 +637,7 @@
                                     >
                                       <v-col xs="2" sm="2">
                                         <div class="info-label">
-                                          Critério de Complementaridade
-                                          Informacional
+                                          Critério de Complementaridade Informacional
                                         </div>
                                       </v-col>
                                       <v-col xs="10" sm="10">
@@ -749,11 +672,12 @@
   </div>
 </template>
 <script>
+import Voltar from "@/components/generic/Voltar";
 import Donos from "@/components/classes/consulta/Donos.vue";
 import Participantes from "@/components/classes/consulta/Participantes.vue";
 import ProcessosRelacionados from "@/components/classes/consulta/ProcessosRelacionados.vue";
 import Legislacao from "@/components/classes/consulta/Legislacao.vue";
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 
 import InfoBox from "@/components/generic/infoBox.vue";
 
@@ -883,34 +807,24 @@ export default {
             (item.pca.notas || "") +
             '",' +
             '"';
-          if (item.pca.formaContagem == "Data de conclusão do procedimento")
-            str += "F04";
-          else if (item.pca.formaContagem == "Data de cessação da vigência")
-            str += "F05";
+          if (item.pca.formaContagem == "Data de conclusão do procedimento") str += "F04";
+          else if (item.pca.formaContagem == "Data de cessação da vigência") str += "F05";
           else if (item.pca.formaContagem == "Data de início do procedimento")
             str += "F02";
-          else if (item.pca.formaContagem == "Data de emissão do título")
-            str += "F03";
+          else if (item.pca.formaContagem == "Data de emissão do título") str += "F03";
           else if (
             item.pca.formaContagem ==
             "Data de extinção da entidade sobre a qual recai o procedimento"
           )
             str += "F06";
-          else if (item.pca.formaContagem == "Data de extinção do direito")
-            str += "F07";
+          else if (item.pca.formaContagem == "Data de extinção do direito") str += "F07";
           else if (item.pca.formaContagem == "Conforme disposição legal") {
             str += "F01.";
             if (item.pca.subFormaContagem)
               str += item.pca.subFormaContagem.split("F01.")[1];
           }
 
-          str +=
-            '","' +
-            (item.df.valor || "") +
-            '",' +
-            '"' +
-            (item.df.nota || "") +
-            '"';
+          str += '","' + (item.df.valor || "") + '",' + '"' + (item.df.nota || "") + '"';
           return str;
         }),
       ]

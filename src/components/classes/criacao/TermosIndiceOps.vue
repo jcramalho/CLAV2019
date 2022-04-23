@@ -1,7 +1,7 @@
 <template>
   <Campo
-    nome="Processo transversal"
-    infoHeader="Processo transversal"
+    nome="Termos de Índice"
+    infoHeader="Termos de Índice"
     :infoBody="myhelp.Classe.Campos.TermosIndice"
     color="neutralpurple"
   >
@@ -10,11 +10,11 @@
         <v-col align="right">
           <v-btn
             class="white-text"
-            color="success"
+            color="info"
             rounded
             @click="insereNovoTI(c.termosInd)"
           >
-            Novo termo
+            Adicionar
             <v-icon right>add_circle_outline</v-icon>
           </v-btn>
         </v-col>
@@ -59,7 +59,7 @@
 const nanoid = require("nanoid");
 const help = require("@/config/help").help;
 
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["c"],
@@ -108,23 +108,6 @@ export default {
 };
 </script>
 <style>
-.info-label {
-  color: #2e7d32; /* green darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
 .is-collapsed li:nth-child(n + 5) {
   display: none;
 }

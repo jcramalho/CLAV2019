@@ -19,7 +19,7 @@
 <script>
 import ShowDecisoesDFJustificacao from "@/components/pedidos/consulta/classes/ShowDecisoesDFJustificacao";
 
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["df"],

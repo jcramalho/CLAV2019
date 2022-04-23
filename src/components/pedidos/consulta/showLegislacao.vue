@@ -84,7 +84,7 @@
 
 <script>
 import { mapKeys } from "@/utils/utils";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
 export default {
@@ -138,20 +138,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.info-conteudo {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
-}
-
-.info-descricao {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
-}
-</style>
+<style scoped></style>

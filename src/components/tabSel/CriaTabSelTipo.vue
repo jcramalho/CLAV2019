@@ -1,19 +1,35 @@
 <template>
   <v-card flat class="pa-3">
     <v-row align="center">
-      <!-- Header -->
-      <v-col cols="3" align="center">
-        <Voltar />
-      </v-col>
-      <v-col cols="6" align="center">
+      <v-col align="center">
         <p class="clav-content-title-1">Criar Tabela de Seleção</p>
       </v-col>
-      <v-col cols="3" align="center"> </v-col>
+    </v-row>
+    <v-row align="center">
+      <!-- Header -->
+      <v-col align="left">
+        
+      </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <p
-          class="content-text px-8 py-2 mb-6"
+
+        <Campo nome="Tipo de Tabela de Seleção a criar:" color="neutralpurple">
+          <template v-slot:conteudo>
+            <v-radio-group v-model="tipo" row hide-details class="mt-1">
+              <v-radio
+                v-for="(n, i) in ['Organizacional', 'Pluriorganizacional']"
+                :key="i"
+                :label="n"
+                :value="n"
+                color="blue"
+              ></v-radio>
+            </v-radio-group>
+          </template>
+        </Campo>
+
+        <!--p
+          class="clav-content-text px-8 py-2 mb-6"
           style="text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important"
         >
           Selecione o tipo de Tabela de Seleção a criar:
@@ -38,24 +54,11 @@
           </template>
 
           <span> Tipo da Tabela de Seleção</span>
-        </v-tooltip>
-
-        <!--v-flex xs12 sm4>
-                <v-btn
-                  medium
-                  @click="infoButton = true"
-                  v-if="!infoButton"
-                  icon
-                  color="info"
-                >
-                  <v-icon>info</v-icon>
-                </v-btn>
-                <v-btn medium v-if="infoButton" color="info" @click="passos()">
-                  <v-icon left>info</v-icon>Info dos seguintes passos
-                </v-btn>
-              </v-flex-->
+        </v-tooltip-->
 
         <div class="text-center mt-6">
+          <Voltar />
+
           <v-btn
             v-if="!tipo"
             disabled
@@ -64,7 +67,7 @@
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            class="mb-6"
+            class="mb-6 ml-6"
             id="botao-shadow"
           >
             <unicon
@@ -80,7 +83,7 @@
             v-else
             @click="continuar()"
             rounded
-            class="clav-linear-background white--text"
+            class="clav-linear-background white--text ml-6"
           >
             <unicon
               name="continuar-icon"
@@ -98,18 +101,19 @@
 </template>
 
 <script>
+import Campo from "@/components/generic/CampoCLAV.vue";
 import Voltar from "@/components/generic/Voltar";
 export default {
   data() {
     return {
       // Tipo da TS
-      tipo: "",
+      tipo: "Organizacional",
       // Botão da informação sobre os passos da criação de TS
       infoButton: false,
     };
   },
   components: {
-    Voltar,
+    Voltar, Campo
   },
   methods: {
     goBack() {

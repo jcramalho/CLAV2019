@@ -1,14 +1,30 @@
 <template>
-  <v-card>
-    <v-row align="center" justify="center">
-      <v-col cols="3" align="center" justify="center">
-        <Voltar />
+  <v-card flat class="ma-3">
+    <v-row>
+          <v-col cols="3" align="center" justify="center">
+            <Voltar />
+          </v-col>
+          <v-col cols="6" align="center" justify="center">
+            <p class="clav-content-title-1">Planos de Preservação Digital</p>
+          </v-col>
+          <v-col cols="3"> </v-col>
+        </v-row>
+    <v-row>
+      <v-col cols="12" align="center" justify="center">
+        <Listagem
+          v-bind:lista="lista.data"
+          v-bind:cabecalho="[
+            'Título',
+            'Entidades',
+            'Fonte de Legitimação'
+          ]"
+          v-bind:campos="['geral.nomePPD', 'geral.entidades', 'geral.fonteLegitimacao.titulo']"
+        />
       </v-col>
-      <v-col cols="6" align="center" justify="center">
-        <p class="clav-content-title-1">Planos de preservação digital</p>
-      </v-col>
-      <v-col cols="3"> </v-col>
     </v-row>
+  </v-card>
+
+  <!--v-card>
     <div class="info-content">
       <v-tooltip top color="info" open-delay="500">
         <template v-slot:activator="{ on }">
@@ -70,10 +86,12 @@
         </template>
       </v-data-table>
     </div>
-  </v-card>
+  </v-card-->
 </template>
 
 <script>
+import Listagem from "@/components/generic/Listagem.vue";
+import Voltar from "@/components/generic/Voltar";
 const lhost = require("@/config/global").host;
 
 import ConsultaPPD from "@/components/ppd/ConsultaPPD.vue"
@@ -83,6 +101,10 @@ export default {
   props: [],
   components: {
     ConsultaPPD,
+<<<<<<< HEAD
+=======
+    Listagem,
+>>>>>>> master
     Voltar
   },
   data: () => ({

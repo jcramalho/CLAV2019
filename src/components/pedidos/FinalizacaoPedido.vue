@@ -187,6 +187,10 @@ export default {
           this.$router.push(`/tipologias/tip_${id}`);
           break;
 
+        case "Classe":
+          this.$router.push(`/classes/c${id}`);
+          break;
+
         case "Entidade":
           this.$router.push(`/entidades/ent_${id}`);
           break;

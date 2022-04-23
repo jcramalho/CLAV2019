@@ -248,7 +248,7 @@ const labels = require("@/config/labels").criterios;
 
 import InfoBox from "@/components/generic/infoBox.vue";
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 
 export default {
   props: ["c", "semaforos", "pcaFormasContagem", "pcaSubFormasContagem"],
@@ -342,15 +342,4 @@ export default {
   },
 };
 </script>
-<style>
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-</style>
+<style></style>

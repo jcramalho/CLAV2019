@@ -37,7 +37,9 @@
         </v-btn>
       </v-col>
 
+      <!-- Validar classe......................... -->
       <valida-classe-info-box :c="c" :original="o" />
+
       <!-- Alterar classe......................... -->
       <v-col>
         <v-btn
