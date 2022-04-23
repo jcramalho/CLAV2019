@@ -141,7 +141,7 @@
                 Guardar Trabalho
                 <v-icon right>save</v-icon>
               </v-btn>
-              <v-btn color="indigo darken-2" dark class="ma-2" @click="submeterPPD">
+              <v-btn color="green darken-4" class="ma-2" @click="submeterPPD">
                 Submeter
               </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">

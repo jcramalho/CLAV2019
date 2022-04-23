@@ -1,5 +1,14 @@
 <template>
   <v-card>
+    <v-row align="center" justify="center">
+      <v-col cols="3" align="center" justify="center">
+        <Voltar />
+      </v-col>
+      <v-col cols="6" align="center" justify="center">
+        <p class="clav-content-title-1">Planos de preservação digital</p>
+      </v-col>
+      <v-col cols="3"> </v-col>
+    </v-row>
     <div class="info-content">
       <v-tooltip top color="info" open-delay="500">
         <template v-slot:activator="{ on }">
@@ -68,11 +77,13 @@
 const lhost = require("@/config/global").host;
 
 import ConsultaPPD from "@/components/ppd/ConsultaPPD.vue"
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   props: [],
   components: {
-    ConsultaPPD
+    ConsultaPPD,
+    Voltar
   },
   data: () => ({
     lista: [],

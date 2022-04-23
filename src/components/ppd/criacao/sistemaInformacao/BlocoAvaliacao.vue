@@ -61,13 +61,14 @@
           </v-col>
         </v-row>
         <v-row class="mx-4">
-          <v-btn @click="addDecomposicao=true" dark color="indigo darken-4">Adicionar</v-btn>
+          <v-btn @click="addDecomposicao=true" dark color="indigo darken-4">Adicionar SI</v-btn>
         </v-row>
         <v-dialog v-model="addDecomposicao">
           <AddDecomposicao
             hide-overlay
             v-bind:numeroSI=ppd.si.numeroSI
             @guardarDecomp="guardarDecomp($event)"
+            @cancelarDecomp="cancelarDecomp()"
           />
         </v-dialog>
 
@@ -465,6 +466,10 @@ export default {
 
     guardarDecomp(item) {
       this.ppd.si.avaliacao.decomposicao.push(item);
+      this.addDecomposicao= false;
+    },
+
+    cancelarDecomp() {
       this.addDecomposicao= false;
     },
 
