@@ -95,6 +95,7 @@ import Voltar from "@/components/generic/Voltar";
 const lhost = require("@/config/global").host;
 
 import ConsultaPPD from "@/components/ppd/ConsultaPPD.vue"
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   props: [],
