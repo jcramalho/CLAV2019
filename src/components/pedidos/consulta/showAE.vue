@@ -196,7 +196,7 @@
                     </template>
                   </Campo>
                   <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
-                    <v-row justify="space-between" class="info-label">
+                    <v-row style="margin-top:10px" justify="space-between" class="info-label">
                       <v-col>Lista de Agregações</v-col>
                       <v-col>
                         <v-text-field
@@ -254,8 +254,11 @@ export default {
   created: function(){
     this.p.objeto.dados.classes.forEach(
       c => {
-        if(c.dono)
+        if(c.dono) {
           this.listaDonos[c.codigo] = c.dono.split("#")
+          if(!((/[a-zA-Z]+/).test(this.listaDonos[c.codigo][this.listaDonos[c.codigo].length - 1])))
+            this.listaDonos[c.codigo].pop()
+        }
       }
     )
   }
