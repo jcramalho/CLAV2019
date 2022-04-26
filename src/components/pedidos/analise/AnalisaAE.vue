@@ -24,8 +24,8 @@
                     <div v-if="campo === 'classes'">
                       <v-list dense color="secondary">
                         <v-list-group
-                          v-for="(item, index) in info"
-                          :key="index"
+                          v-for="(item, iter) in info"
+                          :key="iter"
                           no-action
                         >
                           <template v-slot:activator>
@@ -47,18 +47,34 @@
                           <v-list-item-content>
 
                             <v-list-item-title> 
-                              <CampoAE
-                                v-for="(atrib, index) in item"
-                                :key="index"
-                                v-if="checkIf(atrib,index)"
-                                :nome="nomes[index]"
-                                :infoHeader="nomes[index]"
-                                color="neutralpurple"
-                              >
-                                <template v-slot:conteudo>
-                                  <span> {{ atrib }}</span>
-                                </template>
-                              </CampoAE>
+                              <div v-for="(atrib, index) in item" :key="index">
+                                <CampoAE
+                                  v-if="checkIf(atrib,index)"
+                                  :nome="nomes[index]"
+                                  :infoHeader="nomes[index]"
+                                  :key="`${novoHistorico.classes.dados[iter][index].cor}${animacoes[index]}`"
+                                  :color="conversorDeCor[novoHistorico.classes.dados[iter][index].cor] + ' lighten-1'"
+                                >
+                                  <template v-slot:conteudo>
+                                    <v-col cols="auto">
+                                      <v-row>
+                                        <v-col cols="12" sm="7">
+                                          <span> {{ atrib }}</span>
+                                        </v-col>
+                                        <v-col cols="12" sm="5" align="right">
+                                          <!-- Operações -->
+                                          <span v-if="!esconderOperacoes[campo]">
+                                            <v-icon class="mr-1" color="green" @click="verifica(index)"> check </v-icon>
+                                            <v-icon class="mr-1" color="red" @click="anula()"> clear </v-icon>
+                                          </span>
+                                          <v-icon class="mr-1" color="orange" v-if="checkMedicao(index)" @click="edita(campo)"> create </v-icon>
+                                          <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
+                                        </v-col>
+                                      </v-row>
+                                    </v-col>
+                                  </template>
+                                </CampoAE>
+                              </div>
                               
                               <CampoAE
                                 v-if="item.dono"
@@ -114,20 +130,10 @@
 
               <!-- Operações -->
               <v-col v-if="campo != 'classes'" cols="auto">
-                <span v-if="!esconderOperacoes[campo]">
-                  <v-icon class="mr-1" color="green" @click="verifica(campo)">
-                    check
-                  </v-icon>
+                <span>
+                  <v-icon class="mr-1" color="green" @click="verifica(campo)"> check </v-icon>
                   <v-icon class="mr-1" color="red" @click="anula(campo)"> clear </v-icon>
                 </span>
-                <v-icon
-                  v-if="false"
-                  class="mr-1"
-                  color="orange"
-                  @click="edita(campo)"
-                >
-                  create
-                </v-icon>
                 <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
               </v-col>
             </v-row>
@@ -294,9 +300,12 @@ export default {
   },
 
   mounted() {
-    //console.log(criarHistorico(this.p.objeto.dados.classes))
     // Inicializar o histórico 
     this.p.historico[0] = criarHistorico(this.p.objeto.dados)
+
+    // Inicializar o histórico para as classes
+    for(var i = 0; i < this.p.objeto.dados.classes.length; i++)
+      this.p.historico[0].classes.dados[i]= criarHistorico(this.p.objeto.dados.classes[i])
 
     const copiaHistorico = JSON.parse(
       JSON.stringify(this.historico[this.historico.length - 1])
@@ -305,7 +314,6 @@ export default {
     Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
 
     this.novoHistorico = copiaHistorico;
-
     Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
@@ -327,6 +335,12 @@ export default {
   methods: {
     checkIf(atrib, index) {
       if(atrib && index != "id" && index != "agregacoes" && index != "dono")
+        return true
+      else return false
+    },
+
+    checkMedicao(index) {
+      if(index == "medicaoPapel" || index == "medicaoDigital" || index == "medicaoOutro")
         return true
       else return false
     },
