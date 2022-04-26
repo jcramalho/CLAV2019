@@ -41,11 +41,11 @@
                 @unselectSistema="unselectSistema($event)"
               />
               <v-btn v-if="addSI == false" color="indigo lighten-2" dark class="ma-1" @click="importarSI = true">
-                Importar
+                Importar SI
                 <v-icon dark right>file_upload</v-icon>
               </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-1" rounded @click="addSI = true">
-                Novo
+                Adicionar SI
               </v-btn>
               <v-row>
                 <v-col>
@@ -136,15 +136,22 @@
                   </v-col>
                 </v-row>
               </div>
+              <v-btn color="indigo darken-2" dark class="ma-2" @click="changeE1(1)">
+                Voltar
+              </v-btn>
               <v-btn color="indigo darken-2" dark class="ma-2" @click="guardarPPD">
-                Guardar Trabalho
+                Guardar
                 <v-icon right>save</v-icon>
               </v-btn>
-              <v-btn color="indigo darken-2" dark class="ma-2" @click="submeterPPD">
+              <v-btn color="green darken-2" dark class="ma-2" @click="submeterPPD">
                 Submeter
               </v-btn>
-              <v-btn color="red" dark class="ma-2" rounded @click="changeE1(1)">
-                Voltar
+              <v-btn color="indigo darken-2" dark class="ma-2" @click="guardarSairPPD">
+                Sair
+                <v-icon right>save</v-icon>
+              </v-btn>
+              <v-btn color="red darken-2" dark class="ma-2" @click="cancelar">
+                Cancelar
               </v-btn>
             </v-stepper-content> 
           </v-stepper>
@@ -492,6 +499,30 @@ export default {
             token: this.$store.state.token
           };
           var response = this.$request("post", "/pendentes", pendenteParams);
+          this.pendenteGuardado = true;
+          this.pendenteGuardadoInfo = JSON.stringify(response.data);
+        }
+      } catch (error) {
+        return error;
+      }
+    },
+    guardarSairPPD: async function() {
+      try {
+        if (this.$store.state.name === "") {
+          this.loginErrorSnackbar = true;
+        } else {
+          //delete this.ppd.listaSistemasInfoAuxiliar;
+          var userBD = this.$verifyTokenUser();
+          var pendenteParams = {
+            numInterv: 1,
+            acao: "Criação",
+            tipo: "PPD",
+            objeto: this.ppd,
+            criadoPor: userBD.email,
+            user: { email: userBD.email },
+            token: this.$store.state.token
+          };
+          var response = this.$request("post", "/pendentes", pendenteParams);
           response.then((resp) => {
             this.ppdPendente = true;
             setTimeout(() => {
@@ -505,6 +536,10 @@ export default {
       } catch (error) {
         return error;
       }
+    },
+
+    cancelar: function(){
+      this.$router.go()
     },
 
     apagar: function() {
