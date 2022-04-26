@@ -3,7 +3,7 @@
     <template v-slot:lateral>
       <v-row>
         <v-col align="right">
-          <v-btn small color="info" rounded @click="insereNovaNota(lista)">
+          <v-btn dark small color="indigo darken-4" rounded @click="insereNovaNota(lista)">
             {{ acrescentar[tipo] }}
             <v-icon right>add_circle_outline</v-icon>
           </v-btn>

@@ -150,7 +150,7 @@
                 viewBox="0 0 20.71 37.261"
                 fill="#ffffff"
               />
-              <p>Retroceder</p>
+              <p>Voltar</p>
             </v-btn>
           </v-col>
 

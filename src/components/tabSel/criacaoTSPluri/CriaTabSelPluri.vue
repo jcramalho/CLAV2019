@@ -160,7 +160,7 @@
                 viewBox="0 0 20.71 37.261"
                 fill="#ffffff"
               />
-              <p class="ml-2">Retroceder</p>
+              <p class="ml-2">Voltar</p>
             </v-btn>
           </v-col>
           <v-col cols="auto">
@@ -207,8 +207,7 @@
               block
               @click="stepNo = 2"
               rounded
-              class="white--text"
-              color="error darken-1"
+              class="clav-linear-background white--text"
             >
               <unicon
                 name="arrow-back-icon"
@@ -217,32 +216,7 @@
                 viewBox="0 0 20.71 37.261"
                 fill="#ffffff"
               />
-              <p>Retroceder</p>
-            </v-btn>
-          </v-col>
-
-          <!-- Sair da criação da TS sem abortar o processo .........................-->
-          <v-col cols="12" md="4" lg="2">
-            <v-btn
-              v-if="stepNo > 2"
-              @click="sairOperacao = true"
-              block
-              rounded
-              class="clav-linear-background white--text"
-            >
-              <unicon
-                name="relogio-icon"
-                width="20"
-                height="20"
-                viewBox="0 0 20.71 20.71"
-                fill="#ffffff"
-              />
-              <DialogSair
-                v-if="sairOperacao"
-                @continuar="sairOperacao = false"
-                @sair="sair"
-              />
-              <p class="ml-2">Sair</p>
+              <p>Voltar</p>
             </v-btn>
           </v-col>
 
@@ -320,6 +294,31 @@
             </v-btn>
           </v-col>
 
+          <!-- Sair da criação da TS sem abortar o processo .........................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="sairOperacao = true"
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="relogio-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <DialogSair
+                v-if="sairOperacao"
+                @continuar="sairOperacao = false"
+                @sair="sair"
+              />
+              <p class="ml-2">Sair</p>
+            </v-btn>
+          </v-col>
+
           <!-- Abortar a criação da TS ..........................................-->
           <v-col cols="12" md="4" lg="2">
             <v-btn
@@ -341,7 +340,7 @@
                 @continuar="eliminarTabela = false"
                 @sair="abortar"
               />
-              <p class="ml-2">Eliminar</p>
+              <p class="ml-2">Cancelar</p>
             </v-btn>
           </v-col>
         </v-row>

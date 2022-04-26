@@ -62,20 +62,11 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              rounded
-              class="clav-linear-background white--text"
-              @click="selecionar"
-            >
+            <v-btn rounded class="clav-linear-background white--text" @click="selecionar">
               Guardar
             </v-btn>
 
-            <v-btn
-              @click="cancelar"
-              color="error"
-              rounded
-              class="white--text"
-            >
+            <v-btn @click="cancelar" color="red darken-4" rounded class="white--text">
               Cancelar
             </v-btn>
           </v-card-actions>
