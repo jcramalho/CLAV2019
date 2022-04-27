@@ -52,7 +52,7 @@
                                   v-if="checkIf(atrib,index)"
                                   :nome="nomes[index]"
                                   :infoHeader="nomes[index]"
-                                  :key="`${novoHistorico.classes.dados[iter][index].cor}${animacoes[index]}`"
+                                  :key="`${novoHistorico.classes.dados[iter][index].cor}${animacoesClasses[iter][index]}`"
                                   :color="conversorDeCor[novoHistorico.classes.dados[iter][index].cor] + ' lighten-1'"
                                 >
                                   <template v-slot:conteudo>
@@ -65,7 +65,7 @@
                                           <!-- Operações -->
                                           <span v-if="!esconderOperacoes[campo]">
                                             <v-icon class="mr-1" color="green" @click="verifica(index)"> check </v-icon>
-                                            <v-icon class="mr-1" color="red" @click="anula()"> clear </v-icon>
+                                            <v-icon class="mr-1" color="red" @click="anulaClasse(iter,index)"> clear </v-icon>
                                           </span>
                                           <v-icon class="mr-1" color="orange" v-if="checkMedicao(index)" @click="edita(campo)"> create </v-icon>
                                           <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
@@ -239,6 +239,7 @@ export default {
       },
 
       animacoes: {},
+      animacoesClasses: {},
       esconderOperacoes: {},
       notaDialog: {
         visivel: false,
@@ -307,17 +308,33 @@ export default {
     for(var i = 0; i < this.p.objeto.dados.classes.length; i++)
       this.p.historico[0].classes.dados[i]= criarHistorico(this.p.objeto.dados.classes[i])
 
-    const copiaHistorico = JSON.parse(
-      JSON.stringify(this.historico[this.historico.length - 1])
-    );
+    const copiaHistorico = JSON.parse(JSON.stringify(this.historico[this.historico.length - 1]));
 
+    // Reset nas notas (?)
     Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
 
+    // Reset nas notas das classes
+    for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
+      Object.keys(copiaHistorico.classes.dados[i]).forEach((h) => (copiaHistorico.classes.dados[i][h].nota = null));
+
     this.novoHistorico = copiaHistorico;
+
+    // Inicializar arrays "esconderOperacoes" e "animacoes"
     Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
     });
+
+    // Inicializar arrays "esconderOperacoes" e "animacoes" para as classes
+    this.esconderOperacoes["classes"] = []
+    for(var i = 0; i < this.dados.classes.length; i++){
+      this.esconderOperacoes["classes"][i] = {}
+      this.animacoesClasses[i] = {}
+      Object.keys(this.dados.classes[i]).forEach((key) => {
+        this.esconderOperacoes["classes"][i][key] = false;
+        this.animacoesClasses[i][key] = true;
+      });
+    }
   },
 
   created() {
@@ -469,6 +486,14 @@ export default {
       this.animacoes[campo] = !this.animacoes[campo];
     },
 
+    anulaClasse(iter,index) { //index da classe, parâmetro da classe
+      this.novoHistorico.classes.dados[iter][index] = {
+        ...this.novoHistorico.classes.dados[iter][index],
+        cor: "vermelho",
+      };
+      this.animacoesClasses[iter][index] = !this.animacoesClasses[iter][index];
+    },
+  
     edita(campo) {
       this.editaCampo = {
         visivel: true,
