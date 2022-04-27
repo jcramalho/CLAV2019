@@ -68,7 +68,7 @@
                                             <v-icon class="mr-1" color="red" @click="anulaClasse(iter,index)"> clear </v-icon>
                                           </span>
                                           <v-icon class="mr-1" color="orange" v-if="checkMedicao(index)" @click="editaClasse(iter,index)"> create </v-icon>
-                                          <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
+                                          <v-icon @click="abrirNotaDialogClasse(iter,index)"> add_comment </v-icon>
                                         </v-col>
                                       </v-row>
                                     </v-col>
@@ -103,7 +103,7 @@
                                         <v-icon class="mr-1" color="green" @click="verificaClasse(iter,'dono')"> check </v-icon>
                                         <v-icon class="mr-1" color="red" @click="anulaClasse(iter,'dono')"> clear </v-icon>
                                       </span>
-                                      <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
+                                      <v-icon @click="abrirNotaDialogClasse(iter,'dono')"> add_comment </v-icon>
                                     </v-col>
                                   </v-row>
                                 </template>
@@ -205,7 +205,6 @@ import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
 import {
-  comparaSigla,
   mapKeys,
   identificaItemAdicionado,
   adicionarNotaComRemovidos,
@@ -239,6 +238,7 @@ export default {
 
       entCollapsed: true,
       listaDonos: {},
+      loading: false,
 
       search: "",
       cabecalho: [
@@ -256,49 +256,28 @@ export default {
       esconderOperacoes: {},
       esconderOperacoesClasses: {},
 
+      novoHistorico: {},
+      classeEditada : 0,
+      tipoEdicao: null,
+      
       notaDialog: {
         visivel: false,
         campo: "",
         nota: "",
       },
-      novoHistorico: {},
-      loading: false,
+      
       editaCampo: {
         visivel: false,
         nome: "",
         key: "",
         valorAtual: "",
       },
-      classeEditada : 0,
-      tipoEdicao: null,
+
       erroDialog: {
         visivel: false,
         mensagem: null,
       },
-      entidadesHeaders: [
-        { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center",
-        },
-      ],
-      footerProps: {
-        "items-per-page-text": "Entidades por página",
-        "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
-      },
 
-      mensagemAutocomplete: {
-        titulo: "entidades",
-        autocomplete: "entidades",
-      },
-      dialogEntidades: false,
-      entidades: [],
       conversorDeCor: {
         verde: "success",
         amarelo: "warning",
@@ -318,12 +297,14 @@ export default {
   },
 
   mounted() {
+    /*###################### CONVÉM SER FEITO NA BACKEND, AO CRIAR O AUTO #####################*/
     // Inicializar o histórico 
     this.p.historico[0] = criarHistorico(this.p.objeto.dados)
 
     // Inicializar o histórico para as classes
     for(var i = 0; i < this.p.objeto.dados.classes.length; i++)
       this.p.historico[0].classes.dados[i]= criarHistorico(this.p.objeto.dados.classes[i])
+    /*#########################################################################################*/
 
     const copiaHistorico = JSON.parse(JSON.stringify(this.historico[this.historico.length - 1]));
 
@@ -335,7 +316,7 @@ export default {
       Object.keys(copiaHistorico.classes.dados[i]).forEach((h) => (copiaHistorico.classes.dados[i][h].nota = null));
 
     this.novoHistorico = copiaHistorico;
-
+    
     // Inicializar arrays "esconderOperacoes" e "animacoes"
     Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
@@ -492,7 +473,7 @@ export default {
       this.animacoes[campo] = !this.animacoes[campo];
     },
 
-    verificaClasse(iter,index) {
+    verificaClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
       this.novoHistorico.classes.dados[iter][index] = {
         ...this.novoHistorico.classes.dados[iter][index],
         cor: "verde",
@@ -525,7 +506,7 @@ export default {
       };
     },
 
-    editaClasse(iter,index) {
+    editaClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
       this.tipoEdicao = "classe"
       this.classeEditada = iter
       this.editaCampo = {
@@ -538,7 +519,6 @@ export default {
 
     editarCampo(event) {
       this.editaCampo.visivel = false;
-      console.log(this.tipoEdicao)
       if(this.tipoEdicao == "classe") {
         this.dados.classes[this.classeEditada][event.campo.key] = event.dados;
         this.novoHistorico.classes.dados[this.classeEditada][event.campo.key] = {
@@ -570,16 +550,36 @@ export default {
         this.notaDialog.nota = this.novoHistorico[campo].nota;
     },
 
+    abrirNotaDialogClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
+      this.tipoEdicao = "classe"
+      this.classeEditada = iter
+
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = index;
+      if (this.novoHistorico.classes.dados[iter][index].nota !== undefined)
+        this.notaDialog.nota = this.novoHistorico.classes.dados[iter][index].nota;
+    },
+
     fechaEditaCampoDialog(campo) {
       this.editaCampo.visivel = false;
     },
 
     adicionarNota(dados) {
       this.notaDialog.visivel = false;
-      this.novoHistorico[dados.campo] = {
-        ...this.novoHistorico[dados.campo],
-        nota: dados.nota,
-      };
+
+      if(this.tipoEdicao == "classe") {
+        this.novoHistorico.classes.dados[this.classeEditada][dados.campo] = {
+          ...this.novoHistorico.classes.dados[this.classeEditada][dados.campo],
+          nota: dados.nota,
+        };
+      } 
+      else {
+        this.novoHistorico[dados.campo] = {
+          ...this.novoHistorico[dados.campo],
+          nota: dados.nota,
+        };
+      }
+      this.tipoEdicao = null;
     },
 
 
