@@ -5,8 +5,8 @@
       <div v-for="(info, campo) in dados" :key="campo">
         <Campo
           v-if="campo == 'legislacao' || campo == 'responsavel' || campo == 'entidades' || campo == 'classes'"
-          :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
           :nome="transformaKeys(campo)"
+          :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
           :color="conversorDeCor[novoHistorico[campo].cor] + ' lighten-1'"
         >
           <template v-slot:conteudo>
@@ -238,7 +238,7 @@ export default {
 
       entCollapsed: true,
       listaDonos: {},
-      loading: false,
+      loading: true,
 
       search: "",
       cabecalho: [
@@ -297,26 +297,6 @@ export default {
   },
 
   mounted() {
-    /*###################### CONVÉM SER FEITO NA BACKEND, AO CRIAR O AUTO #####################*/
-    // Inicializar o histórico 
-    this.p.historico[0] = criarHistorico(this.p.objeto.dados)
-
-    // Inicializar o histórico para as classes
-    for(var i = 0; i < this.p.objeto.dados.classes.length; i++)
-      this.p.historico[0].classes.dados[i]= criarHistorico(this.p.objeto.dados.classes[i])
-    /*#########################################################################################*/
-
-    const copiaHistorico = JSON.parse(JSON.stringify(this.historico[this.historico.length - 1]));
-
-    // Reset nas notas (?)
-    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
-
-    // Reset nas notas das classes
-    for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
-      Object.keys(copiaHistorico.classes.dados[i]).forEach((h) => (copiaHistorico.classes.dados[i][h].nota = null));
-
-    this.novoHistorico = copiaHistorico;
-    
     // Inicializar arrays "esconderOperacoes" e "animacoes"
     Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
@@ -334,7 +314,9 @@ export default {
     }
   },
 
-  created() {
+  async created() {
+    await this.inicializarHistorico()
+    this.loading = false;
     this.p.objeto.dados.classes.forEach(
       c => {
         if(c.dono) {
@@ -347,6 +329,19 @@ export default {
   },
 
   methods: {
+    async inicializarHistorico(){    
+      const copiaHistorico = JSON.parse(JSON.stringify(this.historico[this.historico.length - 1]));
+
+      // Reset nas notas (?)
+      Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+
+      // Reset nas notas das classes
+      for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
+        Object.keys(copiaHistorico.classes.dados[i]).forEach((h) => (copiaHistorico.classes.dados[i][h].nota = null));
+
+      this.novoHistorico = copiaHistorico;
+    },
+
     checkIf(atrib, index) {
       if(atrib && index != "id" && index != "agregacoes" && index != "dono")
         return true
