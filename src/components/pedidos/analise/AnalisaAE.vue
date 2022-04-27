@@ -99,7 +99,7 @@
                                     </v-col>
                                     <v-col cols="12" sm="5" align="right">
                                       <!-- Operações -->
-                                      <span v-if="!esconderOperacoesClasses[iter]['donoo']">
+                                      <span v-if="!esconderOperacoesClasses[iter]['dono']">
                                         <v-icon class="mr-1" color="green" @click="verificaClasse(iter,'dono')"> check </v-icon>
                                         <v-icon class="mr-1" color="red" @click="anulaClasse(iter,'dono')"> clear </v-icon>
                                       </span>
