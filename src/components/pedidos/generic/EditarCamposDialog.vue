@@ -6,6 +6,28 @@
       {{ campo.nome }}
     </v-card-title>
 
+    <!-- Se o pedido for um Auto de Eliminação -->
+    <v-card-text v-if="tipoPedido === 'Auto de Eliminação'">
+      <v-row>
+        <v-col cols="2">
+          <div class="info-label">
+            Valor da Medição
+          </div>
+        </v-col>
+        <v-col>
+          <v-text-field
+            filled
+            clearable
+            outlined
+            color="indigo"
+            single-line
+            v-model="valorEditado"
+            label="Nome da Entidade"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </v-card-text>
+
     <!-- Se o pedido for uma Entidade -->
     <v-card-text v-if="tipoPedido === 'Entidade'">
       <v-row v-if="campo.key === 'designacao'">
