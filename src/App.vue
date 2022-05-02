@@ -27,7 +27,7 @@
     </v-main>
 
     <!-- Footer -->
-    <PageFooter />
+    <!-- <PageFooter /> -->
 
     <!-- Utils -->
     <v-snackbar v-model="snackbar" :color="color" :top="true" :timeout="4000">
