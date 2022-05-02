@@ -5,8 +5,8 @@
       <div v-for="(info, campo) in dados" :key="campo">
         <Campo
           v-if="campo == 'legislacao' || campo == 'responsavel' || campo == 'entidades' || campo == 'classes'"
-          :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
           :nome="transformaKeys(campo)"
+          :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
           :color="conversorDeCor[novoHistorico[campo].cor] + ' lighten-1'"
         >
           <template v-slot:conteudo>
@@ -24,8 +24,8 @@
                     <div v-if="campo === 'classes'">
                       <v-list dense color="secondary">
                         <v-list-group
-                          v-for="(item, index) in info"
-                          :key="index"
+                          v-for="(item, iter) in info"
+                          :key="iter"
                           no-action
                         >
                           <template v-slot:activator>
@@ -47,36 +47,65 @@
                           <v-list-item-content>
 
                             <v-list-item-title> 
-                              <CampoAE
-                                v-for="(atrib, index) in item"
-                                :key="index"
-                                v-if="checkIf(atrib,index)"
-                                :nome="nomes[index]"
-                                :infoHeader="nomes[index]"
-                                color="neutralpurple"
-                              >
-                                <template v-slot:conteudo>
-                                  <span> {{ atrib }}</span>
-                                </template>
-                              </CampoAE>
+                              <div v-for="(atrib, index) in item" :key="index">
+                                <CampoAE
+                                  v-if="checkIf(atrib,index)"
+                                  :nome="nomes[index]"
+                                  :infoHeader="nomes[index]"
+                                  :key="`${novoHistorico.classes.dados[iter][index].cor}${animacoesClasses[iter][index]}`"
+                                  :color="conversorDeCor[novoHistorico.classes.dados[iter][index].cor] + ' lighten-1'"
+                                >
+                                  <template v-slot:conteudo>
+                                    <v-col cols="auto">
+                                      <v-row>
+                                        <v-col cols="12" sm="7">
+                                          <span> {{ atrib }}</span>
+                                        </v-col>
+                                        <v-col cols="12" sm="5" align="right">
+                                          <!-- Operações -->
+                                          <span v-if="!esconderOperacoesClasses[iter][index]">
+                                            <v-icon class="mr-1" color="green" @click="verificaClasse(iter,index)"> check </v-icon>
+                                            <v-icon class="mr-1" color="red" @click="anulaClasse(iter,index)"> clear </v-icon>
+                                          </span>
+                                          <v-icon class="mr-1" color="orange" v-if="checkMedicao(index)" @click="editaClasse(iter,index)"> create </v-icon>
+                                          <v-icon @click="abrirNotaDialogClasse(iter,index)"> add_comment </v-icon>
+                                        </v-col>
+                                      </v-row>
+                                    </v-col>
+                                  </template>
+                                </CampoAE>
+                              </div>
                               
                               <CampoAE
                                 v-if="item.dono"
                                 nome="Dono"
                                 infoHeader="Dono"
-                                color="neutralpurple"
+                                :key="`${novoHistorico.classes.dados[iter]['dono'].cor}${animacoesClasses[iter]['dono']}`"
+                                :color="conversorDeCor[novoHistorico.classes.dados[iter]['dono'].cor] + ' lighten-1'"
                               >
                                 <template v-slot:conteudo>
-                                  <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
-                                    <li v-for="(l, index) in listaDonos[item.codigo]" v-bind:key="index">
-                                      <a :href="'/entidades/ent_' + l">{{ l }}</a>
-                                    </li>
-                                  </ul>
-                                  <a @click="entCollapsed = !entCollapsed" v-if="listaDonos.length > 6">
-                                    <span v-if="entCollapsed" style="color:#283593;"
-                                    >Mostrar mais...</span>
-                                    <span v-else style="color:#283593;">Mostrar menos...</span>
-                                  </a>
+                                  <v-row>
+                                    <v-col cols="12" sm="7">
+                                      <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
+                                        <li v-for="(l, ind) in listaDonos[item.codigo]" v-bind:key="ind">
+                                          <a :href="'/entidades/ent_' + l">{{ l }}</a>
+                                        </li>
+                                      </ul>
+                                      <a @click="entCollapsed = !entCollapsed" v-if="listaDonos.length > 6">
+                                        <span v-if="entCollapsed" style="color:#283593;"
+                                        >Mostrar mais...</span>
+                                        <span v-else style="color:#283593;">Mostrar menos...</span>
+                                      </a>
+                                    </v-col>
+                                    <v-col cols="12" sm="5" align="right">
+                                      <!-- Operações -->
+                                      <span v-if="!esconderOperacoesClasses[iter]['dono']">
+                                        <v-icon class="mr-1" color="green" @click="verificaClasse(iter,'dono')"> check </v-icon>
+                                        <v-icon class="mr-1" color="red" @click="anulaClasse(iter,'dono')"> clear </v-icon>
+                                      </span>
+                                      <v-icon @click="abrirNotaDialogClasse(iter,'dono')"> add_comment </v-icon>
+                                    </v-col>
+                                  </v-row>
                                 </template>
                               </CampoAE>
                               
@@ -114,20 +143,10 @@
 
               <!-- Operações -->
               <v-col v-if="campo != 'classes'" cols="auto">
-                <span v-if="!esconderOperacoes[campo]">
-                  <v-icon class="mr-1" color="green" @click="verifica(campo)">
-                    check
-                  </v-icon>
+                <span>
+                  <v-icon class="mr-1" color="green" @click="verifica(campo)"> check </v-icon>
                   <v-icon class="mr-1" color="red" @click="anula(campo)"> clear </v-icon>
                 </span>
-                <v-icon
-                  v-if="false"
-                  class="mr-1"
-                  color="orange"
-                  @click="edita(campo)"
-                >
-                  create
-                </v-icon>
                 <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
               </v-col>
             </v-row>
@@ -186,7 +205,6 @@ import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 
 import {
-  comparaSigla,
   mapKeys,
   identificaItemAdicionado,
   adicionarNotaComRemovidos,
@@ -220,6 +238,7 @@ export default {
 
       entCollapsed: true,
       listaDonos: {},
+      loading: true,
 
       search: "",
       cabecalho: [
@@ -233,48 +252,32 @@ export default {
       },
 
       animacoes: {},
+      animacoesClasses: {},
       esconderOperacoes: {},
+      esconderOperacoesClasses: {},
+
+      novoHistorico: {},
+      classeEditada : 0,
+      tipoEdicao: null,
+      
       notaDialog: {
         visivel: false,
         campo: "",
         nota: "",
       },
-      novoHistorico: {},
-      loading: false,
+      
       editaCampo: {
         visivel: false,
         nome: "",
         key: "",
         valorAtual: "",
       },
+
       erroDialog: {
         visivel: false,
         mensagem: null,
       },
-      entidadesHeaders: [
-        { text: "Sigla", value: "sigla", class: "subtitle-1" },
-        { text: "Designação", value: "designacao", class: "subtitle-1" },
-        {
-          text: "Operação",
-          value: "operacao",
-          class: "subtitle-1",
-          sortable: false,
-          width: "10%",
-          align: "center",
-        },
-      ],
-      footerProps: {
-        "items-per-page-text": "Entidades por página",
-        "items-per-page-options": [5, 10, -1],
-        "items-per-page-all-text": "Todas",
-      },
 
-      mensagemAutocomplete: {
-        titulo: "entidades",
-        autocomplete: "entidades",
-      },
-      dialogEntidades: false,
-      entidades: [],
       conversorDeCor: {
         verde: "success",
         amarelo: "warning",
@@ -294,25 +297,26 @@ export default {
   },
 
   mounted() {
-    //console.log(criarHistorico(this.p.objeto.dados.classes))
-    // Inicializar o histórico 
-    this.p.historico[0] = criarHistorico(this.p.objeto.dados)
-
-    const copiaHistorico = JSON.parse(
-      JSON.stringify(this.historico[this.historico.length - 1])
-    );
-
-    Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
-
-    this.novoHistorico = copiaHistorico;
-
+    // Inicializar arrays "esconderOperacoes" e "animacoes"
     Object.keys(this.dados).forEach((key) => {
       this.esconderOperacoes[key] = false;
       this.animacoes[key] = true;
     });
+
+    // Inicializar arrays "esconderOperacoes" e "animacoes" para as classes
+    for(var i = 0; i < this.dados.classes.length; i++){
+      this.esconderOperacoesClasses[i] = {}
+      this.animacoesClasses[i] = {}
+      Object.keys(this.dados.classes[i]).forEach((key) => {
+        this.esconderOperacoesClasses[i][key] = false;
+        this.animacoesClasses[i][key] = true;
+      });
+    }
   },
 
-  created() {
+  async created() {
+    await this.inicializarHistorico()
+    this.loading = false;
     this.p.objeto.dados.classes.forEach(
       c => {
         if(c.dono) {
@@ -325,8 +329,27 @@ export default {
   },
 
   methods: {
+    async inicializarHistorico(){    
+      const copiaHistorico = JSON.parse(JSON.stringify(this.historico[this.historico.length - 1]));
+
+      // Reset nas notas (?)
+      Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+
+      // Reset nas notas das classes
+      for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
+        Object.keys(copiaHistorico.classes.dados[i]).forEach((h) => (copiaHistorico.classes.dados[i][h].nota = null));
+
+      this.novoHistorico = copiaHistorico;
+    },
+
     checkIf(atrib, index) {
       if(atrib && index != "id" && index != "agregacoes" && index != "dono")
+        return true
+      else return false
+    },
+
+    checkMedicao(index) {
+      if(index == "medicaoPapel" || index == "medicaoDigital" || index == "medicaoOutro")
         return true
       else return false
     },
@@ -442,8 +465,15 @@ export default {
         ...this.novoHistorico[campo],
         cor: "verde",
       };
-
       this.animacoes[campo] = !this.animacoes[campo];
+    },
+
+    verificaClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
+      this.novoHistorico.classes.dados[iter][index] = {
+        ...this.novoHistorico.classes.dados[iter][index],
+        cor: "verde",
+      };
+      this.animacoesClasses[iter][index] = !this.animacoesClasses[iter][index];
     },
 
     anula(campo) {
@@ -451,10 +481,17 @@ export default {
         ...this.novoHistorico[campo],
         cor: "vermelho",
       };
-
       this.animacoes[campo] = !this.animacoes[campo];
     },
 
+    anulaClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
+      this.novoHistorico.classes.dados[iter][index] = {
+        ...this.novoHistorico.classes.dados[iter][index],
+        cor: "vermelho",
+      };
+      this.animacoesClasses[iter][index] = !this.animacoesClasses[iter][index];
+    },
+  
     edita(campo) {
       this.editaCampo = {
         visivel: true,
@@ -464,12 +501,41 @@ export default {
       };
     },
 
-    adicionarNota(dados) {
-      this.notaDialog.visivel = false;
-      this.novoHistorico[dados.campo] = {
-        ...this.novoHistorico[dados.campo],
-        nota: dados.nota,
+    editaClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
+      this.tipoEdicao = "classe"
+      this.classeEditada = iter
+      this.editaCampo = {
+        visivel: true,
+        nome: this.nomes[index],
+        key: index,
+        valorAtual: this.dados.classes[iter][index],
       };
+    },
+
+    editarCampo(event) {
+      this.editaCampo.visivel = false;
+      if(this.tipoEdicao == "classe") {
+        this.dados.classes[this.classeEditada][event.campo.key] = event.dados;
+        this.novoHistorico.classes.dados[this.classeEditada][event.campo.key] = {
+          ...this.novoHistorico.classes.dados[this.classeEditada][event.campo.key],
+          cor: "amarelo",
+        };
+      
+        this.esconderOperacoesClasses[this.classeEditada][event.campo.key] = true;
+        this.animacoesClasses[this.classeEditada][event.campo.key] = !this.animacoesClasses[this.classeEditada][event.campo.key];
+      }
+      else{
+        this.dados.campo[event.campo.key] = event.dados;
+        this.novoHistorico[event.campo.key] = {
+          ...this.novoHistorico[event.campo.key],
+          dados: event.dados,
+          cor: "amarelo",
+        };
+
+        this.esconderOperacoes[event.campo.key] = true;
+        this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
+      }
+      this.tipoEdicao = null; 
     },
 
     abrirNotaDialog(campo) {
@@ -479,23 +545,39 @@ export default {
         this.notaDialog.nota = this.novoHistorico[campo].nota;
     },
 
+    abrirNotaDialogClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
+      this.tipoEdicao = "classe"
+      this.classeEditada = iter
+
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = index;
+      if (this.novoHistorico.classes.dados[iter][index].nota !== undefined)
+        this.notaDialog.nota = this.novoHistorico.classes.dados[iter][index].nota;
+    },
+
     fechaEditaCampoDialog(campo) {
       this.editaCampo.visivel = false;
     },
 
-    editarCampo(event) {
-      this.editaCampo.visivel = false;
+    adicionarNota(dados) {
+      this.notaDialog.visivel = false;
 
-      this.dados[event.campo.key] = event.dados;
-      this.novoHistorico[event.campo.key] = {
-        ...this.novoHistorico[event.campo.key],
-        dados: event.dados,
-        cor: "amarelo",
-      };
-
-      this.esconderOperacoes[event.campo.key] = true;
-      this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
+      if(this.tipoEdicao == "classe") {
+        this.novoHistorico.classes.dados[this.classeEditada][dados.campo] = {
+          ...this.novoHistorico.classes.dados[this.classeEditada][dados.campo],
+          nota: dados.nota,
+        };
+      } 
+      else {
+        this.novoHistorico[dados.campo] = {
+          ...this.novoHistorico[dados.campo],
+          nota: dados.nota,
+        };
+      }
+      this.tipoEdicao = null;
     },
+
+
   },
 };
 </script>
