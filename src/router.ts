@@ -520,6 +520,70 @@ export default new Router({
       component: () => import("./views/pedidos/PedidosRessubmissao.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
+    // Routes sobre bpmn
+    {
+      path: '/bpmn',
+      name: 'BPMN',
+      component:  () => import("./views/paginasInfo/BPMN.vue"),
+      meta: {
+        levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+        tabAtiva: "Operações"
+      }
+    },
+    {
+      path: '/bpmn/deploy',
+      name: 'Deploy',
+      component:  () => import("./components/BPMN/Deploy.vue"),
+      meta: {
+        levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+        tabAtiva: "Operações"
+      }
+    },
+    {
+      path: '/bpmn/tasklist',
+      name: 'Tasklist',
+      component: () => import("./components/BPMN/Tasklist.vue"),
+      meta: {
+        levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+        tabAtiva: "Operações"
+      }
+    },
+    {
+      path: '/bpmn/editor',
+      name: 'Editor',
+      component: () => import("./components/BPMN/Editor.vue"),
+      meta: {
+        levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+        tabAtiva: "Operações"
+      }
+    },
+    {
+      path: '/bpmn/tasklist/:taskId',
+      name: 'Tasklist for specific Task',
+      component: () => import("./components/BPMN/Tasklist.vue"),
+      meta: {
+        levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+        tabAtiva: "Operações"
+      }
+    },
+    {
+      path: '/bpmn/startprocess',
+      name: 'Process List',
+      component: () => import("./components/BPMN/Processlist.vue"),
+      meta: {
+        levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+        tabAtiva: "Operações"
+      }
+    },
+    {
+      path: '/bpmn/startprocess/:processDefinitionKey',
+      name: 'Start Process',
+      component: () => import("./components/BPMN/StartProcess.vue"),
+      meta: {
+        levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+        tabAtiva: "Operações"
+      }
+    },
     // Routes dos pendentes (trabalho guardado)
     {
       path: "/pendentes",

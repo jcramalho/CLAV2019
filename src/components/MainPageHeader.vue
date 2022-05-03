@@ -686,6 +686,33 @@ export default {
               level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
               url: "/exportar",
             },
+            {
+              opcao: "BPMN",
+              level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+              url: "/bpmn",
+              acoes: [
+                {
+                  url: "/bpmn/deploy",
+                  level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
+                  icon: "criar-icon",
+                },
+                {
+                  url: "/bpmn/startprocess",
+                  level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+                  icon: "criar-icon",
+                },
+                {
+                  url: "/bpmn/tasklist",
+                  level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+                  icon: "criar-icon",
+                },
+                {
+                  url: "/bpmn/editor",
+                  level: [1, 2, 3, 3.5, 4, 5, 6, 7],
+                  icon: "criar-icon",
+                }
+              ],
+            },
           ],
         },
         {
