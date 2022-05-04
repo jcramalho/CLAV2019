@@ -29,6 +29,7 @@
         </template>
         <template v-slot:conteudo>
           <EstadoConteudo
+            :options="options"
             :pedidos="estado.pedidos"
             :utilizadores="utilizadoresMapped"
             @distribuir="distribuiPedido($event)"
@@ -36,6 +37,7 @@
             @analisar="analisaPedido($event)"
             @validar="validaPedido($event)"
             @despachar="despacharPedido($event)"
+            @ver="showPedido($event)"
           />
         </template>
       </PainelCLAV>
@@ -75,6 +77,9 @@ import TogglePanelsCLAV from "@/components/generic/TogglePanelsCLAV";
 
 import { NIVEIS_ANALISAR_PEDIDO, NIVEIS_DISTRIBUIR_PEDIDO } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
+
+import DataTransformation from './../../utils/data-transformation';
+import CamundaRest from './../../services/camunda-rest.js';
 
 export default {
   components: {
@@ -131,6 +136,15 @@ export default {
           pedidos: [],
         },
       ],
+      formdata: {
+          "opcao": '',
+          "pedido": null,
+          "utilizadores": null,
+          "texto": null
+      },
+      pedidosimples: ['Entidade','Tipologia','Legislação','Auto de Eliminação'],
+      pedidocomplexo: ['TS', 'PPD','RADA','Classe N1','Classe N2','Classe N3','Classe N4']
+    
     };
   },
   // async created() {
@@ -141,20 +155,71 @@ export default {
   //     {}
   //   );
   // },
-  activated() {
-    this.carregaPedidos();
+  props: ['taskId', 'options'],
+  
+  async created() {
+    this.resp = await this.carregaPedidos();
   },
+
   methods: {
+
+    submit() {
+      const variables = DataTransformation.generateVariablesFromFormFields(this.formdata);
+      CamundaRest.postCompleteTask(this.taskId, variables).then((result) => {
+        if (result.status === 200 || result.status === 204) {
+          this.$router.push({ path: '/bpmn/tasklist/' });
+        }
+      });
+    },
+
+    async getProcessKey() {
+      var processKey = null
+      await CamundaRest.getTaskVariables(this.taskId, "processKey")
+        .then((result) => {
+          processKey = result.data.processKey.value
+      })
+      return processKey
+    },
+
     distribuiPedido(dados) {
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.pedido=dados;
+        this.formdata.opcao='distribuirPedido';
+        this.formdata.utilizadores = this.utilizadoresParaAnalisar
+        var json = {}
+        json['textoTitulo'] = 'Distribuição'
+        json['textoAlert'] = 'análise'
+        json['textoBotao'] = 'Distribuir'
+        this.formdata.texto = json
+        this.submit()
+      }
+      else {
       this.pedidoParaDistribuir = dados;
       this.distribuir = true;
+      }
     },
     devolverPedido(dados) {
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.pedido=dados;
+        this.formdata.opcao='devolverPedido';
+        this.submit()
+      }
+      else {
       this.pedidoADevolver = dados;
       this.devolver = true;
+      }
     },
     analisaPedido(pedido) {
       this.$router.push("/pedidos/analisar/" + pedido.codigo);
+    },
+
+    showPedido(pedido) {
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.pedido=pedido;
+        this.formdata.opcao='verPedido';
+        this.submit()
+      }
+      else this.$router.push("/pedidos/novos/" + pedido.codigo); 
     },
 
     validaPedido(pedido) {
@@ -169,13 +234,32 @@ export default {
       return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
     },
 
-    carregaPedidos() {
-      this.$request("get", "/pedidos/meta")
+    async carregaPedidos() {
+
+      var processKey = null
+      console.log(this.$route.path)
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        processKey = await this.getProcessKey()
+      }
+
+      await this.$request("get", "/pedidos/meta")
         .then((data) => {
+
+          if (true) {
+            console.log("carreguei os dados!")
+            console.log("task id: " + this.taskId)
+            console.log("task options: " + this.options)
+          }
+
           var pedidos = data.data;
-          this.estados[0].pedidos = pedidos.filter(
-            (p) => p.estado === "Submetido" || p.estado === "Ressubmetido"
-          );
+          this.estados[0].pedidos = pedidos.filter((p) => {
+            if (p.estado === "Submetido" || p.estado === "Ressubmetido") {
+              if (processKey) {
+                if (processKey=='pedidosimples' ? this.pedidosimples.includes(p.objeto.tipo) : this.pedidocomplexo.includes(p.objeto.tipo)) return p;
+              }
+              else return p
+            }
+          });
           this.estados[1].pedidos = pedidos.filter((p) => {
             if (p.estado === "Distribuído" || p.estado === "Redistribuído") return p;
           });
@@ -190,6 +274,12 @@ export default {
           this.estados[6].pedidos = pedidos.filter((p) => p.estado === "Validado");
 
           if (this.temPermissaoDistribuir()) this.listaUtilizadoresParaAnalisar();
+
+          if (processKey) {
+            console.log(this.estados[0])
+            this.estados = [this.estados[0]]
+          }
+        
         })
         .catch((err) => console.log(err));
     },

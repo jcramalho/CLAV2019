@@ -1,7 +1,7 @@
 <template>
-  <v-card>
+  <v-card v-if="ped">
     <v-card-title class="clav-linear-background white--text">
-      <span>{{ texto.textoTitulo }} do pedido {{ pedido }}</span>
+      <span>{{ text.textoTitulo }} do pedido {{ ped }}</span>
       <v-spacer></v-spacer>
       <unicon name="participacao-icon" width="25" height="25" fill="white" />
     </v-card-title>
@@ -18,7 +18,7 @@
 
       <v-data-table
         :headers="usersHeaders"
-        :items="utilizadores"
+        :items="users"
         :items-per-page="5"
         :search="procuraUtilizador"
         :footer-props="footerProps"
@@ -47,17 +47,17 @@
       </v-data-table>
       <v-alert type="info">
         Clique sobre a linha da tabela para selecionar o utilizador a quem deve ser
-        atribuída a {{ texto.textoAlert }} do pedido {{ pedido }}.
+        atribuída a {{ text.textoAlert }} do pedido {{ ped }}.
       </v-alert>
     </v-card-text>
 
     <v-card-text v-else>
       <v-tabs
         v-if="
-          pedidoAuxiliar.estado !== 'Submetido' &&
-          pedidoAuxiliar.estado !== 'Ressubmetido' &&
-          pedidoAuxiliar.estado !== 'Apreciado' &&
-          pedidoAuxiliar.estado !== 'Reapreciado'
+          pedidoInfo.estado !== 'Submetido' &&
+          pedidoInfo.estado !== 'Ressubmetido' &&
+          pedidoInfo.estado !== 'Apreciado' &&
+          pedidoInfo.estado !== 'Reapreciado'
         "
         v-model="tab"
       >
@@ -74,7 +74,7 @@
                 hide-details
                 dense
                 v-model="mensagemDespacho"
-                :label="`Mensagem de ${texto.textoTitulo.toLowerCase()}`"
+                :label="`Mensagem de ${text.textoTitulo.toLowerCase()}`"
               />
             </template>
           </Campo>
@@ -94,36 +94,79 @@
 
     <v-card-actions>
       <v-spacer />
-      <v-btn color="error" text rounded dark @click="cancelar()"> Cancelar </v-btn>
 
+      <v-btn v-if="this.$route.path.split('/')[1]=='bpmn' && options.includes('Cancelar')" color="error" text rounded dark @click="cancelar()"> Cancelar </v-btn>
+      <v-btn v-else-if="this.$route.path.split('/')[1]!='bpmn'" color="error" text rounded dark @click="cancelar()"> Cancelar </v-btn>
+
+      <v-btn 
+        v-if="this.$route.path.split('/')[1]=='bpmn' && (options.includes('Distribuir') || options.includes('Reapreciar') || options.includes('Validação 1') || options.includes('Validação 2'))" 
+        :disabled="!utilizadorSelecionado" 
+        class="primary" 
+        rounded 
+        @click="atribuirPedido()"
+      > 
+          {{ text.textoBotao }} 
+      </v-btn>
+      
       <v-btn
+        v-else-if="this.$route.path.split('/')[1]!='bpmn'"
         :disabled="!utilizadorSelecionado"
         color="primary"
         rounded
         @click="avancar()"
       >
-        {{ texto.textoBotao }}
+        {{ text.textoBotao }}
       </v-btn>
+
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import Campo from "@/components/generic/CampoCLAV";
+
+import CamundaRest from './../../../services/camunda-rest.js';
+import DataTransformation from './../../../utils/data-transformation';
+
 export default {
-  props: ["texto", "utilizadores", "pedido"],
+  props: ["texto", "utilizadores", "pedido", "taskId", "options"],
   components: {
     Campo,
   },
-  async beforeMount() {
-    this.pedidoAuxiliar = (await this.$request("get", "/pedidos/" + this.pedido)).data;
+
+  async created() {
+
+    if (this.$route.path.split("/")[1]=='bpmn') {
+      
+      this.text = await this.getTexto()
+      this.users = await this.getUtilizadores()
+
+      var id = await this.getID();
+
+      const {data} = await this.$request("get", "/pedidos/" + id);
+
+      this.pedidoInfo = data
+
+      console.log("estado pedido: " + this.pedidoInfo.estado)
+
+      this.ped = this.pedidoInfo.codigo 
+
+      console.log("carreguei os dados! Avançar Pedido..")
+      console.log(this.pedidoInfo)
+      console.log("task id: " + this.taskId)
+      console.log("task options: " + this.options)
+    }
+
+    else {
+      this.pedidoInfo = (await this.$request("get", "/pedidos/" + this.pedido)).data;
+    }
   },
+
   data() {
     return {
       procuraUtilizador: null,
       utilizadorSelecionado: null,
       mensagemDespacho: null,
-      pedidoAuxiliar: "",
       tabs: ["Validação 1", "Validação 2"],
       tab: "Validação 1",
       usersHeaders: [
@@ -135,25 +178,80 @@ export default {
         "items-per-page-options": [5, 10, -1],
         "items-per-page-all-text": "Todos",
       },
+      formdata: {
+         "pedido": '',
+         "opcao": '',
+      },
+      text: this.texto,
+      users: this.utilizadores,
+      ped: this.pedido,
+      pedidoInfo: this.pedido,
     };
   },
 
   methods: {
+
+    submit() {
+      const variables = DataTransformation.generateVariablesFromFormFields(this.formdata);
+      CamundaRest.postCompleteTask(this.taskId, variables).then((result) => {
+        if (result.status === 200 || result.status === 204) {
+          this.$router.push({ path: '/bpmn/tasklist/' });
+        }
+      });
+    },
+
+
     cancelar() {
-      this.utilizadorSelecionado = null;
-      this.mensagemDespacho = null;
-      this.procuraUtilizador = null;
-      this.$emit("fecharDialog");
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.opcao = 'cancelar'
+        this.submit()
+      }
+      else {
+        this.utilizadorSelecionado = null;
+        this.mensagemDespacho = null;
+        this.procuraUtilizador = null;
+        this.$emit("fecharDialog");
+      }
+    },
+
+    async getID() {
+      var id = this.idp
+      if (!id) {
+        await CamundaRest.getTaskVariables(this.taskId, "pedido")
+          .then((result) => {
+            id = result.data.pedido.value.codigo
+          })
+      }
+      return id
+    },
+
+    async getTexto() {
+      var id = null
+      await CamundaRest.getTaskVariables(this.taskId, "texto")
+        .then((result) => {
+          id = result.data.texto.value
+        })
+      return id
+    },
+
+    async getUtilizadores() {
+      var id = null
+      await CamundaRest.getTaskVariables(this.taskId, "utilizadores")
+        .then((result) => {
+          id = result.data.utilizadores.value
+        })
+      return id
     },
 
     avancar() {
       const despacho = {
         utilizadorSelecionado: this.utilizadorSelecionado,
       };
+      console.log("aqui")
 
       if (
-        this.pedidoAuxiliar.estado !== "Submetido" &&
-        this.pedidoAuxiliar.estado !== "Ressubmetido"
+        this.pedidoInfo.estado !== "Submetido" &&
+        this.pedidoInfo.estado !== "Ressubmetido"
       )
         despacho.etapa = this.tabs[this.tab];
 
@@ -165,6 +263,72 @@ export default {
       this.utilizadorSelecionado = false;
       this.mensagemDespacho = null;
       this.procuraUtilizador = null;
+    },
+
+    async atribuirPedido() {
+      try {
+
+        let pedido = JSON.parse(JSON.stringify(this.pedidoInfo));
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        let estado = null
+        console.log("tab: " + this.tabs[this.tab])
+
+
+        console.log("estado incial: " + pedido.estado)
+
+        if (pedido.estado === "Submetido" || pedido.estado === "Ressubmetido") estado = "Distribuído";
+        else {
+          if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído")
+            this.tabs[this.tab] === "Validação 1" ? (estado = "Apreciado") : (estado = "Apreciado2v");
+          else
+            this.tabs[this.tab] === "Validação 1" ? (estado = "Reapreciado") : (estado = "Reapreciado2v");
+        }
+
+        pedido.estado = estado;
+
+        console.log("estado final: " + pedido.estado)
+
+       /*
+       this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
+        pedido.historico.push(this.novoHistorico);
+        */ 
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: this.utilizadorSelecionado.name,
+            entidade: this.utilizadorSelecionado.entidade,
+            email: this.utilizadorSelecionado.email,
+          },
+          data: new Date(),
+          despacho: this.mensagemDespacho,
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.formdata.pedido = pedido;
+        
+        if (this.options.includes(this.tabs[this.tab])) {
+          this.tabs[this.tab]=='Validação 1' ? this.formdata.opcao = 'validacao1' : this.formdata.opcao = 'validacao2'
+        }
+        else {
+          pedido.estado == 'Reapreciado' ? this.formdata.opcao = 'reapreciarPedido' : this.formdata.opcao = 'distribuirPedido'
+        }
+        this.submit()
+
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 };

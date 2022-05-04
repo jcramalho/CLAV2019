@@ -130,7 +130,7 @@
 
     <v-row>
       <v-col style="margin-top: 10px;" align="left">
-        <Voltar />
+        <Voltar :taskId="taskId"/>
       </v-col>
       <v-spacer></v-spacer>
       <v-col
@@ -217,8 +217,10 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import { filtraNivel } from "@/utils/permissoes";
 import { NIVEIS_SUBSTITUIR_RESPONSAVEL, NIVEIS_ANALISAR_PEDIDO } from "@/utils/consts";
 
+import CamundaRest from './../../services/camunda-rest.js';
+
 export default {
-  props: ["idp"],
+  props: ["idp", "taskId", "options"],
 
   data: () => ({
     utilizadores: [],
@@ -349,9 +351,17 @@ export default {
   },
   async created() {
     await this.listaUtilizadores();
-    this.$request("get", "/pedidos/" + this.idp)
+
+    var id = await this.getID();
+
+    this.$request("get", "/pedidos/" + id)
       .then((response) => {
         this.Pedido = response.data;
+        if (this.$route.path.split[1]=="bpmn") {
+          console.log("carreguei os dados!")
+          console.log("task id: " + this.taskId)
+          console.log("task options: " + this.options)
+        }
       })
       .catch((error) => {
         return error;
@@ -371,6 +381,17 @@ export default {
       const utilizadores = filtraNivel(response.data, NIVEIS_ANALISAR_PEDIDO);
 
       this.utilizadores = utilizadores;
+    },
+
+    async getID() {
+      var id = this.idp
+      if (!id) {
+        await CamundaRest.getTaskVariables(this.taskId, "pedido")
+          .then((result) => {
+            id = result.data.pedido.value.codigo
+          })
+      }
+      return id
     },
 
     verHistorico() {

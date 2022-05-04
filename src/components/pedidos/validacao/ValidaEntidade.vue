@@ -89,6 +89,8 @@
         <v-spacer />
         <PO
           operacao="Validar"
+          :pedido="p"
+          :options="o"
           @avancarPedido="encaminharPedido($event)"
           @finalizarPedido="verificaEstadoCampos($event)"
           @devolverPedido="despacharPedido($event)"
@@ -168,7 +170,7 @@ import {
 import { eNUV, eDataFormatoErrado, testarRegex } from "@/utils/validadores";
 
 export default {
-  props: ["p"],
+  props: ["p", "o"],
 
   components: {
     PO,

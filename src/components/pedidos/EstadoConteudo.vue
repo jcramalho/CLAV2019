@@ -56,10 +56,13 @@
       </template>
       <template v-slot:item.tarefa="{ item }">
         <v-row justify="center">
-          <v-col cols="4">
+          <v-col 
+            cols="4" 
+            v-if="pertenceListaOpcoes('Ver Pedido')"
+          >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" @click="showPedido(item)" small icon>
+                <v-btn v-on="on" @click="$emit('ver', item)" small icon>
                   <unicon
                     name="look-icon"
                     width="25"
@@ -72,11 +75,13 @@
               <span>Ver Pedido</span>
             </v-tooltip>
           </v-col>
+
           <v-col
             cols="4"
             v-if="
               temPermissaoDistribuir() &&
-              (item.estado === 'Submetido') | (item.estado === 'Ressubmetido')
+              (item.estado === 'Submetido') | (item.estado === 'Ressubmetido') &&
+              pertenceListaOpcoes('Distribuir Pedido')
             "
           >
             <v-tooltip top color="info" open-delay="500">
@@ -94,11 +99,13 @@
               <span>Distribuir Pedido</span>
             </v-tooltip>
           </v-col>
+
           <v-col
             cols="4"
             v-if="
               temPermissaoDevolver() &&
-              (item.estado === 'Submetido' || item.estado === 'Ressubmetido')
+              (item.estado === 'Submetido' || item.estado === 'Ressubmetido') &&
+              pertenceListaOpcoes('Devolver Pedido')
             "
           >
             <v-tooltip top color="info" open-delay="500">
@@ -116,11 +123,13 @@
               <span>Devolver Pedido</span>
             </v-tooltip>
           </v-col>
+
           <v-col
             cols="4"
             v-if="
               temPermissaoAnalisar() &&
-              (item.estado === 'Distribuído' || item.estado === 'Redistribuído')
+              (item.estado === 'Distribuído' || item.estado === 'Redistribuído') &&
+              pertenceListaOpcoes('Analisar Pedido')
             "
           >
             <v-tooltip top color="info" open-delay="500">
@@ -138,11 +147,13 @@
               <span>Analisar Pedido</span>
             </v-tooltip>
           </v-col>
+
           <v-col
             cols="4"
             v-if="
               temPermissaoValidar() &&
-              (item.estado === 'Apreciado' || item.estado === 'Reapreciado')
+              (item.estado === 'Apreciado' || item.estado === 'Reapreciado' || item.estado === 'Apreciado2v' || item.estado === 'Reapreciado2v') && 
+              pertenceListaOpcoes('Validar Pedido')
             "
           >
             <v-tooltip top color="info" open-delay="500">
@@ -158,30 +169,16 @@
                 </v-btn>
               </template>
               <span>Validar Pedido</span>
-            </v-tooltip> </v-col
-          ><v-col
-            cols="4"
-            v-if="
-              temPermissaoValidar() &&
-              (item.estado === 'Apreciado2v' || item.estado === 'Reapreciado2v')
-            "
-          >
-            <v-tooltip top color="info" open-delay="500">
-              <template v-slot:activator="{ on }">
-                <v-btn v-on="on" small text rounded @click="$emit('validar', item)">
-                  <unicon
-                    name="accept-icon"
-                    width="25"
-                    height="25"
-                    viewBox="0 0 20.71 18.204"
-                    fill="#0D47A1"
-                  />
-                </v-btn>
-              </template>
-              <span>Validar Pedido</span>
-            </v-tooltip>
+            </v-tooltip> 
           </v-col>
-          <v-col cols="4" v-if="temPermissaoAnalisar() && item.estado === 'Em Despacho'">
+         
+          <v-col 
+            cols="4" 
+            v-if="temPermissaoAnalisar() && 
+            item.estado === 'Em Despacho' && 
+            pertenceListaOpcoes('Despachar Pedido')
+            "
+          >
             <v-tooltip top color="info" open-delay="500">
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" small text rounded @click="$emit('despachar', item)">
@@ -216,11 +213,8 @@ import {
 } from "@/utils/consts";
 
 export default {
-  props: ["pedidos", "utilizadores"],
+  props: ["pedidos", "utilizadores", "options"],
   methods: {
-    showPedido(pedido) {
-      this.$router.push("/pedidos/novos/" + pedido.codigo);
-    },
 
     temPermissaoDistribuir() {
       return NIVEIS_DISTRIBUIR_PEDIDO.includes(this.$userLevel());
@@ -237,6 +231,10 @@ export default {
     temPermissaoValidar() {
       return NIVEIS_VALIDAR_PEDIDO.includes(this.$userLevel());
     },
+
+    pertenceListaOpcoes(option) {
+      return this.options!=null ? this.options.includes(option) : true
+    }
   },
   data() {
     return {

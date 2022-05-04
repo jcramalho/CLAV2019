@@ -38,7 +38,7 @@
       <v-card-text
         v-if="pedido.objeto.acao === 'Criação' || pedido.objeto.acao === 'Importação'"
       >
-        <AnalisaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
+        <AnalisaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" :o="options"/>
 
         <AnalisaRADA
           v-else-if="pedido.objeto.tipo === 'RADA'"
@@ -187,8 +187,10 @@ import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 import Loading from "@/components/generic/Loading";
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
+import CamundaRest from './../../../services/camunda-rest.js';
+
 export default {
-  props: ["idp"],
+  props: ['idp','taskId', 'options'],
 
   components: {
     AnalisaEntidade,
@@ -237,7 +239,12 @@ export default {
 
   async created() {
     try {
-      const { data } = await this.$request("get", "/pedidos/" + this.idp);
+
+      var id = await this.getID();
+
+      console.log(id) 
+      
+      const { data } = await this.$request("get", "/pedidos/" + id);
 
       if (data.estado !== "Distribuído" && data.estado !== "Redistribuído")
         throw new URIError("Este pedido não pertence a este estado.");
@@ -249,6 +256,13 @@ export default {
 
       this.pedido = data;
       this.loading = false;
+
+      if (this.$route.path.split('/')[1]=='bpmn') {
+        console.log("carreguei os dados! Analisar Pedido...")
+        console.log(this.pedido)
+        console.log("task id: " + this.taskId)
+        console.log("task options: " + this.options)
+      }
     } catch (err) {
       if (err instanceof URIError) {
         this.erroDialog.visivel = true;
@@ -279,6 +293,17 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
+    },
+
+    async getID() {
+      var id = this.idp
+      if (!id) {
+        await CamundaRest.getTaskVariables(this.taskId, "pedido")
+          .then((result) => {
+            id = result.data.pedido.value.codigo
+          })
+      }
+      return id
     },
   },
 };

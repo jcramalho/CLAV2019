@@ -3,7 +3,17 @@
     <v-row class="ma-2 text-center">
       <v-col>
         <v-btn
-          v-if="temPermissaoDevolver()"
+          v-if="temPermissaoDevolver() && $route.path.split('/')[1]=='bpmn' && options.includes('Devolver Pedido')"
+          dark
+          rounded
+          class="red darken-4"
+          @click="devolverPedido()"
+        >
+          Devolver
+        </v-btn>
+
+        <v-btn
+          v-else-if="temPermissaoDevolver()"
           dark
           rounded
           class="red darken-4"
@@ -16,9 +26,24 @@
       <v-col>
         <v-btn
           v-if="
-            operacao === 'Analisar' ||
-            pedidoAuxiliar.estado === 'Apreciado' ||
-            pedidoAuxiliar.estado === 'Reapreciado'
+            (operacao === 'Analisar' ||
+            pedido.estado === 'Apreciado' ||
+            pedido.estado === 'Reapreciado') && 
+            $route.path.split('/')[1]=='bpmn' && 
+            (options.includes('Distribuir Pedido') || options.includes('Validação 2'))"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="avancarPedido()"
+        >
+          Encaminhar
+        </v-btn>
+        
+        <v-btn
+          v-else-if="
+            (operacao === 'Analisar' ||
+            pedido.estado === 'Apreciado' ||
+            pedido.estado === 'Reapreciado') &&
+            $route.path.split('/')[1]!='bpmn'
           "
           rounded
           class="indigo accent-4 white--text"
@@ -27,9 +52,47 @@
           Encaminhar
         </v-btn>
       </v-col>
+
       <v-col>
         <v-btn
-          v-if="operacao === 'Validar'"
+          v-if="operacao === 'Validar' && $route.path.split('/')[1]=='bpmn' &&  (pedido.estado === 'Distribuído' ||
+          pedido.estado === 'Apreciado' || pedido.estado === 'Redistribuído' || pedido.estado === 'Reapreciado') &&
+          temPermissaoSubstituirResponsavel() && options.includes('Substituir Responsavel')"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="substituirResponsavel()"
+        >
+          Substituir Responsável
+        </v-btn>
+
+      </v-col>
+
+    
+      <v-col>
+         <v-btn
+          v-if="operacao === 'Validar' && $route.path.split('/')[1]=='bpmn' &&  (pedido.estado === 'Apreciado2v' || pedido.estado === 'Reapreciado2v' || pedido.estado === 'Apreciado' || pedido.estado === 'Reapreciado' ||
+          pedido.estado === 'Em Despacho' || pedido.estado === 'Devolvido para validação') && options.includes('Reapreciar Pedido')"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="reapreciarPedido()"
+        >
+          Reapreciar
+        </v-btn>
+
+      </v-col>
+
+      <v-col>
+        <v-btn
+          v-if="$route.path.split('/')[1]=='bpmn' && operacao === 'Validar' && options.includes('Aprovar Pedido')"
+          rounded
+          class="indigo accent-4 white--text"
+          @click="finalizarPedido()"
+        >
+          Finalizar
+        </v-btn>
+
+        <v-btn
+          v-else-if="operacao === 'Validar' && $route.path.split('/')[1]!='bpmn'"
           rounded
           class="indigo accent-4 white--text"
           @click="finalizarPedidoDialog = true"
@@ -78,7 +141,10 @@ import AvancarPedido from "@/components/pedidos/generic/AvancarPedido";
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 import FinalizarPedido from "@/components/pedidos/generic/FinalizarPedido";
 import { filtraNivel } from "@/utils/permissoes";
-import { NIVEIS_VALIDAR_PEDIDO, NIVEIS_DEVOLVER_PEDIDO } from "@/utils/consts";
+import { NIVEIS_VALIDAR_PEDIDO, NIVEIS_SUBSTITUIR_RESPONSAVEL, NIVEIS_DEVOLVER_PEDIDO } from "@/utils/consts";
+
+import CamundaRest from './../../../services/camunda-rest.js';
+import DataTransformation from './../../../utils/data-transformation';
 
 export default {
   props: {
@@ -87,6 +153,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    pedido: {
+      type: Object
+    },
+    options: {}
   },
 
   components: {
@@ -100,16 +170,21 @@ export default {
       avancarPedidoDialog: false,
       devolverPedidoDialog: false,
       finalizarPedidoDialog: false,
-      pedidoAuxiliar: "",
       utilizadores: [],
+      taskId: this.$route.params.taskId,
+      formdata: {
+        "opcao": '',
+      }
     };
   },
 
+/*
   async beforeMount() {
-    this.pedidoAuxiliar = (
+    this.pedido = (
       await this.$request("get", "/pedidos/" + this.$route.params.idPedido)
     ).data;
-  },
+  },*/
+
   async created() {
     try {
       await this.preparaUtilizadores();
@@ -119,8 +194,24 @@ export default {
   },
 
   methods: {
+
+    submit() {
+      const variables = DataTransformation.generateVariablesFromFormFields(this.formdata);
+      console.log(variables)
+      console.log(this.taskId)
+      CamundaRest.postCompleteTask(this.taskId, variables).then((result) => {
+        if (result.status === 200 || result.status === 204) {
+          this.$router.push({ path: '/bpmn/tasklist/' });
+        }
+      });
+    },
+    
     temPermissaoDevolver() {
       return NIVEIS_DEVOLVER_PEDIDO.includes(this.$userLevel());
+    },
+
+    temPermissaoSubstituirResponsavel() {
+      return NIVEIS_SUBSTITUIR_RESPONSAVEL.includes(this.$userLevel());
     },
 
     async preparaUtilizadores() {
@@ -136,19 +227,50 @@ export default {
     },
 
     avancarPedido(dados) {
-      this.avancarPedidoDialog = false;
-      this.devolverPedidoDialog = false;
-      this.finalizarPedidoDialog = false;
-      this.$emit("avancarPedido", dados);
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.opcao = 'distribuirPedido'
+        this.submit()
+      } 
+      else {
+        this.fecharDialog()
+        this.$emit("avancarPedido", dados);
+      }
     },
 
+
     devolverPedido(dados) {
-      this.$emit("devolverPedido", dados);
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.opcao = 'devolverPedido'
+        this.submit()
+      } 
+      else {
+        this.$emit("devolverPedido", dados);
+      }
+    },
+
+    reapreciarPedido() {
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.opcao = 'reapreciarPedido'
+        this.submit()
+      } 
+    },
+
+    substituirResponsavel() {
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.opcao = 'substituirResponsavel'
+        this.submit()
+      } 
     },
 
     finalizarPedido(dados) {
-      this.fecharDialog();
-      this.$emit("finalizarPedido", dados);
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.opcao = 'aprovarPedido'
+        this.submit()
+      }
+      else {
+        this.fecharDialog();
+        this.$emit("finalizarPedido", dados);
+      }
     },
   },
 };

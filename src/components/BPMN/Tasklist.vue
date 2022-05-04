@@ -6,7 +6,7 @@
             <v-list v-if="tasks && tasks.length">
               <v-list-item-group>
                 <template v-for="(task, index) in tasks">  
-                  <v-list-item :key="index" :href="`/bpmn/tasklist/${task.id}`" style="text-decoration: none;">
+                  <v-list-item class="pa-2" :style="id==task.id ? 'background-color:#cce6ff; text-decoration:none;' : 'background-color:white;text-decoration:none;'" :key="index" :href="`/bpmn/tasklist/${task.id}`" >
                     <v-list-item-icon class="icon">
                       <v-icon large>mdi-ballot-outline</v-icon>
                     </v-list-item-icon>
@@ -22,7 +22,7 @@
                     </v-list-item-content>
                   </v-list-item>
                   <v-row :key="task.id" align="center" justify="center">
-                    <v-col cols="10">
+                    <v-col cols="10" class="pa-0 ma-0">
                       <v-divider v-if="index < tasks.length - 1" :key="`${index}-divider`"></v-divider>
                     </v-col>
                   </v-row>
@@ -60,6 +60,7 @@
         taskFormKey: '',
         executionId: '',
         options: null,
+        id: this.$route.params.taskId
       };
     },
     components: {
@@ -175,5 +176,6 @@
 .icon {
   margin-right: 14px !important;
 }
+
 
 </style>

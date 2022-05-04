@@ -1,5 +1,5 @@
 <template>
-  <GestaoPedidos @pedidoSelected="consultaPedido($event)" />
+  <GestaoPedidos />
 </template>
 
 <script>
@@ -9,17 +9,6 @@ export default {
   name: "pedidos",
   components: {
     GestaoPedidos,
-  },
-  methods: {
-    consultaPedido: function (item) {
-      switch (item.objeto.tipo) {
-        case "Classe":
-          this.$router.push("/classes/showPedido/" + item.codigo);
-          break;
-        default:
-          this.$router.push("/pedidos/" + item.codigo);
-      }
-    },
   },
 };
 </script>

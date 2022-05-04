@@ -40,7 +40,7 @@
           <v-card-text
             v-if="pedido.objeto.acao === 'Criação' || pedido.objeto.acao === 'Importação'"
           >
-            <ValidaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
+            <ValidaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" :o="options"/>
 
             <ValidaRADA
               v-if="pedido.objeto.tipo === 'RADA'"
@@ -179,8 +179,10 @@ import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
+import CamundaRest from './../../../services/camunda-rest.js';
+
 export default {
-  props: ["idp"],
+  props: ['idp', 'taskId', 'options'],
 
   components: {
     ValidaEntidade,
@@ -224,7 +226,11 @@ export default {
 
   async created() {
     try {
-      const { data } = await this.$request("get", "/pedidos/" + this.idp);
+
+      var id = await this.getID();
+
+      const { data } = await this.$request("get", "/pedidos/" + id);
+      
       if (
         data.estado !== "Apreciado" &&
         data.estado !== "Reapreciado" &&
@@ -242,6 +248,14 @@ export default {
       this.pedido = data;
       this.pedidoLoaded = true;
       this.loading = false;
+
+      if (this.$route.path.split('/')[1]=='bpmn') {
+        console.log("carreguei os dados! Validar pedido...")
+        console.log(this.pedido)
+        console.log("task id: " + this.taskId)
+        console.log("task options: " + this.options)
+      }
+
     } catch (err) {
       if (err instanceof URIError) {
         this.erroDialog.visivel = true;
@@ -269,6 +283,17 @@ export default {
 
     fecharDialog() {
       this.despachosDialog = false;
+    },
+
+    async getID() {
+      var id = this.idp
+      if (!id) {
+        await CamundaRest.getTaskVariables(this.taskId, "pedido")
+          .then((result) => {
+            id = result.data.pedido.value.codigo
+          })
+      }
+      return id
     },
   },
 };
