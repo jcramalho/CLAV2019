@@ -84,28 +84,30 @@
                                 :color="conversorDeCor[novoHistorico.classes.dados[iter]['dono'].cor] + ' lighten-1'"
                               >
                                 <template v-slot:conteudo>
-                                  <v-row>
-                                    <v-col cols="12" sm="7">
-                                      <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
-                                        <li v-for="(l, ind) in listaDonos[item.codigo]" v-bind:key="ind">
-                                          <a :href="'/entidades/ent_' + l">{{ l }}</a>
-                                        </li>
-                                      </ul>
-                                      <a @click="entCollapsed = !entCollapsed" v-if="listaDonos.length > 6">
-                                        <span v-if="entCollapsed" style="color:#283593;"
-                                        >Mostrar mais...</span>
-                                        <span v-else style="color:#283593;">Mostrar menos...</span>
-                                      </a>
-                                    </v-col>
-                                    <v-col cols="12" sm="5" align="right">
-                                      <!-- Operações -->
-                                      <span v-if="!esconderOperacoesClasses[iter]['dono']">
-                                        <v-icon class="mr-1" color="green" @click="verificaClasse(iter,'dono')"> check </v-icon>
-                                        <v-icon class="mr-1" color="red" @click="anulaClasse(iter,'dono')"> clear </v-icon>
-                                      </span>
-                                      <v-icon @click="abrirNotaDialogClasse(iter,'dono')"> add_comment </v-icon>
-                                    </v-col>
-                                  </v-row>
+                                  <v-col cols="auto">
+                                    <v-row>
+                                      <v-col cols="12" sm="7">
+                                        <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
+                                          <li v-for="(l, ind) in listaDonos[item.codigo]" v-bind:key="ind">
+                                            <a :href="'/entidades/ent_' + l">{{ l }}</a>
+                                          </li>
+                                        </ul>
+                                        <a @click="entCollapsed = !entCollapsed" v-if="listaDonos.length > 6">
+                                          <span v-if="entCollapsed" style="color:#283593;"
+                                          >Mostrar mais...</span>
+                                          <span v-else style="color:#283593;">Mostrar menos...</span>
+                                        </a>
+                                      </v-col>
+                                      <v-col cols="12" sm="5" align="right">
+                                        <!-- Operações -->
+                                        <span v-if="!esconderOperacoesClasses[iter]['dono']">
+                                          <v-icon class="mr-1" color="green" @click="verificaClasse(iter,'dono')"> check </v-icon>
+                                          <v-icon class="mr-1" color="red" @click="anulaClasse(iter,'dono')"> clear </v-icon>
+                                        </span>
+                                        <v-icon @click="abrirNotaDialogClasse(iter,'dono')"> add_comment </v-icon>
+                                      </v-col>
+                                    </v-row>
+                                  </v-col>
                                 </template>
                               </CampoAE>
                               
@@ -122,6 +124,7 @@
                                     ></v-text-field>
                                   </v-col>
                                 </v-row>
+                                
                                 <v-data-table
                                   :headers="cabecalho"
                                   :items="item.agregacoes"
@@ -129,7 +132,23 @@
                                   class="elevation-1 ml-2 mt-3"
                                   :footer-props="footer_props"
                                   :search="search"
-                                />
+                                >
+
+                                  <template v-slot:item ="{item, index}">
+                                    <tr :class="[item.valor ? 'style-valido' : 'style-anulado']">
+                                      <td>{{ item.codigoAgregacao }}</td>
+                                      <td>{{ item.titulo }}</td>
+                                      <td>{{ item.dataContagem }}</td>
+                                      <td>{{ item.ni }}</td>
+                                      <td>
+                                        <v-icon color="green" @click="verificaAgregacao(iter, item)"> check </v-icon>
+                                        <v-icon color="red" @click="anulaAgregacao(iter, item)"> clear </v-icon>
+                                        <v-icon @click="abrirNotaDialogAgregacao(iter, item)"> add_comment </v-icon>
+                                      </td>
+                                    </tr>
+                                  </template>
+
+                                </v-data-table>
                               </div>
 
                               
@@ -246,6 +265,7 @@ export default {
         { text: "Título", align: "left", value: "titulo" },
         { text: "Ano", align: "left", value: "dataContagem" },
         { text: "Natureza de Intervenção", align: "left", value: "ni" },
+        { text: "Ações", align: "left", value: "actions", sortable: false },
       ],
       footer_props: {
         "items-per-page-text": "Mostrar",
@@ -253,11 +273,16 @@ export default {
 
       animacoes: {},
       animacoesClasses: {},
+      animacoesAgregacoes: {},
       esconderOperacoes: {},
       esconderOperacoesClasses: {},
+      esconderOperacoesAgregacoes: {},
+
+      indexsAgregacoes: {},
 
       novoHistorico: {},
       classeEditada : 0,
+      agregacaoEditada : 0,
       tipoEdicao: null,
       
       notaDialog: {
@@ -315,6 +340,15 @@ export default {
   },
 
   async created() {
+    // Preencher array com os indexs das agregacoes
+    for(var i = 0; i < this.p.objeto.dados.classes.length; i++) {
+      this.indexsAgregacoes[i] = {}
+      for(var j = 0; j < this.p.objeto.dados.classes[i].agregacoes.length; j++) {
+        var cod = this.p.objeto.dados.classes[i].agregacoes[j]['codigoAgregacao']
+        this.indexsAgregacoes[i][cod] = j
+      }
+    }
+
     await this.inicializarHistorico()
     this.loading = false;
     this.p.objeto.dados.classes.forEach(
@@ -329,16 +363,20 @@ export default {
   },
 
   methods: {
-    async inicializarHistorico(){    
+    async inicializarHistorico(){   
       const copiaHistorico = JSON.parse(JSON.stringify(this.historico[this.historico.length - 1]));
 
-      // Reset nas notas (?)
+      // Reset nas notas 
       Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
 
       // Reset nas notas das classes
       for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
         Object.keys(copiaHistorico.classes.dados[i]).forEach((h) => (copiaHistorico.classes.dados[i][h].nota = null));
 
+      // Reset nas notas das agregacoes
+      for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
+        Object.keys(copiaHistorico.classes.dados[i].agregacoes.dados).forEach((h) => (copiaHistorico.classes.dados[i].agregacoes.dados[h].nota = null));
+      
       this.novoHistorico = copiaHistorico;
     },
 
@@ -476,6 +514,17 @@ export default {
       this.animacoesClasses[iter][index] = !this.animacoesClasses[iter][index];
     },
 
+    verificaAgregacao(iter,agreg) { //index da classe da agregação, agregação em questão
+      var cod = agreg['codigoAgregacao']
+      var index = this.indexsAgregacoes[iter][cod]
+     
+      this.novoHistorico.classes.dados[iter].agregacoes.dados[index] = {
+        ...this.novoHistorico.classes.dados[iter].agregacoes.dados[index],
+        cor: "verde",
+      };
+      this.p.objeto.dados.classes[iter].agregacoes[index]['valor'] = true
+    },
+
     anula(campo) {
       this.novoHistorico[campo] = {
         ...this.novoHistorico[campo],
@@ -490,6 +539,17 @@ export default {
         cor: "vermelho",
       };
       this.animacoesClasses[iter][index] = !this.animacoesClasses[iter][index];
+    },
+
+    anulaAgregacao(iter,agreg) { //index da classe da agregação, agregação em questão
+      var cod = agreg['codigoAgregacao']
+      var index = this.indexsAgregacoes[iter][cod]
+     
+      this.novoHistorico.classes.dados[iter].agregacoes.dados[index] = {
+        ...this.novoHistorico.classes.dados[iter].agregacoes.dados[index],
+        cor: "vermelho",
+      };
+      this.p.objeto.dados.classes[iter].agregacoes[index]['valor'] = false
     },
   
     edita(campo) {
@@ -555,6 +615,20 @@ export default {
         this.notaDialog.nota = this.novoHistorico.classes.dados[iter][index].nota;
     },
 
+    abrirNotaDialogAgregacao(iter,agreg) { //index da classe da agregação, agregação em questão
+      var cod = agreg['codigoAgregacao']
+      var index = this.indexsAgregacoes[iter][cod]
+
+      this.tipoEdicao = "agregacao"
+      this.classeEditada = iter
+      this.agregacaoEditada = index
+
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = "Agregacao";
+      if (this.novoHistorico.classes.dados[iter].agregacoes.dados[index].nota !== undefined)
+        this.notaDialog.nota = this.novoHistorico.classes.dados[iter].agregacoes.dados[index].nota;
+    },
+
     fechaEditaCampoDialog(campo) {
       this.editaCampo.visivel = false;
     },
@@ -568,6 +642,12 @@ export default {
           nota: dados.nota,
         };
       } 
+      else if(this.tipoEdicao == "agregacao") {
+        this.novoHistorico.classes.dados[this.classeEditada].agregacoes.dados[this.agregacaoEditada] = {
+          ...this.novoHistorico.classes.dados[this.classeEditada].agregacoes.dados[this.agregacaoEditada],
+          nota: dados.nota,
+        };
+      }
       else {
         this.novoHistorico[dados.campo] = {
           ...this.novoHistorico[dados.campo],
@@ -582,56 +662,12 @@ export default {
 };
 </script>
 
-<style scoped>
-.info-conteudo {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
+<style>
+.style-valido {
+  background-color: #66df6e !important
+}
+.style-anulado {
+  background-color: #d73e32 !important
 }
 
-.info-descricao {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-descricao-verde {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
-  background-color: #c8e6c9; /* lighten-4 */
-}
-
-.info-descricao-vermelho {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
-  background-color: #ffcdd2; /* lighten-4 */
-}
-
-.info-descricao-amarelo {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
-  background-color: #ffe0b2; /* lighten-4 */
-}
-
-@keyframes fadeInOpacity {
-  0% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
 </style>

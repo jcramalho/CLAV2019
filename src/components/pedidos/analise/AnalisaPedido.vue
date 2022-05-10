@@ -1,7 +1,7 @@
 <template>
   <v-row class="ma-1">
     <Loading v-if="loading" :message="'pedido'" />
-    <v-card v-else class="pa-2" flat>
+    <v-card v-else class="pa-2" style="width:100%" flat>
       <v-card-title class="clav-content-title-2">
         Análise do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
         {{ pedido.objeto.tipo }}
