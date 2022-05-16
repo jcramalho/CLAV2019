@@ -404,7 +404,6 @@ export default {
           this.cleanFiles()
         })
         .catch(e => {
-          console.log(e.response.data.erros)
           this.erros = e.response.data.erros
           this.erroTipo = e.response.data.mensagem
           /*var er = e.response.data.split("&&&")
