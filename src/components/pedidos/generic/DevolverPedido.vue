@@ -46,7 +46,8 @@ export default {
       mensagemDespacho: null,
       formdata: {
         "opcao": '',
-      }
+        "pedido": null,
+      },
     };
   },
   components: {
@@ -87,20 +88,27 @@ export default {
       this.mensagemDespacho = null;
     },
 
-    async getPedido() {
-      var id = null
-      await CamundaRest.getTaskVariables(this.taskId, "pedido")
-        .then((result) => {
-          id = result.data.pedido.value
-        })
+    async getID() {
+      var id = this.idp
+      if (!id) {
+        await CamundaRest.getTaskVariables(this.taskId, "pedido")
+          .then((result) => {
+            id = result.data.pedido.value.codigo
+          })
+      }
       return id
     },
 
     async devolvePedido() {
       try {
-        let ped = await this.getPedido()
+        //let ped = await this.getPedido()
+        var id = await this.getID();
 
-        let pedido = JSON.parse(JSON.stringify(ped));
+        console.log("id: " + id)
+
+        const { data } = await this.$request("get", "/pedidos/" + id);
+
+        let pedido = data
 
         let estado = "Devolvido";
 
@@ -119,6 +127,9 @@ export default {
           pedido: pedido,
           distribuicao: novaDistribuicao,
         });
+
+        console.log(pedido)
+        console.log(novaDistribuicao)
 
         this.formdata.opcao = 'devolverPedido'
         this.submit()

@@ -128,6 +128,8 @@ import Campo from "@/components/generic/CampoCLAV";
 import CamundaRest from './../../../services/camunda-rest.js';
 import DataTransformation from './../../../utils/data-transformation';
 
+import {adicionarNotaComRemovidos} from "@/utils/utils";
+
 export default {
   props: ["texto", "utilizadores", "pedido", "taskId", "options"],
   components: {
@@ -186,7 +188,14 @@ export default {
       users: this.utilizadores,
       ped: this.pedido,
       pedidoInfo: this.pedido,
+      novoHistorico: {},
     };
+  },
+
+  computed: {
+    historico() {
+      return this.pedidoInfo.historico;
+    },
   },
 
   methods: {
@@ -291,13 +300,13 @@ export default {
         console.log("estado final: " + pedido.estado)
 
        /*
-       this.novoHistorico = adicionarNotaComRemovidos(
+        this.novoHistorico = adicionarNotaComRemovidos(
           this.historico[this.historico.length - 1],
           this.novoHistorico
         );
 
-        pedido.historico.push(this.novoHistorico);
-        */ 
+        pedido.historico.push(this.novoHistorico);*/
+        
 
         const novaDistribuicao = {
           estado: estado,
@@ -316,6 +325,8 @@ export default {
           distribuicao: novaDistribuicao,
         });
 
+        console.log(pedido) 
+
         this.formdata.pedido = pedido;
         
         if (this.options.includes(this.tabs[this.tab])) {
@@ -324,6 +335,7 @@ export default {
         else {
           pedido.estado == 'Reapreciado' ? this.formdata.opcao = 'reapreciarPedido' : this.formdata.opcao = 'distribuirPedido'
         }
+
         this.submit()
 
       } catch (e) {

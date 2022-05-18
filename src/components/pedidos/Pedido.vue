@@ -357,6 +357,9 @@ export default {
     this.$request("get", "/pedidos/" + id)
       .then((response) => {
         this.Pedido = response.data;
+
+        console.log(response.data)
+
         if (this.$route.path.split[1]=="bpmn") {
           console.log("carreguei os dados!")
           console.log("task id: " + this.taskId)
