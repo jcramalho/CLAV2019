@@ -251,6 +251,7 @@ export default {
   }),
 
   created: function(){
+    console.log(this.p.objeto.dados.entidades)
     this.p.objeto.dados.classes.forEach(
       c => {
         if(c.dono) {
