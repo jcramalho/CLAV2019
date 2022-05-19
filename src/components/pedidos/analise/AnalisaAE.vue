@@ -21,142 +21,141 @@
 
                 <div v-else>
                   <span v-if="campo === 'entidades'">{{ formatarEntidades(info) }}</span>
-                    <div v-if="campo === 'classes'">
-                      <v-list dense color="secondary">
-                        <v-list-group
-                          v-for="(item, iter) in info"
-                          :key="iter"
-                          no-action
-                        >
-                          <template v-slot:activator>
-                            <v-list-item-content>
-                              <v-list-item-title
-                                v-if="item.codigo && item.referencia"
-                                v-text="item.codigo + ', ' + item.referencia"
-                              ></v-list-item-title>
-                              <v-list-item-title 
-                                v-else-if="item.codigo" 
-                                v-text="item.codigo"
-                              ></v-list-item-title>
-                              <v-list-item-title 
-                                v-else 
-                                v-text="item.referencia"
-                              ></v-list-item-title>
-                            </v-list-item-content>
-                          </template>
+                  <div v-if="campo === 'classes'">
+                    <v-list dense color="secondary">
+                      <v-list-group
+                        v-for="(item, iter) in info"
+                        :key="iter"
+                        no-action
+                      >
+                        <template v-slot:activator>
                           <v-list-item-content>
+                            <v-list-item-title
+                              v-if="item.codigo && item.referencia"
+                              v-text="item.codigo + ', ' + item.referencia"
+                            ></v-list-item-title>
+                            <v-list-item-title 
+                              v-else-if="item.codigo" 
+                              v-text="item.codigo"
+                            ></v-list-item-title>
+                            <v-list-item-title 
+                              v-else 
+                              v-text="item.referencia"
+                            ></v-list-item-title>
+                          </v-list-item-content>
+                        </template>
+                        <v-list-item-content>
 
-                            <v-list-item-title> 
-                              <div v-for="(atrib, index) in item" :key="index">
-                                <CampoAE
-                                  v-if="checkIf(atrib,index)"
-                                  :nome="nomes[index]"
-                                  :infoHeader="nomes[index]"
-                                  :key="`${novoHistorico.classes.dados[iter][index].cor}${animacoesClasses[iter][index]}`"
-                                  :color="conversorDeCor[novoHistorico.classes.dados[iter][index].cor] + ' lighten-1'"
-                                >
-                                  <template v-slot:conteudo>
-                                    <v-col cols="auto">
-                                      <v-row>
-                                        <v-col cols="12" sm="7">
-                                          <span> {{ atrib }}</span>
-                                        </v-col>
-                                        <v-col cols="12" sm="5" align="right">
-                                          <!-- Operações -->
-                                          <span v-if="!esconderOperacoesClasses[iter][index]">
-                                            <v-icon class="mr-1" color="green" @click="verificaClasse(iter,index)"> check </v-icon>
-                                            <v-icon class="mr-1" color="red" @click="anulaClasse(iter,index)"> clear </v-icon>
-                                          </span>
-                                          <v-icon class="mr-1" color="orange" v-if="checkMedicao(index)" @click="editaClasse(iter,index)"> create </v-icon>
-                                          <v-icon @click="abrirNotaDialogClasse(iter,index)"> add_comment </v-icon>
-                                        </v-col>
-                                      </v-row>
-                                    </v-col>
-                                  </template>
-                                </CampoAE>
-                              </div>
-                              
+                          <v-list-item-title> 
+                            <div v-for="(atrib, index) in item" :key="index">
                               <CampoAE
-                                v-if="item.dono"
-                                nome="Dono"
-                                infoHeader="Dono"
-                                :key="`${novoHistorico.classes.dados[iter]['dono'].cor}${animacoesClasses[iter]['dono']}`"
-                                :color="conversorDeCor[novoHistorico.classes.dados[iter]['dono'].cor] + ' lighten-1'"
+                                v-if="checkIf(atrib,index)"
+                                :nome="nomes[index]"
+                                :infoHeader="nomes[index]"
+                                :key="`${novoHistorico.classes.dados[iter][index].cor}${animacoesClasses[iter][index]}`"
+                                :color="conversorDeCor[novoHistorico.classes.dados[iter][index].cor] + ' lighten-1'"
                               >
                                 <template v-slot:conteudo>
                                   <v-col cols="auto">
                                     <v-row>
                                       <v-col cols="12" sm="7">
-                                        <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
-                                          <li v-for="(l, ind) in listaDonos[item.codigo]" v-bind:key="ind">
-                                            <a :href="'/entidades/ent_' + l">{{ l }}</a>
-                                          </li>
-                                        </ul>
-                                        <a @click="entCollapsed = !entCollapsed" v-if="listaDonos.length > 6">
-                                          <span v-if="entCollapsed" style="color:#283593;"
-                                          >Mostrar mais...</span>
-                                          <span v-else style="color:#283593;">Mostrar menos...</span>
-                                        </a>
+                                        <span> {{ atrib }}</span>
                                       </v-col>
                                       <v-col cols="12" sm="5" align="right">
                                         <!-- Operações -->
-                                        <span v-if="!esconderOperacoesClasses[iter]['dono']">
-                                          <v-icon class="mr-1" color="green" @click="verificaClasse(iter,'dono')"> check </v-icon>
-                                          <v-icon class="mr-1" color="red" @click="anulaClasse(iter,'dono')"> clear </v-icon>
+                                        <span v-if="!esconderOperacoesClasses[iter][index]">
+                                          <v-icon class="mr-1" color="green" @click="verificaClasse(iter,index)"> check </v-icon>
+                                          <v-icon class="mr-1" color="red" @click="anulaClasse(iter,index)"> clear </v-icon>
                                         </span>
-                                        <v-icon @click="abrirNotaDialogClasse(iter,'dono')"> add_comment </v-icon>
+                                        <v-icon class="mr-1" color="orange" v-if="checkMedicao(index)" @click="editaClasse(iter,index)"> create </v-icon>
+                                        <v-icon @click="abrirNotaDialogClasse(iter,index)"> add_comment </v-icon>
                                       </v-col>
                                     </v-row>
                                   </v-col>
                                 </template>
                               </CampoAE>
+                            </div>
+                            
+                            <CampoAE
+                              v-if="item.dono"
+                              nome="Dono"
+                              infoHeader="Dono"
+                              :key="`${novoHistorico.classes.dados[iter]['dono'].cor}${animacoesClasses[iter]['dono']}`"
+                              :color="conversorDeCor[novoHistorico.classes.dados[iter]['dono'].cor] + ' lighten-1'"
+                            >
+                              <template v-slot:conteudo>
+                                <v-col cols="auto">
+                                  <v-row>
+                                    <v-col cols="12" sm="7">
+                                      <ul :class="{ 'is-collapsed': entCollapsed }">
+                                        <li v-for="(l, index) in listaDonos[item.codigo]" v-bind:key="index">
+                                          <a :href="'/entidades/ent_' + l">{{ l }}</a>
+                                        </li>
+                                      </ul>
+                                      <a @click="entCollapsed = !entCollapsed" v-if="listaDonos[item.codigo].length > 6">
+                                        <span v-if="entCollapsed" style="color:#283593;">Mostrar mais...</span>
+                                        <span v-else style="color:#283593;">Mostrar menos...</span>
+                                      </a>
+                                    </v-col>
+                                    <v-col cols="12" sm="5" align="right">
+                                      <!-- Operações -->
+                                      <span v-if="!esconderOperacoesClasses[iter]['dono']">
+                                        <v-icon class="mr-1" color="green" @click="verificaClasse(iter,'dono')"> check </v-icon>
+                                        <v-icon class="mr-1" color="red" @click="anulaClasse(iter,'dono')"> clear </v-icon>
+                                      </span>
+                                      <v-icon @click="abrirNotaDialogClasse(iter,'dono')"> add_comment </v-icon>
+                                    </v-col>
+                                  </v-row>
+                                </v-col>
+                              </template>
+                            </CampoAE>
+                            
+                            <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
+                              <v-row style="margin-top:10px" justify="space-between" class="info-label">
+                                <v-col>Lista de Agregações</v-col>
+                                <v-col>
+                                  <v-text-field
+                                    v-model="search"
+                                    append-icon="search"
+                                    label="Procura"
+                                    single-line
+                                    hide-details
+                                  ></v-text-field>
+                                </v-col>
+                              </v-row>
                               
-                              <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
-                                <v-row style="margin-top:10px" justify="space-between" class="info-label">
-                                  <v-col>Lista de Agregações</v-col>
-                                  <v-col>
-                                    <v-text-field
-                                      v-model="search"
-                                      append-icon="search"
-                                      label="Procura"
-                                      single-line
-                                      hide-details
-                                    ></v-text-field>
-                                  </v-col>
-                                </v-row>
-                                
-                                <v-data-table
-                                  :headers="cabecalho"
-                                  :items="item.agregacoes"
-                                  :items-per-page="5"
-                                  class="elevation-1 ml-2 mt-3"
-                                  :footer-props="footer_props"
-                                  :search="search"
-                                >
+                              <v-data-table
+                                :headers="cabecalho"
+                                :items="item.agregacoes"
+                                :items-per-page="5"
+                                class="elevation-1 ml-2 mt-3"
+                                :footer-props="footer_props"
+                                :search="search"
+                              >
 
-                                  <template v-slot:item ="{item, index}">
-                                    <tr :class="[item.valor ? 'style-valido' : 'style-anulado']">
-                                      <td>{{ item.codigoAgregacao }}</td>
-                                      <td>{{ item.titulo }}</td>
-                                      <td>{{ item.dataContagem }}</td>
-                                      <td>{{ item.ni }}</td>
-                                      <td>
-                                        <v-icon color="green" @click="verificaAgregacao(iter, item)"> check </v-icon>
-                                        <v-icon color="red" @click="anulaAgregacao(iter, item)"> clear </v-icon>
-                                        <v-icon @click="abrirNotaDialogAgregacao(iter, item)"> add_comment </v-icon>
-                                      </td>
-                                    </tr>
-                                  </template>
+                                <template v-slot:item ="{item, index}">
+                                  <tr :class="[item.valor ? 'style-valido' : 'style-anulado']">
+                                    <td>{{ item.codigoAgregacao }}</td>
+                                    <td>{{ item.titulo }}</td>
+                                    <td>{{ item.dataContagem }}</td>
+                                    <td>{{ item.ni }}</td>
+                                    <td>
+                                      <v-icon color="green" @click="verificaAgregacao(iter, item)"> check </v-icon>
+                                      <v-icon color="red" @click="anulaAgregacao(iter, item)"> clear </v-icon>
+                                      <v-icon @click="abrirNotaDialogAgregacao(iter, item)"> add_comment </v-icon>
+                                    </td>
+                                  </tr>
+                                </template>
 
-                                </v-data-table>
-                              </div>
+                              </v-data-table>
+                            </div>
 
-                              
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-group>
-                      </v-list>
-                    </div>
+                            
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-group>
+                    </v-list>
+                  </div>
                 </div>
               </v-col>
 
@@ -398,14 +397,6 @@ export default {
         listaFormatada = listaFormatada + lista[i].entidade + " - " + lista[i].designacao + ", "
       }
       return listaFormatada.slice(0,-2)
-    },
-
-    novoItemAdicionado(item, lista) {
-      return identificaItemAdicionado(
-        item,
-        lista,
-        this.historico[this.historico.length - 1]
-      );
     },
 
     transformaKeys(key) {

@@ -212,7 +212,7 @@
             color="green darken-4"
             dark
             @click="submit()"
-            :disabled="!fileSerie || !auto.legislacao || !auto.fundo"
+            :disabled="!fileSerie || !auto.legislacao || (auto.fundo.length <= 0)"
             >Submeter
           </v-btn>
 
@@ -390,10 +390,15 @@ export default {
       }
     },
     submit: async function () {
+      var ents = []
+      for(var i = 0; i < this.auto.fundo.length; i++)
+        ents.push(this.auto.fundo[i] + '###')
+      console.log(ents)
+
       var formData = new FormData();
       formData.append('tipo', this.tipo)
       formData.append('legitimacao', this.auto.legislacao)
-      formData.append('entidade', this.auto.fundo)
+      formData.append('entidade', ents)
       formData.append('file', this.fileSerie)
       formData.append('agreg', this.fileAgreg)
 
@@ -404,7 +409,6 @@ export default {
           this.cleanFiles()
         })
         .catch(e => {
-          console.log(e.response.data.erros)
           this.erros = e.response.data.erros
           this.erroTipo = e.response.data.mensagem
           /*var er = e.response.data.split("&&&")
@@ -431,6 +435,7 @@ export default {
       document.getElementById("fileAgreg").value = "";
     },
     previewFileSerie: function (ev) {
+      console.log(this.auto.fundo)
       this.fileSerie = ev.target.files[0];
       /*const reader = new FileReader();
       reader.onload = (e) => (this.fileSerie = e.target.result);

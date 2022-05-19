@@ -183,14 +183,13 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <ul class="info-content" :class="{ 'is-collapsed': entCollapsed }">
+                      <ul :class="{ 'is-collapsed': entCollapsed }">
                         <li v-for="(l, index) in listaDonos[item.codigo]" v-bind:key="index">
                           <a :href="'/entidades/ent_' + l">{{ l }}</a>
                         </li>
                       </ul>
-                      <a @click="entCollapsed = !entCollapsed" v-if="listaDonos.length > 6">
-                        <span v-if="entCollapsed" style="color:#283593;"
-                        >Mostrar mais...</span>
+                      <a @click="entCollapsed = !entCollapsed" v-if="listaDonos[item.codigo].length > 6">
+                        <span v-if="entCollapsed" style="color:#283593;">Mostrar mais...</span>
                         <span v-else style="color:#283593;">Mostrar menos...</span>
                       </a>
                     </template>
@@ -252,6 +251,7 @@ export default {
   }),
 
   created: function(){
+    console.log(this.p.objeto.dados.entidades)
     this.p.objeto.dados.classes.forEach(
       c => {
         if(c.dono) {
