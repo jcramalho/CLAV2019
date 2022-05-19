@@ -9,12 +9,12 @@
       Para aceder ao catálogo de entidades, selecione a opção <b>CONSULTAR</b>.
     </p>
     <p class="clav-content-text px-8 py-2">
-      Para adicionar entidades, selecione a opção
-      <b>ADICIONAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
+      Para criar novas entidades, selecione a opção
+      <b>CRIAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
     <p class="clav-content-text px-8 py-2">
-      Para editar entidades, selecione a opção
-      <b>EDITAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
+      Para alterar entidades, selecione a opção
+      <b>ALTERAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
     <v-container fluid style="text-align: center">
       <v-row justify="center" align="center">
@@ -63,7 +63,7 @@
               viewBox="0 0 20.71 20.721"
               fill="#ffffff"
             />
-            <p class="ml-2">Adicionar</p>
+            <p class="ml-2">Criar</p>
           </v-btn>
         </v-col>
         <v-col
@@ -91,7 +91,7 @@
               viewBox="0 0 20.71 20.727"
               fill="#ffffff"
             />
-            <p class="ml-2">Editar</p>
+            <p class="ml-2">Alterar</p>
           </v-btn>
         </v-col>
       </v-row>
