@@ -57,7 +57,7 @@
           pedidoInfo.estado !== 'Submetido' &&
           pedidoInfo.estado !== 'Ressubmetido' &&
           pedidoInfo.estado !== 'Apreciado' &&
-          pedidoInfo.estado !== 'Reapreciado'
+          pedidoInfo.estado !== 'Apreciado2v'
         "
         v-model="tab"
       >
@@ -288,11 +288,11 @@ export default {
         console.log("estado incial: " + pedido.estado)
 
         if (pedido.estado === "Submetido" || pedido.estado === "Ressubmetido") estado = "Distribuído";
-        else {
-          if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído")
+        else if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído") {
             this.tabs[this.tab] === "Validação 1" ? (estado = "Apreciado") : (estado = "Apreciado2v");
-          else
-            this.tabs[this.tab] === "Validação 1" ? (estado = "Reapreciado") : (estado = "Reapreciado2v");
+        }
+        else if (pedido.estado === "Apreciado" || pedido.estado === "Apreciado2v") {
+            this.options.includes("Reapreciar") ? estado = "Redistribuído" : estado = "Apreciado2v";
         }
 
         pedido.estado = estado;
@@ -329,11 +329,15 @@ export default {
 
         this.formdata.pedido = pedido;
         
-        if (this.options.includes(this.tabs[this.tab])) {
+        console.log(this.options)
+
+        console.log("tab -> " + this.tabs[this.tab])
+
+        if (this.options.includes('Validação 1') || this.options.includes('Validação 2')) {
           this.tabs[this.tab]=='Validação 1' ? this.formdata.opcao = 'validacao1' : this.formdata.opcao = 'validacao2'
         }
         else {
-          pedido.estado == 'Reapreciado' ? this.formdata.opcao = 'reapreciarPedido' : this.formdata.opcao = 'distribuirPedido'
+          this.options.includes("Reapreciar") ? this.formdata.opcao = 'reapreciarPedido' : this.formdata.opcao = 'distribuirPedido'
         }
 
         this.submit()

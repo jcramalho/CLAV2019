@@ -111,10 +111,10 @@ export default {
 
     finalizarPedido() {
       const despacho = {};
+
       if (this.mensagemDespacho !== null)
         despacho.mensagemDespacho = this.mensagemDespacho;
       
-      console.log("nao pode entrar aqui")
       this.$emit("finalizarPedido", despacho);
     },
 
@@ -192,6 +192,7 @@ export default {
 
     async finalizar() {
       try {
+
         var id = await this.getID();
 
         console.log("id: " + id)
@@ -200,13 +201,11 @@ export default {
 
         let pedido = data
 
-
-        let estado = "Aprovado";
+        let estado = "Validado";
 
         let dadosUtilizador = this.$verifyTokenUser();
 
         let numeroErros = await this.validarEntidade(pedido.objeto.dados);
-
 
         if (numeroErros === 0) {
           
@@ -215,24 +214,17 @@ export default {
               delete pedido.objeto.dados[key];
             }
           }
-
-          console.log("acabei o for")
-
-          await this.$request("post", "/entidades", pedido.objeto.dados).then(console.log("dei post"));
-
           
+          await this.$request("post", "/entidades", pedido.objeto.dados);
           
-          /*
           if (pedido.objeto.dados.dataExtincao) {
             await this.$request(
               "put",
               `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
               { dataExtincao: pedido.objeto.dados.dataExtincao }
             );
-          }    */
+          }    
           
-          
-
           const novaDistribuicao = {
             estado: estado,
             responsavel: dadosUtilizador.email,
@@ -252,7 +244,7 @@ export default {
           await this.$request("put", "/pedidos", {
             pedido: pedido,
             distribuicao: novaDistribuicao,
-          }).then(console.log("dei put"));       
+          });       
 
           console.log(pedido)
 
@@ -266,6 +258,7 @@ export default {
 
           this.formdata.opcao = 'aprovarPedido'
           this.submit()
+    
           //this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`)
 
         } else {

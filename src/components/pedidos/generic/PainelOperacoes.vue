@@ -228,7 +228,8 @@ export default {
 
     avancarPedido(dados) {
       if (this.$route.path.split("/")[1]=='bpmn') {
-        this.formdata.opcao = 'distribuirPedido'
+        if (this.options.includes('Validação 2')) this.formdata.opcao = 'validacao2'
+        else this.formdata.opcao = 'distribuirPedido'
         this.submit()
       } 
       else {

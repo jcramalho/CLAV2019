@@ -246,7 +246,7 @@ export default {
       
       const { data } = await this.$request("get", "/pedidos/" + id);
 
-      if (data.estado !== "Distribuído" && data.estado !== "Redistribuído")
+      if (data.estado !== "Distribuído" && data.estado !== "Redistribuído" && data.estado !== "Reapreciado")
         throw new URIError("Este pedido não pertence a este estado.");
 
       data.historico = data.historico.map((hist) => ({

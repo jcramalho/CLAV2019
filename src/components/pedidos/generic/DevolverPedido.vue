@@ -101,7 +101,7 @@ export default {
 
     async devolvePedido() {
       try {
-        //let ped = await this.getPedido()
+
         var id = await this.getID();
 
         console.log("id: " + id)
