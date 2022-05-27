@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <TogglePanelsCLAV :n="panelsArrItems" @alternar="panelsArr = $event" />
-    <v-expansion-panels v-model="panelsArr" multiple>
+    <v-expansion-panels v-model="panelsArr" multiple v-if="full">
       <PainelCLAV
         v-for="estado in estados"
         :key="estado.titulo"
@@ -143,8 +143,8 @@ export default {
           "texto": null
       },
       pedidosimples: ['Entidade','Tipologia','Legislação','Auto de Eliminação'],
-      pedidocomplexo: ['TS', 'PPD','RADA','Classe N1','Classe N2','Classe N3','Classe N4']
-    
+      pedidocomplexo: ['TS', 'TS Organizacional', 'PPD','RADA','Classe N1','Classe N2','Classe N3','Classe N4'],
+      full: false
     };
   },
   // async created() {
@@ -276,9 +276,11 @@ export default {
           if (this.temPermissaoDistribuir()) this.listaUtilizadoresParaAnalisar();
 
           if (processKey) {
-            console.log(this.estados[0])
-            this.estados = [this.estados[0]]
+            if (processKey=="pedidovalidado") this.estados = [this.estados[6]]
+            else if (processKey=="pedidodevolvido") this.estados = [this.estados[5]]
+            else this.estados = [this.estados[0]]
           }
+          this.full = true
         
         })
         .catch((err) => console.log(err));

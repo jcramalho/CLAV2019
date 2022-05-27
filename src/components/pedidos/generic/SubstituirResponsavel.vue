@@ -98,13 +98,24 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn color="red darken-4" text rounded dark @click="cancelar()">
-          Cancelar
+        
+        <v-btn v-if="this.$route.path.split('/')[1]=='bpmn' && options.includes('Cancelar')" color="error" text rounded dark @click="cancelar()"> Cancelar </v-btn>
+        <v-btn v-else-if="this.$route.path.split('/')[1]!='bpmn'" color="error" text rounded dark @click="cancelar()"> Cancelar </v-btn>
+
+        <v-btn 
+        v-if="this.$route.path.split('/')[1]=='bpmn' && options.includes('Substituir')" 
+        :disabled="!utilizadorSelecionado" 
+        class="primary" 
+        rounded 
+        @click="substituirResponsavel()"
+        > 
+          Substituir 
         </v-btn>
 
         <v-btn
+          v-else-if="this.$route.path.split('/')[1]!='bpmn'"
           :disabled="utilizadorSelecionado === null"
-          color="indigo accent-4 white--text"
+          class="primary"
           rounded
           @click="substituir()"
         >
@@ -112,6 +123,7 @@
         </v-btn>
       </v-card-actions>
     </div>
+
 
     <!-- Dialog de erros da API -->
     <v-dialog v-model="erroPedido" width="50%" persistent>
@@ -126,8 +138,11 @@ import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import { filtraNivel } from "@/utils/permissoes";
 import { NIVEIS_ANALISAR_PEDIDO, NIVEIS_VALIDAR_PEDIDO } from "@/utils/consts";
 
+import CamundaRest from './../../../services/camunda-rest.js';
+import DataTransformation from './../../../utils/data-transformation';
+
 export default {
-  props: ["pedido"],
+  props: ["pedido", "taskId", "options"],
 
   components: {
     Loading,
@@ -150,11 +165,28 @@ export default {
         { text: "Nome", value: "name", class: "title" },
         { text: "Entidade", value: "entidade", class: "title" },
       ],
+      formdata: {
+         "pedido": '',
+         "opcao": '',
+      },
     };
   },
 
   async created() {
     try {
+      if (this.$route.path.split("/")[1]=='bpmn') {
+      
+        var id = await this.getID();
+
+        const {data} = await this.$request("get", "/pedidos/" + id);
+
+        this.pedido = data
+
+        console.log("carreguei os dados! Substituir responsável..")
+        console.log(this.pedido)
+        console.log("task id: " + this.taskId)
+        console.log("task options: " + this.options)
+      }
       await this.preparaUtilizadores(this.pedido.estado);
       this.pedidoCarregado = true;
     } catch (e) {
@@ -163,6 +195,27 @@ export default {
   },
 
   methods: {
+
+    submit() {
+      const variables = DataTransformation.generateVariablesFromFormFields(this.formdata);
+      CamundaRest.postCompleteTask(this.taskId, variables).then((result) => {
+        if (result.status === 200 || result.status === 204) {
+          this.$router.push({ path: '/bpmn/tasklist/' });
+        }
+      });
+    },
+
+    async getID() {
+      var id = this.idp
+      if (!id) {
+        await CamundaRest.getTaskVariables(this.taskId, "pedido")
+          .then((result) => {
+            id = result.data.pedido.value.codigo
+          })
+      }
+      return id
+    },
+
     async preparaUtilizadores(etapa) {
       const { data } = await this.$request("get", "/users");
 
@@ -196,9 +249,15 @@ export default {
     },
 
     cancelar() {
-      this.utilizadorSelecionado = null;
-      this.mensagemDespacho = null;
-      this.$emit("fecharDialog");
+      if (this.$route.path.split("/")[1]=='bpmn') {
+        this.formdata.opcao = 'cancelar'
+        this.submit()
+      }
+      else {
+        this.utilizadorSelecionado = null;
+        this.mensagemDespacho = null;
+        this.$emit("fecharDialog");
+      }
     },
 
     fecharErro() {
@@ -256,6 +315,61 @@ export default {
         }
       }
     },
+
+    async substituirResponsavel() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        //pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
+
+        const novaDistribuicao = {
+          estado: pedido.estado,
+          responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: this.utilizadorSelecionado.name,
+            entidade: this.utilizadorSelecionado.entidade,
+            email: this.utilizadorSelecionado.email,
+          },
+          data: new Date().toISOString(),
+          despacho: this.mensagemDespacho
+            ? `#Responsável substituído.\n${this.mensagemDespacho}`
+            : "#Responsável substituído.",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.utilizadorSelecionado = null;
+        this.mensagemDespacho = null;
+
+        this.formdata.pedido = pedido;
+        this.formdata.opcao = 'substituirResponsavel'
+        this.submit()
+
+      } catch (err) {
+        this.erroPedido = true;
+
+        let parsedError = Object.assign({}, err);
+        parsedError = parsedError.response;
+
+        if (parsedError !== undefined) {
+          if (parsedError.status === 422) {
+            parsedError.data.forEach((erro) => {
+              this.erros.push({ parametro: erro.param, mensagem: erro.msg });
+            });
+          }
+        } else {
+          this.erros.push({
+            parametro: "Substituição de responsável",
+            mensagem: "Ocorreu um erro ao tentar substituir o responsável.",
+          });
+        }
+      }
+    }
   },
 };
 </script>

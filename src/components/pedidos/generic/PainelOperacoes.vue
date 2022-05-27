@@ -23,12 +23,11 @@
         </v-btn>
       </v-col>
 
+      
       <v-col>
         <v-btn
           v-if="
-            (operacao === 'Analisar' ||
-            pedido.estado === 'Apreciado' ||
-            pedido.estado === 'Reapreciado') && 
+            (operacao === 'Analisar' || pedido.estado === 'Apreciado' || pedido.estado === 'Reapreciado') && 
             $route.path.split('/')[1]=='bpmn' && 
             (options.includes('Distribuir Pedido') || options.includes('Validação 2'))"
           rounded
@@ -40,9 +39,7 @@
         
         <v-btn
           v-else-if="
-            (operacao === 'Analisar' ||
-            pedido.estado === 'Apreciado' ||
-            pedido.estado === 'Reapreciado') &&
+            (operacao === 'Analisar' || pedido.estado === 'Apreciado' || pedido.estado === 'Reapreciado') &&
             $route.path.split('/')[1]!='bpmn'
           "
           rounded
@@ -55,7 +52,7 @@
 
       <v-col>
         <v-btn
-          v-if="operacao === 'Validar' && $route.path.split('/')[1]=='bpmn' &&  (pedido.estado === 'Distribuído' ||
+          v-if="$route.path.split('/')[1]=='bpmn' &&  (pedido.estado === 'Distribuído' ||
           pedido.estado === 'Apreciado' || pedido.estado === 'Redistribuído' || pedido.estado === 'Reapreciado') &&
           temPermissaoSubstituirResponsavel() && options.includes('Substituir Responsavel')"
           rounded
@@ -228,8 +225,7 @@ export default {
 
     avancarPedido(dados) {
       if (this.$route.path.split("/")[1]=='bpmn') {
-        if (this.options.includes('Validação 2')) this.formdata.opcao = 'validacao2'
-        else this.formdata.opcao = 'distribuirPedido'
+        this.formdata.opcao = 'distribuirPedido'
         this.submit()
       } 
       else {

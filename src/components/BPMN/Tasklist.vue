@@ -3,7 +3,12 @@
       <v-row>
         <v-col cols="2">
           <v-card raised rounded class="pa-0 ma-0">
-            <v-list v-if="tasks && tasks.length">
+
+            <div v-if="loading" >
+              A carregar as tarefas... 
+            </div>
+
+            <v-list v-else-if="tasks && tasks.length">
               <v-list-item-group>
                 <template v-for="(task, index) in tasks">  
                   <v-list-item class="pa-2" :style="id==task.id ? 'background-color:#cce6ff; text-decoration:none;' : 'background-color:white;text-decoration:none;'" :key="index" :href="`/bpmn/tasklist/${task.id}`" >
@@ -29,16 +34,18 @@
                 </template>
               </v-list-item-group> 
             </v-list>
+
             <div v-else >
-              Não há tasks...
+              Não há tarefas...
             </div>
           </v-card>
+
         </v-col>
         <v-col cols="10">
           <v-card raised rounded>
             <generic-form v-if="this.$route.params.taskId" :taskId="this.$route.params.taskId" :executionId="executionId" :options="options" :formKey="taskFormKey"></generic-form>
             <div v-if="!this.$route.params.taskId">
-              <p>Please choose task.</p>
+              <p>Escolhe uma tarefa.</p>
             </div>
           </v-card>
         </v-col>
@@ -60,7 +67,8 @@
         taskFormKey: '',
         executionId: '',
         options: null,
-        id: this.$route.params.taskId
+        id: this.$route.params.taskId,
+        loading: true
       };
     },
     components: {
@@ -164,6 +172,7 @@
     async created() {
       
       await this.atualiza()
+      this.loading = false
     }
   };
 

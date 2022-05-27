@@ -256,7 +256,6 @@ export default {
       const despacho = {
         utilizadorSelecionado: this.utilizadorSelecionado,
       };
-      console.log("aqui")
 
       if (
         this.pedidoInfo.estado !== "Submetido" &&

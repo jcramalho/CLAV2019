@@ -5,3 +5,4 @@ export { default as DistribuirPedido } from './generic/AvancarPedido';
 export { default as ApreciarPedido } from './analise/AnalisaPedido';
 export { default as Validacao } from './validacao/ValidaPedidos';
 export { default as AprovarPedido } from './generic/FinalizarPedido';
+export { default as SubstituirResponsavel } from './generic/SubstituirResponsavel';

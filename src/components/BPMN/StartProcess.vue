@@ -3,7 +3,7 @@
     
     <v-row>
       <v-col>
-        <h1> Start Process </h1>
+        <h3> A começar um processo... </h3>
         <generic-form v-if="formKey" :formKey="formKey"></generic-form>
       </v-col>  
     </v-row>

@@ -1,29 +1,30 @@
 <template>
   <div>
     <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
-        <h1>Deploy a process</h1>
+        <h3>Implementar um processo</h3> <br/>
 
         <div class="dropbox">
           <input type="file" :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files); fileCount = 1" class="input-file">
-            <p v-if="isInitial">
-              Click here to deploy a process
-            </p>
-            <p v-if="isSaving">
-              Deploying {{ fileCount }} process(es)...
-            </p>
+            <h5 v-if="isInitial">
+              Clica <b style="color:#4da6ff;"> aqui </b> para implementar um novo processo
+            </h5>
+            <h5 v-if="isSaving">
+              Implementando {{ fileCount}} processo(s)...
+            </h5>
         </div>
     </form>
 
      <!--SUCCESS-->
      <div v-if="isSuccess">
-       <h2>Uploaded {{ uploadedFiles.length }} file(s) successfully.</h2>
+       <h3>Carregado {{ uploadedFiles.length }} ficheiro(s) com sucesso!</h3> <br/>
+       <h5><router-link to='/bpmn/startprocess'> Começar o processo</router-link></h5>
      </div>
      
      <!--FAILED-->
      <div v-if="isFailed">
-       <h2>Uploaded failed.</h2>
+       <h3>Carregamento falhou!</h3>
        <p>
-         <a href="javascript:void(0)" @click="reset()">Try again</a>
+         <a href="javascript:void(0)" @click="reset()">Tenta outra vez</a>
        </p>
        <pre>{{ uploadError }}</pre>
      </div>

@@ -4,11 +4,15 @@ class CamundaRest {
   static ENGINE_REST_ENDPOINT = '/engine-rest/';
 
   static getProcessDefinitions() {
-    return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}process-definition?latestVersion=true`);
+    return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}process-definition`);
   }
 
   static deployProcessDefinition(file) {
     return axios.post(`${CamundaRest.ENGINE_REST_ENDPOINT}deployment/create`, file);
+  }
+
+  static deleteProcessDefinition(deploymentID) {
+    return axios.delete(`${CamundaRest.ENGINE_REST_ENDPOINT}deployment/${deploymentID}?cascade=true`);
   }
 
   static getFormKey(processDefinitionKey) {
