@@ -723,14 +723,13 @@ export default {
       for (var index in this.file) {
         try {
           this.fileName = this.file[index].name;
-          console.log(this.fileName);
           var formData = new FormData();
           formData.append("file", this.file[index], this.fileName);
 
           if (!this.multImport) {
             formData.append("designacao", this.designacao);
             formData.append(
-              "entidades_ts",
+              "entidade_ts",
               JSON.stringify(this.entidade_tipologia)
             );
           }
