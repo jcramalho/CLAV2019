@@ -96,6 +96,7 @@
           operacao="Analisar"
           :pedido="p"
           :options="o"
+          :historico="novoHistorico"
           @avancarPedido="encaminharPedido($event)"
           @devolverPedido="despacharPedido($event)"
         />

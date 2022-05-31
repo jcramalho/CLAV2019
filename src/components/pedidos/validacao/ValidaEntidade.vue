@@ -91,6 +91,7 @@
           operacao="Validar"
           :pedido="p"
           :options="o"
+          :historico="novoHistorico"
           @avancarPedido="encaminharPedido($event)"
           @finalizarPedido="verificaEstadoCampos($event)"
           @devolverPedido="despacharPedido($event)"

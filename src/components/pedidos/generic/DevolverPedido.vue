@@ -48,6 +48,7 @@ export default {
         "opcao": '',
         "pedido": null,
       },
+      historico: {},
     };
   },
   components: {
@@ -75,6 +76,15 @@ export default {
           this.$router.push({ path: '/bpmn/tasklist/' });
         }
       });
+    },
+
+    async getHistorico() {
+      var id = null
+      await CamundaRest.getTaskVariables(this.taskId, "historico")
+        .then((result) => {
+          id = result.data.historico.value
+        })
+      return id
     },
 
     despacho() {
@@ -114,6 +124,11 @@ export default {
 
         let dadosUtilizador = this.$verifyTokenUser();
 
+        this.historico = await this.getHistorico()
+
+        console.log("historico: " + this.historico)
+        pedido.historico.push(this.historico);
+        
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,
@@ -130,6 +145,8 @@ export default {
 
         console.log(pedido)
         console.log(novaDistribuicao)
+
+
 
         this.formdata.opcao = 'devolverPedido'
         this.submit()

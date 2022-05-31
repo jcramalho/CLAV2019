@@ -128,7 +128,6 @@ import Campo from "@/components/generic/CampoCLAV";
 import CamundaRest from './../../../services/camunda-rest.js';
 import DataTransformation from './../../../utils/data-transformation';
 
-import {adicionarNotaComRemovidos} from "@/utils/utils";
 
 export default {
   props: ["texto", "utilizadores", "pedido", "taskId", "options"],
@@ -138,10 +137,13 @@ export default {
 
   async created() {
 
+
     if (this.$route.path.split("/")[1]=='bpmn') {
       
       this.text = await this.getTexto()
       this.users = await this.getUtilizadores()
+      this.historico = await this.getHistorico()
+      console.log("historico:" + JSON.stringify(this.historico))
 
       var id = await this.getID();
 
@@ -186,16 +188,10 @@ export default {
       },
       text: this.texto,
       users: this.utilizadores,
+      historico: {},
       ped: this.pedido,
       pedidoInfo: this.pedido,
-      novoHistorico: {},
     };
-  },
-
-  computed: {
-    historico() {
-      return this.pedidoInfo.historico;
-    },
   },
 
   methods: {
@@ -239,6 +235,15 @@ export default {
       await CamundaRest.getTaskVariables(this.taskId, "texto")
         .then((result) => {
           id = result.data.texto.value
+        })
+      return id
+    },
+
+    async getHistorico() {
+      var id = null
+      await CamundaRest.getTaskVariables(this.taskId, "historico")
+        .then((result) => {
+          id = result.data.historico.value
         })
       return id
     },
@@ -298,15 +303,10 @@ export default {
 
         console.log("estado final: " + pedido.estado)
 
-       /*
-        this.novoHistorico = adicionarNotaComRemovidos(
-          this.historico[this.historico.length - 1],
-          this.novoHistorico
-        );
-
-        pedido.historico.push(this.novoHistorico);*/
+        console.log("historico: " + this.historico)
+        if (this.historico=="") pedido.historico.push(this.pedidoInfo.historico[0]);
+        else pedido.historico.push(this.historico);
         
-
         const novaDistribuicao = {
           estado: estado,
           responsavel: dadosUtilizador.email,

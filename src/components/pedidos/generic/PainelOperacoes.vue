@@ -153,7 +153,8 @@ export default {
     pedido: {
       type: Object
     },
-    options: {}
+    options: {},
+    historico: {}
   },
 
   components: {
@@ -171,6 +172,7 @@ export default {
       taskId: this.$route.params.taskId,
       formdata: {
         "opcao": '',
+        "historico":'',
       }
     };
   },
@@ -185,6 +187,7 @@ export default {
   async created() {
     try {
       await this.preparaUtilizadores();
+      console.log("painel de operações com historico: " + JSON.stringify(this.historico))
     } catch (e) {
       return e;
     }
@@ -226,6 +229,7 @@ export default {
     avancarPedido(dados) {
       if (this.$route.path.split("/")[1]=='bpmn') {
         this.formdata.opcao = 'distribuirPedido'
+        this.formdata.historico = this.historico
         this.submit()
       } 
       else {
@@ -238,6 +242,7 @@ export default {
     devolverPedido(dados) {
       if (this.$route.path.split("/")[1]=='bpmn') {
         this.formdata.opcao = 'devolverPedido'
+        this.formdata.historico = this.historico
         this.submit()
       } 
       else {
@@ -248,6 +253,7 @@ export default {
     reapreciarPedido() {
       if (this.$route.path.split("/")[1]=='bpmn') {
         this.formdata.opcao = 'reapreciarPedido'
+        this.formdata.historico = this.historico
         this.submit()
       } 
     },
@@ -255,6 +261,7 @@ export default {
     substituirResponsavel() {
       if (this.$route.path.split("/")[1]=='bpmn') {
         this.formdata.opcao = 'substituirResponsavel'
+        this.formdata.historico = this.historico
         this.submit()
       } 
     },
@@ -262,6 +269,7 @@ export default {
     finalizarPedido(dados) {
       if (this.$route.path.split("/")[1]=='bpmn') {
         this.formdata.opcao = 'aprovarPedido'
+        this.formdata.historico = this.historico
         this.submit()
       }
       else {

@@ -1,5 +1,6 @@
 <template>
-  <v-card>
+  <div>
+    <v-card>
     <v-card-title class="warning title white--text" dark>
       <v-icon color="white" class="ma-1">warning</v-icon>Aviso
     </v-card-title>
@@ -42,11 +43,24 @@
       >
 
 
-      <v-btn v-if="this.$route.path.split('/')[1]=='bpmn'" class="indigo accent-4" rounded dark @click="finalizar()">Sim</v-btn>
+      <v-btn v-if="this.$route.path.split('/')[1]=='bpmn'" class="indigo accent-4" rounded dark @click="verificaEstadoCampos(formdata.pedido)">Sim</v-btn>
       <v-btn v-else class="indigo accent-4" rounded dark @click="finalizarPedido()">Sim</v-btn
       >
     </v-card-actions>
-  </v-card>
+    </v-card>
+
+
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="fechaDialogConfirmacao()"
+        @confirma="finalizar()"
+      />
+    </v-dialog>
+
+  </div>
+
 </template>
 
 <script>
@@ -54,26 +68,33 @@
 import CamundaRest from './../../../services/camunda-rest.js';
 import DataTransformation from './../../../utils/data-transformation';
 
-import {
-  comparaSigla,
-  mapKeys,
-  identificaItemAdicionado,
-  adicionarNotaComRemovidos,
-} from "@/utils/utils";
-
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 import { eNUV, eDataFormatoErrado, testarRegex } from "@/utils/validadores";
 
 export default {
   props: ["vai_para_despacho", 'taskId'],
+  components: {
+    ConfirmacaoOperacao
+  },
   data() {
     return {
       mensagemDespacho: null,
       formdata: {
-        "opcao": '',
-        "pedido": null
+        "opcao": ''
       },
       erros: [],
+      historico: {},
+      dialogConfirmacao: {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      },
     };
+  },
+
+  async created() {
+    this.historico = await this.getHistorico()
+    console.log("historico: " + this.historico)
   },
 
   methods: {
@@ -98,6 +119,14 @@ export default {
       });
     },
 
+    fechaDialogConfirmacao() {
+      this.dialogConfirmacao = {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      };
+    },
+
     async getID() {
       var id = this.idp
       if (!id) {
@@ -106,6 +135,15 @@ export default {
             id = result.data.pedido.value.codigo
           })
       }
+      return id
+    },
+
+    async getHistorico() {
+      var id = null
+      await CamundaRest.getTaskVariables(this.taskId, "historico")
+        .then((result) => {
+          id = result.data.historico.value
+        })
       return id
     },
 
@@ -190,6 +228,23 @@ export default {
       return numeroErros;
     },
 
+    async verificaEstadoCampos(dados) {
+      // procura campos a vermelho
+      const haVermelhos = Object.keys(this.historico).some(
+        (key) => this.historico[key].cor === "vermelho"
+      );
+      // Se existirem abre dialog de confirmação
+      if (haVermelhos)
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          dados: dados,
+        };
+      // Caso contrário segue para a finalização do pedido
+      else await this.finalizar();
+    },
+
     async finalizar() {
       try {
 
@@ -223,8 +278,12 @@ export default {
               `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
               { dataExtincao: pedido.objeto.dados.dataExtincao }
             );
-          }    
+          } 
           
+          pedido.historico.push(this.historico);
+          
+          console.log(pedido.historico) 
+
           const novaDistribuicao = {
             estado: estado,
             responsavel: dadosUtilizador.email,
@@ -248,13 +307,6 @@ export default {
 
           console.log(pedido)
 
-          /*
-          this.novoHistorico = adicionarNotaComRemovidos(
-            this.historico[this.historico.length - 1],
-            this.novoHistorico
-          );
-
-          pedido.historico.push(this.novoHistorico);*/
 
           this.formdata.opcao = 'aprovarPedido'
           this.submit()

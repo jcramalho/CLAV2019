@@ -140,7 +140,8 @@ export default {
           "opcao": '',
           "pedido": null,
           "utilizadores": null,
-          "texto": null
+          "texto": null,
+          "historico": null
       },
       pedidosimples: ['Entidade','Tipologia','Legislação','Auto de Eliminação'],
       pedidocomplexo: ['TS', 'TS Organizacional', 'PPD','RADA','Classe N1','Classe N2','Classe N3','Classe N4'],
