@@ -12,7 +12,7 @@
           <v-alert type="info">
             Clique sobre a linha da tabela para selecionar o utilizador que irá
             substituir <b>{{ responsavelAtual.nome }}</b> no pedido
-            <b>{{ pedido.codigo }}</b
+            <b>{{ pedidoInfo.codigo }}</b
             >.
           </v-alert>
 
@@ -154,9 +154,7 @@ export default {
       erros: [],
       erroPedido: false,
       pedidoCarregado: false,
-      responsavelAtual: this.pedido.distribuicao[
-        this.pedido.distribuicao.length - 1
-      ].proximoResponsavel,
+      responsavelAtual: null,
       utilizadores: null,
       procuraUtilizador: null,
       utilizadorSelecionado: null,
@@ -169,25 +167,31 @@ export default {
          "pedido": '',
          "opcao": '',
       },
+      pedidoInfo: this.pedido
     };
   },
 
   async created() {
     try {
+      
+      this.pedido ? this.responsavelAtual = this.pedido.distribuicao[this.pedido.distribuicao.length - 1].proximoResponsavel : null
+
       if (this.$route.path.split("/")[1]=='bpmn') {
       
         var id = await this.getID();
 
         const {data} = await this.$request("get", "/pedidos/" + id);
 
-        this.pedido = data
+        this.pedidoInfo = data
+
+        this.responsavelAtual = data.distribuicao[data.distribuicao.length - 1].proximoResponsavel
 
         console.log("carreguei os dados! Substituir responsável..")
-        console.log(this.pedido)
+        console.log(this.pedidoInfo)
         console.log("task id: " + this.taskId)
         console.log("task options: " + this.options)
       }
-      await this.preparaUtilizadores(this.pedido.estado);
+      await this.preparaUtilizadores(this.pedidoInfo.estado);
       this.pedidoCarregado = true;
     } catch (e) {
       console.log("e", e);
@@ -237,8 +241,8 @@ export default {
           break;
       }
 
-      const responsavelAtual = this.pedido.distribuicao[
-        this.pedido.distribuicao.length - 1
+      const responsavelAtual = this.pedidoInfo.distribuicao[
+        this.pedidoInfo.distribuicao.length - 1
       ].proximoResponsavel;
 
       const utilizadoresSemAtual = utilizadoresFiltrados.filter(
@@ -266,7 +270,7 @@ export default {
 
     async substituir() {
       try {
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.pedidoInfo));
 
         let dadosUtilizador = this.$verifyTokenUser();
 
@@ -318,11 +322,11 @@ export default {
 
     async substituirResponsavel() {
       try {
-        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let pedido = JSON.parse(JSON.stringify(this.pedidoInfo));
 
         let dadosUtilizador = this.$verifyTokenUser();
 
-        //pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
+        pedido.historico.push(pedido.historico[pedido.historico.length - 1]);
 
         const novaDistribuicao = {
           estado: pedido.estado,
@@ -348,6 +352,7 @@ export default {
 
         this.formdata.pedido = pedido;
         this.formdata.opcao = 'substituirResponsavel'
+
         this.submit()
 
       } catch (err) {
