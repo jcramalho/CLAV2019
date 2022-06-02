@@ -2,7 +2,7 @@
   <v-col>
     <!-- Infobox com os resultados da validação -->
     <v-btn dark rounded class="indigo darken-3" @click="validarEntidade">
-      Validar Entidade
+      Validar
     </v-btn>
 
     <!-- Erros na Validação ....................... -->
