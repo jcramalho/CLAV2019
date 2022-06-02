@@ -177,7 +177,7 @@
         <PO
           operacao="Validar"
           @avancarPedido="encaminharPedido($event)"
-          @finalizarPedido="verificaEstadoCampos($event)"
+          @finalizarPedido="finalizarPedido($event)"
           @devolverPedido="despacharPedido($event)"
         />
       </v-row>
@@ -208,6 +208,19 @@
       <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
     </v-dialog>
 
+        <!-- Dialog de erros -->
+    <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
+      <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
+    </v-dialog>
+
+    <!-- Dialog de confirmação de operação -->
+    <v-dialog v-model="dialogConfirmacao.visivel" width="50%" persistent>
+      <ConfirmacaoOperacao
+        :mensagem="dialogConfirmacao.mensagem"
+        @fechar="fechaDialogConfirmacao()"
+        @confirma="confirmaDialogConfirmacao(dialogConfirmacao.dados)"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -222,6 +235,8 @@ import CampoAE from "@/components/generic/CampoAE";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
+import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
+import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
 import {
   mapKeys,
@@ -236,9 +251,11 @@ export default {
     PO,
     Loading,
     ErroDialog,
+    ErroAPIDialog,
     SelecionaAutocomplete,
     EditarCamposDialog,
     AdicionarNota,
+    ConfirmacaoOperacao,
     Campo,
     CampoAE,
   },
@@ -298,6 +315,15 @@ export default {
         valorAtual: "",
       },
 
+      confirmado: false,
+      dialogConfirmacao: {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      },
+
+      erros: [],
+      erroPedido: false,
       erroDialog: {
         visivel: false,
         mensagem: null,
@@ -375,7 +401,8 @@ export default {
 
       // Reset nas notas das agregacoes
       for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
-        Object.keys(copiaHistorico.classes.dados[i].agregacoes.dados).forEach((h) => (copiaHistorico.classes.dados[i].agregacoes.dados[h].nota = null));
+        if(copiaHistorico.classes.dados[i].agregacoes.dados !== undefined)
+          Object.keys(copiaHistorico.classes.dados[i].agregacoes.dados).forEach((h) => (copiaHistorico.classes.dados[i].agregacoes.dados[h].nota = null));
       
       this.novoHistorico = copiaHistorico;
     },
@@ -441,8 +468,7 @@ export default {
         this.$router.go(-1);
       } catch (e) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao distribuir o pedido, por favor tente novamente";
+        this.erroDialog.mensagem = "Erro ao distribuir o pedido, por favor tente novamente";
       }
     },
     
@@ -479,6 +505,96 @@ export default {
       } catch (e) {
         this.erroDialog.visivel = true;
         this.erroDialog.mensagem = "Erro ao devolver o pedido, por favor tente novamente";
+      }
+    },
+
+    async confirmaDialogConfirmacao(dados) {
+      this.confirmado = true
+      console.log(this.confirmado)
+      await this.finalizarPedido(dados)
+      this.fechaDialogConfirmacao()
+    },
+
+    async finalizarPedido(dados) {
+      // Procura campos a vermelho
+      const haVermelhos = Object.keys(this.novoHistorico).some(
+        (key) => this.novoHistorico[key].cor === "vermelho"
+      );
+
+      console.log(haVermelhos)
+      console.log(!this.confirmado)
+      if (haVermelhos && !this.confirmado)
+        this.dialogConfirmacao = {
+          visivel: true,
+          mensagem:
+            "Existem um ou mais campos assinalados a vermelho, deseja mesmo continuar com a submissão do pedido?",
+          dados: dados,
+        };
+
+      // Caso contrário segue para a finalização do pedido
+      else {
+        console.log("else")
+        try {
+          let pedido = JSON.parse(JSON.stringify(this.p));
+
+          if (numeroErros === 0) {
+            for (const key in pedido.objeto.dados) {
+              if (pedido.objeto.dados[key] === null || pedido.objeto.dados[key] === "") {
+                delete pedido.objeto.dados[key];
+              }
+            }
+
+            const estado = "Validado";
+
+            let dadosUtilizador = this.$verifyTokenUser();
+
+            const novaDistribuicao = {
+              estado: estado,
+              responsavel: dadosUtilizador.email,
+              data: new Date(),
+              despacho: dados.mensagemDespacho,
+            };
+
+            pedido.estado = estado;
+
+            this.novoHistorico = adicionarNotaComRemovidos(
+              this.historico[this.historico.length - 1],
+              this.novoHistorico
+            );
+
+            pedido.historico.push(this.novoHistorico);
+
+            await this.$request("put", "/pedidos", {
+              pedido: pedido,
+              distribuicao: novaDistribuicao,
+            });
+
+            this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
+          } else {
+            this.erroPedido = true;
+          }
+        } catch (e) {
+          this.erroPedido = true;
+
+          let parsedError = Object.assign({}, e);
+          parsedError = parsedError.response;
+
+          if (parsedError !== undefined) {
+            if (parsedError.status === 422) {
+              parsedError.data.forEach((erro) => {
+                this.erros.push({
+                  parametro: mapKeys(erro.param),
+                  mensagem: erro.msg,
+                });
+              });
+            }
+          } else {
+            this.erros.push({
+              sobre: "Acesso à Ontologia",
+              mensagem: "Ocorreu um erro ao aceder à ontologia.",
+            });
+          }
+        }
       }
     },
 
@@ -641,7 +757,18 @@ export default {
       this.tipoEdicao = null;
     },
 
+    fecharErro() {
+      this.erros = [];
+      this.erroPedido = false;
+    },
 
+    fechaDialogConfirmacao() {
+      this.dialogConfirmacao = {
+        visivel: false,
+        mensagem: "",
+        dados: null,
+      };
+    },
   },
 };
 </script>
