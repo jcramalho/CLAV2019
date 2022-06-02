@@ -4,7 +4,7 @@
     <v-row v-else class="ma-1">
       <v-col>
         <v-card>
-          <v-card-title class="indigo darken-4 title white--text" dark>
+          <v-card-title class="indigo darken-4 title white--text mb-5" dark>
             Validação do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
             <v-spacer />

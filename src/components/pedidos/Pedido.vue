@@ -36,7 +36,7 @@
     </Campo>
     <Campo nome="Entidade" infoHeader="Entidade do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
-        <span>{{ Pedido.entidade ? Pedido.entidade.split("_")[1] : "a carregar" }}</span>
+        <span>{{ Pedido.entidade ? Pedido.entidade.split("_")[1] : "a carregar" }} - {{ desig ? desig : "a carregar" }}</span>
       </template>
     </Campo>
     <Campo nome="Criado Por" infoHeader="Criador do Pedido" color="neutralpurple">
@@ -221,6 +221,7 @@ export default {
   props: ["idp"],
 
   data: () => ({
+    desig: "",
     utilizadores: [],
     verHistoricoDialog: false,
     substituirResponsavelDialog: false,
@@ -352,6 +353,13 @@ export default {
     this.$request("get", "/pedidos/" + this.idp)
       .then((response) => {
         this.Pedido = response.data;
+        this.$request("get", "/entidades/" + this.Pedido.entidade)
+          .then((response) => {
+            this.desig = response.data.designacao 
+          })
+          .catch((error) => {
+            return error;
+          });
       })
       .catch((error) => {
         return error;

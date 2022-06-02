@@ -1,149 +1,153 @@
 <template>
   <v-row class="ma-1">
     <Loading v-if="loading" :message="'pedido'" />
-    <v-card v-else class="pa-2" style="width:100%" flat>
-      <v-card-title class="clav-content-title-2">
-        Análise do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
-        {{ pedido.objeto.tipo }}
-        <v-spacer />
-        <v-tooltip
-          v-if="
-            temPermissaoConsultarHistorico() &&
-            !(
-              (pedido.objeto.acao === 'Criação' && pedido.estado === 'Submetido') ||
-              pedido.estado === 'Ressubmetido'
-            )
-          "
-          bottom
-        >
-          <template v-slot:activator="{ on }">
-            <v-icon large @click="verHistorico()" color="primary" v-on="on" class="ml-4"
-              >history</v-icon
-            >
-          </template>
-          <span>Ver histórico de alterações...</span>
-        </v-tooltip>
-
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-icon large @click="showDespachos()" color="primary" v-on="on" class="ml-2"
-              >comment</v-icon
-            >
-          </template>
-          <span>Ver despachos...</span>
-        </v-tooltip>
-      </v-card-title>
-
-      <!-- Para a Criação de novos dados -->
-      <v-card-text
-        v-if="pedido.objeto.acao === 'Criação' || pedido.objeto.acao === 'Importação'"
-      >
-        <AnalisaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
-
-        <AnalisaRADA
-          v-else-if="pedido.objeto.tipo === 'RADA'"
-          :p="pedido"
-          fase="analise"
-        />
-
-        <AnalisaLeg v-else-if="pedido.objeto.tipo === 'Legislação'" :p="pedido" />
-
-        <AnalisaTipologiaEntidade
-          v-else-if="pedido.objeto.tipo === 'Tipologia'"
-          :p="pedido"
-        />
-
-        <AnalisaClasseN1
-          v-else-if="
-            pedido.objeto.tipo === 'Classe_N1' || pedido.objeto.tipo === 'Classe_N2'
-          "
-          :p="pedido"
-        />
-
-        <AnalisaClasseN3 v-else-if="pedido.objeto.tipo === 'Classe_N3'" :p="pedido" />
-
-        <AnalisaAE
-          v-else-if="
-            pedido.objeto.tipo.includes('AE ') ||
-            pedido.objeto.tipo === 'Auto de Eliminação'
-          "
-          :p="pedido"
-          :tipo="pedido.objeto.tipo"
-        />
-
-        <AnalisaTSPluri
-          v-else-if="pedido.objeto.tipo.includes('TS Pluri')"
-          :p="pedido"
-          fase="analise"
-        />
-
-        <AnalisaTSOrg
-          v-else-if="pedido.objeto.tipo.includes('TS ')"
-          :p="pedido"
-          fase="analise"
-        />
-
-        <AnalisaPPD v-else-if="pedido.objeto.tipo === 'PPD'" :p="pedido" fase="analise" />
-
-        <AnalisaDefault v-else :p="pedido" />
-      </v-card-text>
-
-      <!-- Para a Alteração de dados -->
-      <v-card-text
-        v-else-if="
-          pedido.objeto.acao === 'Alteração' ||
-          pedido.objeto.acao === 'Extinção' ||
-          pedido.objeto.acao === 'Revogação'
-        "
-      >
-        <span>
-          <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
-            <span v-if="pedido.objeto.tipo === 'Legislação'">
-              <b>{{ pedido.objeto.tipo }}:</b>
-              {{ pedido.objeto.dadosOriginais.diplomaFonte }}
-              - {{ pedido.objeto.dadosOriginais.numero }} -
-              {{ pedido.objeto.dadosOriginais.sumario }}
-            </span>
-
-            <span
-              v-else-if="
-                pedido.objeto.tipo === 'Entidade' || pedido.objeto.tipo === 'Tipologia'
+    <v-row v-else class="ma-1">
+      <v-col>
+        <v-card>
+          <v-card-title class="indigo darken-4 title white--text mb-5" dark>
+            Análise do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
+            {{ pedido.objeto.tipo }}
+            <v-spacer />
+            <v-tooltip
+              v-if="
+                temPermissaoConsultarHistorico() &&
+                !(
+                  (pedido.objeto.acao === 'Criação' && pedido.estado === 'Submetido') ||
+                  pedido.estado === 'Ressubmetido'
+                )
               "
+              bottom
             >
-              <b>{{ pedido.objeto.tipo }}:</b>
-              {{ pedido.objeto.dadosOriginais.sigla }}
-              - {{ pedido.objeto.dadosOriginais.designacao }}
+              <template v-slot:activator="{ on }">
+                <v-icon @click="verHistorico()" color="white" v-on="on" class="ml-4"
+                  >history</v-icon
+                >
+              </template>
+              <span>Ver histórico de alterações...</span>
+            </v-tooltip>
+
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon @click="showDespachos()" color="white" v-on="on" class="ml-2"
+                  >comment</v-icon
+                >
+              </template>
+              <span>Ver despachos...</span>
+            </v-tooltip>
+          </v-card-title>
+
+          <!-- Para a Criação de novos dados -->
+          <v-card-text
+            v-if="pedido.objeto.acao === 'Criação' || pedido.objeto.acao === 'Importação'"
+          >
+            <AnalisaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
+
+            <AnalisaRADA
+              v-else-if="pedido.objeto.tipo === 'RADA'"
+              :p="pedido"
+              fase="analise"
+            />
+
+            <AnalisaLeg v-else-if="pedido.objeto.tipo === 'Legislação'" :p="pedido" />
+
+            <AnalisaTipologiaEntidade
+              v-else-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
+
+            <AnalisaClasseN1
+              v-else-if="
+                pedido.objeto.tipo === 'Classe_N1' || pedido.objeto.tipo === 'Classe_N2'
+              "
+              :p="pedido"
+            />
+
+            <AnalisaClasseN3 v-else-if="pedido.objeto.tipo === 'Classe_N3'" :p="pedido" />
+
+            <AnalisaAE
+              v-else-if="
+                pedido.objeto.tipo.includes('AE ') ||
+                pedido.objeto.tipo === 'Auto de Eliminação'
+              "
+              :p="pedido"
+              :tipo="pedido.objeto.tipo"
+            />
+
+            <AnalisaTSPluri
+              v-else-if="pedido.objeto.tipo.includes('TS Pluri')"
+              :p="pedido"
+              fase="analise"
+            />
+
+            <AnalisaTSOrg
+              v-else-if="pedido.objeto.tipo.includes('TS ')"
+              :p="pedido"
+              fase="analise"
+            />
+
+            <AnalisaPPD v-else-if="pedido.objeto.tipo === 'PPD'" :p="pedido" fase="analise" />
+
+            <AnalisaDefault v-else :p="pedido" />
+          </v-card-text>
+
+          <!-- Para a Alteração de dados -->
+          <v-card-text
+            v-else-if="
+              pedido.objeto.acao === 'Alteração' ||
+              pedido.objeto.acao === 'Extinção' ||
+              pedido.objeto.acao === 'Revogação'
+            "
+          >
+            <span>
+              <v-alert type="info" width="90%" class="m-auto mb-2 mt-2" outlined>
+                <span v-if="pedido.objeto.tipo === 'Legislação'">
+                  <b>{{ pedido.objeto.tipo }}:</b>
+                  {{ pedido.objeto.dadosOriginais.diplomaFonte }}
+                  - {{ pedido.objeto.dadosOriginais.numero }} -
+                  {{ pedido.objeto.dadosOriginais.sumario }}
+                </span>
+
+                <span
+                  v-else-if="
+                    pedido.objeto.tipo === 'Entidade' || pedido.objeto.tipo === 'Tipologia'
+                  "
+                >
+                  <b>{{ pedido.objeto.tipo }}:</b>
+                  {{ pedido.objeto.dadosOriginais.sigla }}
+                  - {{ pedido.objeto.dadosOriginais.designacao }}
+                </span>
+              </v-alert>
+
+              <v-divider class="m-auto mb-2" />
             </span>
-          </v-alert>
+            <AnalisaEditaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
 
-          <v-divider class="m-auto mb-2" />
-        </span>
-        <AnalisaEditaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
+            <AnalisaEditaLegislacao
+              v-else-if="pedido.objeto.tipo === 'Legislação'"
+              :p="pedido"
+            />
 
-        <AnalisaEditaLegislacao
-          v-else-if="pedido.objeto.tipo === 'Legislação'"
-          :p="pedido"
-        />
+            <AnalisaEditaTipologiaEntidade
+              v-else-if="pedido.objeto.tipo === 'Tipologia'"
+              :p="pedido"
+            />
 
-        <AnalisaEditaTipologiaEntidade
-          v-else-if="pedido.objeto.tipo === 'Tipologia'"
-          :p="pedido"
-        />
+            <AnalisaDefault v-else :p="pedido" />
+          </v-card-text>
+        </v-card>
 
-        <AnalisaDefault v-else :p="pedido" />
-      </v-card-text>
-    </v-card>
-
-    <v-snackbar
-      v-model="snackbar.visivel"
-      color="warning"
-      multi-linagh
-      :timeout="6000"
-      top
-    >
-      {{ snackbar.texto }}
-      <v-btn dark text @click="snackbar.visivel = false">Fechar</v-btn>
-    </v-snackbar>
+        <v-snackbar
+          v-model="snackbar.visivel"
+          color="warning"
+          multi-linagh
+          :timeout="6000"
+          top
+        >
+          {{ snackbar.texto }}
+          <v-btn dark text @click="snackbar.visivel = false">Fechar</v-btn>
+        </v-snackbar>
+      </v-col>
+    </v-row>
 
     <!-- Dialog de erros -->
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
