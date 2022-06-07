@@ -29,7 +29,7 @@
       <v-spacer></v-spacer>
       <v-col class="text-right">
         <v-btn color="indigo lighten-2" dark class="ma-2" @click="importar_classes = true">
-          <v-icon dark left>add</v-icon>Importar Classes
+          <v-icon dark left>add</v-icon>Importar Tabela de Seleção
         </v-btn>
       </v-col>
     </v-row>

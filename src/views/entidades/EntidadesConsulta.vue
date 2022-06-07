@@ -1,22 +1,31 @@
 <template>
-  <div>
-    <Loading v-if="!entidadesReady" :message="'entidade'" />
-    <Consulta
-      v-else
-      tipo="Entidades"
-      v-bind:objeto="entidade"
-      v-bind:listaTip="tipologias"
-      v-bind:titulo="titulo"
-      v-bind:listaProcD="processosDono"
-      v-bind:listaProcP="processosParticipa"
-      v-bind:parts="partsReady"
-    />
-  </div>
+  <v-card flat class="ma-3">
+    <v-row align="center" justify="center">
+      <v-col cols="3" align="center" justify="center">
+        <Voltar />
+      </v-col>
+      <v-col cols="6" align="center" justify="center">
+        <Loading v-if="!entidadesReady" :message="'entidade'" />
+        <Consulta
+          v-else
+          tipo="Entidades"
+          v-bind:objeto="entidade"
+          v-bind:listaTip="tipologias"
+          v-bind:titulo="titulo"
+          v-bind:listaProcD="processosDono"
+          v-bind:listaProcP="processosParticipa"
+          v-bind:parts="partsReady"
+        />
+      </v-col>
+      <v-col cols="3"> </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
 import Loading from "@/components/generic/Loading";
+import Voltar from "@/components/generic/Voltar";
 
 import {
   comparaSigla
@@ -25,7 +34,8 @@ import {
 export default {
   components: {
     Consulta,
-    Loading
+    Loading,
+    Voltar
   },
   data: () => ({
     idEntidade: "",
