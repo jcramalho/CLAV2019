@@ -20,10 +20,10 @@
       >
         <template v-slot:conteudo>
           <span v-if="p.objeto.dados.entidade">
-            {{ p.objeto.dados.entidade.split("_")[1] }}
+            {{ p.objeto.dados.entidade.split("_")[1] }} - {{ desig }} 
           </span>
           <span v-else>
-            {{ p.entidade }}
+            {{ p.entidade.split("_")[1] }} - {{ desig2 }} 
           </span>
         </template>
       </Campo>
@@ -246,12 +246,31 @@ export default {
     footer_props: {
       "items-per-page-text": "Mostrar",
     },
+
+    desig: "",
+    desig2: "",
+
     entCollapsed: true,
     listaDonos: {}
   }),
 
-  created: function(){
-    console.log(this.p.objeto.dados.entidades)
+  created: async function(){
+    this.$request("get", "/entidades/" + this.p.objeto.dados.entidade)
+      .then((response) => {
+        this.desig = response.data.designacao 
+      })
+      .catch((error) => {
+        return error;
+      });
+
+    this.$request("get", "/entidades/" + this.p.entidade)
+      .then((response) => {
+        this.desig2 = response.data.designacao 
+      })
+      .catch((error) => {
+        return error;
+      });
+
     this.p.objeto.dados.classes.forEach(
       c => {
         if(c.dono) {

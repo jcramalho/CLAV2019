@@ -1,10 +1,12 @@
 <template>
   <v-card flat class="ma-3">
-    <v-row align="center" justify="center">
-      <v-col cols="3" align="center" justify="center">
+    <v-row>
+      <v-col cols="3" align="left" justify="center">
         <Voltar />
       </v-col>
-      <v-col cols="6" align="center" justify="center">
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="12" align="center" justify="center">
         <Loading v-if="!entidadesReady" :message="'entidade'" />
         <Consulta
           v-else
@@ -17,7 +19,6 @@
           v-bind:parts="partsReady"
         />
       </v-col>
-      <v-col cols="3"> </v-col>
     </v-row>
   </v-card>
 </template>

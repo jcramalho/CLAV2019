@@ -376,9 +376,11 @@ export default {
         Object.keys(copiaHistorico.classes.dados[i]).forEach((h) => (copiaHistorico.classes.dados[i][h].nota = null));
 
       // Reset nas notas das agregacoes
-      for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
-        Object.keys(copiaHistorico.classes.dados[i].agregacoes.dados).forEach((h) => (copiaHistorico.classes.dados[i].agregacoes.dados[h].nota = null));
-      
+      for(var i = 0; i < copiaHistorico.classes.dados.length; i++) {
+        if(copiaHistorico.classes.dados[i].agregacoes.dados !== undefined)
+          Object.keys(copiaHistorico.classes.dados[i].agregacoes.dados).forEach((h) => (copiaHistorico.classes.dados[i].agregacoes.dados[h].nota = null));
+      }
+
       this.novoHistorico = copiaHistorico;
     },
 

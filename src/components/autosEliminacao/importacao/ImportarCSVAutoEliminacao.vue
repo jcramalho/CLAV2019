@@ -393,7 +393,6 @@ export default {
       var ents = []
       for(var i = 0; i < this.auto.fundo.length; i++)
         ents.push(this.auto.fundo[i] + '###')
-      console.log(ents)
 
       var formData = new FormData();
       formData.append('tipo', this.tipo)
@@ -435,7 +434,6 @@ export default {
       document.getElementById("fileAgreg").value = "";
     },
     previewFileSerie: function (ev) {
-      console.log(this.auto.fundo)
       this.fileSerie = ev.target.files[0];
       /*const reader = new FileReader();
       reader.onload = (e) => (this.fileSerie = e.target.result);

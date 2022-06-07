@@ -7,23 +7,23 @@
         <v-btn
           v-if="this.acao == 'Criação'"
           rounded
-          class="indigo accent-4 white--text"
+          class="teal darken-4 white--text"
           @click="criarAlterarEntidade"
-          >Criar Entidade</v-btn
+          >Submeter</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
           class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
-          >Alterar Entidade</v-btn
+          >Alterar</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Extinção'"
           rounded
           class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
-          >Extinguir Entidade</v-btn
+          >Extinguir</v-btn
         >
       </v-col>
 
@@ -34,7 +34,7 @@
           rounded
           class="red darken-4"
           @click="eliminarEntidade"
-          >Cancelar Criação</v-btn
+          >Cancelar</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
