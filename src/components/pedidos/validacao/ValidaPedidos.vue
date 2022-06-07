@@ -45,13 +45,16 @@
             <ValidaRADA
               v-if="pedido.objeto.tipo === 'RADA'"
               :p="pedido"
+              :o="options"
               fase="validacao"
+
             />
-            <ValidaLegislacao v-if="pedido.objeto.tipo === 'Legislação'" :p="pedido" />
+            <ValidaLegislacao v-if="pedido.objeto.tipo === 'Legislação'" :p="pedido" :o="options"/>
 
             <ValidaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
+              :o="options"
             />
 
             <ValidaClasseN1
@@ -61,6 +64,7 @@
                 pedido.objeto.tipo === 'Classe_N2'
               "
               :p="pedido"
+              :o="options"
               validar
             />
 
@@ -70,24 +74,28 @@
                 pedido.objeto.tipo === 'Auto de Eliminação'
               "
               :p="pedido"
+              :o="options"
               :tipo="pedido.objeto.tipo"
             />
 
             <ValidaTSPluri
               v-if="pedido.objeto.tipo == 'TS Pluriorganizacional'"
               :p="pedido"
+              :o="options"
               fase="validacao"
             />
 
             <ValidaTSOrg
               v-if="pedido.objeto.tipo == 'TS Organizacional'"
               :p="pedido"
+              :o="options"
               fase="validacao"
             />
 
             <ValidaPPD
               v-if="pedido.objeto.tipo == 'PPD'"
               :p="pedido"
+              :o="options"
               fase="validacao"
             />
           </v-card-text>
@@ -124,16 +132,18 @@
               <v-divider class="m-auto mb-2" />
             </span>
 
-            <ValidaEditaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
+            <ValidaEditaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" :o="options"/>
 
             <ValidaEditaLegislacao
               v-if="pedido.objeto.tipo === 'Legislação'"
               :p="pedido"
+              :o="options"
             />
 
             <ValidaEditaTipologiaEntidade
               v-if="pedido.objeto.tipo === 'Tipologia'"
               :p="pedido"
+              :o="options"
             />
           </v-card-text>
         </v-card>

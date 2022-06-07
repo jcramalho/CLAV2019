@@ -155,6 +155,8 @@ export default {
 
       this.ped = this.pedidoInfo.codigo 
 
+      await this.historicoToDados()
+
       console.log("carreguei os dados! Avançar Pedido..")
       console.log(this.pedidoInfo)
       console.log("task id: " + this.taskId)
@@ -216,6 +218,12 @@ export default {
         this.mensagemDespacho = null;
         this.procuraUtilizador = null;
         this.$emit("fecharDialog");
+      }
+    },
+
+    async historicoToDados() {
+      for (var key in this.historico) {
+        this.pedidoInfo.objeto.dados[key] = this.historico[key].dados
       }
     },
 

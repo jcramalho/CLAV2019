@@ -1,6 +1,6 @@
 <template>
   <div id="abc">
-    Aqui se vai editar os diagramas...
+    Para abrir o editor clique <a href="https://demo.bpmn.io/" target="_blank"> aqui </a>
 
   </div>
 </template>

@@ -110,6 +110,9 @@
         <v-spacer />
         <PO
           operacao="Validar"
+          :pedido="p"
+          :options="o"
+          :historico="novoHistorico"
           @finalizarPedido="verificaEstadoCampos($event)"
           @devolverPedido="despacharPedido($event)"
         />
@@ -188,7 +191,7 @@ import {
 import { eNV, eUndefined } from "@/utils/validadores";
 
 export default {
-  props: ["p"],
+  props: ["p","o"],
 
   components: {
     PO,

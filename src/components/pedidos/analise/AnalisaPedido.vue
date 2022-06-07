@@ -43,14 +43,16 @@
         <AnalisaRADA
           v-else-if="pedido.objeto.tipo === 'RADA'"
           :p="pedido"
+          :o="options"
           fase="analise"
         />
 
-        <AnalisaLeg v-else-if="pedido.objeto.tipo === 'Legislação'" :p="pedido" />
+        <AnalisaLeg v-else-if="pedido.objeto.tipo === 'Legislação'" :p="pedido" :o="options" />
 
         <AnalisaTipologiaEntidade
           v-else-if="pedido.objeto.tipo === 'Tipologia'"
           :p="pedido"
+          :o="options"
         />
 
         <AnalisaClasseN1
@@ -58,9 +60,10 @@
             pedido.objeto.tipo === 'Classe_N1' || pedido.objeto.tipo === 'Classe_N2'
           "
           :p="pedido"
+          :o="options"
         />
 
-        <AnalisaClasseN3 v-else-if="pedido.objeto.tipo === 'Classe_N3'" :p="pedido" />
+        <AnalisaClasseN3 v-else-if="pedido.objeto.tipo === 'Classe_N3'" :p="pedido" :o="options"/>
 
         <AnalisaAE
           v-else-if="
@@ -68,24 +71,27 @@
             pedido.objeto.tipo === 'Auto de Eliminação'
           "
           :p="pedido"
+          :o="options"
           :tipo="pedido.objeto.tipo"
         />
 
         <AnalisaTSPluri
           v-else-if="pedido.objeto.tipo.includes('TS Pluri')"
           :p="pedido"
+          :o="options"
           fase="analise"
         />
 
         <AnalisaTSOrg
           v-else-if="pedido.objeto.tipo.includes('TS ')"
           :p="pedido"
+          :o="options"
           fase="analise"
         />
 
-        <AnalisaPPD v-else-if="pedido.objeto.tipo === 'PPD'" :p="pedido" fase="analise" />
+        <AnalisaPPD v-else-if="pedido.objeto.tipo === 'PPD'" :p="pedido" fase="analise" :o="options"/>
 
-        <AnalisaDefault v-else :p="pedido" />
+        <AnalisaDefault v-else :p="pedido" :o="options"/>
       </v-card-text>
 
       <!-- Para a Alteração de dados -->
@@ -118,19 +124,21 @@
 
           <v-divider class="m-auto mb-2" />
         </span>
-        <AnalisaEditaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" />
+        <AnalisaEditaEntidade v-if="pedido.objeto.tipo === 'Entidade'" :p="pedido" :o="options"/>
 
         <AnalisaEditaLegislacao
           v-else-if="pedido.objeto.tipo === 'Legislação'"
           :p="pedido"
+          :o="options"
         />
 
         <AnalisaEditaTipologiaEntidade
           v-else-if="pedido.objeto.tipo === 'Tipologia'"
           :p="pedido"
+          :o="options"
         />
 
-        <AnalisaDefault v-else :p="pedido" />
+        <AnalisaDefault v-else :p="pedido" :o="options"/>
       </v-card-text>
     </v-card>
 

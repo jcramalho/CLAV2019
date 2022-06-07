@@ -1,35 +1,22 @@
 <template>
   <div>
     <v-row class="ma-2 text-center">
-      <v-col>
-        <v-btn
-          v-if="temPermissaoDevolver() && $route.path.split('/')[1]=='bpmn' && options.includes('Devolver Pedido')"
-          dark
-          rounded
-          class="red darken-4"
-          @click="devolverPedido()"
-        >
-          Devolver
-        </v-btn>
 
+      <v-col v-if="temPermissaoDevolver()">
         <v-btn
-          v-else-if="temPermissaoDevolver()"
           dark
           rounded
           class="red darken-4"
-          @click="devolverPedidoDialog = true"
+          @click="$route.path.split('/')[1]=='bpmn' && options.includes('Devolver Pedido') ? devolverPedido() : devolverPedidoDialog = true"
         >
           Devolver
         </v-btn>
       </v-col>
 
       
-      <v-col>
+      <v-col v-if="(operacao === 'Analisar' || pedido.estado === 'Apreciado' || pedido.estado === 'Reapreciado')">
         <v-btn
-          v-if="
-            (operacao === 'Analisar' || pedido.estado === 'Apreciado' || pedido.estado === 'Reapreciado') && 
-            $route.path.split('/')[1]=='bpmn' && 
-            (options.includes('Distribuir Pedido') || options.includes('Validação 2'))"
+          v-if="$route.path.split('/')[1]=='bpmn' && (options.includes('Distribuir Pedido') || options.includes('Validação 2'))"
           rounded
           class="indigo accent-4 white--text"
           @click="avancarPedido()"
@@ -38,10 +25,7 @@
         </v-btn>
         
         <v-btn
-          v-else-if="
-            (operacao === 'Analisar' || pedido.estado === 'Apreciado' || pedido.estado === 'Reapreciado') &&
-            $route.path.split('/')[1]!='bpmn'
-          "
+          v-else-if="$route.path.split('/')[1]!='bpmn'"
           rounded
           class="indigo accent-4 white--text"
           @click="avancarPedidoDialog = true"
@@ -49,6 +33,7 @@
           Encaminhar
         </v-btn>
       </v-col>
+
 
       <v-col>
         <v-btn
@@ -61,7 +46,6 @@
         >
           Substituir Responsável
         </v-btn>
-
       </v-col>
 
     
@@ -75,12 +59,12 @@
         >
           Reapreciar
         </v-btn>
-
       </v-col>
 
-      <v-col>
+
+      <v-col v-if="operacao === 'Validar'">
         <v-btn
-          v-if="$route.path.split('/')[1]=='bpmn' && operacao === 'Validar' && options.includes('Aprovar Pedido')"
+          v-if="$route.path.split('/')[1]=='bpmn' && options.includes('Aprovar Pedido')"
           rounded
           class="indigo accent-4 white--text"
           @click="finalizarPedido()"
@@ -89,7 +73,7 @@
         </v-btn>
 
         <v-btn
-          v-else-if="operacao === 'Validar' && $route.path.split('/')[1]!='bpmn'"
+          v-else-if="$route.path.split('/')[1]!='bpmn'"
           rounded
           class="indigo accent-4 white--text"
           @click="finalizarPedidoDialog = true"
@@ -197,8 +181,6 @@ export default {
 
     submit() {
       const variables = DataTransformation.generateVariablesFromFormFields(this.formdata);
-      console.log(variables)
-      console.log(this.taskId)
       CamundaRest.postCompleteTask(this.taskId, variables).then((result) => {
         if (result.status === 200 || result.status === 204) {
           this.$router.push({ path: '/bpmn/tasklist/' });

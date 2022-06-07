@@ -53,12 +53,18 @@
       <v-spacer />
       <PO
         operacao="Analisar"
+        :pedido="p"
+        :options="o"
+        :historico="novoHistorico"
         @avancarPedido="encaminharPedido($event)"
         @devolverPedido="despacharPedido($event)"
         v-if="fase == 'analise'"
       />
       <PO
         operacao="Validar"
+        :pedido="p"
+        :options="o"
+        :historico="novoHistorico"
         @finalizarPedido="verificaVermelhos($event)"
         @devolverPedido="despacharPedido($event)"
         v-else-if="fase == 'validacao'"
@@ -93,6 +99,7 @@ export default {
       required: true,
     },
     p: {},
+    o: {}
   },
   components: {
     PO,

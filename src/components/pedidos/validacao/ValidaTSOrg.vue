@@ -632,12 +632,18 @@
         <v-spacer />
         <PO
           operacao="Analisar"
+          :pedido="p"
+          :options="o"
+          :historico="novoHistorico"
           @avancarPedido="encaminharPedido($event)"
           @devolverPedido="despacharPedido($event)"
           v-if="fase == 'analise'"
         />
         <PO
           operacao="Validar"
+          :pedido="p"
+          :options="o"
+          :historico="novoHistorico"
           @avancarPedido="encaminharPedidoValidacao($event)"
           @finalizarPedido="verificaVermelhos($event)"
           @devolverPedido="despacharPedido($event)"
@@ -666,6 +672,7 @@ import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperaca
 export default {
   props: {
     p: {},
+    o: {},
     fase: { type: String, required: true },
   },
   components: {

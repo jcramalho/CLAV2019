@@ -555,6 +555,9 @@
       >
       <PO
         operacao="Validar"
+        :pedido="p"
+        :options="o"
+        :historico="novoHistorico"
         @finalizarPedido="verificaCores($event)"
         @devolverPedido="despacharPedido($event)"
       />
@@ -740,7 +743,7 @@ import Loading from "@/components/generic/Loading";
 import { mapKeys } from "@/utils/utils";
 
 export default {
-  props: ["p", "tipo"],
+  props: ["p", "o","tipo"],
 
   components: {
     PO,

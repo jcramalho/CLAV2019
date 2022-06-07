@@ -59,6 +59,12 @@
       />
     </v-dialog>
 
+
+    <!-- Dialog de erros da API -->
+    <v-dialog v-model="erroPedido" width="50%" persistent>
+      <ErroAPIDialog :erros="erros" @fecharErro="fecharErro()" />
+    </v-dialog>
+
   </div>
 
 </template>
@@ -69,12 +75,16 @@ import CamundaRest from './../../../services/camunda-rest.js';
 import DataTransformation from './../../../utils/data-transformation';
 
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
-import { eNUV, eDataFormatoErrado, testarRegex } from "@/utils/validadores";
+import { eNUV, eNV,  eDataFormatoErrado, testarRegex } from "@/utils/validadores";
+import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
+
+import nanoid from "nanoid";
 
 export default {
   props: ["vai_para_despacho", 'taskId'],
   components: {
-    ConfirmacaoOperacao
+    ConfirmacaoOperacao,
+    ErroAPIDialog
   },
   data() {
     return {
@@ -89,12 +99,293 @@ export default {
         mensagem: "",
         dados: null,
       },
+      erroPedido: false,
+      validators: [
+        //ENTIDADE CRIAÇÃO
+        {
+        "nome": 'Entidade',
+        "tipo": 'Criação',
+        "validar": [
+          {
+            "value": "designacao",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Nome da Entidade", 
+            "mens": "O nome da entidade não pode ser vazio.", 
+          },
+          {
+            "value": "sigla",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Sigla", 
+            "mens": "A sigla não pode ser vazia.", 
+          },
+          {
+            "value": "internacional",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Internacional", 
+            "mens": "O campo internacional tem de ter uma opção.", 
+          },
+          {
+            "value": "sioe",
+            "func": 'valSIOE',
+            "func2": 'eNUV',
+            "sob": "SIOE", 
+            "mens": "O campo SIOE tem de ter menos que 12 digitos numéricos.", 
+            "mens2": "O campo SIOE só pode ter digitos numéricos.", 
+            "regex": /^\d+$/,
+            "max": 12
+          },
+          {
+            "value": "dataCriacao",
+            "func": 'valDataCriacao',
+            "func2": 'eNUV',
+            "sob": "Data de Criação", 
+            "mens": "A data de criação está no formato errado.", 
+          },
+          {
+            "value": "dataCriacao",
+            "value2": "dataExtincao",
+            "func": 'valDataExtincao',
+            "func2": 'eNUV',
+            "sob": "Data de Extinçao", 
+            "mens": "A data de extinção tem de ser superior à data de criação.", 
+          }]
+        },
+
+
+        //ENTIDADE ALTERAÇÃO
+        {
+        "nome": 'Entidade',
+        "tipo": 'Alteração',
+        "validar": [
+         {
+            "value": "designacao",
+            "func": 'val',
+            "func2": 'eNV',
+            "sob": "Nome da Entidade", 
+            "mens": "O nome da entidade não pode ser vazio.", 
+          },
+          {
+            "value": "internacional",
+            "func": 'val',
+            "func2": 'eNV',
+            "sob": "Internacional", 
+            "mens": "O campo internacional tem de ter uma opção.", 
+          },
+          {
+            "value": "sioe",
+            "func": 'valSIOE',
+            "func2": 'eNUV',
+            "func3": 'testarRegex',
+            "sob": "SIOE", 
+            "mens": "O campo SIOE tem de ter menos que 12 digitos numéricos.", 
+            "mens2": "O campo SIOE só pode ter digitos numéricos.", 
+            "regex": /^\d+$/,
+            "max": 12
+          },
+          {
+            "value": "dataCriacao",
+            "func": 'valDataCriacao',
+            "func2": 'eNUV',
+            "sob": "Data de Criação", 
+            "mens": "A data de criação está no formato errado.", 
+          }]
+        },
+
+
+        //ENTIDADE EXTINÇÃO
+        {
+        "nome": 'Entidade',
+        "tipo": 'Extinção',
+        "validar": [
+          {
+            "value": "dataExtincao",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Data de Extinção", 
+            "mens": "A data de extinção não pode ser vazia.", 
+          },
+          {
+            "value": "dataExtincao",
+            "func": 'valDataCriacao',
+            "func2": 'eNUV',
+            "sob": "Data de Extinção", 
+            "mens": "A data de extinção está no formato errado.", 
+          },
+          {
+            "value": "dataExtincao",
+            "value2": "data",
+            "func": 'valDataExtincao',
+            "func2": 'eNUV',
+            "sob": "Data de Extinçao", 
+            "mens": "A data de extinção tem de ser superior à data do diploma.", 
+          }]
+        },
+
+
+        //LEGISLAÇÃO CRIAÇÃO
+        {
+        "nome": 'Legislação',
+        "tipo": 'Criação',
+        "validar": [
+         {
+            "value": "tipo",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Tipo de Diploma", 
+            "mens": "O tipo de diploma não pode ser vazio.", 
+          },
+          {
+            "value": "numero",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Número de Diploma", 
+            "mens": "O número de diploma não pode ser vazio.", 
+          },
+          {
+            "value": "sumario",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Sumário", 
+            "mens": "O sumário não pode ser vazio.", 
+          },
+          {
+            "value": "dataCriacao",
+            "func": 'val',
+            "func2": 'eNV',
+            "sob": "Data do Diploma", 
+            "mens": "A data do diploma não pode ser vazia.", 
+          },
+          {
+            "value": "dataRevogacao",
+            "func": 'valDataCriacao',
+            "func2": 'eNUV',
+            "sob": "Data de Revogação", 
+            "mens": "A data de Revogação está no formato errado.", 
+          },
+          {
+            "value": "dataCriacao",
+            "func": 'valDataCriacao',
+            "func2": 'eNV',
+            "sob": "Data de Criação", 
+            "mens": "A data de criação está no formato errado.", 
+          },
+          {
+            "value": "data",
+            "value2": "dataRevogacao",
+            "func": 'valDataExtincao',
+            "func2": 'eNUV',
+            "sob": "Data de Revogação", 
+            "mens": "A data de revogação tem de ser superior à data do diploma.", 
+          }]
+        },
+
+
+        //LEGISLAÇÃO ALTERAÇÃO
+        {
+        "nome": 'Legislação',
+        "tipo": 'Alteração',
+        "validar": [
+          {
+            "value": "sumario",
+            "func": 'val',
+            "func2": 'eNV',
+            "sob": "Sumário", 
+            "mens": "O sumário não pode ser vazio.", 
+          },
+          {
+            "value": "dataRevogacao",
+            "func": 'valDataCriacao',
+            "func2": 'eNUV',
+            "sob": "Data de Revogação", 
+            "mens": "A data de Revogação está no formato errado.", 
+          },
+          {
+            "value": "data",
+            "value2": "dataRevogacao",
+            "func": 'valDataExtincao',
+            "func2": 'eNUV',
+            "sob": "Data de Revogação", 
+            "mens": "A data de revogação tem de ser superior à data do diploma.", 
+          }]
+        },
+
+
+        //LEGISLAÇÃO REVOGAÇÃO
+        {
+        "nome": 'Legislação',
+        "tipo": 'Revogação',
+        "validar": [
+          {
+            "value": "dataRevogacao",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Data de Revogação", 
+            "mens": "A data de revogação não pode ser vazia.", 
+          },
+          {
+            "value": "dataRevogacao",
+            "func": 'valDataCriacao',
+            "func2": 'eNUV',
+            "sob": "Data de Revogação", 
+            "mens": "A data de Revogação está no formato errado.", 
+          },
+          {
+            "value": "data",
+            "value2": "dataRevogacao",
+            "func": 'valDataExtincao',
+            "func2": 'eNUV',
+            "sob": "Data de Revogação", 
+            "mens": "A data de revogação tem de ser superior à data do diploma.", 
+          }]
+        },
+
+
+        //TIPOLOGIA CRIAÇÃO
+        {
+        "nome": 'Tipologia',
+        "tipo": 'Criação',
+        "validar": [
+          {
+            "value": "designacao",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Nome da Entidade", 
+            "mens": "O nome da entidade não pode ser vazio.", 
+          },
+          {
+            "value": "sigla",
+            "func": 'val',
+            "func2": 'eNUV',
+            "sob": "Sigla", 
+            "mens": "A sigla não pode ser vazia.", 
+          }]
+        },
+
+
+        //TIPOLOGIA ALTERAÇÃO
+        {
+        "nome": 'Tipologia',
+        "tipo": 'Alteração',
+        "validar": [
+          {
+            "value": "designacao",
+            "func": 'val',
+            "func2": 'eNV',
+            "sob": "Nome da Entidade", 
+            "mens": "O nome da entidade não pode ser vazio.", 
+          }]
+        }
+      ]
     };
   },
 
   async created() {
     this.historico = await this.getHistorico()
-    console.log("historico: " + this.historico)
+    console.log("historico: " + JSON.stringify(this.historico))
+
   },
 
   methods: {
@@ -127,6 +418,18 @@ export default {
       };
     },
 
+    fecharErro() {
+      this.erros = [];
+      this.erroPedido = false;
+    },
+
+    async historicoToDados(pedido) {
+      for (var key in this.historico) {
+        pedido.objeto.dados[key] = this.historico[key].dados
+      }
+      return pedido
+    },
+
     async getID() {
       var id = this.idp
       if (!id) {
@@ -156,77 +459,119 @@ export default {
       this.$emit("finalizarPedido", despacho);
     },
 
-    async validarEntidade(dados) {
-      let numeroErros = 0;
+    async getValidator(nome, tipo) {
+      let validator = null
 
-      // Designação
-      if (eNUV(dados.designacao)) {
-        this.erros.push({
-          sobre: "Nome da Entidade",
-          mensagem: "O nome da entidade não pode ser vazio.",
-        });
-        numeroErros++;
-      }
+      this.validators.forEach(elem => {
+        if (elem.nome == nome && elem.tipo == tipo) validator = elem.validar
+      })
 
-      // Sigla
-      if (eNUV(dados.sigla)) {
-        this.erros.push({
-          sobre: "Sigla",
-          mensagem: "A sigla não pode ser vazia.",
-        });
-        numeroErros++;
-      }
-
-      // Internacional
-      if (eNUV(dados.internacional)) {
-        this.erros.push({
-          sobre: "Internacional",
-          mensagem: "O campo internacional tem de ter uma opção.",
-        });
-        numeroErros++;
-      }
-
-      // SIOE
-      if (!eNUV(dados.sioe)) {
-        if (dados.sioe.length > 12) {
-          this.erros.push({
-            sobre: "SIOE",
-            mensagem: "O campo SIOE tem de ter menos que 12 digitos numéricos.",
-          });
-          numeroErros++;
-        } else if (!testarRegex(dados.sioe, /^\d+$/)) {
-          this.erros.push({
-            sobre: "SIOE",
-            mensagem: "O campo SIOE só pode ter digitos numéricos.",
-          });
-          numeroErros++;
-        }
-      }
-
-      //Data Criação
-      if (!eNUV(dados.dataCriacao)) {
-        if (eDataFormatoErrado(dados.dataCriacao)) {
-          this.erros.push({
-            sobre: "Data de Criação",
-            mensagem: "A data de criação está no formato errado",
-          });
-          numeroErros++;
-        }
-      }
-
-      // Data de Extinção
-      if (!eNUV(dados.dataCriacao) && !eNUV(dados.dataExtincao)) {
-        if (new Date(dados.dataCriacao) >= new Date(dados.dataExtincao)) {
-          this.erros.push({
-            sobre: "Data de Extinçao",
-            mensagem: "A data de extinção tem de ser superior à data de criação.",
-          });
-          numeroErros++;
-        }
-      }
-
-      return numeroErros;
+      return validator
     },
+
+    //VALIDAR
+    val(func, value, sob, mens, list, nErros) {
+      if (func(value)) {
+        list.push({
+          sobre: sob,
+          mensagem: mens
+        })
+        nErros++
+      }
+      return nErros
+    },
+
+    valSIOE(func, value, sob, mens, mens2, list, nErros, max, regex) {
+      if (!func(value)) {
+        if (value.length > max) {
+          list.push({
+            sobre: sob,
+            mensagem: mens
+          })
+        }
+        else if (!testarRegex(value, regex)) {
+          list.push({
+            sobre: sob,
+            mensagem: mens2
+          })
+          nErros++
+        }
+      }
+      return nErros
+    },
+
+    valDataCriacao(func, value, sob, mens, list, nErros) {
+      if (!func(value)) {
+        if (eDataFormatoErrado(value)) {
+          list.push({
+            sobre: sob,
+            mensagem: mens
+          })
+          nErros++
+        }
+      }
+      return nErros
+    },
+
+    valDataExtincao(func, value, value2, sob, mens, list, nErros) {
+      if (!func(value) && !func(value2)) {
+        if (new Date(value) >= new Date(value2)) {
+          list.push({
+            sobre: sob,
+            mensagem: mens
+          })
+          nErros++
+        }
+      }
+      return nErros 
+    },
+
+
+    async validar(dados) {
+
+      let numeroErros = 0;
+      let listaValidar = await this.getValidator(dados.tipo, dados.acao)
+      
+      let info = dados.dados
+
+      listaValidar.forEach(elem => {
+        
+        if (elem.func == 'val' && elem.func2 == 'eNV') {
+          numeroErros = this.val(eNV, info[elem.value], elem.sob, elem.mens, this.erros, numeroErros)
+        }
+
+        if (elem.func == 'val' && elem.func2 == 'eNUV') {
+          numeroErros = this.val(eNUV, info[elem.value], elem.sob, elem.mens, this.erros, numeroErros)
+        }
+
+        if (elem.func == 'valSIOE' && elem.func2 == 'eNV') {
+          numeroErros = this.valSIOE(eNV, info[elem.value], elem.sob, elem.mens, elem.mens2, this.erros, numeroErros, elem.max, elem.regex)
+        }
+
+        if (elem.func == 'valSIOE' && elem.func2 == 'eNUV') {
+          numeroErros = this.valSIOE(eNUV, info[elem.value], elem.sob, elem.mens, elem.mens2, this.erros, numeroErros, elem.max, elem.regex)
+        }
+
+        if (elem.func == 'valDataCriacao' && elem.func2 == 'eNV') {
+          if (info[elem.value]) numeroErros = this.valDataCriacao(eNV, info[elem.value], elem.sob, elem.mens, this.erros, numeroErros)
+        }
+
+        if (elem.func == 'valDataCriacao' && elem.func2 == 'eNUV') {
+          if (info[elem.value]) numeroErros = this.valDataCriacao(eNUV, info[elem.value], elem.sob, elem.mens, this.erros, numeroErros)
+        }
+
+        if (elem.func == 'valDataExtincao' && elem.func2 == 'eNV') {
+          if (info[elem.value]) numeroErros = this.valDataExtincao(eNV, info[elem.value], info[elem.value2], elem.sob, elem.mens, this.erros, numeroErros)
+        }
+
+        if (elem.func == 'valDataExtincao' && elem.func2 == 'eNUV') {
+          if (info[elem.value]) numeroErros = this.valDataExtincao(eNUV, info[elem.value], info[elem.value2], elem.sob, elem.mens, this.erros, numeroErros)
+        }
+      })
+
+      return numeroErros
+    },
+
 
     async verificaEstadoCampos(dados) {
       // procura campos a vermelho
@@ -256,29 +601,141 @@ export default {
 
         let pedido = data
 
-        let estado = "Validado";
+        console.log(pedido.objeto)
 
-        let dadosUtilizador = this.$verifyTokenUser();
+        pedido = await this.historicoToDados(pedido)
 
-        let numeroErros = await this.validarEntidade(pedido.objeto.dados);
+        console.log("vou validar")
+
+        let numeroErros = await this.validar(pedido.objeto)
+
+        console.log("erros: " + numeroErros)
 
         if (numeroErros === 0) {
           
-          for (const key in pedido.objeto.dados) {
-            if (pedido.objeto.dados[key] === null || pedido.objeto.dados[key] === "") {
+          for (const key in pedido.objeto.dadosOriginais) {
+
+            if (!pedido.objeto.dados.hasOwnProperty(key)) {
+              pedido.objeto.dados[key] = pedido.objeto.dadosOriginais[key];
+            }
+
+            if (eNV(pedido.objeto.dados[key])) {
               delete pedido.objeto.dados[key];
             }
+
+            if (pedido.objeto.dados.diplomaFonte === "Não especificada")
+              delete pedido.objeto.dados.diplomaFonte;
           }
+
+          console.log("terminei o for")
           
-          await this.$request("post", "/entidades", pedido.objeto.dados);
+          //ENTIDADES
+          if (pedido.objeto.tipo == 'Entidade') {
+
+            if (pedido.objeto.acao == 'Criação') await this.$request("post", "/entidades", pedido.objeto.dados);
+
+            if (pedido.objeto.acao == 'Alteração') {
+              await this.$request(
+                "put",
+                `/entidades/ent_${pedido.objeto.dadosOriginais.sigla}`,
+                pedido.objeto.dados
+              );
+            }
+
+            if (pedido.objeto.dados.dataExtincao && pedido.objeto.acao == 'Criação'|| pedido.objeto.acao == 'Extinção') {
+              await this.$request(
+                "put",
+                `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
+                { dataExtincao: pedido.objeto.dados.dataExtincao }
+              );
+            } 
+
+          }
+
+          //LEGISLAÇÃO
+          if (pedido.objeto.tipo == 'Legislação') {
+            
+            console.log(pedido.objeto)
+
+            if (pedido.objeto.acao == 'Criação') {
+
+              console.log("vou buscar o nanoid")
+
+              const id = `leg_${nanoid()}`;
+
+              console.log("nanoid: " + id)
+
+              pedido.objeto.dados.id = id;
+
+              await this.$request(
+                "post",
+                "/legislacao",
+                pedido.objeto.dados
+              );
+
+              if (pedido.objeto.dados.dataRevogacao) {
+                await this.$request(
+                  "put", 
+                  `/legislacao/${id}/revogar`, 
+                  { dataRevogacao: pedido.objeto.dados.dataRevogacao}
+                );
+              }
+            }
+
           
-          if (pedido.objeto.dados.dataExtincao) {
-            await this.$request(
-              "put",
-              `/entidades/ent_${pedido.objeto.dados.sigla}/extinguir`,
-              { dataExtincao: pedido.objeto.dados.dataExtincao }
-            );
-          } 
+            if (pedido.objeto.acao == 'Revogação') {
+
+              await this.$request(
+                "put",
+                `/legislacao/${pedido.objeto.dadosOriginais.id}/revogar`,
+                { dataRevogacao: pedido.objeto.dados.dataRevogacao }
+              );
+
+              let responseLeg = await this.$request(
+                "get",
+                "/legislacao/" + pedido.objeto.dadosOriginais.id
+              );
+
+              let legislacao = responseLeg.data;
+
+              await this.$request(
+                "put",
+                "/rada/revogar/" +
+                  legislacao.aprovou.split("#")[1].split("rada_")[1],
+                { dataRevogacao: pedido.objeto.dados.dataRevogacao }
+              );
+            }
+
+            if (pedido.objeto.acao == 'Alteração') {
+              await this.$request(
+                "put",
+                `/legislacao/${pedido.objeto.dadosOriginais.id}`,
+                pedido.objeto.dados
+              );
+            }
+          }
+
+
+          //TIPOLOGIAS
+          if (pedido.objeto.tipo == 'Tipologia') {
+
+            if (pedido.objeto.acao == 'Criação') await this.$request("post", "/tipologias", pedido.objeto.dados);
+
+            else {
+              await this.$request(
+                "put",
+                `/tipologias/tip_${pedido.objeto.dadosOriginais.sigla}`,
+                pedido.objeto.dados
+               );
+            }
+          
+          }
+
+          //GERAL
+
+          let estado = "Validado";
+
+          let dadosUtilizador = this.$verifyTokenUser();
           
           pedido.historico.push(this.historico);
           
@@ -307,14 +764,14 @@ export default {
 
           console.log(pedido)
 
-
           this.formdata.opcao = 'aprovarPedido'
           this.submit()
     
           //this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`)
 
         } else {
-          console.log("Erros no pedido na hora de finalizar pedido: " + e)
+          this.erroPedido = true;
+          console.log("Erros no pedido na hora de finalizar pedido! Este contém " +numeroErros + " erros!")
         }
       } catch (e) {
         console.log("Erro a finalizar pedido: " + e)
