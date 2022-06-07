@@ -176,6 +176,9 @@
         <v-spacer />
         <PO
           operacao="Validar"
+          :pedido="p"
+          :options="o"
+          :historico="novoHistorico"
           @avancarPedido="encaminharPedido($event)"
           @finalizarPedido="finalizarPedido($event)"
           @devolverPedido="despacharPedido($event)"
@@ -304,7 +307,7 @@ import {
 } from "@/utils/utils";
 
 export default {
-  props: ["p", "tipo"],
+  props: ["p", "o", "tipo"],
 
   components: {
     PO,
