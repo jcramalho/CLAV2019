@@ -479,6 +479,18 @@ export default {
       this.$emit("finalizarPedido", despacho);
     },
 
+    async historicoToDados(pedido) {
+      for (var key in this.historico) {
+        if (this.historico[key].dados) pedido.objeto.dados[key] = this.historico[key].dados
+        else {
+          for (var key2 in this.historico[key]) {
+            pedido.objeto.dados[key][key2] = this.historico[key][key2].dados
+          }
+        }
+      }
+      return pedido
+    },
+
     async getValidator(nome, tipo) {
       let validator = []
 
@@ -769,6 +781,8 @@ export default {
           pedido.historico.push(this.historico);
           
           console.log(pedido.historico) 
+
+          pedido = await this.historicoToDados(pedido)
 
           const novaDistribuicao = {
             estado: estado,

@@ -161,17 +161,9 @@ export default {
     };
   },
 
-/*
-  async beforeMount() {
-    this.pedido = (
-      await this.$request("get", "/pedidos/" + this.$route.params.idPedido)
-    ).data;
-  },*/
-
   async created() {
     try {
       await this.preparaUtilizadores();
-      console.log("painel de operações com historico: " + JSON.stringify(this.historico))
     } catch (e) {
       return e;
     }
@@ -250,7 +242,7 @@ export default {
 
     finalizarPedido(dados) {
       if (this.$route.path.split("/")[1]=='bpmn') {
-        this.formdata.opcao = 'aprovarPedido'
+        this.formdata.opcao = 'aprovarPedido';
         this.formdata.historico = this.historico
         this.submit()
       }

@@ -257,10 +257,11 @@ export default {
       if (data.estado !== "Distribuído" && data.estado !== "Redistribuído")
         throw new URIError("Este pedido não pertence a este estado.");
 
+      /*
       data.historico = data.historico.map((hist) => ({
         ...hist,
-        codigo: { dados: data.objeto.codigo },
-      }));
+        codigo: { dados: data.codigo },
+      }));*/
 
       this.pedido = data;
       this.loading = false;

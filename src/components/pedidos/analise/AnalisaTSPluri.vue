@@ -240,14 +240,14 @@
         </v-row>
       </ValidaCampo>
       <v-row>
-        <Voltar class="ma-5" />
         <v-spacer />
+        <!--
         <v-btn
           @click="guardarPedido()"
           rounded
           class="mt-5 clav-linear-background accent-4 white--text"
           ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
-        >
+        > -->
         <PO
           operacao="Analisar"
           :pedido="p"

@@ -155,8 +155,6 @@ export default {
 
       this.ped = this.pedidoInfo.codigo 
 
-      await this.historicoToDados()
-
       console.log("carreguei os dados! Avançar Pedido..")
       console.log(this.pedidoInfo)
       console.log("task id: " + this.taskId)
@@ -221,10 +219,16 @@ export default {
       }
     },
 
-    async historicoToDados() {
+    async historicoToDados(pedido) {
       for (var key in this.historico) {
-        this.pedidoInfo.objeto.dados[key] = this.historico[key].dados
+        if (this.historico[key].dados) pedido.objeto.dados[key] = this.historico[key].dados
+        else {
+          for (var key2 in this.historico[key]) {
+            pedido.objeto.dados[key][key2] = this.historico[key][key2].dados
+          }
+        }
       }
+      return pedido
     },
 
     async getID() {
@@ -312,8 +316,11 @@ export default {
         console.log("estado final: " + pedido.estado)
 
         console.log("historico: " + this.historico)
+
         if (this.historico=="") pedido.historico.push(this.pedidoInfo.historico[0]);
         else pedido.historico.push(this.historico);
+
+        pedido = await this.historicoToDados(pedido)
         
         const novaDistribuicao = {
           estado: estado,
