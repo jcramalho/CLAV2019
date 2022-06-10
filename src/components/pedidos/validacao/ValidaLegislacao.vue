@@ -679,6 +679,8 @@ export default {
       try {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
+        console.log(pedido)
+        
         let numeroErros = await this.validarLegislacao(pedido.objeto.dados);
 
         if (numeroErros === 0) {
@@ -691,7 +693,10 @@ export default {
           if (pedido.objeto.dados.diplomaFonte === "Não especificada")
             delete pedido.objeto.dados.diplomaFonte;
 
+
           const id = `leg_${nanoid()}`;
+
+          console.log("nanoid: " + id)
 
           pedido.objeto.dados.id = id;
 

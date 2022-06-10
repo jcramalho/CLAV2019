@@ -42,6 +42,10 @@ class CamundaRest {
   static getProcessXML(processDefinitionId) {
     return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}process-definition/${processDefinitionId}/xml`);
   }
+
+  static getProcessXMLByKey(key) {
+    return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}process-definition/key/${key}/xml`);
+  }
 }
 
 export default CamundaRest;

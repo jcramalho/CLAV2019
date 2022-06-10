@@ -549,15 +549,6 @@ export default new Router({
       }
     },
     {
-      path: '/bpmn/editor',
-      name: 'Editor',
-      component: () => import("./components/BPMN/Editor.vue"),
-      meta: {
-        levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-        tabAtiva: "Operações"
-      }
-    },
-    {
       path: '/bpmn/tasklist/:taskId',
       name: 'Tasklist for specific Task',
       component: () => import("./components/BPMN/Tasklist.vue"),

@@ -100,6 +100,8 @@ export default {
         dados: null,
       },
       erroPedido: false,
+      pedidosimples: ['Entidade','Tipologia','Legislação','Auto de Eliminação'],
+      pedidocomplexo: ['TS', 'TS Organizacional', 'PPD','RADA','Classe N1','Classe N2','Classe N3','Classe N4'],
       validators: [
         //ENTIDADE CRIAÇÃO
         {
@@ -377,14 +379,32 @@ export default {
             "sob": "Nome da Entidade", 
             "mens": "O nome da entidade não pode ser vazio.", 
           }]
-        }
+        },
+    
+
+        //AE CRIAÇÃO
+        {
+        "nome": 'Auto de Eliminação',
+        "tipo": 'Criação',
+        "validar": []
+        },  
+        
+        
+        //PPD CRIAÇÃO
+        {
+        "nome": 'PPD',
+        "tipo": 'Criação',
+        "validar": []
+        }, 
       ]
     };
   },
 
   async created() {
-    this.historico = await this.getHistorico()
-    console.log("historico: " + JSON.stringify(this.historico))
+    if (this.$route.path.split("/")[1]=='bpmn') {
+      this.historico = await this.getHistorico()
+      console.log("historico: " + JSON.stringify(this.historico))
+    }
 
   },
 
@@ -460,7 +480,7 @@ export default {
     },
 
     async getValidator(nome, tipo) {
-      let validator = null
+      let validator = []
 
       this.validators.forEach(elem => {
         if (elem.nome == nome && elem.tipo == tipo) validator = elem.validar
@@ -731,9 +751,18 @@ export default {
           
           }
 
-          //GERAL
 
-          let estado = "Validado";
+          //AUTO DE ELIMINAÇÃO
+          if (pedido.objeto.tipo == 'Auto de Eliminação') {
+            await this.$request("post", "/autosEliminacao", {auto: pedido.objeto.dados});
+          }
+          
+
+          //GERAL
+          let estado = null
+
+          if (this.pedidosimples.includes(pedido.objeto.tipo)) estado = "Validado"
+          else if (this.pedidocomplexo.includes(pedido.objeto.tipo)) estado = "Em Despacho"
 
           let dadosUtilizador = this.$verifyTokenUser();
           

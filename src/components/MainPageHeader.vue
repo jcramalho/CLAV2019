@@ -694,7 +694,7 @@ export default {
                 {
                   url: "/bpmn/deploy",
                   level: [0, 1, 2, 3, 3.5, 4, 5, 6, 7],
-                  icon: "criar-icon",
+                  icon: "consultar-icon",
                 },
                 {
                   url: "/bpmn/startprocess",
@@ -704,12 +704,7 @@ export default {
                 {
                   url: "/bpmn/tasklist",
                   level: [1, 2, 3, 3.5, 4, 5, 6, 7],
-                  icon: "criar-icon",
-                },
-                {
-                  url: "/bpmn/editor",
-                  level: [1, 2, 3, 3.5, 4, 5, 6, 7],
-                  icon: "criar-icon",
+                  icon: "alterar-icon",
                 }
               ],
             },

@@ -254,7 +254,6 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </v-card>
   </div>
 </template>
 

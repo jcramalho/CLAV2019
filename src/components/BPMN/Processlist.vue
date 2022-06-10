@@ -17,7 +17,8 @@
                   <div style="font-size:20px;">
                     <strong>
                       <router-link :to="`/bpmn/startprocess/${processDefinition.key}`">{{processDefinition.name}} - ( versão {{processDefinition.version}} ) </router-link>
-                      <v-icon color="red" @click="apagarProcesso(processDefinition.deploymentId)"> mdi-delete </v-icon>
+                      <v-icon style="margin-left:20px" color="red" @click="apagarProcesso(processDefinition.deploymentId)"> mdi-delete </v-icon>
+                      <v-icon style="margin-left:20px" @click="downloadProcesso(processDefinition.key)"> mdi-download </v-icon>
                     </strong>
                   </div>
                 </v-col>
@@ -49,6 +50,7 @@ export default {
   },
 
   methods: {
+
     apagarProcesso(deploymentId) {
       CamundaRest.deleteProcessDefinition(deploymentId)
       .then(() => {
@@ -56,7 +58,27 @@ export default {
       }).catch(e => {
         console.error(e);
       });
+    },
+
+    async getXMLProcess(key) {
+      let xml = null
+      await CamundaRest.getProcessXMLByKey(key).then((result) => {
+        xml = result.data.bpmn20Xml;  
+      });
+      return xml
+    },
+
+    async downloadProcesso(key) {
+      let xml = await this.getXMLProcess(key)
+      const url = window.URL.createObjectURL(new Blob([xml]));
+      const link = document.createElement('a');
+      link.href = url;
+      let filename = key + '.bpmn'
+      link.setAttribute('download', filename); 
+      document.body.appendChild(link);
+      link.click();
     }
+
   },
 
   async created() {

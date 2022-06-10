@@ -6,7 +6,7 @@
         <div class="dropbox">
           <input type="file" :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files); fileCount = 1" class="input-file">
             <h5 v-if="isInitial">
-              Clica <b style="color:#4da6ff;"> aqui </b> para implementar um novo processo
+              Clica <b style="color:#4da6ff;"> aqui </b> para selecionar o ficheiro
             </h5>
             <h5 v-if="isSaving">
               Implementando {{ fileCount}} processo(s)...

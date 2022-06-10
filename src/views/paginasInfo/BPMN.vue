@@ -5,7 +5,7 @@
       Esta página é relacionada com a utilização de linguagem BPMN para a definição dos workflows da aplicação. 
     </p>
     <p class="clav-content-text px-8 py-2">
-      Para dar deploy de um novo workflow, selecione a opção <b>DEPLOY</b>.
+      Para implementar um novo workflow, selecione a opção <b>IMPLEMENTAR</b>.
     </p>
     <p class="clav-content-text px-8 py-2">
       Para começar um novo processo, selecione a opção
@@ -14,10 +14,6 @@
     <p class="clav-content-text px-8 py-2">
       Para aceder às tarefas pendentes, selecione a opção
       <b>TAREFAS</b>.
-    </p>
-    <p class="clav-content-text px-8 py-2">
-      Para editar os workflows, selecione a opção
-      <b>EDITAR</b>.
     </p>
 
     <v-container fluid style="text-align: center">
@@ -33,13 +29,13 @@
             }"
           >
             <unicon
-              name="criar-icon"
+              name="consultar-icon"
               width="20"
               height="20"
               viewBox="0 0 20.71 20.697"
               fill="#ffffff"
             />
-            <p class="ml-2">Deploy</p>
+            <p class="ml-2">IMPLEMENTAR</p>
           </v-btn>
         </v-col>
         <v-col
@@ -89,7 +85,7 @@
             }"
           >
             <unicon
-              name="criar-icon"
+              name="alterar-icon"
               width="20"
               height="20"
               viewBox="0 0 20.71 20.727"
@@ -107,24 +103,6 @@
             this.$store.state.name != ''
           "
         >
-          <v-btn
-            @click="$router.push('/bpmn/editor')"
-            rounded
-            class="white--text clav-linear-background"
-            :class="{
-              'px-8': $vuetify.breakpoint.lgAndUp,
-              'px-2': $vuetify.breakpoint.mdAndDown,
-            }"
-          >
-            <unicon
-              name="criar-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 20.71 20.727"
-              fill="#ffffff"
-            />
-            <p class="ml-2">Editar</p>
-          </v-btn>
         </v-col>
       </v-row>
     </v-container>
