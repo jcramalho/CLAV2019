@@ -510,7 +510,6 @@ export default {
 
     async confirmaDialogConfirmacao(dados) {
       this.confirmado = true
-      console.log(this.confirmado)
       await this.finalizarPedido(dados)
       this.fechaDialogConfirmacao()
     },
@@ -521,8 +520,6 @@ export default {
         (key) => this.novoHistorico[key].cor === "vermelho"
       );
 
-      console.log(haVermelhos)
-      console.log(!this.confirmado)
       if (haVermelhos && !this.confirmado)
         this.dialogConfirmacao = {
           visivel: true,
@@ -533,46 +530,44 @@ export default {
 
       // Caso contrário segue para a finalização do pedido
       else {
-        console.log("else")
         try {
+          let dadosUtilizador = this.$verifyTokenUser();
+
           let pedido = JSON.parse(JSON.stringify(this.p));
-
-          if (numeroErros === 0) {
-            for (const key in pedido.objeto.dados) {
-              if (pedido.objeto.dados[key] === null || pedido.objeto.dados[key] === "") {
-                delete pedido.objeto.dados[key];
-              }
+          
+          // Eliminar campos vazios
+          for (const key in pedido.objeto.dados) {
+            if (pedido.objeto.dados[key] === null || pedido.objeto.dados[key] === "") {
+              delete pedido.objeto.dados[key];
             }
-
-            const estado = "Validado";
-
-            let dadosUtilizador = this.$verifyTokenUser();
-
-            const novaDistribuicao = {
-              estado: estado,
-              responsavel: dadosUtilizador.email,
-              data: new Date(),
-              despacho: dados.mensagemDespacho,
-            };
-
-            pedido.estado = estado;
-
-            this.novoHistorico = adicionarNotaComRemovidos(
-              this.historico[this.historico.length - 1],
-              this.novoHistorico
-            );
-
-            pedido.historico.push(this.novoHistorico);
-
-            await this.$request("put", "/pedidos", {
-              pedido: pedido,
-              distribuicao: novaDistribuicao,
-            });
-
-            this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
-          } else {
-            this.erroPedido = true;
           }
+
+          const estado = "Validado";
+          pedido.estado = estado;
+
+          // Atualizar histórico
+          this.novoHistorico = adicionarNotaComRemovidos(
+            this.historico[this.historico.length - 1],
+            this.novoHistorico
+          );
+
+          pedido.historico.push(this.novoHistorico);
+
+          // Criar nova distribuição
+          const novaDistribuicao = {
+            estado: estado,
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho,
+          };
+
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao,
+          });
+          
+          this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
+          
         } catch (e) {
           this.erroPedido = true;
 
