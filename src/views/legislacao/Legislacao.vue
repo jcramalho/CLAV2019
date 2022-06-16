@@ -1,20 +1,30 @@
 <template>
-  <div>
-    <Loading v-if="!legislacaoReady" :message="'legislações'" />
-    <Listagem
-      v-else
-      :lista="legislacao"
-      tipo="Legislação"
-      :cabecalho="cabecalhos"
-      :campos="campos"
-      :ids="ids"
-    />
-  </div>
+  <v-card flat>
+    <v-row>
+      <v-col cols="3" align="left" justify="center">
+        <Voltar />
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="12" align="center" justify="center">
+        <Loading v-if="!legislacaoReady" :message="'legislações'" />
+        <Listagem
+          v-else
+          :lista="legislacao"
+          tipo="Legislação"
+          :cabecalho="cabecalhos"
+          :campos="campos"
+          :ids="ids"
+        />
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
+import Voltar from "@/components/generic/Voltar";
 
 import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
 
@@ -29,7 +39,8 @@ export default {
   }),
   components: {
     Listagem,
-    Loading
+    Loading,
+    Voltar
   },
 
   methods: {

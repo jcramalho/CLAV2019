@@ -1,8 +1,8 @@
 <template>
   <v-col>
     <!-- Infobox com os resultados da validação -->
-    <v-btn dark rounded class="indigo darken-3" @click="validarTipologia">
-      Validar Tipologia
+    <v-btn dark rounded class="indigo darken-4" @click="validarTipologia">
+      Validar
     </v-btn>
 
     <!-- Erros na Validação ....................... -->
