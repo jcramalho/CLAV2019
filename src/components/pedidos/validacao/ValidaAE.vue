@@ -523,11 +523,9 @@ export default {
         haVermelhos1.push(Object.keys(this.novoHistorico.classes.dados[i]).some((h) => this.novoHistorico.classes.dados[i][h].cor === "vermelho"));
       
       var haVermelhos2 = []
-      for(var i = 0; i < this.novoHistorico.classes.dados.length; i++) {
-        console.log(this.novoHistorico.classes.dados[i].agregacoes.dados)
+      for(var i = 0; i < this.novoHistorico.classes.dados.length; i++) 
         if(this.novoHistorico.classes.dados[i].agregacoes.dados !== undefined) 
           haVermelhos2.push(Object.keys(this.novoHistorico.classes.dados[i].agregacoes.dados).some((h) => this.novoHistorico.classes.dados[i].agregacoes.dados[h].cor === "vermelho"));
-      }
 
       let verm = false
       if(haVermelhos ||  haVermelhos1.includes(true) || haVermelhos2.includes(true))
