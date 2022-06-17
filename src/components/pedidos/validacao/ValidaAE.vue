@@ -510,20 +510,28 @@ export default {
 
     async confirmaDialogConfirmacao(dados) {
       this.confirmado = true
-      console.log(this.confirmado)
       await this.finalizarPedido(dados)
       this.fechaDialogConfirmacao()
     },
 
     async finalizarPedido(dados) {
       // Procura campos a vermelho
-      const haVermelhos = Object.keys(this.novoHistorico).some(
-        (key) => this.novoHistorico[key].cor === "vermelho"
-      );
+      var haVermelhos = Object.keys(this.novoHistorico).some((h) => this.novoHistorico[h].cor === "vermelho");
 
-      console.log(haVermelhos)
-      console.log(!this.confirmado)
-      if (haVermelhos && !this.confirmado)
+      var haVermelhos1 = []
+      for(var i = 0; i < this.novoHistorico.classes.dados.length; i++)
+        haVermelhos1.push(Object.keys(this.novoHistorico.classes.dados[i]).some((h) => this.novoHistorico.classes.dados[i][h].cor === "vermelho"));
+      
+      var haVermelhos2 = []
+      for(var i = 0; i < this.novoHistorico.classes.dados.length; i++) 
+        if(this.novoHistorico.classes.dados[i].agregacoes.dados !== undefined) 
+          haVermelhos2.push(Object.keys(this.novoHistorico.classes.dados[i].agregacoes.dados).some((h) => this.novoHistorico.classes.dados[i].agregacoes.dados[h].cor === "vermelho"));
+
+      let verm = false
+      if(haVermelhos ||  haVermelhos1.includes(true) || haVermelhos2.includes(true))
+        verm = true
+      
+      if (verm && !this.confirmado)
         this.dialogConfirmacao = {
           visivel: true,
           mensagem:
@@ -533,46 +541,44 @@ export default {
 
       // Caso contrário segue para a finalização do pedido
       else {
-        console.log("else")
         try {
+          let dadosUtilizador = this.$verifyTokenUser();
+
           let pedido = JSON.parse(JSON.stringify(this.p));
-
-          if (numeroErros === 0) {
-            for (const key in pedido.objeto.dados) {
-              if (pedido.objeto.dados[key] === null || pedido.objeto.dados[key] === "") {
-                delete pedido.objeto.dados[key];
-              }
+          
+          // Eliminar campos vazios
+          for (const key in pedido.objeto.dados) {
+            if (pedido.objeto.dados[key] === null || pedido.objeto.dados[key] === "") {
+              delete pedido.objeto.dados[key];
             }
-
-            const estado = "Validado";
-
-            let dadosUtilizador = this.$verifyTokenUser();
-
-            const novaDistribuicao = {
-              estado: estado,
-              responsavel: dadosUtilizador.email,
-              data: new Date(),
-              despacho: dados.mensagemDespacho,
-            };
-
-            pedido.estado = estado;
-
-            this.novoHistorico = adicionarNotaComRemovidos(
-              this.historico[this.historico.length - 1],
-              this.novoHistorico
-            );
-
-            pedido.historico.push(this.novoHistorico);
-
-            await this.$request("put", "/pedidos", {
-              pedido: pedido,
-              distribuicao: novaDistribuicao,
-            });
-
-            this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
-          } else {
-            this.erroPedido = true;
           }
+
+          const estado = "Validado";
+          pedido.estado = estado;
+
+          // Atualizar histórico
+          this.novoHistorico = adicionarNotaComRemovidos(
+            this.historico[this.historico.length - 1],
+            this.novoHistorico
+          );
+
+          pedido.historico.push(this.novoHistorico);
+
+          // Criar nova distribuição
+          const novaDistribuicao = {
+            estado: estado,
+            responsavel: dadosUtilizador.email,
+            data: new Date(),
+            despacho: dados.mensagemDespacho,
+          };
+
+          await this.$request("put", "/pedidos", {
+            pedido: pedido,
+            distribuicao: novaDistribuicao,
+          });
+          
+          this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`);
+          
         } catch (e) {
           this.erroPedido = true;
 
