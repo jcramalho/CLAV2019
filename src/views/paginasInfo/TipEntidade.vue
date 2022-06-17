@@ -66,7 +66,7 @@
               viewBox="0 0 20.71 20.721"
               fill="#ffffff"
             />
-            <p class="ml-2">Adicionar</p>
+            <p class="ml-2">Criar</p>
           </v-btn>
         </v-col>
         <v-col
@@ -95,7 +95,7 @@
               viewBox="0 0 20.71 20.727"
               fill="#ffffff"
             />
-            <p class="ml-2">Editar</p>
+            <p class="ml-2">Alterar</p>
           </v-btn>
         </v-col>
       </v-row>

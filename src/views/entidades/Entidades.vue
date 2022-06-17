@@ -16,7 +16,6 @@
           :campos="campos"
         />
       </v-col>
-      <v-col cols="3"> </v-col>
     </v-row>
   </v-card>
 </template>

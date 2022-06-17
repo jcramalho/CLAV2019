@@ -1,23 +1,34 @@
 <template>
-  <div>
-    <Loading v-if="!legislacaoReady" :message="'legislação'" />
-    <ConsultaLeg
-      v-else
-      v-bind:objeto="legislacao"
-      v-bind:titulo="titulo"
-      v-bind:listaReg="regulaProc"
-    />
-  </div>
+  <v-card flat class="ma-3">
+    <v-row>
+      <v-col cols="3" align="left" justify="center">
+        <Voltar />
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="12" align="center" justify="center">
+        <Loading v-if="!legislacaoReady" :message="'legislação'" />
+        <ConsultaLeg
+          v-else
+          v-bind:objeto="legislacao"
+          v-bind:titulo="titulo"
+          v-bind:listaReg="regulaProc"
+        />
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
 import ConsultaLeg from "@/components/legislacao/consulta/ConsultaLeg";
 import Loading from "@/components/generic/Loading";
+import Voltar from "@/components/generic/Voltar";
 
 export default {
   components: {
     ConsultaLeg,
-    Loading
+    Loading,
+    Voltar
   },
   data: () => ({
     idLegislacao: "",
