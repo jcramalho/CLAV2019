@@ -215,7 +215,8 @@ import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 import ErroDialog from "@/components/generic/ErroDialog";
 import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperacao";
 
-import nanoid from "nanoid";
+//import nanoid from "nanoid";
+const nanoid = require("nanoid");
 
 import {
   comparaSigla,

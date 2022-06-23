@@ -18,9 +18,6 @@
                 solo
                 readonly
               ></v-text-field>
-              <template v-slot:append>
-                <p>OLA</p>
-              </template>
             </v-col>
           </v-row>
           <v-row>
@@ -86,20 +83,24 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+
         <v-btn
+          v-if="path!='bpmn' || (path=='bpmn' && this.options.includes('Devolver Pedido'))"
           dark
           rounded
           class="red darken-4"
-          @click="devolverPedidoDialog = true"
+          @click="devolverPedido()"
         >
           Devolver
         </v-btn>
+
         <v-btn
+         v-if="path!='bpmn' || (path=='bpmn' && this.options.includes('Aprovar Pedido'))"
           style="margin-left: 10px"
           color="indigo darken-4"
           dark
           rounded
-          @click="criarDespacho"
+          @click="despacharPedido()"
         >
           Despachar
           <v-icon right>check</v-icon>
@@ -119,8 +120,11 @@
 import SelecionarData from "@/components/generic/SelecionarData.vue";
 import DevolverPedido from "@/components/pedidos/generic/DevolverPedido";
 
+import CamundaRest from './../../services/camunda-rest.js';
+import DataTransformation from './../../utils/data-transformation';
+
 export default {
-  props: ["sumario", "numeroDespacho"],
+  props: ["sumario", "numeroDespacho", "taskId", "options"],
   components: {
     SelecionarData,
     DevolverPedido,
@@ -132,6 +136,10 @@ export default {
         mensagem: null,
         sumario: this.sumario,
       },
+      formdata: {
+        "opcao": ''
+      },
+      path: this.$route.path.split('/')[1],
       devolverPedidoDialog: false,
     };
   },
@@ -140,6 +148,35 @@ export default {
       if (this.$refs.form.validate()) {
         this.$emit("criar", this.despacho);
       }
+    },
+
+    devolverPedido() {
+      if (this.path=='bpmn') {
+        this.formdata.opcao = 'devolverPedido'
+        this.submit()
+      } 
+      else {
+        this.devolverPedidoDialog = true;
+      }
+    },
+
+    despacharPedido() {
+      if (this.path=='bpmn') {
+        this.formdata.opcao = 'aprovarPedido'
+        this.submit()
+      } 
+      else {
+        this.criarDespacho();
+      }
+    },
+
+    submit() {
+      const variables = DataTransformation.generateVariablesFromFormFields(this.formdata);
+      CamundaRest.postCompleteTask(this.taskId, variables).then((result) => {
+        if (result.status === 200 || result.status === 204) {
+          this.$router.push({ path: '/bpmn/tasklist/' });
+        }
+      });
     },
   },
 };

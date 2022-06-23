@@ -6,8 +6,17 @@
       @devolver="devolverPedido"
       :sumario="sumario"
       :numeroDespacho="numeroDespacho"
+      :options="options"
+      :taskId="taskId"
     />
-    <ConsultaPedido :idp="idPedido" @pedido_original="pedido = $event" />
+    <ConsultaPedido 
+      v-if="idPed" 
+      :idp="idPed" 
+      :options="options"
+      :taskId="taskId"
+      @pedido_original="pedido = $event" 
+    />
+
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
       <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
     </v-dialog>
@@ -22,14 +31,18 @@ import ConsultaPedido from "@/components/pedidos/ConsultaPedido.vue"; // @ is an
 import DespachoAprovacao from "@/components/pedidos/DespachoAprovacao.vue";
 import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
 import ErroDialog from "@/components/generic/ErroDialog";
-const nanoid = require("nanoid");
+const { nanoid } = require("nanoid");
+
+
+import CamundaRest from './../../services/camunda-rest.js';
 
 export default {
-  props: ["idPedido"],
+  props: ["idPedido", "taskId", "options"],
   data() {
     return {
       showPedido: false,
       pedido: null,
+      idPed: this.idPedido,
       sumario: null,
       erroDialog: {
         visivel: false,
@@ -39,9 +52,32 @@ export default {
     };
   },
   async created() {
+     //ISTO NAO FUNCIONA...
+     /*
     let res = await this.$request("get", "/contador/despacho");
-    this.numeroDespacho =
-      res.data.valor.toString() + "/" + new Date().getFullYear();
+    console.log(res)
+    this.numeroDespacho = res.data.valor.toString() + "/" + new Date().getFullYear();
+    console.log(this.numeroDespacho)
+    */
+
+    //new
+
+    if (this.$route.path.split("/")[1]=='bpmn') {
+      
+      var id = await this.getID();
+
+      console.log("id: " + id)
+
+      const {data} = await this.$request("get", "/pedidos/" + id);
+
+      this.pedido = data 
+      this.idPed = data.codigo
+
+      console.log("carreguei os dados! Despachar Pedido..")
+      console.log(this.pedido)
+      console.log("task id: " + this.taskId)
+      console.log("task options: " + this.options)
+    }
   },
   watch: {
     pedido(newValue) {
@@ -62,6 +98,18 @@ export default {
     }
   },
   methods: {
+
+    async getID() {
+      var id = this.idPedido
+      if (!id) {
+        await CamundaRest.getTaskVariables(this.taskId, "pedido")
+          .then((result) => {
+            id = result.data.pedido.value.codigo
+          })
+      }
+      return id
+    },
+
     async criarDependentes(pedidos_dependencias) {
       try {
         for (let i = 0; i < pedidos_dependencias.length; i++) {
@@ -114,8 +162,8 @@ export default {
         this.erroDialog.mensagem = "Erro ao criar as dependências!";
       }
     },
+
     async finalizarPedido(despacho) {
-      //alert(this.pedido.objeto.tipo)
       let res;
       let despachoAprovacao;
       try {
@@ -128,6 +176,9 @@ export default {
 
           this.numeroDespacho =
             res.data.valor.toString() + "/" + new Date().getFullYear();
+
+          console.log("vo buscar o nanoid")
+          console.log("valor do nanoid: " + nanoid())
 
           despachoAprovacao = {
             id: "leg_" + nanoid(),
@@ -217,19 +268,7 @@ export default {
 
         }
         else if (this.pedido.objeto.tipo == 'PPD') {
-          //for (const key in this.pedido.objeto.dados) {
-          //  if (
-          //    this.pedido.objeto.dados[key] === undefined ||
-          //    this.pedido.objeto.dados[key] === null ||
-          //    this.pedido.objeto.dados[key] === ""
-          //  ) {
-          //    delete this.pedido.objeto.dados[key];
-          //  }
-          //}
-          //alert(JSON.stringify(this.pedido.objeto))
-          //alert(JSON.stringify(this.pedido.objeto.dados))
           this.showPedido = true
-          //await this.$request("post", "/ppd/registar",  this.pedido.objeto.dados );
         }
 
         await this.$request("post", "/legislacao", despachoAprovacao);
@@ -255,7 +294,7 @@ export default {
 
         await this.$request("put", "/contador/despacho");
 
-        this.$router.push(`/pedidos/finalizacao/${this.idPedido}`);
+        this.$router.push(`/pedidos/finalizacao/${this.idPed}`);
         
       } catch (e) {
         console.log(e);

@@ -114,15 +114,14 @@
     </v-card-text>
 
     <v-card-actions>
-      <v-btn color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
+      <v-btn v-if="path!='bpmn' || (path=='bpmn' && this.options.includes('Voltar'))" color="indigo accent-4" dark @click="voltar">Voltar</v-btn>
       <v-spacer />
       <v-btn
         v-if="
-          (p.estado === 'Distribuído' ||
-            p.estado === 'Apreciado' ||
-            p.estado === 'Redistribuído' ||
-            p.estado === 'Reapreciado') &&
-          temPermissaoSubstituirResponsavel()
+          (p.estado === 'Distribuído' || p.estado === 'Apreciado' ||
+           p.estado === 'Redistribuído' || p.estado === 'Reapreciado') &&
+          temPermissaoSubstituirResponsavel() &&
+          (path!='bpmn' || (path=='bpmn' && this.options.includes('Substituir Responsavel')))
         "
         color="indigo accent-4"
         dark
@@ -133,10 +132,9 @@
 
       <v-btn
         v-if="
-          p.estado === 'Apreciado' ||
-          p.estado === 'Reapreciado' ||
-          p.estado === 'Em Despacho' ||
-          p.estado === 'Devolvido para validação'
+          (p.estado === 'Apreciado' || p.estado === 'Reapreciado' ||
+           p.estado === 'Em Despacho' || p.estado === 'Devolvido para validação') &&
+           (path!='bpmn' || (path=='bpmn' && this.options.includes('Reapreciar Pedido')))
         "
         color="indigo accent-4"
         dark
@@ -195,8 +193,11 @@ import VerHistorico from "@/components/pedidos/generic/VerHistorico";
 import { NIVEIS_ANALISAR_PEDIDO, NIVEIS_SUBSTITUIR_RESPONSAVEL } from "@/utils/consts";
 import { filtraNivel } from "@/utils/permissoes";
 
+import CamundaRest from './../../../services/camunda-rest.js';
+import DataTransformation from './../../../utils/data-transformation';
+
 export default {
-  props: ["p", "etapaPedido"],
+  props: ["p", "etapaPedido", "taskId", "options"],
 
   components: {
     ShowTSPluri,
@@ -220,6 +221,7 @@ export default {
   data() {
     return {
       utilizadores: [],
+      path: this.$route.path.split("/")[1],
       reapreciarDialog: false,
       substituirResponsavelDialog: false,
       verHistoricoDialog: false,
@@ -236,6 +238,9 @@ export default {
         { text: "Responsável", value: "responsavel", class: "subtitle-1" },
         { text: "Despacho", value: "despacho", class: "subtitle-1" },
       ],
+      formdata: {
+        "opcao": ''
+      },
     };
   },
 
@@ -252,8 +257,23 @@ export default {
       this.utilizadores = utilizadores;
     },
 
+    submit() {
+      const variables = DataTransformation.generateVariablesFromFormFields(this.formdata);
+      CamundaRest.postCompleteTask(this.taskId, variables).then((result) => {
+        if (result.status === 200 || result.status === 204) {
+          this.$router.push({ path: '/bpmn/tasklist/' });
+        }
+      });
+    },
+
     reapreciar() {
-      this.reapreciarDialog = true;
+      if (this.path=='bpmn') {
+        this.formdata.opcao = 'reapreciarPedido'
+        this.submit()
+      } 
+      else {
+        this.reapreciarDialog = true;
+      }
     },
 
     fecharReapreciarDialog() {

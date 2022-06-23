@@ -78,7 +78,7 @@ import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperaca
 import { eNUV, eNV,  eDataFormatoErrado, testarRegex } from "@/utils/validadores";
 import ErroAPIDialog from "@/components/generic/ErroAPIDialog";
 
-import nanoid from "nanoid";
+const {nanoid} = require("nanoid");
 
 export default {
   props: ["vai_para_despacho", 'taskId'],
@@ -443,13 +443,6 @@ export default {
       this.erroPedido = false;
     },
 
-    async historicoToDados(pedido) {
-      for (var key in this.historico) {
-        pedido.objeto.dados[key] = this.historico[key].dados
-      }
-      return pedido
-    },
-
     async getID() {
       var id = this.idp
       if (!id) {
@@ -481,7 +474,7 @@ export default {
 
     async historicoToDados(pedido) {
       for (var key in this.historico) {
-        if (this.historico[key].dados) pedido.objeto.dados[key] = this.historico[key].dados
+        if (this.historico[key].dados || this.historico[key].dados=="") pedido.objeto.dados[key] = this.historico[key].dados
         else {
           for (var key2 in this.historico[key]) {
             pedido.objeto.dados[key][key2] = this.historico[key][key2].dados
@@ -691,11 +684,7 @@ export default {
 
             if (pedido.objeto.acao == 'Criação') {
 
-              console.log("vou buscar o nanoid")
-
               const id = `leg_${nanoid()}`;
-
-              console.log("nanoid: " + id)
 
               pedido.objeto.dados.id = id;
 

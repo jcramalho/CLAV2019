@@ -145,7 +145,8 @@
 </template>
 
 <script>
-import nanoid from "nanoid";
+//import nanoid from "nanoid";
+const {nanoid} = require("nanoid");
 import ValidarTIInfoBox from "@/components/termosIndice/ValidarTermoIndiceInfoBox";
 
 export default {

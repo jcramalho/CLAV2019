@@ -1,6 +1,11 @@
 <template>
   <div v-if="pedidoLoaded">
-    <ShowPedido :p="selectedPedido" :etapaPedido="etapaPedido" />
+    <ShowPedido 
+      :p="selectedPedido" 
+      :etapaPedido="etapaPedido" 
+      :options="options"
+      :taskId="taskId"
+    />
   </div>
 
   <div v-else style="text-align: center" class="mt-4">
@@ -13,7 +18,7 @@
 import ShowPedido from "@/components/pedidos/consulta/showPedido.vue";
 
 export default {
-  props: ["idp"],
+  props: ["idp", "taskId", "options"],
 
   components: { ShowPedido },
 
