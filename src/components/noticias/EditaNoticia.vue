@@ -89,7 +89,6 @@
 </template>
 
 <script>
-import marked from "marked";
 import PainelOpsNot from "@/components/noticias/PainelOperacoesNoticias";
 import Editor from "@/components/generic/EditorMarkdown.vue";
 
