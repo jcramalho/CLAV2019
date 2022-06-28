@@ -3,6 +3,8 @@
     <v-spacer />
     <PO
       :operacao="validar ? 'Validar' : 'Analisar'"
+      :pedido="p"
+      :options="o"
       @avancarPedido="encaminharPedido($event)"
       @finalizarPedido="verificaEstadoCampos($event)"
       @devolverPedido="devolverPedido($event)"
@@ -30,6 +32,7 @@ export default {
   },
   props: {
     p: Object,
+    o: Array,
     historico: Array,
     novoHistorico: Object,
     validar: Boolean,

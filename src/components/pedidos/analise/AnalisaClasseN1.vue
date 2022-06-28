@@ -20,6 +20,7 @@
 
     <PainelOperacoesPedido
       :p="p"
+      :o="o"
       :historico="historico"
       :novoHistorico="novoHistorico"
       :validar="validar"
@@ -63,7 +64,7 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
+const {nanoid} = require("nanoid");
 import PainelOperacoesPedido from "@/components/pedidos/generic/PainelOperacoesPedido";
 import CampoPedido from "@/components/pedidos/generic/CampoPedido";
 import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
@@ -75,6 +76,7 @@ import { mapKeys } from "@/utils/utils";
 export default {
   props: {
     p: Object,
+    o: Array,
     validar: Boolean
   },
   components: {

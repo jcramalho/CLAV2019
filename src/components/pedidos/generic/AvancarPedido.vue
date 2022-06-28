@@ -57,7 +57,8 @@
           pedidoInfo.estado !== 'Submetido' &&
           pedidoInfo.estado !== 'Ressubmetido' &&
           pedidoInfo.estado !== 'Apreciado' &&
-          pedidoInfo.estado !== 'Apreciado2v'
+          pedidoInfo.estado !== 'Apreciado2v' && 
+          pedidoInfo.estado !== 'Em Despacho'
         "
         v-model="tab"
       >
@@ -307,7 +308,7 @@ export default {
         else if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído") {
             this.tabs[this.tab] === "Validação 1" ? (estado = "Apreciado") : (estado = "Apreciado2v");
         }
-        else if (pedido.estado === "Apreciado" || pedido.estado === "Apreciado2v") {
+        else if (pedido.estado === "Apreciado" || pedido.estado === "Apreciado2v" || pedido.estado === "Em Despacho") {
             this.options.includes("Reapreciar") ? estado = "Redistribuído" : estado = "Apreciado2v";
         }
 
