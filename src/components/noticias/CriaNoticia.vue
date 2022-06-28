@@ -78,7 +78,6 @@
 </template>
 
 <script>
-import marked from "marked";
 import Campo from "@/components/generic/CampoCLAV.vue";
 import PainelOpsNot from "@/components/noticias/PainelOperacoesNoticias.vue";
 import Editor from "@/components/generic/EditorMarkdown.vue";

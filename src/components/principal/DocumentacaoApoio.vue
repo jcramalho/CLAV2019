@@ -274,7 +274,7 @@
 </template>
 
 <script>
-import marked from "marked";
+import { marked } from "marked";
 import Loading from "@/components/generic/Loading";
 import DocApoioProdTecCientifica from "@/components/principal/DocApoio-ProdTecCientifica.vue";
 import TogglePanelsCLAV from "@/components/generic/TogglePanelsCLAV";

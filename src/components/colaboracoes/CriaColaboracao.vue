@@ -114,7 +114,6 @@
 </template>
 
 <script>
-import marked from "marked";
 import PainelOpsCreditos from "@/components/colaboracoes/PainelOperacoesColaboracoes.vue";
 import SelecionarData from "@/components/generic/SelecionarData.vue";
 

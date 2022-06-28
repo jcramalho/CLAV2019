@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import marked from "marked";
 import Loading from "@/components/generic/Loading";
 
 export default {
