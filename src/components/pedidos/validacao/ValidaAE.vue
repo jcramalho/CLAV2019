@@ -572,11 +572,22 @@ export default {
 
     async finalizarPedido(dados) {
       // Procura campos a vermelho
-      const haVermelhos = Object.keys(this.novoHistorico).some(
-        (key) => this.novoHistorico[key].cor === "vermelho"
-      );
+      var haVermelhos = Object.keys(this.novoHistorico).some((h) => this.novoHistorico[h].cor === "vermelho");
 
-      if (haVermelhos && !this.confirmado)
+      var haVermelhos1 = []
+      for(var i = 0; i < this.novoHistorico.classes.dados.length; i++)
+        haVermelhos1.push(Object.keys(this.novoHistorico.classes.dados[i]).some((h) => this.novoHistorico.classes.dados[i][h].cor === "vermelho"));
+      
+      var haVermelhos2 = []
+      for(var i = 0; i < this.novoHistorico.classes.dados.length; i++) 
+        if(this.novoHistorico.classes.dados[i].agregacoes.dados !== undefined) 
+          haVermelhos2.push(Object.keys(this.novoHistorico.classes.dados[i].agregacoes.dados).some((h) => this.novoHistorico.classes.dados[i].agregacoes.dados[h].cor === "vermelho"));
+
+      let verm = false
+      if(haVermelhos ||  haVermelhos1.includes(true) || haVermelhos2.includes(true))
+        verm = true
+      
+      if (verm && !this.confirmado)
         this.dialogConfirmacao = {
           visivel: true,
           mensagem:

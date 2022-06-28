@@ -7,16 +7,16 @@
         <v-btn
           v-if="this.acao == 'Criação'"
           rounded
-          class="indigo accent-4 white--text"
+          class="teal darken-4 white--text"
           @click="criarAlterarLegislacao"
-          >Criar Diploma</v-btn
+          >Submeter</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
-          class="indigo accent-4 white--text"
+          class="teal darken-4 white--text"
           @click="criarAlterarLegislacao"
-          >Alterar Diploma</v-btn
+          >Submeter</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Revogação'"
@@ -29,26 +29,10 @@
 
       <v-col>
         <v-btn
-          v-if="this.acao == 'Criação'"
           rounded
           class="red darken-4 white--text"
           @click="eliminarLegislacao"
-          >Cancelar Criação</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Alteração'"
-          rounded
-          class="red darken-4 white--text"
-          @click="eliminarLegislacao"
-          >Cancelar Alteração</v-btn
-        >
-        <v-btn
-          v-else-if="this.acao == 'Revogação'"
-          dark
-          rounded
-          class="red darken-4"
-          @click="eliminarLegislacao"
-          >Cancelar Revogação</v-btn
+          >Cancelar</v-btn
         >
       </v-col>
 

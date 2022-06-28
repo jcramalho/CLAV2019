@@ -7,16 +7,16 @@
         <v-btn
           v-if="this.acao == 'Criação'"
           rounded
-          class="indigo accent-4 white--text"
+          class="teal darken-4 white--text"
           @click="criarAlterarTipologia"
-          >Criar Tipologia</v-btn
+          >Submeter</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
-          class="indigo accent-4 white--text"
+          class="teal darken-4 white--text"
           @click="criarAlterarTipologia"
-          >Alterar Tipologia</v-btn
+          >Submeter</v-btn
         >
       </v-col>
 
@@ -27,7 +27,7 @@
           rounded
           class="red darken-4"
           @click="eliminarTipologia"
-          >Cancelar Criação</v-btn
+          >Cancelar</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
@@ -35,7 +35,7 @@
           rounded
           class="red darken-4"
           @click="eliminarTipologia"
-          >Cancelar Alteração</v-btn
+          >Cancelar</v-btn
         >
       </v-col>
 

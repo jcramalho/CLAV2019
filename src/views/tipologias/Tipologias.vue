@@ -1,19 +1,29 @@
 <template>
-  <v-main class="px-12">
-    <Loading v-if="!tipologiaReady" :message="'tipologias'" />
-    <Listagem
-      v-else
-      :lista="tipologias"
-      tipo="Tipologias de Entidade"
-      :cabecalho="cabecalhos"
-      :campos="campos"
-    />
-  </v-main>
+  <v-card flat>
+    <v-row align="center" justify="center">
+      <v-col align="left">
+        <Voltar />
+      </v-col>
+    </v-row>
+    <v-row align="center" justify="center">
+      <v-col cols="12" align="center" justify="center">
+        <Loading v-if="!tipologiaReady" :message="'tipologias'" />
+        <Listagem
+          v-else
+          :lista="tipologias"
+          tipo="Tipologias de Entidade"
+          :cabecalho="cabecalhos"
+          :campos="campos"
+        />
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
+import Voltar from "@/components/generic/Voltar";
 
 import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
 
@@ -29,6 +39,7 @@ export default {
   components: {
     Listagem,
     Loading,
+    Voltar
   },
 
   methods: {
