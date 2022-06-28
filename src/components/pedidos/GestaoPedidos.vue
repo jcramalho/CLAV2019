@@ -144,7 +144,7 @@ export default {
           "historico": null
       },
       pedidosimples: ['Entidade','Tipologia','Legislação','Auto de Eliminação'],
-      pedidocomplexo: ['TS', 'TS Organizacional', 'PPD','RADA','Classe N1','Classe N2','Classe N3','Classe N4'],
+      pedidocomplexo: ['TS', 'TS Organizacional', 'PPD','RADA','Classe_N1','Classe_N2','Classe_N3','Classe_N4'],
       full: false
     };
   },

@@ -5,6 +5,7 @@
       :operacao="validar ? 'Validar' : 'Analisar'"
       :pedido="p"
       :options="o"
+      :historico="novoHistorico"
       @avancarPedido="encaminharPedido($event)"
       @finalizarPedido="verificaEstadoCampos($event)"
       @devolverPedido="devolverPedido($event)"
@@ -31,11 +32,11 @@ export default {
     ConfirmacaoOperacao,
   },
   props: {
-    p: Object,
-    o: Array,
-    historico: Array,
-    novoHistorico: Object,
-    validar: Boolean,
+    p: {type: Object},
+    o: {type: Array},
+    historico: {type: Array},
+    novoHistorico: {},
+    validar: {type: Boolean},
   },
   data() {
     return {

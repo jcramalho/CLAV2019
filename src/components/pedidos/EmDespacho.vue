@@ -60,6 +60,12 @@ export default {
     console.log(this.numeroDespacho)
     */
 
+    //ISTO FOI INVENTADO E TEM DE SER CORRIGIDO PORQUE A ROTA NÃO ESTAVA A FUNCIONAR
+    let res = new Date().getMinutes();
+    console.log(res)
+    this.numeroDespacho = res.toString() + "/" + new Date().getFullYear();
+    console.log(this.numeroDespacho)
+
     //new
 
     if (this.$route.path.split("/")[1]=='bpmn') {

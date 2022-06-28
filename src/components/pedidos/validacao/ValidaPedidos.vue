@@ -65,7 +65,7 @@
               "
               :p="pedido"
               :o="options"
-              validar
+              :validar='true'
             />
 
             <ValidaAE

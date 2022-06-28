@@ -134,6 +134,7 @@ export default {
       this.novoHistorico = JSON.parse(
         JSON.stringify(this.historico[this.historico.length - 1])
       );
+      console.log("historico: " + JSON.stringify(this.novoHistorico))
       Object.keys(this.dados).forEach(key => {
         this.esconderOperacoes[key] = false;
       });
@@ -149,6 +150,8 @@ export default {
   },
   computed: {
     dados() {
+      console.log("aqui")
+      console.log(this.p.objeto.dados)
       return this.p.objeto.dados;
     },
 
