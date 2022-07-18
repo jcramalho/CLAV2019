@@ -174,7 +174,7 @@
 
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 

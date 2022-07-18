@@ -123,7 +123,7 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 const help = require("@/config/help").help;
 
 import InfoBox from "@/components/generic/infoBox.vue";

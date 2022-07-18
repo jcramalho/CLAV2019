@@ -63,7 +63,7 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 import PainelOperacoesPedido from "@/components/pedidos/generic/PainelOperacoesPedido";
 import CampoPedido from "@/components/pedidos/generic/CampoPedido";
 import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";

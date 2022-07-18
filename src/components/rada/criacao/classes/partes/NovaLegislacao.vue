@@ -142,7 +142,7 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 import SelecionarData from "@/components/generic/SelecionarData";
 
 export default {

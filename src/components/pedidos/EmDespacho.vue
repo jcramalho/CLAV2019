@@ -22,7 +22,7 @@ import ConsultaPedido from "@/components/pedidos/ConsultaPedido.vue"; // @ is an
 import DespachoAprovacao from "@/components/pedidos/DespachoAprovacao.vue";
 import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
 import ErroDialog from "@/components/generic/ErroDialog";
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 
 export default {
   props: ["idPedido"],

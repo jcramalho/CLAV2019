@@ -63,7 +63,7 @@
 
 <script>
 import Campo from "@/components/generic/CampoCLAV";
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 
 export default {
   name: "ListaDeNotasCLAV",
