@@ -37,12 +37,12 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <v-btn color="red darken-4" dark rounded text @click="cancelar()"
-        >Não</v-btn
+      <v-btn color="red darken-4" dark rounded text @click="finalizarPedido()"
+        >Sim</v-btn
       >
 
-      <v-btn class="indigo accent-4" rounded dark @click="finalizarPedido()"
-        >Sim</v-btn
+      <v-btn class="indigo accent-4" rounded dark @click="cancelar()"
+        >Não</v-btn
       >
     </v-card-actions>
   </v-card>

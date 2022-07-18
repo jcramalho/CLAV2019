@@ -70,7 +70,7 @@
           <template v-slot:item="{ item }">
             <tr>
               <td class="subheading">{{ item.estado }}</td>
-              <td class="subheading">
+              <td  md="4" class="subheading">
                 {{ item.data.split("T")[0] }}
               </td>
               <td class="subheading">
@@ -262,7 +262,7 @@ export default {
       { text: "Estado", value: "estado", class: "subtitle-1" },
       { text: "Data", value: "data", class: "subtitle-1" },
       { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-      { text: "Informação da Etapa", value: "despacho", class: "subtitle-1" },
+      { text: "Informação da Etapa", value: "despacho", class: "subtitle-1",width: '65%' },
     ],
   }),
   components: {

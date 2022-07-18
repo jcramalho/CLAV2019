@@ -160,14 +160,14 @@
                             <div class="info-label">Data de Início</div>
                           </td>
                           <td style="width:80%;">
-                            {{ item.dataInicio }}
+                            {{ item.dataInicial }}
                           </td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
                             <div class="info-label">Data de Fim</div>
                           </td>
-                          <td style="width:80%;">{{ item.dataFim }}</td>
+                          <td style="width:80%;">{{ item.dataFinal }}</td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
