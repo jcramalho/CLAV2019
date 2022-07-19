@@ -129,12 +129,12 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.dataInicio }}</span>
+                      <span> {{ item.dataInicial }}</span>
                     </template>
                   </Campo>
                   <Campo nome="Ano de Fim" infoHeader="Ano de Fim" color="neutralpurple">
                     <template v-slot:conteudo>
-                      <span> {{ item.dataFim }}</span>
+                      <span> {{ item.dataFinal }}</span>
                     </template>
                   </Campo>
                   <Campo
