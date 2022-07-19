@@ -2,7 +2,7 @@
   <v-card flat class="pa-3">
     <!-- HEADER -->
     <v-row align="center" justify="center">
-      <v-col cols="12" md="3" align="center"> <Voltar /> </v-col>
+      <!--v-col cols="12" md="3" align="center"> <Voltar /> </v-col-->
       <v-col cols="12" md="6" align="center">
         <p class="clav-content-title-1">
           Nova Tabela de Seleção Pluriorganizacional

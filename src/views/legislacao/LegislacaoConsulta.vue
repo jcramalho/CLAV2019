@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col cols="12" align="center" justify="center">
+      <v-col cols="12">
         <Loading v-if="!legislacaoReady" :message="'legislação'" />
         <ConsultaLeg
           v-else
@@ -52,6 +52,10 @@ export default {
     preparaLegislacao: async function(leg) {
       try {
         var myLegislacao = {
+          codigo: {
+            campo: "Código do diploma",
+            text: leg.codigo
+          },
           data: {
             campo: "Data do diploma",
             text: leg.data
