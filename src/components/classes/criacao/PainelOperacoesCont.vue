@@ -27,7 +27,7 @@
           class="ma-2 teal darken-4"
           @click="criarClasse"
         >
-          Criar classe
+          Submeter
         </v-btn>
       </v-col>
 

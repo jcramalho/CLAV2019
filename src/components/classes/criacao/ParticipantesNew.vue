@@ -2,7 +2,7 @@
   <v-row class="ma-2 indigo lighten-5">
     <v-col cols="3">
       <div class="info-label">Participante novo</div>
-      <v-btn small rounded class="success" @click="newEntidade">
+      <v-btn small rounded class="info" @click="newEntidade">
         Adicionar
         <v-icon small right>add_circle_outline</v-icon>
       </v-btn>

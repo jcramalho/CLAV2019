@@ -8,7 +8,7 @@
       class="ma-2 indigo darken-4"
       @click="validarClasse"
     >
-      Validar classe
+      Validar
     </v-btn>
 
     <!-- Erros na Validação ....................... -->
