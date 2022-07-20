@@ -127,7 +127,7 @@
               <div v-else-if="tipo == 'TS_LC'">
                 <v-autocomplete
                   label="Selecione a fonte de legitimação"
-                  :items="tabelasSelecao.display"
+                  :items="tabelasSelecao"
                   return-object
                   item-text="titulo"
                   v-model="auto.legislacao"
@@ -156,7 +156,7 @@
               <div v-else>
                 <v-autocomplete
                   label="Selecione a fonte de legitimação"
-                  :items="tsRada.display"
+                  :items="tsRada"
                   item-text="titulo"
                   return-object
                   v-model="auto.legislacao"
@@ -409,9 +409,20 @@ export default {
       for(var i = 0; i < this.auto.fundo.length; i++)
         ents.push(this.auto.fundo[i] + '###')
 
+      var leg = ''
+      if(this.tipo == "PGD_LC"){
+        leg = this.portariaLC.id.get(this.auto.legislacao)
+      } else if(this.tipo == "PGD"){
+        leg = this.portaria.id.get(this.auto.legislacao)
+      } else if(this.tipo == "RADA"){
+        leg = this.portariaRada.id.get(this.auto.legislacao)
+      } else{
+        leg = this.auto.legislacao
+      }
+
       var formData = new FormData();
       formData.append('tipo', this.tipo)
-      formData.append('legitimacao', this.portariaLC.id.get(this.auto.legislacao))
+      formData.append('legitimacao', leg)
       formData.append('entidade', ents)
       formData.append('file', this.fileSerie)
       formData.append('agreg', this.fileAgreg)
