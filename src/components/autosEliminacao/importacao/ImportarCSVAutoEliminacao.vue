@@ -118,7 +118,7 @@
               <div v-if="tipo == 'PGD_LC'">
                 <v-autocomplete
                   label="Selecione a fonte de legitimação"
-                  :items="portariaLC"
+                  :items="portariaLC.display"
                   v-model="auto.legislacao"
                   solo
                   dense
@@ -127,7 +127,7 @@
               <div v-else-if="tipo == 'TS_LC'">
                 <v-autocomplete
                   label="Selecione a fonte de legitimação"
-                  :items="tabelasSelecao"
+                  :items="tabelasSelecao.display"
                   return-object
                   item-text="titulo"
                   v-model="auto.legislacao"
@@ -138,7 +138,7 @@
               <div v-else-if="tipo == 'PGD'">
                 <v-autocomplete
                   label="Selecione a fonte de legitimação"
-                  :items="portaria"
+                  :items="portaria.display"
                   v-model="auto.legislacao"
                   solo
                   dense
@@ -147,7 +147,7 @@
               <div v-else-if="tipo == 'RADA'">
                 <v-autocomplete
                   label="Selecione a fonte de legitimação"
-                  :items="portariaRada"
+                  :items="portariaRada.display"
                   v-model="auto.legislacao"
                   solo
                   dense
@@ -156,7 +156,7 @@
               <div v-else>
                 <v-autocomplete
                   label="Selecione a fonte de legitimação"
-                  :items="tsRada"
+                  :items="tsRada.display"
                   item-text="titulo"
                   return-object
                   v-model="auto.legislacao"
@@ -205,14 +205,27 @@
             </v-row>
           </div>
           
-          <br/> 
+            <br/> 
+
+          <div>
+            <v-tooltip top color="info">
+              <template v-slot:activator="{ on }">
+                <v-checkbox
+                  class="py-5 mt-5"
+                  v-model="checkInfo"
+                  label=" O auto de eliminação em submissão respeita todas as regras contidas na respetiva fonte de legitimação, nomeadamente a informação contida nos campos 'Notas ao PCA' e 'Notas ao DF'"
+                  v-on="on"
+                ></v-checkbox>
+              </template>
+            </v-tooltip>
+          </div>
 
           <v-btn
             class="ma-2"
             color="green darken-4"
             dark
             @click="submit()"
-            :disabled="!fileSerie || !auto.legislacao || (auto.fundo.length <= 0)"
+            :disabled="!fileSerie || !auto.legislacao || (auto.fundo.length <= 0) || !checkInfo"
             >Submeter
           </v-btn>
 
@@ -333,9 +346,11 @@ export default {
     fileSerie: null,
     fileAgreg: null,
     tipo: "TS_LC",
+    
+    checkInfo: false, 
+  
     successDialog: false,
     erroDialog: false,
-
     erroTipo: "",
     erros: [],
 
@@ -396,7 +411,7 @@ export default {
 
       var formData = new FormData();
       formData.append('tipo', this.tipo)
-      formData.append('legitimacao', this.auto.legislacao)
+      formData.append('legitimacao', this.portariaLC.id.get(this.auto.legislacao))
       formData.append('entidade', ents)
       formData.append('file', this.fileSerie)
       formData.append('agreg', this.fileAgreg)
@@ -447,10 +462,15 @@ export default {
     },
     prepararLeg: async function (leg) {
       try {
-        var myPortarias = [];
+        var myPortarias = {};
+        var displays = [] 
+        var ids = new Map(); 
         for (var l of leg) {
-          myPortarias.push(l.tipo + " " + l.numero + " - " + l.sumario);
+          displays.push(l.tipo + " " + l.numero + " - " + l.sumario);
+          ids.set(l.tipo + " " + l.numero + " - " + l.sumario,l.id)
         }
+        myPortarias.display = displays
+        myPortarias.id = ids
         return myPortarias;
       } catch (error) {
         return [];
