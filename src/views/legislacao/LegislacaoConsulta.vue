@@ -1,19 +1,17 @@
 <template>
   <v-card flat class="ma-3">
     <v-row>
-      <v-col cols="3" align="left" justify="center">
+      <v-col cols="3" align="center" justify="center">
         <Voltar />
+      </v-col>
+      <v-col cols="9" align="center" justify="center">
+        <span class="clav-content-title-1">{{ titulo }}</span>
       </v-col>
     </v-row>
     <v-row justify="center">
       <v-col cols="12">
         <Loading v-if="!legislacaoReady" :message="'legislação'" />
-        <ConsultaLeg
-          v-else
-          v-bind:objeto="legislacao"
-          v-bind:titulo="titulo"
-          v-bind:listaReg="regulaProc"
-        />
+        <ConsultaLeg v-else v-bind:objeto="legislacao" v-bind:titulo="titulo" v-bind:listaReg="regulaProc" />
       </v-col>
     </v-row>
   </v-card>
@@ -38,7 +36,7 @@ export default {
     legislacaoReady: false
   }),
   methods: {
-    parseEntidades: async function(ent) {
+    parseEntidades: async function (ent) {
       try {
         var entidades = "";
         for (var i = 0; i < ent.length; i++) {
@@ -49,7 +47,7 @@ export default {
         return {};
       }
     },
-    preparaLegislacao: async function(leg) {
+    preparaLegislacao: async function (leg) {
       try {
         var myLegislacao = {
           codigo: {
@@ -102,7 +100,7 @@ export default {
       }
     }
   },
-  created: async function() {
+  created: async function () {
     try {
       this.idLegislacao = window.location.pathname.split("/")[2];
 

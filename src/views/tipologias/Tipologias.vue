@@ -1,5 +1,5 @@
 <template>
-  <v-card flat>
+  <v-container>
     <v-row align="center" justify="center">
       <v-col align="left">
         <Voltar />
@@ -8,16 +8,10 @@
     <v-row align="center" justify="center">
       <v-col cols="12" align="center" justify="center">
         <Loading v-if="!tipologiaReady" :message="'tipologias'" />
-        <Listagem
-          v-else
-          :lista="tipologias"
-          tipo="Tipologias de Entidade"
-          :cabecalho="cabecalhos"
-          :campos="campos"
-        />
+        <Listagem v-else :lista="tipologias" tipo="Tipologias de Entidade" :cabecalho="cabecalhos" :campos="campos" />
       </v-col>
     </v-row>
-  </v-card>
+  </v-container>
 </template>
 
 <script>

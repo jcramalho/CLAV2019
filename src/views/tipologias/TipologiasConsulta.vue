@@ -1,23 +1,18 @@
 <template>
   <v-card flat class="ma-3">
     <v-row>
-      <v-col cols="3" align="left" justify="center">
+      <v-col cols="3" align="center" justify="center">
         <Voltar />
+      </v-col>
+      <v-col cols="9" align="center" justify="center">
+        <span class="clav-content-title-1">{{ titulo }}</span>
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col cols="12">
+      <v-col cols="12" align="center" justify="center">
         <Loading v-if="!tipologiaReady" :message="'a tipologia'" />
-        <Consulta
-          v-else
-          tipo="Tipologias"
-          :objeto="tipologia"
-          :titulo="titulo"
-          :listaProcD="processosDono"
-          :listaEnt="entidades"
-          :listaProcP="processosParticipa"
-          :parts="partsReady"
-        />
+        <Consulta v-else tipo="Tipologias" :objeto="tipologia" :titulo="titulo" :listaProcD="processosDono"
+          :listaEnt="entidades" :listaProcP="processosParticipa" :parts="partsReady" />
       </v-col>
     </v-row>
   </v-card>
@@ -25,8 +20,8 @@
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
-import Loading from "@/components/generic/Loading";
-import Voltar from "@/components/generic/Voltar";
+import Loading from "@/components/generic/Loading.vue";
+import Voltar from "@/components/generic/Voltar.vue";
 
 import {
   comparaSigla

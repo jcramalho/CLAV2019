@@ -1,5 +1,5 @@
 <template>
-  <v-card flat>
+  <v-container>
     <v-row>
       <v-col cols="3" align="left" justify="center">
         <Voltar />
@@ -8,17 +8,10 @@
     <v-row justify="center">
       <v-col cols="12" align="center" justify="center">
         <Loading v-if="!legislacaoReady" :message="'legislações'" />
-        <Listagem
-          v-else
-          :lista="legislacao"
-          tipo="Legislação"
-          :cabecalho="cabecalhos"
-          :campos="campos"
-          :ids="ids"
-        />
+        <Listagem v-else :lista="legislacao" tipo="Legislação" :cabecalho="cabecalhos" :campos="campos" :ids="ids" />
       </v-col>
     </v-row>
-  </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -166,7 +159,7 @@ export default {
     }
   },
 
-  created: async function() {
+  created: async function () {
     try {
       let response = await this.$request("get", "/legislacao");
 
