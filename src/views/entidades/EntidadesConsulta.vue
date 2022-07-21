@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-col cols="12" align="center" justify="center">
+      <v-col cols="12">
         <Loading v-if="!entidadesReady" :message="'entidade'" />
         <Consulta
           v-else

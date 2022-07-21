@@ -1,22 +1,32 @@
 <template>
-  <div>
-    <Loading v-if="!tipologiaReady" :message="'a tipologia'" />
-    <Consulta
-      v-else
-      tipo="Tipologias"
-      :objeto="tipologia"
-      :titulo="titulo"
-      :listaProcD="processosDono"
-      :listaEnt="entidades"
-      :listaProcP="processosParticipa"
-      :parts="partsReady"
-    />
-  </div>
+  <v-card flat class="ma-3">
+    <v-row>
+      <v-col cols="3" align="left" justify="center">
+        <Voltar />
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="12">
+        <Loading v-if="!tipologiaReady" :message="'a tipologia'" />
+        <Consulta
+          v-else
+          tipo="Tipologias"
+          :objeto="tipologia"
+          :titulo="titulo"
+          :listaProcD="processosDono"
+          :listaEnt="entidades"
+          :listaProcP="processosParticipa"
+          :parts="partsReady"
+        />
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
 import Loading from "@/components/generic/Loading";
+import Voltar from "@/components/generic/Voltar";
 
 import {
   comparaSigla
@@ -26,6 +36,7 @@ export default {
   components: {
     Consulta,
     Loading,
+    Voltar
   },
 
   data() {

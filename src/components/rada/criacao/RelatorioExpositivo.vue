@@ -244,7 +244,7 @@
       @click="$emit('guardar', 'nao')"
     >Sair</v-btn>
     
-    <!--v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">Limpar</v-btn-->
+    <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">Cancelar</v-btn>
   </v-card>
 </template>
 
@@ -323,6 +323,8 @@ export default {
       }
       this.isMultiple = false;
       this.panels = [0, 0, 0];
+
+      this.$router.push('/');
     },
     next: function () {
       this.isMultiple = true;

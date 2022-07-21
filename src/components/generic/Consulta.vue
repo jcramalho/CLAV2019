@@ -327,13 +327,13 @@
       </v-card>
       <v-spacer />
 
-      <v-row>
+      <!--v-row>
         <v-col>
           <v-btn class="indigo accent-4 white--text mr-4" @click="voltar()"
             >Voltar</v-btn
           >
         </v-col>
-      </v-row>
+      </v-row-->
     </v-card-text>
   </v-card>
 </template>
