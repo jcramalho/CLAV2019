@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="clav-linear-background white--text">
+    <v-card-title  class="mb-5 clav-linear-background white--text">
       Insira uma mensagem para devolução
       <v-spacer></v-spacer>
       <unicon
@@ -16,12 +16,13 @@
       <!-- Menssagem -->
       <Campo nome="Mensagem" infoHeader="Mensagem" color="neutralpurple">
         <template v-slot:conteudo>
-          <v-text-field
-            hide-details
-            dense
+          <v-textarea 
+            clearable 
+            filled 
+            auto-grow 
+            color="indigo" 
             v-model="mensagemDespacho"
-            label="Mensagem para devolução"
-          />
+            label="Mensagem para devolução" />
         </template>
       </Campo>
     </v-card-text>
