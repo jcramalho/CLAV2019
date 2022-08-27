@@ -208,7 +208,7 @@
       <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
     </v-dialog>
 
-        <!-- Dialog de erros -->
+    <!-- Dialog de erros -->
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
       <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
     </v-dialog>
@@ -225,7 +225,6 @@
 </template>
 
 <script>
-import { criarHistorico } from "@/utils/utils";
 import PO from "@/components/pedidos/generic/PainelOperacoes";
 import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
 import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
@@ -240,7 +239,6 @@ import ConfirmacaoOperacao from "@/components/pedidos/generic/ConfirmacaoOperaca
 
 import {
   mapKeys,
-  identificaItemAdicionado,
   adicionarNotaComRemovidos,
 } from "@/utils/utils";
 
@@ -392,8 +390,8 @@ export default {
     async inicializarHistorico(){   
       const copiaHistorico = JSON.parse(JSON.stringify(this.historico[this.historico.length - 1]));
 
-      // Reset nas notas 
-      Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+      /* Reset nas notas 
+      Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null)); 
 
       // Reset nas notas das classes
       for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
@@ -402,7 +400,7 @@ export default {
       // Reset nas notas das agregacoes
       for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
         if(copiaHistorico.classes.dados[i].agregacoes.dados !== undefined)
-          Object.keys(copiaHistorico.classes.dados[i].agregacoes.dados).forEach((h) => (copiaHistorico.classes.dados[i].agregacoes.dados[h].nota = null));
+          Object.keys(copiaHistorico.classes.dados[i].agregacoes.dados).forEach((h) => (copiaHistorico.classes.dados[i].agregacoes.dados[h].nota = null));*/
       
       this.novoHistorico = copiaHistorico;
     },
