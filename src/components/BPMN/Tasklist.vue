@@ -1,6 +1,11 @@
 <template>
   <div>
-      <v-row>
+      <div v-if="erro" >
+        <h3> Algo correu mal... </h3>
+        <h5> Por favor verifique se a ligação ao Camunda está ativa! </h5>
+      </div>
+
+      <v-row v-else>
         <v-col cols="2">
           <v-card raised rounded class="pa-0 ma-0">
 
@@ -68,7 +73,8 @@
         executionId: '',
         options: null,
         id: this.$route.params.taskId,
-        loading: true
+        loading: true,
+        erro:''
       };
     },
     components: {
@@ -135,9 +141,13 @@
       }, 
 
       async open() {
-        await CamundaRest.getTasks().then((result) => {
-          this.tasks = result.data;
-        });
+        await CamundaRest.getTasks()
+          .then((result) => {
+            this.tasks = result.data;
+          })
+          .catch(e => {
+            this.erro = e;
+          });
 
         await this.getAllID();
       },

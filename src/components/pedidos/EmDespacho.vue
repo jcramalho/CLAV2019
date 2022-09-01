@@ -52,19 +52,9 @@ export default {
     };
   },
   async created() {
-     //ISTO NAO FUNCIONA...
-     /*
+     
     let res = await this.$request("get", "/contador/despacho");
-    console.log(res)
     this.numeroDespacho = res.data.valor.toString() + "/" + new Date().getFullYear();
-    console.log(this.numeroDespacho)
-    */
-
-    //ISTO FOI INVENTADO E TEM DE SER CORRIGIDO PORQUE A ROTA NÃO ESTAVA A FUNCIONAR
-    let res = new Date().getMinutes();
-    console.log(res)
-    this.numeroDespacho = res.toString() + "/" + new Date().getFullYear();
-    console.log(this.numeroDespacho)
 
     //new
 

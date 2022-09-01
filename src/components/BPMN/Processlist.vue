@@ -1,11 +1,54 @@
 <template>
   <div id="ProcessList">
+
+    <v-dialog v-model="visible" 
+      @input="visible=false" 
+      @keydown.esc="close"
+      @click:outside="close"
+      width="500px"
+    >
+
+      <v-card style="z-index:2;">
+        <v-card-title class="text-h5 grey lighten-2">
+          Aviso
+        </v-card-title>
+
+        <div class="message">
+          <slot>Ao apagar o processo estará também apagar todas as tarefas ativas relativas ao processo. Tem a certeza que quer continuar?</slot>
+        </div>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            class="red darken-4 white--text"
+            @click="close()"
+          >
+            Cancelar
+          </v-btn>
+           <v-btn
+            text
+            class="indigo accent-4 white--text"
+            @click="confirm()"
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     
     <v-row>
       <v-col>
         
         <div v-if="loading">
          <h3> A carregar os processos... </h3>
+        </div>
+
+        <div v-else-if="erro!=''">
+          <h3> Algo correu mal... </h3>
+          <h5> Por favor verifique se a ligação ao Camunda está ativa! </h5>
         </div>
         
         <div v-else-if="processDefinitions && processDefinitions.length">
@@ -17,7 +60,7 @@
                   <div style="font-size:20px;">
                     <strong>
                       <router-link :to="`/bpmn/startprocess/${processDefinition.key}`">{{processDefinition.name}} - ( versão {{processDefinition.version}} ) </router-link>
-                      <v-icon style="margin-left:20px" color="red" @click="apagarProcesso(processDefinition.deploymentId)"> mdi-delete </v-icon>
+                      <v-icon style="margin-left:20px" color="red" @click="openModal(processDefinition.deploymentId)"> mdi-delete </v-icon>
                       <v-icon style="margin-left:20px" @click="downloadProcesso(processDefinition.key)"> mdi-download </v-icon>
                     </strong>
                   </div>
@@ -45,11 +88,28 @@ export default {
   data() {
     return {
       processDefinitions: [],
-      loading: true
+      loading: true,
+      erro: "",
+      visible: false,
+      value: null
     };
   },
 
   methods: {
+    close() {
+      this.visible = false
+    },
+
+    confirm() {
+      this.apagarProcesso(this.value)
+      this.close()
+    },
+
+    openModal(value) {
+      this.visible = true
+      this.value = value
+    },
+
 
     apagarProcesso(deploymentId) {
       CamundaRest.deleteProcessDefinition(deploymentId)
@@ -82,13 +142,25 @@ export default {
   },
 
   async created() {
-    await CamundaRest.getProcessDefinitions().then((response) => {
-      this.processDefinitions = response.data;
-      console.log(this.processDefinitions)
-      this.loading = false
-    }).catch(e => {
-      console.error(e);
-    });
+    await CamundaRest.getProcessDefinitions()
+      .then((response) => {
+        this.processDefinitions = response.data;
+        console.log(this.processDefinitions)
+      })
+      .catch(e => {
+        this.erro = e
+        console.error("erro :" + e);
+      });
+    this.loading = false
   }
 };
 </script>
+
+
+<style>
+
+.message {
+    margin: 20px 5%;
+  }
+
+</style>
