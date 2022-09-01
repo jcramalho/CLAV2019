@@ -359,12 +359,12 @@ export default {
       .then((response) => {
         this.Pedido = response.data;
 
-        console.log(response.data)
-
         if (this.$route.path.split[1]=="bpmn") {
-          console.log("carreguei os dados!")
-          console.log("task id: " + this.taskId)
-          console.log("task options: " + this.options)
+
+          /* DEBUGGING */
+          //console.log("carreguei os dados!")
+          //console.log("task id: " + this.taskId)
+          //console.log("task options: " + this.options)
         }
         
         this.$request("get", "/entidades/" + this.Pedido.entidade)
