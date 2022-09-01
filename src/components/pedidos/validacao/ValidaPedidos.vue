@@ -238,7 +238,6 @@ export default {
     try {
 
       var id = await this.getID();
-
       const { data } = await this.$request("get", "/pedidos/" + id);
       
       if (
@@ -250,22 +249,17 @@ export default {
       )
         throw new URIError("Este pedido não pertence a este estado.");
 
-      /*
-      data.historico = data.historico.map((hist) => ({
-        ...hist,
-        codigo: { dados: data.objeto.codigo },
-      })); 
-      */
-
       this.pedido = data;
       this.pedidoLoaded = true;
       this.loading = false;
 
       if (this.$route.path.split('/')[1]=='bpmn') {
-        console.log("carreguei os dados! Validar pedido...")
-        console.log(this.pedido)
-        console.log("task id: " + this.taskId)
-        console.log("task options: " + this.options)
+
+        /* DEBUGGING */
+        //console.log("carreguei os dados! Validar pedido...")
+        //console.log(this.pedido)
+        //console.log("task id: " + this.taskId)
+        //console.log("task options: " + this.options)
       }
 
     } catch (err) {

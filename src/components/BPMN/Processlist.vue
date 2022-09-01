@@ -145,7 +145,6 @@ export default {
     await CamundaRest.getProcessDefinitions()
       .then((response) => {
         this.processDefinitions = response.data;
-        console.log(this.processDefinitions)
       })
       .catch(e => {
         this.erro = e

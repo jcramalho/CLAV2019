@@ -401,9 +401,9 @@ export default {
   },
 
   async created() {
+
     if (this.$route.path.split("/")[1]=='bpmn') {
       this.historico = await this.getHistorico()
-      console.log("historico: " + JSON.stringify(this.historico))
     }
 
   },
@@ -619,22 +619,10 @@ export default {
       try {
 
         var id = await this.getID();
-
-        console.log("id: " + id)
-
         const { data } = await this.$request("get", "/pedidos/" + id);
-
         let pedido = data
-
-        console.log(pedido.objeto)
-
         pedido = await this.historicoToDados(pedido)
-
-        console.log("vou validar")
-
         let numeroErros = await this.validar(pedido.objeto)
-
-        console.log("erros: " + numeroErros)
 
         if (numeroErros === 0) {
           
@@ -651,8 +639,6 @@ export default {
             if (pedido.objeto.dados.diplomaFonte === "Não especificada")
               delete pedido.objeto.dados.diplomaFonte;
           }
-
-          console.log("terminei o for")
           
           //ENTIDADES
           if (pedido.objeto.tipo == 'Entidade') {
@@ -679,8 +665,6 @@ export default {
 
           //LEGISLAÇÃO
           if (pedido.objeto.tipo == 'Legislação') {
-            
-            console.log(pedido.objeto)
 
             if (pedido.objeto.acao == 'Criação') {
 
@@ -752,13 +736,11 @@ export default {
           
           }
 
-
           //AUTO DE ELIMINAÇÃO
           if (pedido.objeto.tipo == 'Auto de Eliminação') {
             await this.$request("post", "/autosEliminacao", {auto: pedido.objeto.dados});
           }
           
-
           //GERAL
           let estado = null
 
@@ -766,10 +748,8 @@ export default {
           else if (this.pedidocomplexo.includes(pedido.objeto.tipo)) estado = "Em Despacho"
 
           let dadosUtilizador = this.$verifyTokenUser();
-          
+         
           pedido.historico.push(this.historico);
-          
-          console.log(pedido.historico) 
 
           pedido = await this.historicoToDados(pedido)
 
@@ -780,26 +760,16 @@ export default {
             despacho: this.mensagemDespacho,
           };
 
-          console.log(novaDistribuicao)
-
-          console.log("estado inicial: " + pedido.estado)
-
           pedido.estado = estado;
-
-          console.log("estado final: " + pedido.estado)
-
 
           await this.$request("put", "/pedidos", {
             pedido: pedido,
             distribuicao: novaDistribuicao,
           });       
 
-          console.log(pedido)
-
           this.formdata.opcao = 'aprovarPedido'
           this.submit()
-    
-          //this.$router.push(`/pedidos/finalizacao/${this.p.codigo}`)
+
 
         } else {
           this.erroPedido = true;

@@ -61,18 +61,15 @@ export default {
     if (this.$route.path.split("/")[1]=='bpmn') {
       
       var id = await this.getID();
-
-      console.log("id: " + id)
-
       const {data} = await this.$request("get", "/pedidos/" + id);
-
       this.pedido = data 
       this.idPed = data.codigo
 
-      console.log("carreguei os dados! Despachar Pedido..")
-      console.log(this.pedido)
-      console.log("task id: " + this.taskId)
-      console.log("task options: " + this.options)
+      /* DEBUGGING */
+      //console.log("carreguei os dados! Despachar Pedido..")
+      //console.log(this.pedido)
+      //console.log("task id: " + this.taskId)
+      //console.log("task options: " + this.options)
     }
   },
   watch: {
@@ -172,9 +169,6 @@ export default {
 
           this.numeroDespacho =
             res.data.valor.toString() + "/" + new Date().getFullYear();
-
-          console.log("vo buscar o nanoid")
-          console.log("valor do nanoid: " + nanoid())
 
           despachoAprovacao = {
             id: "leg_" + nanoid(),

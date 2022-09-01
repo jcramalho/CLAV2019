@@ -238,20 +238,13 @@ export default {
     async carregaPedidos() {
 
       var processKey = null
-      console.log(this.$route.path)
+
       if (this.$route.path.split("/")[1]=='bpmn') {
         processKey = await this.getProcessKey()
       }
 
       await this.$request("get", "/pedidos/meta")
         .then((data) => {
-
-          if (true) {
-            console.log("carreguei os dados!")
-            console.log("task id: " + this.taskId)
-            console.log("task options: " + this.options)
-          }
-
           var pedidos = data.data;
           this.estados[0].pedidos = pedidos.filter((p) => {
             if (p.estado === "Submetido" || p.estado === "Ressubmetido") {

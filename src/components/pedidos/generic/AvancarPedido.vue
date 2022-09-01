@@ -144,22 +144,17 @@ export default {
       this.text = await this.getTexto()
       this.users = await this.getUtilizadores()
       this.historico = await this.getHistorico()
-      console.log("historico:" + JSON.stringify(this.historico))
-
       var id = await this.getID();
-
       const {data} = await this.$request("get", "/pedidos/" + id);
 
       this.pedidoInfo = data
-
-      console.log("estado pedido: " + this.pedidoInfo.estado)
-
       this.ped = this.pedidoInfo.codigo 
 
-      console.log("carreguei os dados! Avançar Pedido..")
-      console.log(this.pedidoInfo)
-      console.log("task id: " + this.taskId)
-      console.log("task options: " + this.options)
+      /* DEBUGGING */
+      //console.log("carreguei os dados! Avançar Pedido..")
+      //console.log(this.pedidoInfo)
+      //console.log("task id: " + this.taskId)
+      //console.log("task options: " + this.options) 
     }
 
     else {
@@ -299,10 +294,6 @@ export default {
         let dadosUtilizador = this.$verifyTokenUser();
 
         let estado = null
-        console.log("tab: " + this.tabs[this.tab])
-
-
-        console.log("estado incial: " + pedido.estado)
 
         if (pedido.estado === "Submetido" || pedido.estado === "Ressubmetido") estado = "Distribuído";
         else if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído") {
@@ -313,10 +304,6 @@ export default {
         }
 
         pedido.estado = estado;
-
-        console.log("estado final: " + pedido.estado)
-
-        console.log("historico: " + this.historico)
 
         if (this.historico=="") pedido.historico.push(this.pedidoInfo.historico[0]);
         else pedido.historico.push(this.historico);
@@ -340,13 +327,7 @@ export default {
           distribuicao: novaDistribuicao,
         });
 
-        console.log(pedido) 
-
         this.formdata.pedido = pedido;
-        
-        console.log(this.options)
-
-        console.log("tab -> " + this.tabs[this.tab])
 
         if (this.options.includes('Validação 1') || this.options.includes('Validação 2')) {
           this.tabs[this.tab]=='Validação 1' ? this.formdata.opcao = 'validacao1' : this.formdata.opcao = 'validacao2'

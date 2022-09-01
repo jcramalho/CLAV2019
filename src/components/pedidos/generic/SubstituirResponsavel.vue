@@ -179,22 +179,20 @@ export default {
       if (this.$route.path.split("/")[1]=='bpmn') {
       
         var id = await this.getID();
-
         const {data} = await this.$request("get", "/pedidos/" + id);
-
         this.pedidoInfo = data
-
         this.responsavelAtual = data.distribuicao[data.distribuicao.length - 1].proximoResponsavel
 
-        console.log("carreguei os dados! Substituir responsável..")
-        console.log(this.pedidoInfo)
-        console.log("task id: " + this.taskId)
-        console.log("task options: " + this.options)
+        /* DEBUGGING */
+        //console.log("carreguei os dados! Substituir responsável..")
+        //console.log(this.pedidoInfo)
+        //console.log("task id: " + this.taskId)
+        //console.log("task options: " + this.options)
       }
       await this.preparaUtilizadores(this.pedidoInfo.estado);
       this.pedidoCarregado = true;
     } catch (e) {
-      console.log("e", e);
+      console.log("Erro no despacho: ", e);
     }
   },
 

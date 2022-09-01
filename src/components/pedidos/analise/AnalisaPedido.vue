@@ -249,28 +249,21 @@ export default {
     try {
 
       var id = await this.getID();
-
-      console.log(id) 
-      
       const { data } = await this.$request("get", "/pedidos/" + id);
 
       if (data.estado !== "Distribuído" && data.estado !== "Redistribuído")
         throw new URIError("Este pedido não pertence a este estado.");
 
-      /*
-      data.historico = data.historico.map((hist) => ({
-        ...hist,
-        codigo: { dados: data.codigo },
-      }));*/
-
       this.pedido = data;
       this.loading = false;
 
       if (this.$route.path.split('/')[1]=='bpmn') {
-        console.log("carreguei os dados! Analisar Pedido...")
-        console.log(this.pedido)
-        console.log("task id: " + this.taskId)
-        console.log("task options: " + this.options)
+
+        /* DEBUGGING */
+        //console.log("carreguei os dados! Analisar Pedido...")
+        //console.log(this.pedido)
+        //console.log("task id: " + this.taskId)
+        //console.log("task options: " + this.options)
       }
     } catch (err) {
       if (err instanceof URIError) {

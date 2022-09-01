@@ -56,7 +56,6 @@ export default Vue.component('GenericForm', {
     executionId: 'changeTemplate'
   },
   components: {
-    // adding all forms for myprocess to components
     ...FormTypes
   }
 });
