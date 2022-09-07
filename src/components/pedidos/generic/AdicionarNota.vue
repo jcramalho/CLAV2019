@@ -51,7 +51,7 @@ export default {
   },
 
   watch: {
-    notaAtual(novaNota, antigaNota) {
+    notaAtual(novaNota) {
       if (novaNota !== undefined) this.nota = novaNota;
       else this.nota = "";
     }
@@ -69,6 +69,11 @@ export default {
 
     fechar() {
       this.$emit("fechar");
+      // Reset das mudanças feitas ao clicar fechar
+      if(this.notaAtual == undefined || this.notaAtual == null) 
+        this.nota = ""
+      else 
+        this.nota = this.notaAtual
     },
 
     adicionar() {
