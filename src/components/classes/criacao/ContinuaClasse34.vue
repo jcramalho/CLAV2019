@@ -134,6 +134,18 @@ export default {
   created: function () {
     this.classe = this.obj.objeto;
     this.pendenteID = this.obj._id;
+
+    try {
+      this.loadLegislacao()
+    } catch (erro) {
+      console.log("Erro ao carregar a Legislação: " + erro)
+    }
+
+    try {
+      this.loadProcessos()
+    } catch (erro) {
+      console.log("Erro ao carregar a Legislação: " + erro)
+    }
   },
 
   data: () => ({

@@ -62,7 +62,7 @@
                     c.legislacao
                   )
                 "
-                :disabled="semaforos.critLegalAdicionadoDF"
+                :disabled="semaforos.critLegalAdicionadoDF || c.legislacao.length == 0"
               >
                 Critério Legal
                 <v-icon right>add_circle_outline</v-icon>

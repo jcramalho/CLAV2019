@@ -156,7 +156,7 @@
                     c.legislacao
                   )
                 "
-                v-if="!c.semaforos.critLegalAdicionadoPCA"
+                v-if="!c.semaforos.critLegalAdicionadoPCA && c.legislacao.length > 0"
               >
                 Critério Legal
                 <v-icon dark right>add_circle_outline</v-icon>

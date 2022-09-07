@@ -58,7 +58,7 @@
           <v-row v-if="!disable">
             <v-col align="right">
               <v-btn
-                v-if="!c.semaforos.critLegalAdicionadoDF"
+                v-if="!c.semaforos.critLegalAdicionadoDF && c.legislacao.length > 0"
                 color="primary"
                 class="white-text my-2"
                 rounded

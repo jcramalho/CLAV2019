@@ -103,6 +103,7 @@ export default {
     exemploDuplicado: function (exemplos) {
       if (exemplos.length > 1) {
         var lastExemplo = exemplos[exemplos.length - 1].exemplo;
+        lastExemplo = lastExemplo.trim();
         var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo);
         if (duplicados.length > 1) {
           return true;
@@ -115,6 +116,7 @@ export default {
     tiDuplicado: function (termos) {
       if (termos.length > 1) {
         var lastTermo = termos[termos.length - 1].termo;
+        lastTermo = lastTermo.trim();
         var duplicados = termos.filter((t) => t.termo == lastTermo);
         if (duplicados.length > 1) {
           return true;
@@ -249,6 +251,7 @@ export default {
     validaNotasAp: async function () {
       // Notas de Aplicação
       if(this.c.notasAp.length > 0){
+        console.log(JSON.stringify(this.c.notasAp))
         this.c.notasAp = this.c.notasAp.map(function(n){ 
           n.nota = n.nota.trim();
           return n;});
@@ -288,7 +291,7 @@ export default {
       if(this.c.exemplosNotasAp.length > 0){
         this.c.exemplosNotasAp = this.c.exemplosNotasAp.map(function(e){ 
           e.exemplo = e.exemplo.trim();
-          return n;});
+          return e;});
       }
       for (var i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
@@ -503,6 +506,7 @@ export default {
     },
 
     validarClasse: async function () {
+      console.log(JSON.stringify(this.c))
       var i = 0;
 
       await this.validaMeta();
