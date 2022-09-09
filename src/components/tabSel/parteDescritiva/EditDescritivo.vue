@@ -224,6 +224,7 @@ export default {
         this.errors = [];
         var aux = [];
         for (let nota of this.proc.notasAp) {
+          console.log("Nota: " + nota.nota )
           var existeNotaAp = await this.$request(
             "get",
             `/notasAp/notaAp?classe=c${
