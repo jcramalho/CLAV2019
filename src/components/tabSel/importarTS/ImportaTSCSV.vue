@@ -35,7 +35,7 @@
                 class="py-5 mt-5"
                 v-model="fonteLegitimacao"
                 :rules="[
-                  (v) => !!v || 'Tem de escolher uma fonte de legitimação',
+                  v => !!v || 'Tem de escolher uma fonte de legitimação'
                 ]"
                 required
                 row
@@ -300,26 +300,26 @@
           <v-btn
             v-if="
               (multImport && (fonteLegitimacao == null || file.length < 2)) ||
-              (tipo == 'Organizacional' &&
-                !multImport &&
-                (designacao == null ||
-                  file.length == 0 ||
-                  tipo == null ||
-                  fonteLegitimacao == null ||
-                  entidade_tipologia == null ||
-                  !entidade_tipologia.length)) ||
-              (tipo == 'Pluriorganizacional' &&
-                !multImport &&
-                (designacao == null ||
-                  file.length == 0 ||
-                  tipo == null ||
-                  fonteLegitimacao == null))
+                (tipo == 'Organizacional' &&
+                  !multImport &&
+                  (designacao == null ||
+                    file.length == 0 ||
+                    tipo == null ||
+                    fonteLegitimacao == null ||
+                    entidade_tipologia == null ||
+                    !entidade_tipologia.length)) ||
+                (tipo == 'Pluriorganizacional' &&
+                  !multImport &&
+                  (designacao == null ||
+                    file.length == 0 ||
+                    tipo == null ||
+                    fonteLegitimacao == null))
             "
             disabled
             rounded
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
-              'px-2': $vuetify.breakpoint.mdAndDown,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             class="mb-6"
             id="botao-shadow"
@@ -661,30 +661,30 @@ export default {
     dialogConfirmacao: {
       visivel: false,
       mensagem: "",
-      dados: null,
+      dados: null
     },
     entidadesFalta: [],
-    acrescenta: null,
+    acrescenta: null
   }),
   components: {
-    Voltar,
+    Voltar
   },
 
-  mounted: async function () {
+  mounted: async function() {
     try {
       var response = await this.$request("get", "/entidades");
-      var entidades = response.data.map((ent) => {
+      var entidades = response.data.map(ent => {
         return {
           text: ent.sigla + " - " + ent.designacao,
-          value: ent.sigla,
+          value: ent.sigla
         };
       });
 
       response = await this.$request("get", "/tipologias");
-      var tipologias = response.data.map((tip) => {
+      var tipologias = response.data.map(tip => {
         return {
           text: tip.sigla + " - " + tip.designacao,
-          value: tip.sigla,
+          value: tip.sigla
         };
       });
 
@@ -712,7 +712,7 @@ export default {
           return "Número de Processos Participantes: " + stat + "\n";
       }
     },
-    enviarFicheiro: async function () {
+    enviarFicheiro: async function() {
       this.erro = "";
       this.erroDialog = false;
       this.successDialog = false;
@@ -748,7 +748,7 @@ export default {
               this.multImportList.push({
                 file: this.file[index].name,
                 id: response.data.codigo,
-                stats: response.data.stats,
+                stats: response.data.stats
               });
             } else {
               this.stats = response.data.stats;
@@ -765,15 +765,15 @@ export default {
               if (e.response.data.acrescenta) {
                 this.dialogConfirmacao = {
                   visivel: true,
-                  mensagem: e.response.data.message,
+                  mensagem: e.response.data.message
                 };
               } else {
                 this.dialogConfirmacao = {
                   visivel: true,
-                  mensagem: e.response.data.message,
+                  mensagem: e.response.data.message
                 };
               }
-            } else if (e.response.data.some((err) => !!err.file)) {
+            } else if (e.response.data.some(err => !!err.file)) {
               if (this.multImport) {
                 this.multImportList = this.multImportList.concat(
                   e.response.data
@@ -881,7 +881,7 @@ export default {
         : "";
       this.loading = false;
     },
-    seguirPedido: function (codigo = this.codigo) {
+    seguirPedido: function(codigo = this.codigo) {
       switch (this.fonteLegitimacao) {
         case "TS/LC":
           this.$router.push(`/pedidos/submissao/${codigo}`);
@@ -909,24 +909,24 @@ export default {
         this.loadingBtn = false;
       } catch (e) {}
     },
-    selecionar: function () {
+    selecionar: function() {
       this.dialogConfirmacao.visivel = false;
       if (this.tipo == "Pluriorganizacional")
         this.entidade_tipologia = this.entidade_tipologia.concat(
-          this.entidadesFalta.map((e) => e.sigla)
+          this.entidadesFalta.map(e => e.sigla)
         );
       else {
-        this.entidade_tipologia = this.entidadesFalta.map((e) => e.sigla)[0];
+        this.entidade_tipologia = this.entidadesFalta.map(e => e.sigla)[0];
         this.designacao = `Tabela de Seleção de ${this.entidade_tipologia}`;
       }
       this.entidadesFalta = [];
       this.acrescenta = null;
     },
-    desselecionar: function () {
+    desselecionar: function() {
       this.dialogConfirmacao.visivel = false;
-      this.entidadesFalta.map((e) =>
+      this.entidadesFalta.map(e =>
         this.entidade_tipologia.splice(
-          this.entidade_tipologia.findIndex((ent) => e.sigla == ent),
+          this.entidade_tipologia.findIndex(ent => e.sigla == ent),
           1
         )
       );
@@ -934,7 +934,7 @@ export default {
       this.entidadesFalta = [];
       this.acrescenta = null;
     },
-    fonteL: function () {
+    fonteL: function() {
       if (this.fonteLegitimacao == "RADA") {
         this.designacao =
           "Relatório de Avaliação de Documentação Acumulada de ...";
@@ -956,10 +956,10 @@ export default {
       else this.designacao = null;
     },
 
-    voltar: function () {
+    voltar: function() {
       this.$router.go();
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
