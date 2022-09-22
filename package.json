@@ -16,7 +16,7 @@
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",
     "core-js": "^3.6.5",
-    "exceljs": "^2.0.1",
+    "exceljs": "^4.3.0",
     "fs": "0.0.1-security",
     "iconv-lite": "^0.5.1",
     "jest": "^29.0.3",
