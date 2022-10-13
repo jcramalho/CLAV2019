@@ -448,7 +448,7 @@ export default {
         let pedido = JSON.parse(JSON.stringify(this.p));
 
         var estado;
-        if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído")
+        if (pedido.estado === "Distribuído")
           dados.etapa === "Validação 1"
             ? (estado = "Apreciado")
             : (estado = "Apreciado2v");
