@@ -53,7 +53,25 @@
 
     <v-card-text v-else>
       <v-tabs
-        v-if="
+        v-if="pedidoAuxiliar.estado == 'Apreciado' || pedidoAuxiliar.estado == 'Reapreciado'"
+        v-model="tab"
+      >
+        <v-tab v-for="t1 in tabsVal1" :key="t1">
+          {{ t1 }}
+        </v-tab>
+      </v-tabs>
+
+      <v-tabs
+        v-else-if="pedidoAuxiliar.estado == 'Apreciado2v' || pedidoAuxiliar.estado == 'Reapreciado2v'"
+        v-model="tab"
+      >
+        <v-tab v-for="t2 in tabsVal2" :key="t2">
+          {{ t2 }}
+        </v-tab>
+      </v-tabs>
+
+      <v-tabs
+        v-else-if="
           pedidoAuxiliar.estado !== 'Submetido' &&
           pedidoAuxiliar.estado !== 'Ressubmetido' &&
           pedidoAuxiliar.estado !== 'Apreciado' &&
@@ -61,10 +79,12 @@
         "
         v-model="tab"
       >
+
         <v-tab v-for="t in tabs" :key="t">
           {{ t }}
         </v-tab>
       </v-tabs>
+
       <v-row class="my-2">
         <v-col>
           <!-- Menssagem -->
@@ -125,6 +145,8 @@ export default {
       mensagemDespacho: null,
       pedidoAuxiliar: "",
       tabs: ["Validação 1", "Validação 2"],
+      tabsVal1 : ["Reapreciação", "Validação 2"],
+      tabsVal2 : ["Reapreciação", "Validação 1"],
       tab: "Validação 1",
       usersHeaders: [
         { text: "Nome", value: "name", class: "title" },
@@ -154,8 +176,15 @@ export default {
       if (
         this.pedidoAuxiliar.estado !== "Submetido" &&
         this.pedidoAuxiliar.estado !== "Ressubmetido"
-      )
-        despacho.etapa = this.tabs[this.tab];
+      ){
+        if (this.pedidoAuxiliar.estado == 'Apreciado2v' || this.pedidoAuxiliar.estado == 'Reapreciado2v')
+          despacho.etapa = this.tabsVal2[this.tab];
+        else if (this.pedidoAuxiliar.estado == 'Apreciado' || this.pedidoAuxiliar.estado == 'Reapreciado')
+          despacho.etapa = this.tabsVal1[this.tab];
+        else  
+          despacho.etapa = this.tabs[this.tab];
+      }
+        
 
       if (this.mensagemDespacho !== null)
         despacho.mensagemDespacho = this.mensagemDespacho;

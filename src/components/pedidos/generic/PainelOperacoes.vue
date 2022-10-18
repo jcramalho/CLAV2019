@@ -18,7 +18,9 @@
           v-if="
             operacao === 'Analisar' ||
             pedidoAuxiliar.estado === 'Apreciado' ||
-            pedidoAuxiliar.estado === 'Reapreciado'
+            pedidoAuxiliar.estado === 'Apreciado2v' || 
+            pedidoAuxiliar.estado === 'Reapreciado' ||
+            pedidoAuxiliar.estado === 'Reapreciado2v'
           "
           rounded
           class="indigo accent-4 white--text"

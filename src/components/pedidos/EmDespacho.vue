@@ -55,6 +55,9 @@ export default {
         case "PPD":
           this.sumario = newValue.objeto.dados.geral.nomePPD;
           break;
+        case "Auto de Eliminação":
+          this.sumario = newValue.objeto.dados.id;
+          break;
         default:
           this.sumario = newValue.objeto.dados.titulo;
           break;
@@ -215,8 +218,7 @@ export default {
             res.data.valor.toString() + "/" + new Date().getFullYear();
 
 
-        }
-        else if (this.pedido.objeto.tipo == 'PPD') {
+        } else if (this.pedido.objeto.tipo == 'PPD') {
           //for (const key in this.pedido.objeto.dados) {
           //  if (
           //    this.pedido.objeto.dados[key] === undefined ||
@@ -230,10 +232,31 @@ export default {
           //alert(JSON.stringify(this.pedido.objeto.dados))
           this.showPedido = true
           //await this.$request("post", "/ppd/registar",  this.pedido.objeto.dados );
+        } else if (this.pedido.objeto.tipo == 'Auto de Eliminação') {
+          despachoAprovacao = {
+            id: "leg_" + nanoid(),
+            numero: this.numeroDespacho,
+            sumario: despacho.sumario,
+            tipo: "Despacho",
+            data: despacho.data,
+            link: "",
+            diplomaFonte: "",
+            dataRevogacao: "",
+            estado: "Ativo",
+            entidadesSel: [
+              {
+                sigla: "DGLAB",
+                designacao:
+                  "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
+                id: "ent_DGLAB"
+              }
+            ],
+            processosSel: []
+          };
         }
-
+    
         await this.$request("post", "/legislacao", despachoAprovacao);
-
+        
         let dadosUtilizador = this.$verifyTokenUser();
 
         let novaDistribuicao = {
@@ -248,6 +271,8 @@ export default {
 
         this.pedido.estado = "Validado";
 
+        console.log(this.pedido)
+        console.log(novaDistribuicao)
         await this.$request("put", "/pedidos", {
           pedido: this.pedido,
           distribuicao: novaDistribuicao

@@ -435,7 +435,16 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado = pedido.estado === "Apreciado" ? "Apreciado2v" : "Reapreciado2v";
+        var estado = ''
+        
+        console.log(pedido.estado)
+        console.log(dados.etapa)
+        if(dados.etapa == "Reapreciação") // Validação 1 ou 2 ---> Apreciação
+          estado = "Redistribuído"
+        else if(dados.etapa == "Validação 1") // Validação 2 ---> Validação 1
+          estado = "Reapreciado"
+        else // Validação 1 ---> Validação 2
+          estado = pedido.estado === "Apreciado" ? "Apreciado2v" : "Reapreciado2v";
 
         pedido.estado = estado;
 
@@ -551,7 +560,7 @@ export default {
             }
           }
 
-          const estado = "Validado";
+          const estado = "Em Despacho";
           pedido.estado = estado;
 
           // Atualizar histórico
