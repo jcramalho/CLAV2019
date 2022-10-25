@@ -215,7 +215,8 @@ export function criarHistorico(objeto, objetoOriginal = null) {
     }
   } else {
     for (const key in objSubmetido) {
-      if (key !== "estado" && key !== "codigo") {
+      //if (key !== "estado" && key !== "codigo") {
+      if (key !== "estado") { // a tentar resolver o histórico do código
         historico[key] = {
           cor: "verde",
           dados: objSubmetido[key],

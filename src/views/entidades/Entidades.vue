@@ -1,19 +1,23 @@
 <template>
-  <div>
-    <Loading v-if="!entidadesReady" :message="'entidades'" />
-    <Listagem
-      v-else
-      :lista="entidades"
-      tipo="Entidades"
-      :cabecalho="cabecalhos"
-      :campos="campos"
-    />
-  </div>
+  <v-container>
+    <v-row align="center" justify="center">
+      <v-col align="left">
+        <Voltar />
+      </v-col>
+    </v-row>
+    <v-row align="center" justify="center">
+      <v-col cols="12" align="center" justify="center">
+        <Loading v-if="!entidadesReady" :message="'entidades'" />
+        <Listagem v-else :lista="entidades" tipo="Entidades" :cabecalho="cabecalhos" :campos="campos" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import Listagem from "@/components/generic/Listagem.vue"; // @ is an alias to /src
 import Loading from "@/components/generic/Loading";
+import Voltar from "@/components/generic/Voltar";
 
 import { NIVEL_MINIMO_ALTERAR } from "@/utils/consts";
 
@@ -29,6 +33,7 @@ export default {
   components: {
     Listagem,
     Loading,
+    Voltar
   },
 
   methods: {

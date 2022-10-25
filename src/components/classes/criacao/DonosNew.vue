@@ -1,50 +1,40 @@
 <template>
-  <v-row class="ma-2 indigo lighten-5">
-    <v-col cols="2">
-      <div class="info-label">Entidade nova</div>
-      <v-btn small dark rounded class="indigo darken-2" @click="newDono">
+  <v-row class="ma-2 indigo lighten-5" align="center">
+    <v-col cols="3">
+      <div class="info-label">Nova entidade</div>
+      <v-btn small rounded class="info" @click="newDono">
         Adicionar
-        <v-icon small dark right>add_circle_outline</v-icon>
+        <v-icon small right>add_circle_outline</v-icon>
       </v-btn>
     </v-col>
-    <v-col>
+    <v-col cols="9">
       <v-form v-model="valid">
-        <v-container>
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="sigla"
-                label="Sigla"
-                required
-              ></v-text-field>
-            </v-col>
+        <v-row>
+          <v-col>
+            <v-text-field v-model="sigla" label="Sigla" required></v-text-field>
+          </v-col>
 
-            <v-col>
-              <v-text-field v-model="sioe" label="SIOE"></v-text-field>
-            </v-col>
+          <v-col>
+            <v-text-field v-model="sioe" label="SIOE"></v-text-field>
+          </v-col>
 
-            <v-col>
-              <v-text-field
-                v-model="designacao"
-                label="Designação"
-                required
-              ></v-text-field>
-            </v-col>
+          <v-col>
+            <v-text-field v-model="designacao" label="Designação" required></v-text-field>
+          </v-col>
 
-            <v-col>
-              <v-select
-                prefix="Internacional: "
-                item-text="label"
-                item-value="value"
-                v-model="internacional"
-                :items="simNao"
-                label="Internacional"
-                solo
-                dense
-              />
-            </v-col>
-          </v-row>
-        </v-container>
+          <v-col>
+            <v-select
+              prefix="Internacional: "
+              item-text="label"
+              item-value="value"
+              v-model="internacional"
+              :items="simNao"
+              dense
+              solo
+              hide-details
+            />
+          </v-col>
+        </v-row>
       </v-form>
     </v-col>
 
@@ -59,65 +49,62 @@
 export default {
   props: ["entidades", "entidadesReady"],
 
-  data: function() {
+  data: function () {
     return {
       erroValidacao: false,
       mensagensErro: [],
       valid: false,
       sigla: "",
       sioe: "",
-      siglaRules: [v => !!v || "A Sigla é um campo obrigatório."],
+      siglaRules: [(v) => !!v || "A Sigla é um campo obrigatório."],
       designacao: "",
-      designacaoRules: [v => !!v || "A Designação é obrigatória."],
+      designacaoRules: [(v) => !!v || "A Designação é obrigatória."],
       internacional: "Nao",
       simNao: [
         {
           label: "Sim",
-          value: "Sim"
+          value: "Sim",
         },
         {
           label: "Não",
-          value: "Nao"
-        }
-      ]
+          value: "Nao",
+        },
+      ],
     };
   },
 
   methods: {
-    fecharErros: function() {
+    fecharErros: function () {
       this.mensagensErro = [];
       this.erroValidacao = false;
     },
 
-    validaSigla: function(s) {
+    validaSigla: function (s) {
       var res = true;
       if (s == "") {
         this.mensagensErro.push("A sigla não pode ser vazia!");
         res = false;
-      } else if (this.entidades.filter(e => e.sigla == s).length > 0) {
+      } else if (this.entidades.filter((e) => e.sigla == s).length > 0) {
         this.mensagensErro.push("Sigla já existente na BD.");
         res = false;
       }
       return res;
     },
 
-    validaDesignacao: function(d) {
+    validaDesignacao: function (d) {
       var res = true;
       if (d == "") {
         this.mensagensErro.push("A designação não pode ser vazia!");
         res = false;
-      } else if (this.entidades.filter(e => e.designacao == d).length > 0) {
+      } else if (this.entidades.filter((e) => e.designacao == d).length > 0) {
         this.mensagensErro.push("Designação já existente na BD.");
         res = false;
       }
       return res;
     },
 
-    newDono: function() {
-      if (
-        this.validaSigla(this.sigla) &&
-        this.validaDesignacao(this.designacao)
-      ) {
+    newDono: function () {
+      if (this.validaSigla(this.sigla) && this.validaDesignacao(this.designacao)) {
         var entidade = {
           estado: "Nova",
           id: "ent_" + this.sigla,
@@ -125,7 +112,7 @@ export default {
           tipo: "Entidade",
           sioe: this.sioe,
           designacao: this.designacao,
-          internacional: this.internacional
+          internacional: this.internacional,
         };
         this.sigla = "";
         this.sioe = "";
@@ -135,8 +122,8 @@ export default {
       } else {
         this.erroValidacao = true;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style>

@@ -7,16 +7,16 @@
         <v-btn
           v-if="this.acao == 'Criação'"
           rounded
-          class="indigo accent-4 white--text"
+          class="teal darken-4 white--text"
           @click="criarAlterarTipologia"
-          >Criar Tipologia</v-btn
+          >Submeter</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
-          class="indigo accent-4 white--text"
+          class="teal darken-4 white--text"
           @click="criarAlterarTipologia"
-          >Alterar Tipologia</v-btn
+          >Submeter</v-btn
         >
       </v-col>
 
@@ -27,7 +27,7 @@
           rounded
           class="red darken-4"
           @click="eliminarTipologia"
-          >Cancelar Criação</v-btn
+          >Cancelar</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
@@ -35,7 +35,7 @@
           rounded
           class="red darken-4"
           @click="eliminarTipologia"
-          >Cancelar Alteração</v-btn
+          >Cancelar</v-btn
         >
       </v-col>
 
@@ -266,6 +266,7 @@ export default {
 
     async ressubmeterPedido() {
       try {
+        this.pedido.objeto.dados = this.t;
         let pedido = JSON.parse(JSON.stringify(this.pedido));
         let estado = "Ressubmetido";
 
@@ -299,28 +300,41 @@ export default {
       this.pedidoEliminado = true;
     },
 
+    async cancelarPedido() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        let estado = "Cancelado";
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: "Cancelar",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.$router.push(`/pedidos/submissao/${pedido.codigo}`);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
     cancelarCriacaoTipologia: function () {
-      this.$router.push("/");
+      if (this.pedido) {
+        this.cancelarPedido();
+        this.$router.push("/");
+      } else this.$router.push("/");
     },
   },
 };
 </script>
 
-<style scoped>
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
-}
-</style>
+<style scoped></style>

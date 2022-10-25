@@ -116,7 +116,7 @@ export default {
       },
       novoHistorico: null,
       entidades: [],
-      formaContagem: {}
+      formaContagem: {},
     };
   },
   async created() {
@@ -161,10 +161,7 @@ export default {
       return item.sigla + " - " + item.designacao;
     });
 
-    let responseFC = await this.$request(
-      "get",
-      "/vocabularios/vc_pcaFormaContagem"
-    );
+    let responseFC = await this.$request("get", "/vocabularios/vc_pcaFormaContagem");
 
     this.formaContagem["formasContagem"] = responseFC.data.map((item) => {
       return {
@@ -182,9 +179,7 @@ export default {
         if (e != "RE" && e != "tsRada") {
           this.p.objeto.dados[e] = this.novoHistorico[e].dados;
           n_vermelhos =
-            this.novoHistorico[e].cor === "vermelho"
-              ? n_vermelhos + 1
-              : n_vermelhos;
+            this.novoHistorico[e].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
         }
       });
 
@@ -192,81 +187,60 @@ export default {
       Object.keys(this.novoHistorico.RE).map((e) => {
         this.p.objeto.dados.RE[e] = this.novoHistorico.RE[e].dados;
         n_vermelhos =
-          this.novoHistorico.RE[e].cor === "vermelho"
-            ? n_vermelhos + 1
-            : n_vermelhos;
+          this.novoHistorico.RE[e].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
       });
 
       // alterar tabela selecao
       Object.keys(this.novoHistorico.tsRada).map((e) => {
         if (e == "classes") {
-          for (
-            let i = 0;
-            i < this.novoHistorico.tsRada.classes.dados.length;
-            i++
-          ) {
+          for (let i = 0; i < this.novoHistorico.tsRada.classes.dados.length; i++) {
             let classe_original = this.p.objeto.dados.tsRada.classes.find(
               (e) =>
-                e.codigo ==
-                this.novoHistorico.tsRada.classes.dados[i].dados.codigo.dados
+                e.codigo == this.novoHistorico.tsRada.classes.dados[i].dados.codigo.dados
             );
 
-            Object.keys(this.novoHistorico.tsRada.classes.dados[i].dados).map(
-              (k) => {
-                if (k != "formaContagem") {
-                  classe_original[k] = this.novoHistorico.tsRada.classes.dados[
-                    i
-                  ].dados[k].dados;
-                  n_vermelhos =
-                    this.novoHistorico.tsRada.classes.dados[i].dados[k].cor ===
-                    "vermelho"
-                      ? n_vermelhos + 1
-                      : n_vermelhos;
-                } else {
-                  classe_original[k][
-                    "forma"
-                  ] = this.novoHistorico.tsRada.classes.dados[
-                    i
-                  ].dados.formaContagem.forma.dados;
-                  classe_original[k][
-                    "subforma"
-                  ] = this.novoHistorico.tsRada.classes.dados[
-                    i
-                  ].dados.formaContagem.subforma.dados;
-                  n_vermelhos =
-                    this.novoHistorico.tsRada.classes.dados[i].dados
-                      .formaContagem.forma.cor === "vermelho"
-                      ? n_vermelhos + 1
-                      : n_vermelhos;
-                  n_vermelhos =
-                    this.novoHistorico.tsRada.classes.dados[i].dados
-                      .formaContagem.subforma.cor === "vermelho"
-                      ? n_vermelhos + 1
-                      : n_vermelhos;
-                }
+            Object.keys(this.novoHistorico.tsRada.classes.dados[i].dados).map((k) => {
+              if (k != "formaContagem") {
+                classe_original[k] = this.novoHistorico.tsRada.classes.dados[i].dados[
+                  k
+                ].dados;
+                n_vermelhos =
+                  this.novoHistorico.tsRada.classes.dados[i].dados[k].cor === "vermelho"
+                    ? n_vermelhos + 1
+                    : n_vermelhos;
+              } else {
+                classe_original[k]["forma"] = this.novoHistorico.tsRada.classes.dados[
+                  i
+                ].dados.formaContagem.forma.dados;
+                classe_original[k]["subforma"] = this.novoHistorico.tsRada.classes.dados[
+                  i
+                ].dados.formaContagem.subforma.dados;
+                n_vermelhos =
+                  this.novoHistorico.tsRada.classes.dados[i].dados.formaContagem.forma
+                    .cor === "vermelho"
+                    ? n_vermelhos + 1
+                    : n_vermelhos;
+                n_vermelhos =
+                  this.novoHistorico.tsRada.classes.dados[i].dados.formaContagem.subforma
+                    .cor === "vermelho"
+                    ? n_vermelhos + 1
+                    : n_vermelhos;
               }
-            );
+            });
           }
         } else if (e == "UIs") {
           for (let i = 0; i < this.novoHistorico.tsRada.UIs.dados.length; i++) {
             let ui_original = this.p.objeto.dados.tsRada.UIs.find(
-              (e) =>
-                e.codigo ==
-                this.novoHistorico.tsRada.UIs.dados[i].dados.codigo.dados
+              (e) => e.codigo == this.novoHistorico.tsRada.UIs.dados[i].dados.codigo.dados
             );
 
-            Object.keys(this.novoHistorico.tsRada.UIs.dados[i].dados).map(
-              (k) => {
-                ui_original[k] = this.novoHistorico.tsRada.UIs.dados[i].dados[
-                  k
-                ].dados;
-                n_vermelhos =
-                  this.novoHistorico.tsRada.UIs.dados[i].dados[k].cor ===
-                  "vermelho"
-                    ? n_vermelhos + 1
-                    : n_vermelhos;
-              }
-            );
+            Object.keys(this.novoHistorico.tsRada.UIs.dados[i].dados).map((k) => {
+              ui_original[k] = this.novoHistorico.tsRada.UIs.dados[i].dados[k].dados;
+              n_vermelhos =
+                this.novoHistorico.tsRada.UIs.dados[i].dados[k].cor === "vermelho"
+                  ? n_vermelhos + 1
+                  : n_vermelhos;
+            });
           }
         } else {
           this.p.objeto.dados.tsRada[e] = this.novoHistorico.tsRada[e].dados;
@@ -286,8 +260,15 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado =
-          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+        var estado;
+        if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído")
+          dados.etapa === "Validação 1"
+            ? (estado = "Apreciado")
+            : (estado = "Apreciado2v");
+        else
+          dados.etapa === "Validação 1"
+            ? (estado = "Reapreciado")
+            : (estado = "Reapreciado2v");
 
         pedido.estado = estado;
 
@@ -344,8 +325,7 @@ export default {
         this.$router.go(-1);
       } catch (e) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao devolver o pedido, por favor tente novamente";
+        this.erroDialog.mensagem = "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
     async verificaVermelhos(dados) {

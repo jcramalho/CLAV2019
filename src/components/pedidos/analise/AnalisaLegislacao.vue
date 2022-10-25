@@ -3,158 +3,138 @@
     <Loading v-if="loading" :message="'pedido'" />
     <div v-else>
       <div v-for="(info, campo) in dados" :key="campo">
-        <v-row v-if="campo !== 'estado'" dense class="ma-1">
-          <!-- Label -->
-          <v-col cols="2">
-            <div
-              :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
-              class="info-descricao"
-              :class="`info-descricao-${novoHistorico[campo].cor}`"
-            >
-              {{ transformaKeys(campo) }}
-            </div>
-          </v-col>
-
-          <!-- Conteudo -->
-          <v-col>
-            <div v-if="!(info instanceof Array)" class="info-conteudo">
-              <span v-if="info === '' || info === null">
-                [Campo não preenchido na submissão do pedido]
-              </span>
-              <span v-else>{{ info }}</span>
-            </div>
-
-            <div v-else>
-              <!-- Se o conteudo for uma lista de entidades -->
-              <v-data-table
-                v-if="campo === 'entidadesSel'"
-                :headers="entidadesHeaders"
-                :items="info"
-                class="elevation-1"
-                :footer-props="footerPropsEntidades"
-              >
-                <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
-                  >
-                    Nenhuma entidade selecionada...
-                  </v-alert>
-                </template>
-
-                <template v-slot:item.sigla="{ item }">
-                  <v-badge
-                    v-if="novoItemAdicionado(item, campo)"
-                    right
-                    dot
-                    inline
-                    >{{ item.sigla }}</v-badge
-                  >
-
-                  <span v-else>
-                    {{ item.sigla }}
+        <Campo
+          v-if="campo !== 'estado'"
+          :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
+          :nome="transformaKeys(campo)"
+          :color="conversorDeCor[novoHistorico[campo].cor] + ' lighten-1'"
+        >
+          <template v-slot:conteudo>
+            <v-row dense>
+              <!-- Conteudo -->
+              <v-col>
+                <div v-if="!(info instanceof Array)">
+                  <span v-if="info === '' || info === null">
+                    [Campo não preenchido na submissão do pedido]
                   </span>
-                </template>
+                  <span v-else>{{ info }}</span>
+                </div>
 
-                <template v-slot:item.operacao="{ item }">
-                  <v-icon color="red" @click="removeEntidade(item)">
-                    delete
-                  </v-icon>
-                </template>
-
-                <template v-slot:top>
-                  <v-toolbar flat>
-                    <v-btn
-                      rounded
-                      class="indigo accent-4 white--text"
-                      @click="abreEntidadesDialog()"
-                    >
-                      Adicionar Entidades
-                    </v-btn>
-                  </v-toolbar>
-                </template>
-              </v-data-table>
-
-              <!-- Se o conteudo for uma lista de processos -->
-              <v-data-table
-                v-else-if="campo === 'processosSel'"
-                :headers="processosHeaders"
-                :items="info"
-                class="elevation-1"
-                :footer-props="footerPropsProcessos"
-              >
-                <template v-slot:no-data>
-                  <v-alert
-                    type="error"
-                    width="100%"
-                    class="m-auto mb-2 mt-2"
-                    outlined
+                <div v-else>
+                  <!-- Se o conteudo for uma lista de entidades -->
+                  <v-data-table
+                    v-if="campo === 'entidadesSel'"
+                    :headers="entidadesHeaders"
+                    :items="info"
+                    :footer-props="footerPropsEntidades"
                   >
-                    Nenhum processo selecionado...
-                  </v-alert>
-                </template>
+                    <template v-slot:no-data>
+                      <v-alert
+                        type="error"
+                        width="100%"
+                        class="m-auto mb-2 mt-2"
+                        outlined
+                      >
+                        Nenhuma entidade selecionada...
+                      </v-alert>
+                    </template>
 
-                <template v-slot:item.codigo="{ item }">
-                  <v-badge
-                    v-if="novoItemAdicionado(item, campo)"
-                    right
-                    dot
-                    inline
-                    >{{ item.codigo }}</v-badge
+                    <template v-slot:item.sigla="{ item }">
+                      <v-badge v-if="novoItemAdicionado(item, campo)" right dot inline>{{
+                        item.sigla
+                      }}</v-badge>
+
+                      <span v-else>
+                        {{ item.sigla }}
+                      </span>
+                    </template>
+
+                    <template v-slot:item.operacao="{ item }">
+                      <v-icon color="red" @click="removeEntidade(item)"> delete </v-icon>
+                    </template>
+
+                    <template v-slot:top>
+                      <v-toolbar flat>
+                        <v-btn
+                          rounded
+                          class="indigo accent-4 white--text"
+                          @click="abreEntidadesDialog()"
+                        >
+                          Adicionar Entidades
+                        </v-btn>
+                      </v-toolbar>
+                    </template>
+                  </v-data-table>
+
+                  <!-- Se o conteudo for uma lista de processos -->
+                  <v-data-table
+                    v-else-if="campo === 'processosSel'"
+                    :headers="processosHeaders"
+                    :items="info"
+                    :footer-props="footerPropsProcessos"
                   >
+                    <template v-slot:no-data>
+                      <v-alert
+                        type="error"
+                        width="100%"
+                        class="m-auto mb-2 mt-2"
+                        outlined
+                      >
+                        Nenhum processo selecionado...
+                      </v-alert>
+                    </template>
 
-                  <span v-else>
-                    {{ item.codigo }}
-                  </span>
-                </template>
+                    <template v-slot:item.codigo="{ item }">
+                      <v-badge v-if="novoItemAdicionado(item, campo)" right dot inline>{{
+                        item.codigo
+                      }}</v-badge>
 
-                <template v-slot:item.operacao="{ item }">
-                  <v-icon color="red" @click="removeProcesso(item)">
-                    delete
+                      <span v-else>
+                        {{ item.codigo }}
+                      </span>
+                    </template>
+
+                    <template v-slot:item.operacao="{ item }">
+                      <v-icon color="red" @click="removeProcesso(item)"> delete </v-icon>
+                    </template>
+
+                    <template v-slot:top>
+                      <v-toolbar flat>
+                        <v-btn
+                          rounded
+                          class="indigo accent-4 white--text"
+                          @click="abreProcessosDialog()"
+                        >
+                          Adicionar Processos
+                        </v-btn>
+                      </v-toolbar>
+                    </template>
+                  </v-data-table>
+                </div>
+              </v-col>
+
+              <!-- Operações -->
+              <v-col cols="auto">
+                <span v-if="!esconderOperacoes[campo]">
+                  <v-icon class="mr-1" color="green" @click="verifica(campo)">
+                    check
                   </v-icon>
-                </template>
+                  <v-icon class="mr-1" color="red" @click="anula(campo)"> clear </v-icon>
+                </span>
+                <v-icon
+                  v-if="!(info instanceof Array)"
+                  class="mr-1"
+                  color="orange"
+                  @click="edita(campo)"
+                >
+                  create
+                </v-icon>
 
-                <template v-slot:top>
-                  <v-toolbar flat>
-                    <v-btn
-                      rounded
-                      class="indigo accent-4 white--text"
-                      @click="abreProcessosDialog()"
-                    >
-                      Adicionar Processos
-                    </v-btn>
-                  </v-toolbar>
-                </template>
-              </v-data-table>
-            </div>
-          </v-col>
-
-          <!-- Operações -->
-          <v-col cols="auto">
-            <span v-if="!esconderOperacoes[campo]">
-              <v-icon class="mr-1" color="green" @click="verifica(campo)">
-                check
-              </v-icon>
-              <v-icon class="mr-1" color="red" @click="anula(campo)">
-                clear
-              </v-icon>
-            </span>
-            <v-icon
-              v-if="!(info instanceof Array)"
-              class="mr-1"
-              color="orange"
-              @click="edita(campo)"
-            >
-              create
-            </v-icon>
-
-            <v-icon @click="abrirNotaDialog(campo)">
-              add_comment
-            </v-icon>
-          </v-col>
-        </v-row>
+                <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
+              </v-col>
+            </v-row>
+          </template>
+        </Campo>
       </div>
 
       <v-row>
@@ -219,6 +199,7 @@ import PO from "@/components/pedidos/generic/PainelOperacoes";
 import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
 import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
 import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
+import Campo from "@/components/generic/CampoCLAV";
 
 import Loading from "@/components/generic/Loading";
 import ErroDialog from "@/components/generic/ErroDialog";
@@ -241,6 +222,7 @@ export default {
     SelecionaAutocomplete,
     EditarCamposDialog,
     AdicionarNota,
+    Campo,
   },
 
   data() {
@@ -311,6 +293,11 @@ export default {
       dialogProcessos: false,
       entidades: [],
       processos: [],
+      conversorDeCor: {
+        verde: "success",
+        amarelo: "warning",
+        vermelho: "error",
+      },
     };
   },
 
@@ -332,8 +319,7 @@ export default {
       this.loading = false;
     } catch (e) {
       this.erroDialog.visivel = true;
-      this.erroDialog.mensagem =
-        "Erro ao carregar os dados, por favor tente novamente";
+      this.erroDialog.mensagem = "Erro ao carregar os dados, por favor tente novamente";
     }
   },
 
@@ -367,9 +353,7 @@ export default {
 
     abreEntidadesDialog() {
       this.dados.entidadesSel.forEach((entSel) => {
-        const index = this.entidades.findIndex(
-          (ent) => ent.sigla === entSel.sigla
-        );
+        const index = this.entidades.findIndex((ent) => ent.sigla === entSel.sigla);
 
         if (index !== -1) this.entidades.splice(index, 1);
       });
@@ -379,9 +363,7 @@ export default {
 
     abreProcessosDialog() {
       this.dados.processosSel.forEach((procSel) => {
-        const index = this.processos.findIndex(
-          (proc) => proc.codigo === procSel.codigo
-        );
+        const index = this.processos.findIndex((proc) => proc.codigo === procSel.codigo);
 
         if (index !== -1) this.processos.splice(index, 1);
       });
@@ -426,9 +408,7 @@ export default {
         (procSel) => procSel.codigo === processo.codigo
       );
 
-      const existe = this.processos.some(
-        (proc) => proc.codigo === processo.codigo
-      );
+      const existe = this.processos.some((proc) => proc.codigo === processo.codigo);
 
       if (index !== -1) {
         if (!existe) {
@@ -485,8 +465,7 @@ export default {
         });
       } catch (err) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao carregar os dados, por favor tente novamente";
+        this.erroDialog.mensagem = "Erro ao carregar os dados, por favor tente novamente";
       }
     },
 
@@ -502,8 +481,7 @@ export default {
         });
       } catch (err) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao carregar os dados, por favor tente novamente";
+        this.erroDialog.mensagem = "Erro ao carregar os dados, por favor tente novamente";
       }
     },
 
@@ -539,8 +517,7 @@ export default {
         this.$router.go(-1);
       } catch (e) {
         this.erroDialog.visivel = true;
-        this.erroDialog.mensagem =
-          "Erro ao devolver o pedido, por favor tente novamente";
+        this.erroDialog.mensagem = "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 
@@ -550,8 +527,15 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado =
-          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+        var estado;
+        if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído")
+          dados.etapa === "Validação 1"
+            ? (estado = "Apreciado")
+            : (estado = "Apreciado2v");
+        else
+          dados.etapa === "Validação 1"
+            ? (estado = "Reapreciado")
+            : (estado = "Reapreciado2v");
 
         pedido.estado = estado;
 
@@ -650,56 +634,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.info-conteudo {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
-}
-
-.info-descricao {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-descricao-verde {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
-  background-color: #c8e6c9; /* lighten-4 */
-}
-
-.info-descricao-vermelho {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
-  background-color: #ffcdd2; /* lighten-4 */
-}
-
-.info-descricao-amarelo {
-  opacity: 1;
-  animation-name: fadeInOpacity;
-  animation-iteration-count: 1;
-  animation-timing-function: ease-in;
-  animation-duration: 1s;
-  background-color: #ffe0b2; /* lighten-4 */
-}
-
-@keyframes fadeInOpacity {
-  0% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-</style>
+<style scoped></style>

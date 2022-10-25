@@ -1,37 +1,33 @@
 <template>
   <div>
-    <v-row>
-      <!-- Guardar trabalho......................... -->
+    <v-row class="justify-start align-start">
+
+      <!-- Guardar: grava e mantem-se......................... -->
       <v-col>
         <v-btn
           dark
           rounded
           class="ma-2 indigo darken-4"
-          @click="guardarTrabalho"
+          @click="gravarTrabalho"
           v-bind:disabled="c.codigo == ''"
         >
-          Guardar trabalho
-
-          <DialogPendenteGuardado 
-              v-if="pendenteGuardado" 
-              :pendente="pendente"
-              @continuar="pendenteGuardado = false"/>
+          Guardar
         </v-btn>
       </v-col>
 
-      <!-- Validar classe....................... -->
+      <!-- Validar ......................................... -->
       <valida-classe-info-box :c="c" />
 
-      <!-- Criar classe......................... -->
+      <!-- Submeter: criar a classe......................... -->
       <v-col>
         <v-btn
           v-bind:disabled="c.codigo == ''"
           dark
           rounded
-          class="ma-2 indigo darken-4"
+          class="ma-2 teal darken-4"
           @click="criarClasse"
         >
-          Criar classe
+          Submeter
           <DialogClasseCriada
             v-if="classeCriada"
             :c="c"
@@ -42,22 +38,20 @@
         </v-btn>
       </v-col>
 
-      <!-- Sair da criação da Classe sem abortar o processo .........................-->
-        <v-col>
-          <v-btn 
-            dark
-            rounded
-            class="ma-2 indigo darken-4"
-            @click="sairOperacao = true"
-            >Sair 
-                    
-            <DialogSair
-              v-if="sairOperacao" 
-              @continuar="sairOperacao=false"
-              @sair="sair"
-            />
-          </v-btn>
-        </v-col>
+      <!-- Sair: grava e sai......................... -->
+      <v-col>
+        <v-btn
+          dark
+          rounded
+          class="ma-2 indigo darken-4"
+          @click="guardarTrabalho"
+          v-bind:disabled="c.codigo == ''"
+        >
+          Sair
+        </v-btn>
+      </v-col>
+
+      
 
       <!-- Cancelar criação......................... -->
       <v-col>
@@ -68,12 +62,7 @@
           class="ma-2 red darken-4"
           @click="eliminarClasse = true"
         >
-          Cancelar criação
-
-          <DialogCancelar v-if="eliminarClasse"
-            @continuar="eliminarClasse = false"
-            @sair="cancelarCriacaoClasse"
-          />
+          Cancelar
         </v-btn>
       </v-col>
       
@@ -99,11 +88,33 @@
       </v-dialog>
     </v-row>
 
-    <!-- Trabalho pendente guardado com sucesso ........... -->
+    <!-- Dialog de Guardar: Trabalho gravado com sucesso .................. -->
+    <v-row justify-center>
+      <v-dialog v-model="trabalhoGuardado" persistent max-width="60%">
+        <v-card>
+          <v-card-title class="teal darken-4 title white--text" dark>Informação introduzida gravada</v-card-title>
+          <v-card-text>
+            <p>
+              Os seus dados foram guardados para que possa continuar a trabalhar com segurança ou
+              para que possa retomar o trabalho mais tarde.
+            </p>
+            <p>Identificador do registo criado em Pendentes: {{ idTrabalho }}</p>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="trabalhoGuardado = false">
+              Fechar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+
+    <!-- Dialog de Sair: Trabalho pendente guardado com sucesso ........... -->
     <v-row justify-center>
       <v-dialog v-model="pendenteGuardado" persistent max-width="60%">
         <v-card>
-          <v-card-title class="headline"> Trabalho pendente guardado </v-card-title>
+          <v-card-title class="teal darken-4 title white--text" dark> Trabalho pendente guardado </v-card-title>
           <v-card-text>
             <p>
               Os seus dados foram guardados para que possa retomar o trabalho mais tarde.
@@ -167,6 +178,10 @@ export default {
   },
   data() {
     return {
+      estadoAtual: {}, // Vai ser guardado em pendentes
+      estadoAtualGravado: false,
+      trabalhoGuardado: false,
+      idTrabalho: "???",
       pendenteGuardado: false,
       pendente: {},
       classeCriada: false,
@@ -196,6 +211,63 @@ export default {
   },
 
   methods: {
+    // Gravar o que se fez até ao momento para continuar a trabalhar
+    gravarTrabalho: async function(){
+      try {
+        if (this.$store.state.name === "") {
+          this.loginErrorSnackbar = true;
+        } else {
+          if(!this.estadoAtualGravado){ // Se for a primeira vez faz um POST
+            var userBD = this.$verifyTokenUser();
+            this.estadoAtual = {
+              numInterv: 1,
+              acao: "Criação",
+              tipo: "Classe",
+              objeto: this.c,
+              criadoPor: userBD.email,
+              user: { email: userBD.email },
+              token: this.$store.state.token,
+            };
+            try{
+              var response = await this.$request("post", "/pendentes", this.estadoAtual);
+              this.estadoAtual._id = response.data._id;
+              this.estadoAtualGravado = true;
+              this.trabalhoGuardado = true;
+              this.idTrabalho = response.data._id;
+            }
+            catch(e){
+              console.log("Erro: " + e)
+              return(e)
+            }
+          }
+          else{ // Se o pendente já existe faz um PUT incrementando as intervenções
+            var userBD = this.$verifyTokenUser();
+            this.estadoAtual = {
+              _id: this.estadoAtual._id,
+              numInterv: this.estadoAtual.numInterv + 1,
+              acao: "Criação",
+              tipo: "Classe",
+              objeto: this.c,
+              criadoPor: userBD.email,
+              user: { email: userBD.email },
+              token: this.$store.state.token,
+            };
+            try{
+              var response = await this.$request("put", "/pendentes", this.estadoAtual);
+              this.trabalhoGuardado = true;
+              this.idTrabalho = response.data._id;
+            }
+            catch(e){
+              console.log("Erro: " + e)
+              return(e)
+            }
+          }
+        }
+      } catch (error) {
+        return error;
+      }
+    },
+
     // Permite guardar o trabalho para ser retomado depois
     guardarTrabalho: async function () {
       try {
@@ -659,8 +731,13 @@ export default {
     },
 
     cancelarCriacaoClasse: function () {
-      this.$router.push("/");
-      this.$emit("limpar");
+      if (this.trabalhoGuardado) {
+        this.$request("delete", "/pendentes/" + this.idTrabalho)
+          .then(() => this.$router.push("/"))
+          .catch((err) => console.error(err));
+      } else {
+        this.$router.push("/");
+      }
     },
   },
 };

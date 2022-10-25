@@ -1,710 +1,232 @@
 <template>
-  <Loading v-if="loading" :message="'pedido'" />
-  <div class="ma-5" v-else>
-    <v-row v-if="dados.legislacao">
-      <v-col cols="2">
-        <div
-          :class="[
-            'info-descricao',
-            `info-descricao-${novoHistorico.legislacao.cor}`,
-          ]"
+  <div>
+    <Loading v-if="loading" :message="'pedido'" />
+    <div v-else>
+      <div v-for="(info, campo) in dados" :key="campo">
+        <Campo
+          v-if="campo == 'legislacao' || campo == 'responsavel' || campo == 'entidades' || campo == 'classes'"
+          :nome="transformaKeys(campo)"
+          :key="`${novoHistorico[campo].cor}${animacoes[campo]}`"
+          :color="conversorDeCor[novoHistorico[campo].cor] + ' lighten-1'"
         >
-          Fonte de Legitimação
-        </div>
-      </v-col>
-      <v-col class="mt-3">
-        {{ dados.legislacao }}
-      </v-col>
-      <v-col cols="1">
-        <v-icon color="green" @click="novoHistorico.legislacao.cor = 'verde'"
-          >check</v-icon
-        >
-        <v-icon color="red" @click="novoHistorico.legislacao.cor = 'vermelho'"
-          >clear</v-icon
-        >
-        <v-badge
-          color="indigo darken-4"
-          content="1"
-          :value="!!novoHistorico.legislacao.nota"
-          overlap
-        >
-          <v-icon @click="abrirNotaDialog('legislacao', -1)">
-            add_comment
-          </v-icon>
-        </v-badge>
-      </v-col>
-    </v-row>
-    <v-row v-else>
-      <v-col cols="2">
-        <div
-          :class="[
-            'info-descricao',
-            `info-descricao-${novoHistorico.referencial.cor}`,
-          ]"
-        >
-          Referencial Classificativo
-        </div>
-      </v-col>
-      <v-col class="mt-3">
-        {{ dados.referencial.split("#")[0] }}
-      </v-col>
-      <v-col cols="1">
-        <v-icon color="green" @click="novoHistorico.referencial.cor = 'verde'"
-          >check</v-icon
-        >
-        <v-icon color="red" @click="novoHistorico.referencial.cor = 'vermelho'"
-          >clear</v-icon
-        >
-        <v-badge
-          color="indigo darken-4"
-          content="1"
-          :value="!!novoHistorico.referencial.nota"
-          overlap
-        >
-          <v-icon @click="abrirNotaDialog('referencial', -1)">
-            add_comment
-          </v-icon>
-        </v-badge>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="2">
-        <div
-          :class="[
-            'info-descricao',
-            `info-descricao-${novoHistorico.fundo.cor}`,
-          ]"
-        >
-          Fundo
-        </div>
-      </v-col>
-      <v-col class="mr-2">
-        <div v-for="(f, i) in dados.fundo" :key="i">
-          <a :href="'/entidades/ent_' + f.split(' - ')[0]">{{ f }}</a>
-        </div>
-      </v-col>
-      <v-col cols="1">
-        <v-icon color="green" @click="novoHistorico.fundo.cor = 'verde'"
-          >check</v-icon
-        >
-        <v-icon color="red" @click="novoHistorico.fundo.cor = 'vermelho'"
-          >clear</v-icon
-        >
+          <template v-slot:conteudo>
+            <v-row dense>
+              <v-col>
+                <div v-if="!(info instanceof Array)">
+                  <span v-if="info === '' || info === null">
+                    [Campo não preenchido na submissão do pedido]
+                  </span>
+                  <span v-else>{{ info }}</span>
+                </div>
 
-        <v-badge
-          color="indigo darken-4"
-          content="1"
-          :value="!!novoHistorico.fundo.nota"
-          overlap
-        >
-          <v-icon @click="abrirNotaDialog('fundo', -1)"> add_comment </v-icon>
-        </v-badge>
-      </v-col>
-    </v-row>
+                <div v-else>
+                  <span v-if="campo === 'entidades'">{{ formatarEntidades(info) }}</span>
+                  <div v-if="campo === 'classes'">
+                    <v-list dense color="secondary">
+                      <v-list-group
+                        v-for="(item, iter) in info"
+                        :key="iter"
+                        no-action
+                      >
+                        <template v-slot:activator>
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-if="item.codigo && item.referencia"
+                              v-text="item.codigo + ', ' + item.referencia"
+                            ></v-list-item-title>
+                            <v-list-item-title 
+                              v-else-if="item.codigo" 
+                              v-text="item.codigo"
+                            ></v-list-item-title>
+                            <v-list-item-title 
+                              v-else 
+                              v-text="item.referencia"
+                            ></v-list-item-title>
+                          </v-list-item-content>
+                        </template>
+                        <v-list-item-content>
 
-    <v-expansion-panels popout>
-      <v-expansion-panel class="ma-5">
-        <v-expansion-panel-header
-          class="pa-2 clav-linear-background title white--text"
-          >Classes</v-expansion-panel-header
-        >
-        <v-expansion-panel-content>
-          <v-list>
-            <v-list-group
-              v-for="(item, index) in dados.zonaControlo"
-              :key="item.codigo"
-              color="grey darken-1"
-              no-action
-            >
-              <template v-slot:activator>
-                <v-list-item-content
-                  :class="[
-                    'info-descricao',
-                    `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                  ]"
-                >
-                  <v-list-item-title
-                    v-if="item.codigo && item.referencia"
-                    v-text="
-                      item.codigo + ', ' + item.referencia + ' - ' + item.titulo
-                    "
-                  ></v-list-item-title>
-                  <v-list-item-title
-                    v-else-if="item.codigo"
-                    v-text="item.codigo + ' - ' + item.titulo"
-                  ></v-list-item-title>
-                  <v-list-item-title
-                    v-else
-                    v-text="item.referencia + ' - ' + item.titulo"
-                  ></v-list-item-title>
-                </v-list-item-content>
-              </template>
-              <v-list-item-content>
-                <v-list-item-title class="wrap-text">
-                  <table class="consulta mx-5">
-                    <tr v-if="item.codigo">
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Código da Classe
-                        </div>
-                      </td>
-                      <td style="width: 70%">
-                        {{ item.codigo }}
-                      </td>
-                      <td style="width: 10%">
-                        <v-icon
-                          color="green"
-                          @click="
-                            novoHistorico.zonaControlo.dados[index].cor =
-                              'verde'
-                          "
-                          >check</v-icon
-                        >
-                        <v-icon
-                          color="red"
-                          @click="
-                            novoHistorico.zonaControlo.dados[index].cor =
-                              'vermelho'
-                          "
-                          >clear</v-icon
-                        >
-                        <v-badge
-                          color="indigo darken-4"
-                          content="1"
-                          :value="
-                            !!novoHistorico.zonaControlo.dados[index].nota
-                          "
-                          overlap
-                        >
-                          <v-icon
-                            @click="abrirNotaDialog('zonaControlo', index)"
-                          >
-                            add_comment
-                          </v-icon>
-                        </v-badge>
-                      </td>
-                    </tr>
-                    <tr v-if="item.referencia">
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Referência
-                        </div>
-                      </td>
-                      <td style="width: 70%">
-                        {{ item.referencia }}
-                      </td>
-                      <td v-if="!item.codigo" style="width: 10%">
-                        <v-icon
-                          color="green"
-                          @click="
-                            colorSwitch++;
-                            cores.zonaControlo[index] = '#C8E6C9';
-                          "
-                          >check</v-icon
-                        >
-                        <v-icon
-                          color="red"
-                          @click="
-                            colorSwitch++;
-                            cores.zonaControlo[index] = '#FFCDD2';
-                          "
-                          >clear</v-icon
-                        >
-                      </td>
-                    </tr>
-                    <tr v-if="item.titulo">
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Título
-                        </div>
-                      </td>
-                      <td style="width: 80%">
-                        {{ item.titulo }}
-                      </td>
-                    </tr>
-                    <tr v-if="item.prazoConservacao">
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Prazo de Conservação Administrativa
-                        </div>
-                      </td>
-                      <td style="width: 80%">
-                        {{ item.prazoConservacao }}
-                        <span v-if="item.prazoConservacao == '1'">Ano</span
-                        ><span v-else>Anos</span>
-                      </td>
-                    </tr>
-                    <tr v-if="item.notasPCA">
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Notas do PCA
-                        </div>
-                      </td>
-                      <td style="width: 80%">
-                        {{ item.notasPCA }}
-                      </td>
-                    </tr>
-                    <tr v-if="item.destino">
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Destino final
-                        </div>
-                      </td>
-                      <td v-if="item.destino === 'E'" style="width: 80%">
-                        Eliminação
-                      </td>
-                      <td v-else-if="item.destino === 'C'" style="width: 80%">
-                        Conservação
-                      </td>
-                      <td v-else style="width: 80%">
-                        {{ item.destino }}
-                      </td>
-                    </tr>
-                    <tr v-if="item.notaDF">
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Nota do DF
-                        </div>
-                      </td>
-                      <td style="width: 80%">
-                        {{ item.notaDF }}
-                      </td>
-                    </tr>
-                    <tr v-if="item.destino == 'CP' && item.justificaDF">
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Justificação do DF
-                        </div>
-                      </td>
-                      <td style="width: 80%">
-                        <span
-                          v-for="(just, index) in item.justificaDF"
-                          :key="index"
-                          >{{ just }}</span
-                        >
-                      </td>
-                    </tr>
-                    <tr
-                      v-if="
-                        item.ni &&
-                        (item.destino === 'C' || item.destino === 'Conservação')
-                      "
-                    >
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Natureza de intervenção
-                        </div>
-                      </td>
-                      <td style="width: 80%">{{ item.ni }}</td>
-                    </tr>
-                    <tr
-                      v-if="
-                        item.dono &&
-                        item.dono.length > 0 &&
-                        (item.destino === 'C' || item.destino === 'Conservação')
-                      "
-                    >
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Donos do PN
-                        </div>
-                      </td>
-                      <td style="width: 80%">
-                        <li v-for="(d, i) in item.dono" :key="i">{{ d }}</li>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Data de Início
-                        </div>
-                      </td>
-                      <td style="width: 80%">
-                        {{ item.dataInicio }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Data de Fim
-                        </div>
-                      </td>
-                      <td style="width: 80%">{{ item.dataFim }}</td>
-                    </tr>
-                    <tr>
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          N.º de agregações
-                        </div>
-                      </td>
-                      <td v-if="item.agregacoes.length == 0" style="width: 80%">
-                        {{ item.nrAgregacoes }}
-                      </td>
-                      <td style="width: 80%" v-else>
-                        {{ item.agregacoes.length }}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Medição das UI em papel (m.l.)
-                        </div>
-                      </td>
-                      <td style="width: 70%" v-if="item.uiPapel">
-                        {{ item.uiPapel }}
-                      </td>
-                      <td style="width: 70%" v-else>0</td>
-                      <td style="width: 10%">
-                        <v-icon
-                          color="orange"
-                          @click="
-                            abrirEditor('Medição das UI em papel (m.l.)', index)
-                          "
-                          >create</v-icon
-                        >
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Medição das UI em digital (Gb)
-                        </div>
-                      </td>
-                      <td style="width: 70%" v-if="item.uiDigital">
-                        {{ item.uiDigital }}
-                      </td>
-                      <td style="width: 70%" v-else>0</td>
-                      <td style="width: 10%">
-                        <v-icon
-                          color="orange"
-                          @click="
-                            abrirEditor('Medição das UI em digital (Gb)', index)
-                          "
-                          >create</v-icon
-                        >
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 20%">
-                        <div
-                          :class="[
-                            'info-descricao',
-                            `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                          ]"
-                        >
-                          Medição das UI noutros suportes
-                        </div>
-                      </td>
-                      <td style="width: 70%" v-if="item.uiOutros">
-                        {{ item.uiOutros }}
-                      </td>
-                      <td style="width: 70%" v-else>0</td>
-                      <td style="width: 10%">
-                        <v-icon
-                          color="orange"
-                          @click="
-                            abrirEditor(
-                              'Medição das UI noutros suportes',
-                              index
-                            )
-                          "
-                          >create</v-icon
-                        >
-                      </td>
-                    </tr>
-                  </table>
-
-                  <div class="ma-1" v-if="item.agregacoes.length > 0">
-                    <v-data-table
-                      :headers="cabecalho"
-                      :items="item.agregacoes"
-                      :items-per-page="5"
-                      class="elevation-1 mt-3"
-                      :footer-props="footer_props"
-                      :search="search"
-                    >
-                      <template v-slot:top>
-                        <v-toolbar flat>
-                          <v-row>
-                            <v-col cols="3">
-                              <div
-                                :class="[
-                                  'info-descricao',
-                                  `info-descricao-${novoHistorico.zonaControlo.dados[index].cor}`,
-                                ]"
+                          <v-list-item-title> 
+                            <div v-for="(atrib, index) in item" :key="index">
+                              <CampoAE
+                                v-if="checkIf(atrib,index)"
+                                :nome="nomes[index]"
+                                :infoHeader="nomes[index]"
+                                :key="`${novoHistorico.classes.dados[iter][index].cor}${animacoesClasses[iter][index]}`"
+                                :color="conversorDeCor[novoHistorico.classes.dados[iter][index].cor] + ' lighten-1'"
                               >
-                                Lista de Agregações
-                              </div>
-                            </v-col>
-                            <v-col>
-                              <v-text-field
-                                v-model="search"
-                                append-icon="search"
-                                label="Procura"
-                                single-line
-                                hide-details
-                              ></v-text-field
-                            ></v-col>
-                          </v-row>
-                        </v-toolbar>
-                      </template>
-                      <template v-slot:item="prop">
-                        <tr>
-                          <td style="text-align: left">
-                            {{ prop.item.codigo }}
-                          </td>
-                          <td style="text-align: left">
-                            {{ prop.item.titulo }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ prop.item.dataContagem }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ prop.item.ni }}
-                          </td>
-                        </tr>
-                      </template>
-                    </v-data-table>
+                                <template v-slot:conteudo>
+                                  <v-col cols="auto">
+                                    <v-row>
+                                      <v-col cols="12" sm="7">
+                                        <span> {{ atrib }}</span>
+                                      </v-col>
+                                      <v-col cols="12" sm="5" align="right">
+                                        <!-- Operações -->
+                                        <span v-if="!esconderOperacoesClasses[iter][index]">
+                                          <v-icon class="mr-1" color="green" @click="verificaClasse(iter,index)"> check </v-icon>
+                                          <v-icon class="mr-1" color="red" @click="anulaClasse(iter,index)"> clear </v-icon>
+                                        </span>
+                                        <v-icon class="mr-1" color="orange" v-if="checkMedicao(index)" @click="editaClasse(iter,index)"> create </v-icon>
+                                        <v-icon @click="abrirNotaDialogClasse(iter,index)"> add_comment </v-icon>
+                                      </v-col>
+                                    </v-row>
+                                  </v-col>
+                                </template>
+                              </CampoAE>
+                            </div>
+                            
+                            <CampoAE
+                              v-if="item.dono"
+                              nome="Dono"
+                              infoHeader="Dono"
+                              :key="`${novoHistorico.classes.dados[iter]['dono'].cor}${animacoesClasses[iter]['dono']}`"
+                              :color="conversorDeCor[novoHistorico.classes.dados[iter]['dono'].cor] + ' lighten-1'"
+                            >
+                              <template v-slot:conteudo>
+                                <v-col cols="auto">
+                                  <v-row>
+                                    <v-col cols="12" sm="7">
+                                      <ul :class="{ 'is-collapsed': entCollapsed }">
+                                        <li v-for="(l, index) in listaDonos[item.codigo]" v-bind:key="index">
+                                          <a :href="'/entidades/ent_' + l">{{ l }}</a>
+                                        </li>
+                                      </ul>
+                                      <a @click="entCollapsed = !entCollapsed" v-if="listaDonos[item.codigo].length > 6">
+                                        <span v-if="entCollapsed" style="color:#283593;">Mostrar mais...</span>
+                                        <span v-else style="color:#283593;">Mostrar menos...</span>
+                                      </a>
+                                    </v-col>
+                                    <v-col cols="12" sm="5" align="right">
+                                      <!-- Operações -->
+                                      <span v-if="!esconderOperacoesClasses[iter]['dono']">
+                                        <v-icon class="mr-1" color="green" @click="verificaClasse(iter,'dono')"> check </v-icon>
+                                        <v-icon class="mr-1" color="red" @click="anulaClasse(iter,'dono')"> clear </v-icon>
+                                      </span>
+                                      <v-icon @click="abrirNotaDialogClasse(iter,'dono')"> add_comment </v-icon>
+                                    </v-col>
+                                  </v-row>
+                                </v-col>
+                              </template>
+                            </CampoAE>
+                            
+                            <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
+                              <v-row style="margin-top:10px" justify="space-between" class="info-label">
+                                <v-col>Lista de Agregações</v-col>
+                                <v-col>
+                                  <v-text-field
+                                    v-model="search"
+                                    append-icon="search"
+                                    label="Procura"
+                                    single-line
+                                    hide-details
+                                  ></v-text-field>
+                                </v-col>
+                              </v-row>
+                              
+                              <v-data-table
+                                :headers="cabecalho"
+                                :items="item.agregacoes"
+                                :items-per-page="5"
+                                class="elevation-1 ml-2 mt-3"
+                                :footer-props="footer_props"
+                                :search="search"
+                              >
+
+                                <template v-slot:item ="{item, index}">
+                                  <tr :class="[item.valor ? 'style-valido' : 'style-anulado']">
+                                    <td>{{ item.codigoAgregacao }}</td>
+                                    <td>{{ item.titulo }}</td>
+                                    <td>{{ item.dataContagem }}</td>
+                                    <td>{{ item.ni }}</td>
+                                    <td>
+                                      <v-icon color="green" @click="verificaAgregacao(iter, item)"> check </v-icon>
+                                      <v-icon color="red" @click="anulaAgregacao(iter, item)"> clear </v-icon>
+                                      <v-icon @click="abrirNotaDialogAgregacao(iter, item)"> add_comment </v-icon>
+                                    </td>
+                                  </tr>
+                                </template>
+
+                              </v-data-table>
+                            </div>
+
+                            
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-group>
+                    </v-list>
                   </div>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-group>
-          </v-list>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-    <v-row>
-      <v-spacer />
-      <v-btn
-        @click="guardarPedido()"
-        rounded
-        class="mt-5 clav-linear-background accent-4 white--text"
-        ><unicon name="guardar-icon" fill="#ffffff" />Guardar Trabalho</v-btn
-      >
-      <PO
-        operacao="Analisar"
-        @avancarPedido="encaminharPedido($event)"
-        @devolverPedido="despacharPedido($event)"
-      />
-    </v-row>
+                </div>
+              </v-col>
+
+              <!-- Operações -->
+              <v-col v-if="campo != 'classes'" cols="auto">
+                <span>
+                  <v-icon class="mr-1" color="green" @click="verifica(campo)"> check </v-icon>
+                  <v-icon class="mr-1" color="red" @click="anula(campo)"> clear </v-icon>
+                </span>
+                <v-icon @click="abrirNotaDialog(campo)"> add_comment </v-icon>
+              </v-col>
+            </v-row>
+          </template>
+        </Campo>
+      </div>
+
+      <v-row>
+        <v-spacer />
+        <PO
+          operacao="Analisar"
+          @avancarPedido="encaminharPedido($event)"
+          @devolverPedido="despacharPedido($event)"
+        />
+      </v-row>
+    </div>
 
     <!-- Dialog da nota -->
     <v-dialog v-model="notaDialog.visivel" width="70%" persistent>
-      <v-card>
-        <v-card-title class="indigo darken-4 title white--text mb-4" dark>
-          Nota relativa ao campo: {{ converteCampo(notaDialog.campo) }}
-        </v-card-title>
-
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Nota</div>
-            </v-col>
-
-            <v-col>
-              <v-textarea
-                clearable
-                filled
-                auto-grow
-                color="indigo"
-                v-model="notaDialog.nota"
-                label="Nota"
-              />
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="red darken-4"
-            text
-            rounded
-            dark
-            @click="notaDialog.visivel = false"
-          >
-            Cancelar
-          </v-btn>
-
-          <v-btn
-            color="indigo accent-4 white--text"
-            rounded
-            @click="adicionarNota()"
-          >
-            Adicionar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+      <AdicionarNota
+        :campo="notaDialog.campo"
+        :notaAtual="notaDialog.nota"
+        @fechar="notaDialog.visivel = false"
+        @adicionar="adicionarNota($event)"
+      />
     </v-dialog>
 
-    <!--Dialog de Edição -->
-    <v-dialog v-model="editar" width="60%" hide-overlay>
-      <v-card>
-        <v-card>
-          <v-card-title class="primary darken-3 title white--text" dark>
-            <span>Edição do campo: {{ editarCampo }}</span>
-          </v-card-title>
-          <v-card-text class="mt-4">
-            <v-row class="ma-2">
-              <v-text-field
-                hint="Exemplo: 11.50"
-                label="Insira a medição de UI"
-                v-model="medicao"
-                solo
-                clearable
-              />
-            </v-row>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text color="red accent-4" @click="close()"> Voltar </v-btn>
-            <v-btn class="indigo accent-4" dark @click="adicionar()">
-              <span>Alterar</span>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-card>
+    <!-- Dialog de edição-->
+    <v-dialog v-model="editaCampo.visivel" width="70%" persistent>
+      <EditarCamposDialog
+        :campo="editaCampo"
+        :tipoPedido="p.objeto.tipo"
+        @fechar="fechaEditaCampoDialog($event)"
+        @editarCampo="editarCampo($event)"
+      />
     </v-dialog>
-    <v-dialog v-model="erroDialog" width="700" persistent>
-      <v-card outlined>
-        <v-card-title class="red darken-4 title white--text" dark
-          >Erro: Não foi possível editar o campo {{ editarCampo }}</v-card-title
-        >
 
-        <v-card-text>
-          <span
-            class="subtitle-1"
-            style="white-space: pre-wrap"
-            v-html="erro"
-          ></span>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-btn color="red darken-4" text @click="erroDialog = false"
-            >Fechar</v-btn
-          >
-        </v-card-actions>
-      </v-card>
+    <!-- Dialog de erros -->
+    <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
+      <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
     </v-dialog>
-    <v-dialog v-model="dialogGuardado" width="50%" persistent>
-      <v-card dark class="info-card">
-        <v-card-title class="headline mb-2">
-          Pedido guardado com sucesso!</v-card-title
-        >
-        <div class="info-content-card px-3 mx-6 mb-2">
-          <v-card-text class="pa-2 px-4 font-weight-medium">
-            <p>
-              O seu pedido foi guardado com sucesso. Pode abandonar a página.
-            </p>
-          </v-card-text>
-        </div>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="red darken-4"
-            rounded
-            dark
-            elevation="0"
-            class="px-4"
-            @click="
-              {
-                dialogGuardado = false;
-              }
-            "
-          >
-            Fechar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+
   </div>
 </template>
 
 <script>
+import { criarHistorico } from "@/utils/utils";
 import PO from "@/components/pedidos/generic/PainelOperacoes";
-const help = require("@/config/help").help;
+import SelecionaAutocomplete from "@/components/pedidos/generic/SelecionaAutocomplete";
+import EditarCamposDialog from "@/components/pedidos/generic/EditarCamposDialog";
+import AdicionarNota from "@/components/pedidos/generic/AdicionarNota";
+import Campo from "@/components/generic/CampoCLAV";
+import CampoAE from "@/components/generic/CampoAE";
 
 import Loading from "@/components/generic/Loading";
+import ErroDialog from "@/components/generic/ErroDialog";
 
-import { mapKeys } from "@/utils/utils";
+import {
+  mapKeys,
+  identificaItemAdicionado,
+  adicionarNotaComRemovidos,
+} from "@/utils/utils";
 
 export default {
   props: ["p"],
@@ -712,61 +234,79 @@ export default {
   components: {
     PO,
     Loading,
+    ErroDialog,
+    SelecionaAutocomplete,
+    EditarCamposDialog,
+    AdicionarNota,
+    Campo,
+    CampoAE,
   },
 
   data() {
     return {
-      notaDialog: {
-        visivel: false,
-        campo: "",
-        index: -1,
-        nota: "",
-      },
-      novoHistorico: null,
-      dialogTipologias: false,
+      nomes: {codigo: "Código da Classe", 
+              referencia: "Referência", 
+              titulo: "Título", 
+              dataInicial: "Ano de Início", 
+              dataFinal: "Ano de Fim", 
+              numAgregacoes: "N.º de agregações", 
+              medicaoPapel: "Medição das UI em papel", 
+              medicaoDigital: "Medição das UI em digital", 
+              medicaoOutro: "Medição noutros suportes" },
+
+      entCollapsed: true,
+      listaDonos: {},
+      loading: true,
+
       search: "",
-      cores: null,
-      colorSwitch: 0,
-      editar: false,
-      editarCampo: "",
-      editarIndex: 0,
-      codigo: "",
-      titulo: "",
-      dataContagem: "",
-      ni: "",
-      natureza: ["Dono", "Participante"],
-      medicao: "",
-      legislacao: "",
-      portaria: [],
-      erro: null,
-      erroDialog: false,
-      dialogGuardado: false,
       cabecalho: [
-        {
-          text: "Código",
-          align: "left",
-          sortable: false,
-          value: "codigo",
-          width: "20%",
-        },
-        { text: "Título", align: "left", value: "titulo", width: "30%" },
-        {
-          text: "Data de Contagem",
-          align: "center",
-          value: "dataContagem",
-          width: "15%",
-        },
-        {
-          text: "Natureza de Intervenção",
-          align: "center",
-          value: "ni",
-          width: "25%",
-        },
+        { text: "Código de Agregação", align: "left", value: "codigoAgregacao" },
+        { text: "Título", align: "left", value: "titulo" },
+        { text: "Ano", align: "left", value: "dataContagem" },
+        { text: "Natureza de Intervenção", align: "left", value: "ni" },
+        { text: "Ações", align: "left", value: "actions", sortable: false },
       ],
       footer_props: {
         "items-per-page-text": "Mostrar",
       },
-      loading: true,
+
+      animacoes: {},
+      animacoesClasses: {},
+      animacoesAgregacoes: {},
+      esconderOperacoes: {},
+      esconderOperacoesClasses: {},
+      esconderOperacoesAgregacoes: {},
+
+      indexsAgregacoes: {},
+
+      novoHistorico: {},
+      classeEditada : 0,
+      agregacaoEditada : 0,
+      tipoEdicao: null,
+      
+      notaDialog: {
+        visivel: false,
+        campo: "",
+        nota: "",
+      },
+      
+      editaCampo: {
+        visivel: false,
+        nome: "",
+        key: "",
+        valorAtual: "",
+      },
+
+      erroDialog: {
+        visivel: false,
+        mensagem: null,
+      },
+
+      conversorDeCor: {
+        verde: "success",
+        amarelo: "warning",
+        vermelho: "error",
+      },
     };
   },
 
@@ -780,57 +320,91 @@ export default {
     },
   },
 
-  async created() {
-    if (
-      !this.p.historico[this.p.historico.length - 1].zonaControlo.dados[0].cor
-    ) {
-      const criaNovoHistorico = {};
-      Object.keys(this.dados).forEach((key) => {
-        if (key !== "zonaControlo")
-          criaNovoHistorico[key] = {
-            cor: "verde",
-            dados: this.dados[key],
-            nota: null,
-          };
-        else {
-          criaNovoHistorico.zonaControlo = {
-            cor: "verde",
-            dados: [],
-            nota: null,
-          };
-          this.dados.zonaControlo.forEach((zc) => {
-            criaNovoHistorico.zonaControlo.dados.push({
-              ...zc,
-              cor: "verde",
-              nota: null,
-            });
-          });
-        }
-      });
+  mounted() {
+    // Inicializar arrays "esconderOperacoes" e "animacoes"
+    Object.keys(this.dados).forEach((key) => {
+      this.esconderOperacoes[key] = false;
+      this.animacoes[key] = true;
+    });
 
-      this.novoHistorico = JSON.parse(JSON.stringify(criaNovoHistorico));
-    } else {
-      const copiaHistorico = JSON.parse(
-        JSON.stringify(this.p.historico[this.p.historico.length - 1])
-      );
-      this.novoHistorico = copiaHistorico;
+    // Inicializar arrays "esconderOperacoes" e "animacoes" para as classes
+    for(var i = 0; i < this.dados.classes.length; i++){
+      this.esconderOperacoesClasses[i] = {}
+      this.animacoesClasses[i] = {}
+      Object.keys(this.dados.classes[i]).forEach((key) => {
+        this.esconderOperacoesClasses[i][key] = false;
+        this.animacoesClasses[i][key] = true;
+      });
     }
+  },
+
+  async created() {
+    // Preencher array com os indexs das agregacoes
+    for(var i = 0; i < this.p.objeto.dados.classes.length; i++) {
+      this.indexsAgregacoes[i] = {}
+      for(var j = 0; j < this.p.objeto.dados.classes[i].agregacoes.length; j++) {
+        var cod = this.p.objeto.dados.classes[i].agregacoes[j]['codigoAgregacao']
+        this.indexsAgregacoes[i][cod] = j
+      }
+    }
+
+    await this.inicializarHistorico()
     this.loading = false;
+    this.p.objeto.dados.classes.forEach(
+      c => {
+        if(c.dono) {
+          this.listaDonos[c.codigo] = c.dono.split("#")
+          if(!((/[a-zA-Z]+/).test(this.listaDonos[c.codigo][this.listaDonos[c.codigo].length - 1])))
+            this.listaDonos[c.codigo].pop()
+        }
+      }
+    )
   },
 
   methods: {
-    prepararLeg: async function (leg) {
-      try {
-        var myPortarias = [];
-        for (var l of leg) {
-          myPortarias.push(l.tipo + " " + l.numero + " - " + l.sumario);
-        }
-        return myPortarias;
-      } catch (error) {
-        return [];
+    async inicializarHistorico(){   
+      const copiaHistorico = JSON.parse(JSON.stringify(this.historico[this.historico.length - 1]));
+
+      // Reset nas notas 
+      Object.keys(copiaHistorico).forEach((h) => (copiaHistorico[h].nota = null));
+
+      // Reset nas notas das classes
+      for(var i = 0; i < copiaHistorico.classes.dados.length; i++)
+        Object.keys(copiaHistorico.classes.dados[i]).forEach((h) => (copiaHistorico.classes.dados[i][h].nota = null));
+
+      // Reset nas notas das agregacoes
+      for(var i = 0; i < copiaHistorico.classes.dados.length; i++) {
+        if(copiaHistorico.classes.dados[i].agregacoes.dados !== undefined)
+          Object.keys(copiaHistorico.classes.dados[i].agregacoes.dados).forEach((h) => (copiaHistorico.classes.dados[i].agregacoes.dados[h].nota = null));
       }
+
+      this.novoHistorico = copiaHistorico;
     },
 
+    checkIf(atrib, index) {
+      if(atrib && index != "id" && index != "agregacoes" && index != "dono")
+        return true
+      else return false
+    },
+
+    checkMedicao(index) {
+      if(index == "medicaoPapel" || index == "medicaoDigital" || index == "medicaoOutro")
+        return true
+      else return false
+    },
+
+    formatarEntidades(lista){
+      var listaFormatada = ''
+      for(var i=0; i < lista.length; i++){
+        listaFormatada = listaFormatada + lista[i].entidade + " - " + lista[i].designacao + ", "
+      }
+      return listaFormatada.slice(0,-2)
+    },
+
+    transformaKeys(key) {
+      return mapKeys(key);
+    },
+    
     async despacharPedido(dados) {
       try {
         const estado = "Devolvido";
@@ -848,6 +422,11 @@ export default {
 
         pedido.estado = estado;
 
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
         pedido.historico.push(this.novoHistorico);
 
         await this.$request("put", "/pedidos", {
@@ -857,7 +436,8 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem = "Erro ao devolver o pedido, por favor tente novamente";
       }
     },
 
@@ -867,10 +447,22 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado =
-          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+        var estado;
+        if (pedido.estado === "Distribuído")
+          dados.etapa === "Validação 1"
+            ? (estado = "Apreciado")
+            : (estado = "Apreciado2v");
+        else
+          dados.etapa === "Validação 1"
+            ? (estado = "Reapreciado")
+            : (estado = "Reapreciado2v");
 
         pedido.estado = estado;
+
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
 
         pedido.historico.push(this.novoHistorico);
 
@@ -893,236 +485,182 @@ export default {
 
         this.$router.go(-1);
       } catch (e) {
-        //console.log("e :", e);
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao distribuir o pedido, por favor tente novamente";
       }
     },
 
-    async guardarPedido() {
-      try {
-        let dadosUtilizador = this.$verifyTokenUser();
-
-        let pedido = JSON.parse(JSON.stringify(this.p));
-
-        pedido.historico[pedido.historico.length - 1] = this.novoHistorico;
-
-        const novaDistribuicao = {
-          estado: pedido.estado,
-          responsavel: dadosUtilizador.email,
-          data: new Date(),
-        };
-
-        await this.$request("put", "/pedidos", {
-          pedido: pedido,
-          distribuicao: novaDistribuicao,
-        });
-        this.dialogGuardado = true;
-      } catch (e) {
-        //console.log("e :", e);
-      }
+    verifica(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "verde",
+      };
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
-    close() {
-      this.editar = false;
+    verificaClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
+      this.novoHistorico.classes.dados[iter][index] = {
+        ...this.novoHistorico.classes.dados[iter][index],
+        cor: "verde",
+      };
+      this.animacoesClasses[iter][index] = !this.animacoesClasses[iter][index];
     },
 
-    abrirEditor(campo, index) {
-      this.editarCampo = campo;
-      this.editarIndex = index;
-      this.editar = true;
+    verificaAgregacao(iter,agreg) { //index da classe da agregação, agregação em questão
+      var cod = agreg['codigoAgregacao']
+      var index = this.indexsAgregacoes[iter][cod]
+     
+      this.novoHistorico.classes.dados[iter].agregacoes.dados[index] = {
+        ...this.novoHistorico.classes.dados[iter].agregacoes.dados[index],
+        cor: "verde",
+      };
+      this.p.objeto.dados.classes[iter].agregacoes[index]['valor'] = true
     },
 
-    converteCampo(campo) {
-      return mapKeys(campo);
+    anula(campo) {
+      this.novoHistorico[campo] = {
+        ...this.novoHistorico[campo],
+        cor: "vermelho",
+      };
+      this.animacoes[campo] = !this.animacoes[campo];
     },
 
-    abrirNotaDialog(campo, index) {
-      this.notaDialog.visivel = true;
-      this.notaDialog.campo = campo;
-      this.notaDialog.index = index;
-      if (index == -1) {
-        if (this.novoHistorico[campo].nota !== undefined)
-          this.notaDialog.nota = this.novoHistorico[campo].nota;
-      } else {
-        if (
-          campo != "zonaControlo" &&
-          this.novoHistorico[campo][index].nota !== undefined
-        )
-          this.notaDialog.nota = this.novoHistorico[campo][index].nota;
-        else {
-          this.notaDialog.nota = this.novoHistorico[campo].dados[index].nota;
-        }
-      }
+    anulaClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
+      this.novoHistorico.classes.dados[iter][index] = {
+        ...this.novoHistorico.classes.dados[iter][index],
+        cor: "vermelho",
+      };
+      this.animacoesClasses[iter][index] = !this.animacoesClasses[iter][index];
     },
 
-    adicionarNota() {
-      if (
-        this.notaDialog.index == -1 ||
-        this.notaDialog.campo != "zonaControlo"
-      ) {
-        this.novoHistorico[this.notaDialog.campo].nota = this.notaDialog.nota;
-      } else {
-        if (this.notaDialog.campo != "zonaControlo")
-          this.novoHistorico[this.notaDialog.campo][
-            this.notaDialog.index
-          ].nota = this.notaDialog.nota;
-        else
-          this.novoHistorico[this.notaDialog.campo].dados[
-            this.notaDialog.index
-          ].nota = this.notaDialog.nota;
-      }
-
-      this.notaDialog = {
-        visivel: false,
-        campo: "",
-        index: -1,
-        nota: "",
+    anulaAgregacao(iter,agreg) { //index da classe da agregação, agregação em questão
+      var cod = agreg['codigoAgregacao']
+      var index = this.indexsAgregacoes[iter][cod]
+     
+      this.novoHistorico.classes.dados[iter].agregacoes.dados[index] = {
+        ...this.novoHistorico.classes.dados[iter].agregacoes.dados[index],
+        cor: "vermelho",
+      };
+      this.p.objeto.dados.classes[iter].agregacoes[index]['valor'] = false
+    },
+  
+    edita(campo) {
+      this.editaCampo = {
+        visivel: true,
+        nome: this.transformaKeys(campo),
+        key: campo,
+        valorAtual: this.dados[campo],
       };
     },
 
-    adicionar() {
-      const reUI = /^-?\d*(\.\d\d?)?$/;
-      if (this.editarCampo === "Medição das UI em papel (m.l.)") {
-        if (this.medicao && !reUI.test(this.medicao)) {
-          this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
-          this.erroDialog = true;
-        } else {
-          this.dados.zonaControlo[this.editarIndex].uiPapel = this.medicao;
-          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor =
-            "amarelo";
-        }
-        this.medicao = "";
-        this.editarCampo = "";
-        this.editarIndex = -1;
-        this.editar = false;
-      } else if (this.editarCampo === "Medição das UI em digital (Gb)") {
-        if (this.medicao && !reUI.test(this.medicao)) {
-          this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
-          this.erroDialog = true;
-        } else {
-          this.dados.zonaControlo[this.editarIndex].uiDigital = this.medicao;
-          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor =
-            "amarelo";
-        }
-        this.medicao = "";
-        this.editarCampo = "";
-        this.editarIndex = -1;
-        this.editar = false;
-      } else if (this.editarCampo === "Medição das UI noutros suportes") {
-        if (this.medicao && !reUI.test(this.medicao)) {
-          this.erro = help.AutoEliminacao.Erros.MedicaoDigital;
-          this.erroDialog = true;
-        } else {
-          this.dados.zonaControlo[this.editarIndex].uiOutros = this.medicao;
-          this.novoHistorico.zonaControlo.dados[this.editarIndex].cor =
-            "amarelo";
-        }
-        this.medicao = "";
-        this.editarCampo = "";
-        this.editarIndex = -1;
-        this.editar = false;
-      }
+    editaClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
+      this.tipoEdicao = "classe"
+      this.classeEditada = iter
+      this.editaCampo = {
+        visivel: true,
+        nome: this.nomes[index],
+        key: index,
+        valorAtual: this.dados.classes[iter][index],
+      };
     },
+
+    editarCampo(event) {
+      this.editaCampo.visivel = false;
+      if(this.tipoEdicao == "classe") {
+        this.dados.classes[this.classeEditada][event.campo.key] = event.dados;
+        this.novoHistorico.classes.dados[this.classeEditada][event.campo.key] = {
+          ...this.novoHistorico.classes.dados[this.classeEditada][event.campo.key],
+          cor: "amarelo",
+        };
+      
+        this.esconderOperacoesClasses[this.classeEditada][event.campo.key] = true;
+        this.animacoesClasses[this.classeEditada][event.campo.key] = !this.animacoesClasses[this.classeEditada][event.campo.key];
+      }
+      else{
+        this.dados.campo[event.campo.key] = event.dados;
+        this.novoHistorico[event.campo.key] = {
+          ...this.novoHistorico[event.campo.key],
+          dados: event.dados,
+          cor: "amarelo",
+        };
+
+        this.esconderOperacoes[event.campo.key] = true;
+        this.animacoes[event.campo.key] = !this.animacoes[event.campo.key];
+      }
+      this.tipoEdicao = null; 
+    },
+
+    abrirNotaDialog(campo) {
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = campo;
+      if (this.novoHistorico[campo].nota !== undefined)
+        this.notaDialog.nota = this.novoHistorico[campo].nota;
+    },
+
+    abrirNotaDialogClasse(iter,index) { //index da classe em questão, parâmetro da classe que está a ser "anulado"
+      this.tipoEdicao = "classe"
+      this.classeEditada = iter
+
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = index;
+      if (this.novoHistorico.classes.dados[iter][index].nota !== undefined)
+        this.notaDialog.nota = this.novoHistorico.classes.dados[iter][index].nota;
+    },
+
+    abrirNotaDialogAgregacao(iter,agreg) { //index da classe da agregação, agregação em questão
+      var cod = agreg['codigoAgregacao']
+      var index = this.indexsAgregacoes[iter][cod]
+
+      this.tipoEdicao = "agregacao"
+      this.classeEditada = iter
+      this.agregacaoEditada = index
+
+      this.notaDialog.visivel = true;
+      this.notaDialog.campo = "Agregacao";
+      if (this.novoHistorico.classes.dados[iter].agregacoes.dados[index].nota !== undefined)
+        this.notaDialog.nota = this.novoHistorico.classes.dados[iter].agregacoes.dados[index].nota;
+    },
+
+    fechaEditaCampoDialog(campo) {
+      this.editaCampo.visivel = false;
+    },
+
+    adicionarNota(dados) {
+      this.notaDialog.visivel = false;
+
+      if(this.tipoEdicao == "classe") {
+        this.novoHistorico.classes.dados[this.classeEditada][dados.campo] = {
+          ...this.novoHistorico.classes.dados[this.classeEditada][dados.campo],
+          nota: dados.nota,
+        };
+      } 
+      else if(this.tipoEdicao == "agregacao") {
+        this.novoHistorico.classes.dados[this.classeEditada].agregacoes.dados[this.agregacaoEditada] = {
+          ...this.novoHistorico.classes.dados[this.classeEditada].agregacoes.dados[this.agregacaoEditada],
+          nota: dados.nota,
+        };
+      }
+      else {
+        this.novoHistorico[dados.campo] = {
+          ...this.novoHistorico[dados.campo],
+          nota: dados.nota,
+        };
+      }
+      this.tipoEdicao = null;
+    },
+
+
   },
 };
 </script>
 
 <style>
-.panel-custom .panel-heading {
-  background-image: linear-gradient(to top, #e8eaf6 0, #c7cefa 100%);
+.style-valido {
+  background-color: #66df6e !important
+}
+.style-anulado {
+  background-color: #d73e32 !important
 }
 
-.panel-custom .page-header {
-  border: none;
-  margin: 0;
-  color: #1a237e;
-}
-
-.panel-custom .panel-default:hover {
-  border-color: #1a237e;
-}
-
-.consulta tr {
-  vertical-align: top;
-  border-bottom: 1px solid #ddd;
-}
-
-.consulta td {
-  padding-left: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  align-content: center;
-}
-
-.consulta td:nth-of-type(2) {
-  vertical-align: middle;
-  padding-left: 15px;
-}
-
-.info-label {
-  color: #1a237e; /* indigo darken-4 */
-  font-weight: 400;
-  width: 100%;
-  /*background-color: #e8eaf6;  indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-  border-radius: 3px;
-}
-
-.panel-info-custom .panel-body {
-  font-size: 1pc;
-  font-family: "Times New Roman", Times, serif;
-}
-
-.panel-noticiabox .panel-body {
-  font-size: 1pc;
-}
-
-.panel-linkbox .panel-body {
-  padding-top: 5px !important;
-  padding-left: 30px !important;
-  padding-bottom: 10px;
-}
-
-li .panel-body {
-  padding: 0px;
-}
-
-li .panel-body li {
-  margin-left: 20px;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-
-.info-descricao {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-descricao-verde {
-  background-color: #c8e6c9; /* lighten-4 */
-}
-
-.info-descricao-vermelho {
-  background-color: #ffcdd2; /* lighten-4 */
-}
-
-.info-descricao-amarelo {
-  background-color: #ffe0b2; /* lighten-4 */
-}
-.wrap-text {
-  -webkit-line-clamp: unset !important;
-  white-space: normal;
-}
 </style>

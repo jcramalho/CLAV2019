@@ -4,7 +4,7 @@
     <v-row v-else class="ma-1">
       <v-col>
         <v-card>
-          <v-card-title class="indigo darken-4 title white--text" dark>
+          <v-card-title class="indigo darken-4 title white--text mb-5" dark>
             Validação do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
             <v-spacer />
@@ -84,6 +84,12 @@
               :p="pedido"
               fase="validacao"
             />
+
+            <ValidaPPD
+              v-if="pedido.objeto.tipo == 'PPD'"
+              :p="pedido"
+              fase="validacao"
+            />
           </v-card-text>
 
           <!-- Para a Alteração de novos dados -->
@@ -160,6 +166,7 @@ import ValidaTSPluri from "@/components/pedidos/analise/AnalisaTSPluri";
 import ValidaTSOrg from "@/components/pedidos/analise/AnalisaTSOrg";
 import ValidaRADA from "@/components/pedidos/analise/AnalisaRADA";
 import ValidaClasseN1 from "@/components/pedidos/analise/AnalisaClasseN1";
+import ValidaPPD from "@/components/pedidos/validacao/ValidaPPD";
 
 import ValidaEditaEntidade from "@/components/pedidos/validacao/ValidaEditaEntidade";
 import ValidaEditaLegislacao from "@/components/pedidos/validacao/ValidaEditaLegislacao";
@@ -184,6 +191,7 @@ export default {
     ValidaEditaTipologiaEntidade,
     ValidaClasseN1,
     ValidaAE,
+    ValidaPPD,
     ValidaTSPluri,
     ValidaTSOrg,
     Loading,
@@ -220,13 +228,15 @@ export default {
       if (
         data.estado !== "Apreciado" &&
         data.estado !== "Reapreciado" &&
+        data.estado !== "Apreciado2v" &&
+        data.estado !== "Reapreciado2v" &&
         data.estado !== "Devolvido para validação"
       )
         throw new URIError("Este pedido não pertence a este estado.");
 
       data.historico = data.historico.map((hist) => ({
-        ...hist,
-        codigo: { dados: data.objeto.codigo },
+        ...hist//,
+        //codigo: { dados: data.objeto.codigo },
       }));
 
       this.pedido = data;

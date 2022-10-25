@@ -158,7 +158,7 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 
 import RelatorioExpositivo from "@/components/rada/criacao/RelatorioExpositivo.vue";
 import TSRada from "@/components/rada/criacao/TSRadaManual.vue";

@@ -1,20 +1,20 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Tipologias de Entidade</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Catálogo de tipologias de entidade, ou seja, agrupamentos de entidades,que intervêm
       nosprocessos de negócio (classes de 3º nível da Lista Consolidada). Podem integrar
       uma ou mais tipologias de entidades.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para aceder ao catálogo de tipologias de entidades, selecione a opção
       <b>CONSULTAR</b>.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para adicionar tipologias de entidades, selecione a opção
       <b>ADICIONAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para editar tipologias de entidades, selecione a opção
       <b>EDITAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
@@ -66,7 +66,7 @@
               viewBox="0 0 20.71 20.721"
               fill="#ffffff"
             />
-            <p class="ml-2">Adicionar</p>
+            <p class="ml-2">Criar</p>
           </v-btn>
         </v-col>
         <v-col
@@ -95,7 +95,7 @@
               viewBox="0 0 20.71 20.727"
               fill="#ffffff"
             />
-            <p class="ml-2">Editar</p>
+            <p class="ml-2">Alterar</p>
           </v-btn>
         </v-col>
       </v-row>

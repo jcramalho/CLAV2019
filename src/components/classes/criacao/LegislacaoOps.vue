@@ -1,16 +1,15 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <div class="info-label">
-        Legislação
-        <InfoBox header="Legislação" :text="myhelp.Classe.Campos.Legislacao" />
-      </div>
-    </v-col>
-    <v-col v-if="legs.length > 0">
+  <Campo
+    nome="Legislação"
+    infoHeader="Legislação"
+    :infoBody="myhelp.Classe.Campos.Legislacao"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
       <v-data-table
+        v-if="legs.length > 0"
         :headers="headers"
         :items="legs"
-        class="elevation-1"
         hide-default-footer
         :footer-props="footer_props"
       >
@@ -20,7 +19,7 @@
               v-for="h in props.headers"
               :key="h.text"
               class="body-2 font-weight-bold"
-              style="color: green;"
+              style="color: green"
             >
               {{ h.text }}
             </th>
@@ -52,28 +51,26 @@
           {{ props.itemsLength }}</template
         >
       </v-data-table>
-    </v-col>
-    <v-col v-else>
-      <v-alert :value="true" type="warning"
+      <v-alert v-else :value="true" type="warning" border="left"
         >Não tem legislação selecionada...</v-alert
       >
-    </v-col>
-  </v-row>
+    </template>
+  </Campo>
 </template>
 
 <script>
 const help = require("@/config/help").help;
 
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["legs"],
 
   components: {
-    InfoBox
+    Campo,
   },
 
-  data: function() {
+  data: function () {
     return {
       myhelp: help,
       headers: [
@@ -81,40 +78,25 @@ export default {
         { text: "Número", value: "numero" },
         { text: "Sumário", value: "sumario" },
         { text: "Data", value: "data" },
-        { text: "Remover", value: "" }
+        { text: "Remover", value: "" },
       ],
 
       footer_props: {
         "items-per-page-text": "Diplomas por página",
         "items-per-page-options": [5, 10, 20, -1],
-        "items-per-page-all-text": "Todos"
-      }
+        "items-per-page-all-text": "Todos",
+      },
     };
   },
 
   methods: {
-    unselectDiploma: function(diploma) {
+    unselectDiploma: function (diploma) {
       this.$emit("unselectDiploma", diploma);
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
-.info-label {
-  color: #00695c;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e0f2f1;
-  font-weight: bold;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
 .is-collapsed li:nth-child(n + 5) {
   display: none;
 }

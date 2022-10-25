@@ -219,7 +219,7 @@
                               width="100%"
                               class="m-auto mb-2 mt-2"
                               outlined
-                              >Nenhuma Nota selecionada...</v-alert
+                              >Nenhuma nota adicionada.</v-alert
                             >
                           </template>
 

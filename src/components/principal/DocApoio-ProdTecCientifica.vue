@@ -1,72 +1,68 @@
 <template>
   <Loading v-if="!pubsReady" :message="'documentação científica'" />
-  <v-expansion-panel v-else class="ma-4">
-    <v-expansion-panel-header
-      :class="{
-        'text-center': $vuetify.breakpoint.smAndDown,
-        'text-left': $vuetify.breakpoint.mdAndUp,
-      }"
-      class="separador pa-3"
-    >
-      <div>
-        <v-icon color="white" left>{{ docsicon }}</v-icon>
-        <span class="ml-3 mr-1"> Técnica e Científica</span>
-      </div>
-    </v-expansion-panel-header>
-    <v-expansion-panel-content class="pa-3">
-      <div v-for="item in listaPubs" :key="item.classe" class="subtitle">
-        {{ item.classe }}
-        <v-list two-line subheader>
-          <v-list-item v-for="documento in item.documentos" :key="documento.ano">
-            <v-list-item-content>
-              <v-list-item-title>{{ documento.ano }}</v-list-item-title>
-              <ul>
-                <li v-for="publicacao in documento.publicacoes" :key="publicacao._id">
-                  <b
-                    ><a v-if="publicacao.url !== 'FICHEIRO'" :href="publicacao.url">{{
-                      publicacao.titulo
-                    }}</a>
-                    <span
-                      class="fakea"
-                      v-else
-                      href="#"
-                      @click="downloadFile(publicacao._id)"
-                      >{{ publicacao.titulo }}</span
-                    ></b
-                  >, {{ publicacao.local }};
-                  <span v-for="(a, index) in publicacao.autores" :key="`${a}${index}`"
-                    >{{ nameWithComma(a, index, publicacao.autores.length) }}&nbsp;</span
-                  >
-                  <v-icon
-                    v-for="(operacao, index) in operacoes"
-                    @click="switchOperacao(operacao.descricao, publicacao._id)"
-                    :color="operacao.cor"
-                    :key="index"
-                    >{{ operacao.icon }}</v-icon
-                  >
-                </li>
-              </ul>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </div>
-    </v-expansion-panel-content>
-    <v-dialog :value="eliminarId != ''" persistent max-width="290px">
-      <v-card>
-        <v-card-title class="headline">Confirmar ação</v-card-title>
-        <v-card-text> Tem a certeza que pretende eliminar o documento? </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="red" text @click="eliminarId = ''"> Cancelar </v-btn>
-          <v-btn color="primary" text @click="remover(eliminarId)"> Confirmar </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :top="true">
-      {{ text }}
-      <v-btn text @click="fecharSnackbar">Fechar</v-btn>
-    </v-snackbar>
-    <!--div v-if="this.level >= this.min">
+  <PainelCLAV
+    v-else
+    titulo=" Técnica e Científica"
+    infoHeader=" Técnica e Científica"
+    :icon="docsicon"
+  >
+    <template v-slot:conteudo>
+      <v-expansion-panel-content class="pa-3">
+        <div v-for="item in listaPubs" :key="item.classe" class="subtitle">
+          {{ item.classe }}
+          <v-list two-line subheader>
+            <v-list-item v-for="documento in item.documentos" :key="documento.ano">
+              <v-list-item-content>
+                <v-list-item-title>{{ documento.ano }}</v-list-item-title>
+                <ul>
+                  <li v-for="publicacao in documento.publicacoes" :key="publicacao._id">
+                    <b
+                      ><a v-if="publicacao.url !== 'FICHEIRO'" :href="publicacao.url">{{
+                        publicacao.titulo
+                      }}</a>
+                      <span
+                        class="fakea"
+                        v-else
+                        href="#"
+                        @click="downloadFile(publicacao._id)"
+                        >{{ publicacao.titulo }}</span
+                      ></b
+                    >, {{ publicacao.local }};
+                    <span v-for="(a, index) in publicacao.autores" :key="`${a}${index}`"
+                      >{{
+                        nameWithComma(a, index, publicacao.autores.length)
+                      }}&nbsp;</span
+                    >
+                    <v-icon
+                      v-for="(operacao, index) in operacoes"
+                      @click="switchOperacao(operacao.descricao, publicacao._id)"
+                      :color="operacao.cor"
+                      :key="index"
+                      >{{ operacao.icon }}</v-icon
+                    >
+                  </li>
+                </ul>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </div>
+      </v-expansion-panel-content>
+      <v-dialog :value="eliminarId != ''" persistent max-width="290px">
+        <v-card>
+          <v-card-title class="headline">Confirmar ação</v-card-title>
+          <v-card-text> Tem a certeza que pretende eliminar o documento? </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red" text @click="eliminarId = ''"> Cancelar </v-btn>
+            <v-btn color="primary" text @click="remover(eliminarId)"> Confirmar </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-snackbar v-model="snackbar" :color="color" :timeout="timeout" :top="true">
+        {{ text }}
+        <v-btn text @click="fecharSnackbar">Fechar</v-btn>
+      </v-snackbar>
+      <!--div v-if="this.level >= this.min">
       <v-btn
         color="indigo accent-4"
         dark
@@ -84,11 +80,13 @@
         >Exportar</v-btn
       >
     </div-->
-  </v-expansion-panel>
+    </template>
+  </PainelCLAV>
 </template>
 
 <script>
 import Loading from "@/components/generic/Loading";
+import PainelCLAV from "@/components/generic/PainelCLAV";
 const lhost = require("@/config/global").host;
 import { NIVEL_MINIMO_DOC } from "@/utils/consts";
 import { mdiFileDocumentMultipleOutline } from "@mdi/js";
@@ -114,6 +112,7 @@ export default {
   },
   components: {
     Loading,
+    PainelCLAV,
   },
   methods: {
     nameWithComma(a, index, length) {

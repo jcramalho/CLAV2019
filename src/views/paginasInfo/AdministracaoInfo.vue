@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Administração</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Área reservada à administração e gestão, sendo possível fazer operações na própria
       plataforma e API de dados, ou também exportar/eliminar diversas coleções.
     </p>

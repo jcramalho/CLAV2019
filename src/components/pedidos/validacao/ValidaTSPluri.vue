@@ -47,8 +47,7 @@
 
       <ValidaCampo
         v-if="
-          p.objeto.dados.listaProcessos.procsAselecionar.length > 0 ||
-          listaProcs == true
+          p.objeto.dados.listaProcessos.procsAselecionar.length > 0 || listaProcs == true
         "
         :dadosOriginais="p.objeto.dados.listaProcessos"
         :novoHistorico="novoHistorico.ts"
@@ -279,9 +278,7 @@
                             color="indigo darken-4"
                           >
                             <div class="separador">
-                              <font size="4"
-                                ><b> Contexto de Avaliação</b></font
-                              >
+                              <font size="4"><b> Contexto de Avaliação</b></font>
                               <InfoBox
                                 header="Contexto de Avaliação"
                                 :text="myhelp.Classe.BlocoContexto"
@@ -385,8 +382,7 @@
                               tipo="procRel"
                               :info="{
                                 header: 'Processos Relacionados',
-                                text:
-                                  myhelp.Classe.Campos.ProcessosRelacionados,
+                                text: myhelp.Classe.Campos.ProcessosRelacionados,
                               }"
                             />
                             <ValidaCampo
@@ -421,9 +417,7 @@
                             color="indigo darken-4"
                           >
                             <div class="separador">
-                              <font size="4">
-                                <b>Decisões de Avaliação</b></font
-                              >
+                              <font size="4"> <b>Decisões de Avaliação</b></font>
                               <InfoBox
                                 header="Decisões de Avaliação"
                                 :text="myhelp.Classe.BlocoDecisoes"
@@ -441,8 +435,7 @@
                                   height="25"
                                 >
                                   <v-toolbar-title
-                                    >Prazo de Conservação
-                                    Administrativa</v-toolbar-title
+                                    >Prazo de Conservação Administrativa</v-toolbar-title
                                   >
                                 </v-toolbar>
                               </v-col>
@@ -560,9 +553,7 @@
                                   dark
                                   height="25"
                                 >
-                                  <v-toolbar-title
-                                    >Destino final</v-toolbar-title
-                                  >
+                                  <v-toolbar-title>Destino final</v-toolbar-title>
                                 </v-toolbar>
                               </v-col>
                             </v-row>
@@ -650,6 +641,7 @@
         />
         <PO
           operacao="Validar"
+          @avancarPedido="encaminharPedidoValidacao($event)"
           @finalizarPedido="verificaVermelhos($event)"
           @devolverPedido="despacharPedido($event)"
           v-else-if="fase == 'validacao'"
@@ -771,8 +763,7 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado =
-          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+        const estado = pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
 
         pedido.estado = estado;
 
@@ -800,23 +791,60 @@ export default {
         //console.log("e :", e);
       }
     },
+    async encaminharPedidoValidacao(dados) {
+      try {
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        let pedido = JSON.parse(JSON.stringify(this.p));
+
+        const estado = pedido.estado === "Apreciado" ? "Apreciado2v" : "Reapreciado2v";
+
+        pedido.estado = estado;
+
+        this.novoHistorico = adicionarNotaComRemovidos(
+          this.historico[this.historico.length - 1],
+          this.novoHistorico
+        );
+
+        pedido.historico.push(this.novoHistorico);
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          proximoResponsavel: {
+            nome: dados.utilizadorSelecionado.name,
+            entidade: dados.utilizadorSelecionado.entidade,
+            email: dados.utilizadorSelecionado.email,
+          },
+          data: new Date(),
+          despacho: dados.mensagemDespacho,
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+
+        this.$router.go(-1);
+      } catch (e) {
+        this.erroDialog.visivel = true;
+        this.erroDialog.mensagem =
+          "Erro ao distribuir o pedido, por favor tente novamente";
+      }
+    },
     alterarOriginal() {
       let n_vermelhos = 0;
       Object.keys(this.novoHistorico).map((k) => {
         if (k != "ts") {
           this.novoHistorico[k].nota = null;
           n_vermelhos =
-            this.novoHistorico[k].cor === "vermelho"
-              ? n_vermelhos + 1
-              : n_vermelhos;
+            this.novoHistorico[k].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
         }
       });
       Object.keys(this.novoHistorico.ts).map((k) => {
         this.novoHistorico.ts[k].nota = null;
         n_vermelhos =
-          this.novoHistorico.ts[k].cor === "vermelho"
-            ? n_vermelhos + 1
-            : n_vermelhos;
+          this.novoHistorico.ts[k].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
       });
 
       this.novoHistorico.ts.classes.dados.forEach((classe) => {

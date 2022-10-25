@@ -2,7 +2,7 @@
   <v-card flat class="pa-3">
     <!-- HEADER -->
     <v-row align="center" justify="center">
-      <v-col cols="12" md="3" align="center"> <Voltar /> </v-col>
+      <!--v-col cols="12" md="3" align="center"> <Voltar /> </v-col-->
       <v-col cols="12" md="6" align="center">
         <p class="clav-content-title-1">
           Nova Tabela de Seleção Pluriorganizacional
@@ -13,7 +13,7 @@
 
     <v-stepper v-model="stepNo" vertical style="background-color: #f3f7fc">
       <v-stepper-step :complete="stepNo > 1" step="1">
-        <b> Identificação das entidades ou tipologias da Tabela de Seleção</b>
+        <b> Identificação das entidades da Tabela de Seleção</b>
       </v-stepper-step>
 
       <span v-if="stepNo > 1">
@@ -82,7 +82,7 @@
             @click="entidadesSelecionadas()"
             rounded
             class="white--text mt-5 ml-4"
-            color="success darken-1"
+            color="clav-linear-background"
           >
             <unicon
               name="continuar-icon"
@@ -149,7 +149,7 @@
           <v-col cols="auto">
             <v-btn
               @click="stepNo = 1"
-              color="error darken-1"
+              color="clav-linear-background"
               rounded
               class="white--text mt-5 mb-2"
             >
@@ -160,7 +160,7 @@
                 viewBox="0 0 20.71 37.261"
                 fill="#ffffff"
               />
-              <p class="ml-2">Retroceder</p>
+              <p class="ml-2">Voltar</p>
             </v-btn>
           </v-col>
           <v-col cols="auto">
@@ -168,7 +168,7 @@
               @click="validaTSnome"
               rounded
               class="white--text mt-5 mb-2"
-              color="success darken-1"
+              color="clav-linear-background"
             >
               <unicon
                 name="continuar-icon"
@@ -207,8 +207,7 @@
               block
               @click="stepNo = 2"
               rounded
-              class="white--text"
-              color="error darken-1"
+              class="clav-linear-background white--text"
             >
               <unicon
                 name="arrow-back-icon"
@@ -217,32 +216,7 @@
                 viewBox="0 0 20.71 37.261"
                 fill="#ffffff"
               />
-              <p>Retroceder</p>
-            </v-btn>
-          </v-col>
-
-          <!-- Sair da criação da TS sem abortar o processo .........................-->
-          <v-col cols="12" md="4" lg="2">
-            <v-btn
-              v-if="stepNo > 2"
-              @click="sairOperacao = true"
-              block
-              rounded
-              class="clav-linear-background white--text"
-            >
-              <unicon
-                name="relogio-icon"
-                width="20"
-                height="20"
-                viewBox="0 0 20.71 20.71"
-                fill="#ffffff"
-              />
-              <DialogSair
-                v-if="sairOperacao"
-                @continuar="sairOperacao = false"
-                @sair="sair"
-              />
-              <p class="ml-2">Sair</p>
+              <p>Voltar</p>
             </v-btn>
           </v-col>
 
@@ -320,6 +294,31 @@
             </v-btn>
           </v-col>
 
+          <!-- Sair da criação da TS sem abortar o processo .........................-->
+          <v-col cols="12" md="4" lg="2">
+            <v-btn
+              v-if="stepNo > 2"
+              @click="sairOperacao = true"
+              block
+              rounded
+              class="clav-linear-background white--text"
+            >
+              <unicon
+                name="relogio-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 20.71 20.71"
+                fill="#ffffff"
+              />
+              <DialogSair
+                v-if="sairOperacao"
+                @continuar="sairOperacao = false"
+                @sair="sair"
+              />
+              <p class="ml-2">Sair</p>
+            </v-btn>
+          </v-col>
+
           <!-- Abortar a criação da TS ..........................................-->
           <v-col cols="12" md="4" lg="2">
             <v-btn
@@ -341,7 +340,7 @@
                 @continuar="eliminarTabela = false"
                 @sair="abortar"
               />
-              <p class="ml-2">Eliminar</p>
+              <p class="ml-2">Cancelar</p>
             </v-btn>
           </v-col>
         </v-row>
@@ -461,29 +460,34 @@ export default {
             "get",
             "/classes?nivel=3&info=completa"
           );
+
+          var p = -1
           for (let i = 0; i < response.data.length; i++) {
-            this.listaProcessos.procs.push(response.data[i]);
-            this.listaProcessos.procs[i].chave = i;
-            this.listaProcessos.procs[i].edited = false;
-            this.listaProcessos.procs[i].descriptionEdited = false;
-            this.listaProcessos.procs[i].preSelected = 0;
-            // Para poder ser filtrado na tabela
-            this.listaProcessos.procs[i].preSelectedLabel = "";
-            this.listaProcessos.procs[i].entidades = [];
-            this.listaProcessos.procs[i].notasAp = this.listaProcessos.procs[
-              i
-            ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[i].notasEx = this.listaProcessos.procs[
-              i
-            ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
-            this.listaProcessos.procs[
-              i
-            ].exemplosNotasAp = this.listaProcessos.procs[
-              i
-            ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
-            this.listaProcessos.procs[i].termosInd = this.listaProcessos.procs[
-              i
-            ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
+            if(response.data[i].status == 'A'){
+              this.listaProcessos.procs.push(response.data[i]);
+              p ++;
+              this.listaProcessos.procs[p].chave = i;
+              this.listaProcessos.procs[p].edited = false;
+              this.listaProcessos.procs[p].descriptionEdited = false;
+              this.listaProcessos.procs[p].preSelected = 0;
+              // Para poder ser filtrado na tabela
+              this.listaProcessos.procs[p].preSelectedLabel = "";
+              this.listaProcessos.procs[p].entidades = [];
+              this.listaProcessos.procs[p].notasAp = this.listaProcessos.procs[
+                p
+              ].notasAp.filter((n) => n.nota.replace(" ", "") != "");
+              this.listaProcessos.procs[p].notasEx = this.listaProcessos.procs[
+                p
+              ].notasEx.filter((n) => n.nota.replace(" ", "") != "");
+              this.listaProcessos.procs[
+                p
+              ].exemplosNotasAp = this.listaProcessos.procs[
+                p
+              ].exemplosNotasAp.filter((n) => n.exemplo.replace(" ", "") != "");
+              this.listaProcessos.procs[p].termosInd = this.listaProcessos.procs[
+                p
+              ].termosInd.filter((n) => n.termo.replace(" ", "") != "");
+            }
           }
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
           this.listaProcessosReady = true;

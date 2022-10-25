@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Lista Consolidada</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       A "Lista Consolidada para a classificação e avaliação da informação
       pública" é o referencial disponibilizado pela Direção-Geral do Livro, dos
       Arquivos e das Bibliotecas para servir de base à elaboração de
@@ -16,11 +16,11 @@
       de avaliação), estes elementos destinam-se também a contextualizar e
       avaliar a informação.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para aceder ao catálogo dos processos de negócio, selecione a opção
       <span class="content-title-2 pb-3">CONSULTAR</span>.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para <b>propor uma nova classe</b> para a Lista Consolidada, selecione a
       opção
       <b
@@ -28,7 +28,7 @@
         funcionalidade. Consulte as instruções em Formulários e instruções</b
       >.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para <b>propor uma alteração a uma classe</b> da Lista Consolidada,
       selecione a opção
       <b

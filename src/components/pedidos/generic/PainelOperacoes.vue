@@ -15,16 +15,23 @@
 
       <v-col>
         <v-btn
-          v-if="operacao === 'Analisar'"
+          v-if="
+            operacao === 'Analisar' ||
+            pedidoAuxiliar.estado === 'Apreciado' ||
+            pedidoAuxiliar.estado === 'Apreciado2v' || 
+            pedidoAuxiliar.estado === 'Reapreciado' ||
+            pedidoAuxiliar.estado === 'Reapreciado2v'
+          "
           rounded
           class="indigo accent-4 white--text"
           @click="avancarPedidoDialog = true"
         >
           Encaminhar
         </v-btn>
-
+      </v-col>
+      <v-col>
         <v-btn
-          v-else-if="operacao === 'Validar'"
+          v-if="operacao === 'Validar'"
           rounded
           class="indigo accent-4 white--text"
           @click="finalizarPedidoDialog = true"
@@ -81,7 +88,7 @@ export default {
     vai_para_despacho: {
       type: Boolean,
       default: false,
-    }
+    },
   },
 
   components: {
@@ -95,10 +102,16 @@ export default {
       avancarPedidoDialog: false,
       devolverPedidoDialog: false,
       finalizarPedidoDialog: false,
+      pedidoAuxiliar: "",
       utilizadores: [],
     };
   },
 
+  async beforeMount() {
+    this.pedidoAuxiliar = (
+      await this.$request("get", "/pedidos/" + this.$route.params.idPedido)
+    ).data;
+  },
   async created() {
     try {
       await this.preparaUtilizadores();
@@ -125,6 +138,9 @@ export default {
     },
 
     avancarPedido(dados) {
+      this.avancarPedidoDialog = false;
+      this.devolverPedidoDialog = false;
+      this.finalizarPedidoDialog = false;
       this.$emit("avancarPedido", dados);
     },
 

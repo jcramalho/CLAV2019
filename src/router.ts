@@ -247,7 +247,7 @@ export default new Router({
       path: "/ts/importar/csv",
       name: "importaCSV",
       component: () => import("./views/tabSel/TabSelImportaCSV.vue"),
-      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+      meta: { levels: [4, 5, 6, 7] }
     },
     {
       path: "/ts/:id",
@@ -350,6 +350,13 @@ export default new Router({
       name: "importarAutosEliminacao",
       component: () =>
         import("./views/autosEliminacao/AutosEliminacaoImportar.vue"),
+      meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
+      path: "/autosEliminacao/importarCSV",
+      name: "importarCSVAutosEliminacao",
+      component: () =>
+        import("./views/autosEliminacao/AutosEliminacaoImportarCSV.vue"),
       meta: { levels: [1, 3, 3.5, 4, 5, 6, 7] }
     },
     {
@@ -761,15 +768,21 @@ export default new Router({
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7], tabAtiva: "Operações" }
     },
     {
-      path: "/ppd/consultar",
-      name: "ConsultaPPD",
-      component: () => import("./views/ppd/ConsultaPPD.vue"),
-      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
-    },
-    {
       path: "/ppd/criar",
       name: "CriaPPD",
       component: () => import("./views/ppd/CriaPPD.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
+      path: "/ppd/lista",
+      name: "ListaPPDs",
+      component: () => import("./views/ppd/ListaPPDs.vue"),
+      meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
+    },
+    {
+      path: "/ppd/:idPPD",
+      name: "ConsultaPPD",
+      component: () => import("./views/ppd/ConsultaPPD.vue"),
       meta: { levels: [0, 1, 2, 3, 3.5, 4, 5, 6, 7] }
     }
   ]

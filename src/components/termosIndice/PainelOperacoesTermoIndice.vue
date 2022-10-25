@@ -145,7 +145,7 @@
 </template>
 
 <script>
-import nanoid from "nanoid";
+import { nanoid } from 'nanoid'
 import ValidarTIInfoBox from "@/components/termosIndice/ValidarTermoIndiceInfoBox";
 
 export default {

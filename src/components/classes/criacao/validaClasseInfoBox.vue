@@ -8,7 +8,7 @@
       class="ma-2 indigo darken-4"
       @click="validarClasse"
     >
-      Validar classe
+      Validar
     </v-btn>
 
     <!-- Erros na Validação ....................... -->
@@ -90,6 +90,7 @@ export default {
     notaDuplicada: function (notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1].nota;
+        lastNota = lastNota.trim();
         var duplicados = notas.filter((n) => n.nota == lastNota);
         if (duplicados.length > 1) {
           return true;
@@ -102,6 +103,7 @@ export default {
     exemploDuplicado: function (exemplos) {
       if (exemplos.length > 1) {
         var lastExemplo = exemplos[exemplos.length - 1].exemplo;
+        lastExemplo = lastExemplo.trim();
         var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo);
         if (duplicados.length > 1) {
           return true;
@@ -114,6 +116,7 @@ export default {
     tiDuplicado: function (termos) {
       if (termos.length > 1) {
         var lastTermo = termos[termos.length - 1].termo;
+        lastTermo = lastTermo.trim();
         var duplicados = termos.filter((t) => t.termo == lastTermo);
         if (duplicados.length > 1) {
           return true;
@@ -247,6 +250,12 @@ export default {
 
     validaNotasAp: async function () {
       // Notas de Aplicação
+      if(this.c.notasAp.length > 0){
+        console.log(JSON.stringify(this.c.notasAp))
+        this.c.notasAp = this.c.notasAp.map(function(n){ 
+          n.nota = n.nota.trim();
+          return n;});
+      }
       for (var i = 0; i < this.c.notasAp.length; i++) {
         try {
           var existeNotaAp = await this.$request(
@@ -304,6 +313,11 @@ export default {
 
     validaExemplosNotasAp: async function () {
       // Exemplos de notas de Aplicação
+      if(this.c.exemplosNotasAp.length > 0){
+        this.c.exemplosNotasAp = this.c.exemplosNotasAp.map(function(e){ 
+          e.exemplo = e.exemplo.trim();
+          return e;});
+      }
       for (var i = 0; i < this.c.exemplosNotasAp.length; i++) {
         try {
           var existeExemploNotaAp = await this.$request(
@@ -517,6 +531,7 @@ export default {
     },
 
     validarClasse: async function () {
+      console.log(JSON.stringify(this.c))
       var i = 0;
 
       await this.validaMeta();

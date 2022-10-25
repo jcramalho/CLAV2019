@@ -1,22 +1,27 @@
 <template>
-  <div>
-    <Loading v-if="!entidadesReady" :message="'entidade'" />
-    <Consulta
-      v-else
-      tipo="Entidades"
-      v-bind:objeto="entidade"
-      v-bind:listaTip="tipologias"
-      v-bind:titulo="titulo"
-      v-bind:listaProcD="processosDono"
-      v-bind:listaProcP="processosParticipa"
-      v-bind:parts="partsReady"
-    />
-  </div>
+  <v-card flat class="ma-3">
+    <v-row>
+      <v-col cols="3" align="center" justify="center">
+        <Voltar />
+      </v-col>
+      <v-col cols="9" align="center" justify="center">
+        <span class="clav-content-title-1">{{ titulo }}</span>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="12">
+        <Loading v-if="!entidadesReady" :message="'entidade'" />
+        <Consulta v-else tipo="Entidades" :objeto="entidade" :listaTip="tipologias" :titulo="titulo"
+          :listaProcD="processosDono" :listaProcP="processosParticipa" :parts="partsReady" />
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
 import Consulta from "@/components/generic/Consulta.vue";
 import Loading from "@/components/generic/Loading";
+import Voltar from "@/components/generic/Voltar";
 
 import {
   comparaSigla
@@ -25,7 +30,8 @@ import {
 export default {
   components: {
     Consulta,
-    Loading
+    Loading,
+    Voltar
   },
   data: () => ({
     idEntidade: "",
@@ -46,7 +52,7 @@ export default {
     entidadesReady: false
   }),
   methods: {
-    preparaEntidade: async function(ent) {
+    preparaEntidade: async function (ent) {
       try {
         var myEntidade = {
           sigla: {
@@ -83,7 +89,7 @@ export default {
         return {};
       }
     },
-    parseParticipacoes: async function(proc) {
+    parseParticipacoes: async function (proc) {
       try {
         var tipoPar = "";
         var participa = false;
@@ -103,7 +109,7 @@ export default {
       }
     }
   },
-  created: async function() {
+  created: async function () {
     try {
       this.idEntidade = window.location.pathname.split("/")[2];
 

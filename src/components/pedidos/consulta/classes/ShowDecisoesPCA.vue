@@ -1,62 +1,49 @@
 <template>
   <div>
-    <v-row>
-        <v-col cols="2">
-          <div class="info-label">Prazo</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">
-              {{ pca.valor }}
-          </div>
-        </v-col>
-      </v-row>
+    <Campo nome="Prazo" infoHeader="Prazo" color="neutralpurple">
+      <template v-slot:conteudo>
+        {{ pca.valor }}
+      </template>
+    </Campo>
 
-      <v-row v-if="pca.notas!=''">
-        <v-col cols="2">
-          <div class="info-label">Notas</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">
-              {{ pca.notas }}
-          </div>
-        </v-col>
-      </v-row>
+    <Campo v-if="pca.notas != ''" nome="Notas" infoHeader="Notas" color="neutralpurple">
+      <template v-slot:conteudo>
+        {{ pca.notas }}
+      </template>
+    </Campo>
 
-      <v-row>
-        <v-col cols="2">
-          <div class="info-label">Forma de contagem</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">
-              {{ pca.formaContagem }}
-          </div>
-        </v-col>
-      </v-row>
+    <Campo nome="Forma de contagem" infoHeader="Forma de contagem" color="neutralpurple">
+      <template v-slot:conteudo>
+        {{ pca.formaContagem }}
+      </template>
+    </Campo>
 
-      <v-row v-if="pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'">
-        <v-col cols="2">
-          <div class="info-label">Subforma de contagem</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">
-              {{ pca.subFormaContagem }}
-          </div>
-        </v-col>
-      </v-row>
+    <Campo
+      v-if="pca.formaContagem == 'vc_pcaFormaContagem_disposicaoLegal'"
+      nome="Subforma de contagem"
+      infoHeader="Subforma de contagem"
+      color="neutralpurple"
+    >
+      <template v-slot:conteudo>
+        {{ pca.subFormaContagem }}
+      </template>
+    </Campo>
 
-      <ShowDecisoesPCAJustificacao :j="pca.justificacao" />
-
+    <ShowDecisoesPCAJustificacao :j="pca.justificacao" />
   </div>
 </template>
 
 <script>
-import ShowDecisoesPCAJustificacao from "@/components/pedidos/consulta/classes/ShowDecisoesPCAJustificacao"
+import ShowDecisoesPCAJustificacao from "@/components/pedidos/consulta/classes/ShowDecisoesPCAJustificacao";
+
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["pca"],
 
   components: {
-    ShowDecisoesPCAJustificacao
-  }
-}
+    ShowDecisoesPCAJustificacao,
+    Campo,
+  },
+};
 </script>

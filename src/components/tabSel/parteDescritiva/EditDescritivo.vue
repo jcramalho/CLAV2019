@@ -27,9 +27,13 @@
 
             <hr style="border-top: 1px dashed #dee2f8" />
 
-            <BlocoDescritivoNotasAp :c="proc" />
-
-            <hr style="border-top: 1px dashed #dee2f8" />
+            <ListaDeNotasCLAV
+              nome="Nota(s) de Aplicação"
+              infoHeader="Nota(s) de Aplicação"
+              :infoBody="myhelp.Classe.Campos.NotasAp"
+              :objeto="proc"
+              tipo="na"
+            ></ListaDeNotasCLAV>
 
             <ListaDeNotasCLAV
               nome="Exemplo(s) de Nota(s) de Aplicação"
@@ -58,12 +62,13 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red darken-4" text dark rounded @click="cancelar"
-              >Cancelar</v-btn
-            >
-            <v-btn color="indigo darken-4" text dark rounded @click="selecionar"
-              >Guardar</v-btn
-            >
+            <v-btn rounded class="clav-linear-background white--text" @click="selecionar">
+              Guardar
+            </v-btn>
+
+            <v-btn @click="cancelar" color="red darken-4" rounded class="white--text">
+              Cancelar
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -79,7 +84,9 @@
                 <li v-for="(item, index) in errors" :key="index">
                   <span
                     :class="
-                      item.value === true || item.value.length > 0 ? 'red--text' : ''
+                      item.value === true || item.value.length > 0
+                        ? 'red--text'
+                        : ''
                     "
                     >{{ item.text }}
                     <ul v-if="item.value.length > 0">
@@ -94,7 +101,12 @@
           </div>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="red darken-4" text dark rounded @click="errorDialog = false"
+            <v-btn
+              color="red darken-4"
+              text
+              dark
+              rounded
+              @click="errorDialog = false"
               >Voltar</v-btn
             >
           </v-card-actions>
@@ -106,13 +118,12 @@
 
 <script>
 const help = require("@/config/help").help;
-import BlocoDescritivoNotasAp from "@/components/tabSel/parteDescritiva/NotasAp.vue";
-
+import ListaDeNotasCLAV from "@/components/generic/ListaDeNotasCLAV.vue";
 export default {
   props: ["p"],
 
   components: {
-    BlocoDescritivoNotasAp,
+    ListaDeNotasCLAV,
   },
 
   data: function () {
@@ -147,7 +158,9 @@ export default {
     exemploDuplicado: function (exemplos) {
       if (exemplos.length > 1) {
         for (let lastExemplo of exemplos) {
-          var duplicados = exemplos.filter((e) => e.exemplo == lastExemplo.exemplo);
+          var duplicados = exemplos.filter(
+            (e) => e.exemplo == lastExemplo.exemplo
+          );
           if (duplicados.length > 1) {
             return true;
           }
@@ -211,11 +224,12 @@ export default {
         this.errors = [];
         var aux = [];
         for (let nota of this.proc.notasAp) {
+          console.log("Nota: " + nota.nota )
           var existeNotaAp = await this.$request(
             "get",
-            `/notasAp/notaAp?classe=c${this.proc.codigo}&valor=${encodeURIComponent(
-              nota.nota
-            )}`
+            `/notasAp/notaAp?classe=c${
+              this.proc.codigo
+            }&valor=${encodeURIComponent(nota.nota)}`
           );
           existeNotaAp.data ? aux.push(nota.nota) : "";
         }

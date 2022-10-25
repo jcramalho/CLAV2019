@@ -1,12 +1,12 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">API de dados</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Página gerada a partir da especificação em Swagger, que permite às entidades
       otimizar as funcionalidades disponíveis na plataforma CLAV, nomeadamente através da
       criação de automatismos.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para aceder à página API de dados, selecione a opção <b>CONSULTAR</b>.
     </p>
     <v-row justify="center" align="center">

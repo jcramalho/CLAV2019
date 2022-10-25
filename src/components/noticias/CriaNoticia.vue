@@ -1,133 +1,122 @@
 <template>
-  <v-row class="ma-1">
-    <v-col>
-      <v-card>
-        <!-- Header -->
-        <v-app-bar color="indigo darken-3" dark>
-          <v-toolbar-title class="card-heading">Nova Notícia</v-toolbar-title>
-        </v-app-bar>
+  <v-card class="pa-3" flat>
+    <!-- Header -->
+    <v-card-title class="clav-content-title-1"> Nova Notícia </v-card-title>
 
-        <!-- Content -->
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Publicada</div>
-            </v-col>
-            <v-col>
-              <v-radio-group v-model="noticia.ativa" row>
-                <v-radio label="Sim" :value="true"></v-radio>
-                <v-radio label="Não" :value="false"></v-radio>
-              </v-radio-group>
-            </v-col>
-          </v-row>
+    <!-- Content -->
+    <v-card-text>
+      <Campo nome="Publicada" color="neutralpurple">
+        <template v-slot:conteudo>
+          <v-radio-group v-model="noticia.ativa" row dense hide-details>
+            <v-radio label="Sim" :value="true"></v-radio>
+            <v-radio label="Não" :value="false"></v-radio>
+          </v-radio-group>
+        </template>
+      </Campo>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Título</div>
-            </v-col>
-            <v-col>
+      <Campo nome="Título" color="neutralpurple">
+        <template v-slot:conteudo>
+          <v-text-field
+            clearable
+            color="primary"
+            counter="150"
+            single-line
+            v-model="noticia.titulo"
+            maxlength="150"
+            dense
+          ></v-text-field>
+        </template>
+      </Campo>
+
+      <Campo nome="Data" color="neutralpurple">
+        <template v-slot:conteudo>
+          <v-menu
+            ref="open"
+            v-model="open"
+            :close-on-content-click="false"
+            :nudge-right="40"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
               <v-text-field
-                solo
-                clearable
-                color="indigo"
-                counter="150"
-                single-line
-                v-model="noticia.titulo"
-                maxlength="150"
+                v-model="noticia.data"
+                hint="AAAA-MM-DD"
+                persistent-hint
+                @blur="date = parseDate(dateFormatted)"
+                v-on="on"
+                dense
+                :rules="regraData"
               ></v-text-field>
-            </v-col>
-          </v-row>
+            </template>
+            <v-date-picker
+              v-model="date"
+              no-title
+              @input="open = false"
+              :max="dateCurrent"
+            ></v-date-picker>
+          </v-menu>
+        </template>
+      </Campo>
 
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Data</div>
-            </v-col>
-            <v-col>
-              <v-menu
-                ref="open"
-                v-model="open"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    solo
-                    v-model="noticia.data"
-                    hint="AAAA-MM-DD"
-                    persistent-hint
-                    @blur="date = parseDate(dateFormatted)"
-                    v-on="on"
-                    :rules="regraData"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="date"
-                  no-title
-                  @input="open = false"
-                  :max="dateCurrent"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">Descrição</div>
-            </v-col>
-            <Editor v-model="noticia.desc"></Editor>
-          </v-row>
-        </v-card-text>
-        <!-- Painel Operações -->
-        <PainelOpsNot :t="noticia" :acao="'Criação'" />
-      </v-card>
-    </v-col>
-  </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-card class="pa-4 mb-2" color="neutralpurple">
+            <v-row class="pa-0 ma-0" justify="center">
+              <span class="clav-info-label">Descrição</span>
+            </v-row>
+          </v-card>
+        </v-col>
+        <Editor v-model="noticia.desc"></Editor>
+      </v-row>
+    </v-card-text>
+    <!-- Painel Operações -->
+    <PainelOpsNot :t="noticia" :acao="'Criação'" />
+  </v-card>
 </template>
 
 <script>
-import marked from "marked";
+import Campo from "@/components/generic/CampoCLAV.vue";
 import PainelOpsNot from "@/components/noticias/PainelOperacoesNoticias.vue";
 import Editor from "@/components/generic/EditorMarkdown.vue";
 
 export default {
-  data: nt => ({
+  data: (nt) => ({
     noticia: {
       titulo: "",
       data: "",
       desc: "",
-      ativa: false
+      ativa: false,
     },
     dateCurrent: new Date().toISOString().substr(0, 10),
     date: new Date().toISOString().substr(0, 10),
     dateFormatted: nt.formatDate(new Date().toISOString().substr(0, 10)),
     regraData: [
-      v =>
-        /[0-9]+-[0-9]+-[0-9]+/.test(v) || "Este campo está no formato errado."
+      (v) => /[0-9]+-[0-9]+-[0-9]+/.test(v) || "Este campo está no formato errado.",
     ],
     open: false,
     snackbar: false,
-    text: ""
+    text: "",
   }),
 
   components: {
     PainelOpsNot,
-    Editor
+    Editor,
+    Campo,
   },
 
   computed: {
     computedDateFormatted() {
       return this.formatDate(this.date);
-    }
+    },
   },
 
   watch: {
     date(val) {
       this.noticia.data = this.formatDate(this.date);
-    }
+    },
   },
 
   methods: {
@@ -148,11 +137,11 @@ export default {
     // fechar o snackbar em caso de erro
     fecharSnackbar() {
       this.snackbar = false;
-    }
+    },
   },
-  created: function() {
+  created: function () {
     this.noticia.data = this.dateFormatted;
-  }
+  },
 };
 </script>
 
@@ -161,11 +150,6 @@ export default {
   background-color: #283593 !important;
   color: #fff;
   font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
   font-weight: bold;
 }
 

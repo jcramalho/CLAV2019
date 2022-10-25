@@ -17,6 +17,10 @@
           readonly
           v-on="on"
           hide-details
+          clearable
+          @click:clear="
+            dataValor = '';
+            dataSelecionada();"
         />
       </slot>
     </template>

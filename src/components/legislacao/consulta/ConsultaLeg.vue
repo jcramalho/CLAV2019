@@ -1,92 +1,61 @@
 <template>
-  <v-card class="ma-4">
-    <v-card-title class="indigo darken-4 white--text">
-      {{ titulo }}
-    </v-card-title>
+  <v-card class="ma-4" flat>
+    <CampoCLAV v-for="(item, index) in objeto" :key="index" color="neutralpurple" :nome="item.campo"
+      :infoHeader="item.campo" :infoBody="myhelp.Legislacao.Campos[item.campo]" class="mb-3">>
+      <template v-slot:conteudo>
 
-    <v-card-text>
-      <div v-for="(item, index) in objeto" :key="index">
-        <v-row
-          v-if="
-            (item.text instanceof Array && item.text.length > 0) ||
-              (!(item.text instanceof Array) &&
-                item.text !== null &&
-                item.text !== '' &&
-                item.text !== undefined)
-          "
-        >
-          <v-col cols="2" v-if="item.text">
-            <div class="info-label">
-              {{ item.campo }}
+        <v-row v-if="
+          (item.text instanceof Array && item.text.length > 0) ||
+          (!(item.text instanceof Array) &&
+            item.text !== null &&
+            item.text !== '' &&
+            item.text !== undefined)
+        ">
 
-              <InfoBox
-                v-if="item.tipo === 'Legislação'"
-                :header="item.campo"
-                :text="myhelp.Legislacao.Campos[item.campo]"
-              />
+          <v-col v-if="item.text" align="left">
+            <div v-if="(item.campo === 'Link') && (item.text.startsWith('CLAV'))">
+              <a :href="pathAPI + '/ficheirosEstaticos?caminho=documentos%2FRADA%2FDespacho' + item.text.split('Despacho')[1] + '&' + authToken"
+                target="_blank">{{ item.text }}</a>
             </div>
-          </v-col>
-
-          <v-col v-if="item.text">
-            <div v-if="(item.campo === 'Link')&&(item.text.startsWith('CLAV'))" class="info-content">
-              <a :href="pathAPI + '/ficheirosEstaticos?caminho=documentos%2FRADA%2FDespacho' + item.text.split('Despacho')[1] + '&' + authToken" target="_blank">{{ item.text }}</a>
-            </div>
-            <div v-else-if="item.campo === 'Link'" class="info-content">
+            <div v-else-if="item.campo === 'Link'">
               <a :href="item.text" target="_blank">{{ item.text }}</a>
             </div>
-            <div v-else-if="item.campo === 'Entidades'" class="info-content">
+            <div v-else-if="item.campo === 'Entidades'">
               <ul>
                 <li v-for="(ent, i) in item.text" :key="i">
                   <a :href="'/entidades/ent_' + ent.sigla">{{ ent.sigla }}</a>
                 </li>
               </ul>
             </div>
-            <div v-else class="info-content">{{ item.text }}</div>
+            <div v-else>{{ item.text }}</div>
           </v-col>
         </v-row>
-      </div>
-
-      <!-- Consulta de legislação: processos regulados -->
-      <v-row v-if="listaReg.length">
-        <v-col cols="2">
-          <div class="info-label">
-            Processos de negócio que regula ou enquadra:
-            <InfoBox
-              header="Processos de negócio que regula ou enquadra"
-              :text="myhelp.Legislacao.Campos.ProcessosRegulados"
-              helpColor="indigo darken-4"
-            />
-          </div>
-        </v-col>
-        <v-col>
-          <ul class="info-content">
-            <li v-for="(l, index) in listaReg" v-bind:key="index">
-              <a :href="'/classes/consultar/' + l.id">{{ l.codigo }}</a>
-              - {{ l.titulo }}
-            </li>
-          </ul>
-        </v-col>
-      </v-row>
-
-      <v-spacer />
-
-      <v-row>
-        <v-col>
-          <v-btn
-            class="indigo accent-4 white--text mr-4"
-            @click="$router.push('/legislacao')"
-            >Voltar</v-btn
-          >
-        </v-col>
-      </v-row>
-    </v-card-text>
+      </template>
+    </CampoCLAV>
+    <!-- Consulta de legislação: processos regulados -->
+    <CampoCLAV v-if="listaReg.length" color="neutralpurple" nome="Processos de negócio que regula ou enquadra"
+      infoHeader="Processos de negócio que regula ou enquadra" :infoBody="myhelp.Legislacao.Campos.ProcessosRegulados"
+      class="mb-3">>
+      <template v-slot:conteudo>
+        <v-row>
+          <v-col align="left">
+            <ul>
+              <li v-for="(l, index) in listaReg" v-bind:key="index">
+                <a :href="'/classes/consultar/' + l.id">{{ l.codigo }}</a>
+                - {{ l.titulo }}
+              </li>
+            </ul>
+          </v-col>
+        </v-row>
+      </template>
+    </CampoCLAV>
   </v-card>
 </template>
 
 <script>
 const help = require("@/config/help").help;
 const lhost = require("@/config/global").host;
-import InfoBox from "@/components/generic/infoBox.vue";
+import CampoCLAV from "@/components/generic/CampoCLAV.vue";
 
 export default {
   props: [
@@ -100,7 +69,7 @@ export default {
     "parts",
   ],
   components: {
-    InfoBox,
+    CampoCLAV,
   },
   data: () => ({
     domainCollapsed: true,
@@ -128,7 +97,7 @@ export default {
     ready: false
   }),
 
-  created: async function (){
+  created: async function () {
     this.authToken = await this.$getAuthToken();
     this.authToken = this.authToken.replace(" ", "=");
 
@@ -140,11 +109,13 @@ export default {
 
 <style>
 .info-label {
-  color: #283593; /* indigo darken-3 */
+  color: #283593;
+  /* indigo darken-3 */
   padding: 5px;
   font-weight: 400;
   width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
+  background-color: #e8eaf6;
+  /* indigo lighten-5 */
   font-weight: bold;
   border-radius: 3px;
 }

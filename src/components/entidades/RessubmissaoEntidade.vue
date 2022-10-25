@@ -29,6 +29,18 @@
             />
           </template>
         </Campo>
+        <Campo nome="Sigla" color="neutralpurple">
+          <template v-slot:conteudo>
+            <v-text-field
+              clearable
+              label="Sigla"
+              single-line
+              hide-details
+              dense
+              v-model="entidade.sigla"
+            />
+          </template>
+        </Campo>
         <Campo nome="Internacional" color="neutralpurple">
           <template v-slot:conteudo>
             <v-select
@@ -63,6 +75,16 @@
               :d="entidade.dataCriacao"
               :label="'Data: AAAA-MM-DD'"
               @dataSelecionada="entidade.dataCriacao = $event"
+            />
+          </template>
+        </Campo>
+
+        <Campo nome="Data de extinção" color="neutralpurple" class="mb-3">
+          <template v-slot:conteudo>
+            <SelecionarData
+              :d="entidade.dataExtincao"
+              :label="'Data: AAAA-MM-DD'"
+              @dataSelecionada="entidade.dataExtincao = $event"
             />
           </template>
         </Campo>
@@ -103,7 +125,7 @@ import SelTip from "@/components/generic/selecao/SelecionarTipologias.vue";
 import PainelOpsEnt from "@/components/entidades/PainelOperacoesEntidades.vue";
 import SelecionarData from "@/components/generic/SelecionarData";
 import PainelCLAV from "@/components/generic/PainelCLAV";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 import Voltar from "@/components/generic/Voltar";
 
 export default {
@@ -212,39 +234,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.separador {
-  color: white;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #1a237e;
-  font-size: 14pt;
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
-}
-
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-</style>
+<style scoped></style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row class="mx-4">
-      <v-btn @click="addZC=true" dark color="indigo darken-4">Adicionar Classe</v-btn>
+      <v-btn @click="addZC=true" dark color="indigo darken-4">Adicionar Classe/Série</v-btn>
       <v-btn class="mx-4" @click="importAg=true" v-if="auto.zonaControlo.length>0" dark color="indigo darken-4">Importar Agregações / UI</v-btn>
       <v-btn @click="dialogAddAg=true" v-if="auto.zonaControlo.length>0" dark color="indigo darken-4">Adicionar Agregações / UI</v-btn>
     </v-row>

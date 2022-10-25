@@ -47,8 +47,7 @@
 
       <ValidaCampo
         v-if="
-          p.objeto.dados.listaProcessos.procsAselecionar.length > 0 ||
-          listaProcs == true
+          p.objeto.dados.listaProcessos.procsAselecionar.length > 0 || listaProcs == true
         "
         :dadosOriginais="p.objeto.dados.listaProcessos"
         :novoHistorico="novoHistorico.ts"
@@ -273,14 +272,10 @@
       </v-dialog>
       <v-dialog v-model="dialogGuardado" width="50%" persistent>
         <v-card dark class="info-card">
-          <v-card-title class="headline mb-2">
-            Pedido guardado com sucesso!</v-card-title
-          >
+          <v-card-title class="headline mb-2"> Pedido guardado com sucesso!</v-card-title>
           <div class="info-content-card px-3 mx-6 mb-2">
             <v-card-text class="pa-2 px-4 font-weight-medium">
-              <p>
-                O seu pedido foi guardado com sucesso. Pode abandonar a página.
-              </p>
+              <p>O seu pedido foi guardado com sucesso. Pode abandonar a página.</p>
             </v-card-text>
           </div>
           <v-card-actions>
@@ -366,10 +361,7 @@ export default {
   },
   methods: {
     async clicked({ item }) {
-      if (
-        !this.expandedProc.codigo ||
-        this.expandedProc.codigo != item.codigo
-      ) {
+      if (!this.expandedProc.codigo || this.expandedProc.codigo != item.codigo) {
         let response = await this.$request("get", "/classes/c" + item.codigo);
         this.expandedProc = response.data;
       }
@@ -409,8 +401,15 @@ export default {
 
         let pedido = JSON.parse(JSON.stringify(this.p));
 
-        const estado =
-          pedido.estado === "Distribuído" ? "Apreciado" : "Reapreciado";
+        var estado;
+        if (pedido.estado === "Distribuído" || pedido.estado === "Redistribuído")
+          dados.etapa === "Validação 1"
+            ? (estado = "Apreciado")
+            : (estado = "Apreciado2v");
+        else
+          dados.etapa === "Validação 1"
+            ? (estado = "Reapreciado")
+            : (estado = "Reapreciado2v");
 
         pedido.estado = estado;
 
@@ -468,16 +467,12 @@ export default {
       Object.keys(this.novoHistorico).map((k) => {
         if (k != "ts") {
           n_vermelhos =
-            this.novoHistorico[k].cor === "vermelho"
-              ? n_vermelhos + 1
-              : n_vermelhos;
+            this.novoHistorico[k].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
         }
       });
       Object.keys(this.novoHistorico.ts).map((k) => {
         n_vermelhos =
-          this.novoHistorico.ts[k].cor === "vermelho"
-            ? n_vermelhos + 1
-            : n_vermelhos;
+          this.novoHistorico.ts[k].cor === "vermelho" ? n_vermelhos + 1 : n_vermelhos;
       });
 
       this.novoHistorico.ts.classes.dados.forEach((classe) => {

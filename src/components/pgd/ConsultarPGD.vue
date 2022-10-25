@@ -1,6 +1,13 @@
 <template>
   <div>
-    <v-card class="ma-4">
+    <v-row align="left">
+          <v-col>
+            <Voltar />
+          </v-col>
+    </v-row>
+
+    <Loading v-if="loading" :message="''" />
+    <v-card v-else class="ma-4">
       <v-card-title class="clav-linear-background white--text">
         {{ titulo }}
         <v-spacer />
@@ -11,6 +18,14 @@
             </v-btn>
           </template>
           <span>Exportar Tabela de Seleção</span>
+        </v-tooltip>
+        <v-tooltip v-if="$verifyTokenUser().level >= 4" left>
+          <template v-slot:activator="{ on }">
+            <v-btn @click="remove()" color="white" icon v-on="on">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </template>
+          <span>Remover Tabela de Seleção</span>
         </v-tooltip>
       </v-card-title>
 
@@ -79,10 +94,7 @@
             <v-card class="pa-4" color="neutralpurple">
               <v-row class="pa-0 ma-0" justify="center">
                 <span class="clav-info-label">Tabela de Seleção</span>
-                <InfoBox
-                  header="Tabela de Seleção"
-                  :text="myhelp.TabelasSelecao"
-                />
+                <InfoBox header="Tabela de Seleção" :text="myhelp.TabelasSelecao" />
               </v-row>
             </v-card>
           </v-col>
@@ -116,11 +128,7 @@
         <v-row>
           <v-col>
             <v-list v-if="tree_ou_tabela">
-              <v-list-group
-                v-for="(classe, i) in classesTree"
-                :key="i"
-                multiple
-              >
+              <v-list-group v-for="(classe, i) in classesTree" :key="i" multiple>
                 <template v-slot:activator>
                   <v-list-item-content>
                     <v-list-item-title>
@@ -135,11 +143,11 @@
                 <ShowPGD :classe="classe" />
               </v-list-group>
             </v-list>
+
             <v-data-table
               v-else
               :headers="
-                objeto &&
-                (objeto.fonte.text === 'PGD' || objeto.fonte.text === 'RADA')
+                objeto && (objeto.fonte.text === 'PGD' || objeto.fonte.text === 'RADA')
                   ? headers
                   : headersLC
               "
@@ -153,6 +161,16 @@
               expand-icon="$expand"
               show-expand
             >
+              <template v-slot:[`item.data-table-expand`]="{ item, isExpanded, expand }">
+                <v-icon v-if="checkExpand(item) && !isExpanded" @click="expand(true)"
+                  >mdi-chevron-down
+                </v-icon>
+
+                <v-icon v-if="checkExpand(item) && isExpanded" @click="expand(false)"
+                  >mdi-chevron-down mdi-rotate-180
+                </v-icon>
+              </template>
+
               <template v-slot:[`item.pca`]="{ item }">
                 {{
                   item.pca > 1
@@ -175,17 +193,11 @@
                 >
                 <ol
                   class="my-5"
-                  v-else-if="
-                    item.participantes && objeto.entidades.text.length !== 1
-                  "
+                  v-else-if="item.participantes && objeto.entidades.text.length !== 1"
                 >
                   <span v-for="(p, index) in item.participantes" :key="index">
                     <li
-                      v-if="
-                        objeto.entidades.text.some(
-                          (e) => e.id === p.entParticipante
-                        )
-                      "
+                      v-if="objeto.entidades.text.some((e) => e.id === p.entParticipante)"
                     >
                       <a
                         :href="
@@ -221,11 +233,7 @@
                   v-else-if="item.donos && objeto.entidades.text.length !== 1"
                 >
                   <span v-for="(d, index) in item.donos" :key="index">
-                    <li
-                      v-if="
-                        objeto.entidades.text.some((e) => e.id === d.entDono)
-                      "
-                    >
+                    <li v-if="objeto.entidades.text.some((e) => e.id === d.entDono)">
                       <a
                         :href="
                           d.entDono.includes('ent_')
@@ -247,10 +255,7 @@
                 <td :colspan="headers.length">
                   <v-card class="ma-1 elevation-0">
                     <v-expansion-panels>
-                      <v-expansion-panel
-                        v-if="item.descricao || item.diplomas"
-                        popout
-                      >
+                      <v-expansion-panel v-if="item.descricao || item.diplomas" popout>
                         <!-- DESCRITIVO DA CLASSE -->
                         <v-expansion-panel-header
                           class="clav-linear-background white--text"
@@ -328,8 +333,7 @@
                             height="30%"
                           >
                             <v-toolbar-title
-                              >Prazo de Conservação
-                              Administrativa</v-toolbar-title
+                              >Prazo de Conservação Administrativa</v-toolbar-title
                             >
                           </v-toolbar>
 
@@ -344,7 +348,7 @@
                               {{
                                 item.pca > 1
                                   ? item.pca + " Anos"
-                                  : item.pca === ""
+                                  : item.pca === "" || !item.pca
                                   ? "Não Específicado"
                                   : item.pca + " Ano"
                               }}
@@ -365,9 +369,7 @@
                           </Campo>
                           <!-- FORMA DE CONTAGEM -->
                           <Campo
-                            v-if="
-                              item.formaContagem && item.formaContagem != ''
-                            "
+                            v-if="item.formaContagem && item.formaContagem != ''"
                             color="neutralpurple"
                             nome="Forma de Contagem"
                             infoHeader="Forma de Contagem"
@@ -380,10 +382,7 @@
 
                           <!-- SUBFORMA DE CONTAGEM -->
                           <Campo
-                            v-if="
-                              item.subFormaContagem &&
-                              item.subFormaContagem != ''
-                            "
+                            v-if="item.subFormaContagem && item.subFormaContagem != ''"
                             color="neutralpurple"
                             nome="Subforma de Contagem"
                             infoHeader="Subforma de Contagem"
@@ -396,9 +395,7 @@
 
                           <!-- JUSTIFICAÇÂO -->
                           <Campo
-                            v-if="
-                              item.justificacaoPCA && item.justificacaoPCA != ''
-                            "
+                            v-if="item.justificacaoPCA && item.justificacaoPCA != ''"
                             color="neutralpurple"
                             nome="Justificação"
                             infoHeader="Justificação"
@@ -445,9 +442,7 @@
 
                           <!-- JUSTIFICAÇÃO do DF -->
                           <Campo
-                            v-if="
-                              item.justificacaoDF && item.justificacaoDF != ''
-                            "
+                            v-if="item.justificacaoDF && item.justificacaoDF != ''"
                             color="neutralpurple"
                             nome="Justificação"
                             infoHeader="Justificação"
@@ -468,12 +463,61 @@
         </v-row>
       </v-card-text>
     </v-card>
+    <v-dialog v-model="dialogConfirmacao.visivel" persistent max-width="60%">
+      <v-card class="info-card">
+        <v-card-title class="clav-linear-background white--text mb-2">
+          {{ dialogConfirmacao.header }}</v-card-title
+        >
+        <div class="info-content-card px-3 mx-6 mb-2">
+          <v-card-text class="pa-2 px-4 font-weight-medium">
+            <p>{{ dialogConfirmacao.mensagem }}</p>
+          </v-card-text>
+        </div>
+        <v-card-actions>
+          <v-btn
+            v-if="
+              dialogConfirmacao.tipo != 'Sucesso' || dialogConfirmacao.tipo != 'Sucesso'
+            "
+            color="success"
+            rounded
+            dark
+            elevation="0"
+            class="px-4"
+            @click="
+              {
+                dialogConfirmacao.visivel = false;
+                removeTS();
+              }
+            "
+          >
+            Confirmar
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="red darken-4"
+            rounded
+            dark
+            elevation="0"
+            class="px-4"
+            @click="
+              {
+                rerout();
+              }
+            "
+          >
+            Fechar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
+import Voltar from "@/components/generic/Voltar";
 import ShowPGD from "@/components/pgd/ShowPGD.vue";
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 import InfoBox from "@/components/generic/infoBox.vue";
+import Loading from "@/components/generic/Loading";
 
 export default {
   props: ["classes", "classesTree", "objeto", "titulo"],
@@ -481,6 +525,8 @@ export default {
     ShowPGD,
     Campo,
     InfoBox,
+    Loading,
+    Voltar
   },
   data: () => ({
     search: "",
@@ -593,9 +639,48 @@ export default {
       "items-per-page-text": "Mostrar",
       "items-per-page-all-text": "Todos",
     },
+    dialogConfirmacao: {
+      tipo: "",
+      visivel: false,
+      mensagem: "",
+    },
+    loading: false,
     myhelp: require("@/config/help").help,
   }),
   methods: {
+    rerout() {
+      this.dialogConfirmacao.tipo !== "Sucesso"
+        ? (this.dialogConfirmacao.visivel = false)
+        : this.objeto.fonte.text == "RADA"
+        ? this.$router.push({ name: "Rada" })
+        : this.$router.push({ name: "ts" });
+    },
+    checkExpand(item) {
+      return !!item.descricao || item.nivel > 2;
+    },
+    async remove() {
+      this.dialogConfirmacao.header = "Remoção de Tabela de Seleção";
+      this.dialogConfirmacao.mensagem = `Pretende remover a ${this.titulo}?`;
+      this.dialogConfirmacao.visivel = true;
+    },
+    async removeTS() {
+      this.loading = true;
+      try {
+        await this.$request("delete", "/tabelasSelecao/" + this.$route.params.idPGD);
+        this.loading = false;
+        this.dialogConfirmacao.tipo = "Sucesso";
+        this.dialogConfirmacao.header = `Remoção de Tabela de Seleção`;
+        this.dialogConfirmacao.mensagem = "A Tabela de Seleção foi removida com sucesso.";
+
+        this.dialogConfirmacao.visivel = true;
+      } catch (e) {
+        this.loading = false;
+        this.dialogConfirmacao.tipo = "Insucesso";
+        this.dialogConfirmacao.header = `Remoção de Tabela de Seleção`;
+        this.dialogConfirmacao.mensagem = "Insucesso na remoção da Tabela de Seleção.";
+        this.dialogConfirmacao.visivel = true;
+      }
+    },
     csvExport() {
       //let csvContent = "data:text/csv;charset=utf-8,";
       let headers;
@@ -641,8 +726,7 @@ export default {
           .join("\n")
           .replace(/(^\[)|(\]$)/gm, "");
 
-        fileName =
-          "TS_RADA_" + this.objeto.entidade.text + "_" + this.objeto.data.text;
+        fileName = "TS_RADA_" + this.objeto.entidade.text + "_" + this.objeto.data.text;
       } else if (this.objeto.fonte.text == "PGD/LC") {
         headers =
           "Código,N.º Referência,Título,Descrição,Dono PN,Participante PN,PCA,Nota PCA,Forma de Contagem PCA,DF,Nota DF";
@@ -676,37 +760,29 @@ export default {
               (item.notaPCA || "") +
               '",' +
               '"';
-            if (item.formaContagem == "Data de conclusão do procedimento")
-              str += "F04";
-            else if (item.formaContagem == "Data de cessação da vigência")
-              str += "F05";
-            else if (item.formaContagem == "Data de início do procedimento")
-              str += "F02";
-            else if (item.formaContagem == "Data de emissão do título")
-              str += "F03";
+            if (item.formaContagem == "Data de conclusão do procedimento") str += "F04";
+            else if (item.formaContagem == "Data de cessação da vigência") str += "F05";
+            else if (item.formaContagem == "Data de início do procedimento") str += "F02";
+            else if (item.formaContagem == "Data de emissão do título") str += "F03";
             else if (
               item.formaContagem ==
               "Data de extinção da entidade sobre a qual recai o procedimento"
             )
               str += "F06";
-            else if (item.formaContagem == "Data de extinção do direito")
-              str += "F07";
+            else if (item.formaContagem == "Data de extinção do direito") str += "F07";
             else if (item.formaContagem == "Conforme disposição legal") {
               str += "F01.";
-              if (item.subFormaContagem)
-                str += item.subFormaContagem.split("F01.")[1];
+              if (item.subFormaContagem) str += item.subFormaContagem.split("F01.")[1];
             }
 
-            str +=
-              '","' + (item.df || "") + '",' + '"' + (item.notaDF || "") + '"';
+            str += '","' + (item.df || "") + '",' + '"' + (item.notaDF || "") + '"';
             return str;
           }),
         ]
           .join("\n")
           .replace(/(^\[)|(\]$)/gm, "");
       } else {
-        headers =
-          "Código,N.º Referência,Título,Descrição,PCA,Nota PCA,DF,Nota DF";
+        headers = "Código,N.º Referência,Título,Descrição,PCA,Nota PCA,DF,Nota DF";
         csvContent = [
           headers,
           ...this.classes.map((item) => {
@@ -766,5 +842,17 @@ export default {
   width: 100%;
   border: 1px solid #1a237e;
   border-radius: 3px;
+}
+.info-card {
+  background: linear-gradient(to right, #19237e 0%, #0056b6 100%);
+  text-shadow: 0px 1px 2px rgba(255, 255, 255, 0.22) !important;
+}
+
+.info-content-card {
+  padding: 8px;
+  background-color: #f1f6f8 !important;
+  color: #606060;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
+  border-radius: 10px;
 }
 </style>

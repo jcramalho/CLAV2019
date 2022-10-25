@@ -6,7 +6,7 @@
         <Voltar />
       </v-col>
       <v-col cols="12" md="6" align="center" justify="center">
-        <p class="clav-content-title-1">Consultar RADA's</p>
+        <p class="clav-content-title-1">Consultar RADA</p>
       </v-col>
       <v-col cols="12" md="3"></v-col>
     </v-row>
@@ -21,7 +21,7 @@
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,
             }"
-            color="success darken-1"
+            color="clav-linear-background"
             id="botao-shadow"
           >
             <unicon
@@ -38,7 +38,7 @@
           <v-btn
             @click="closeAll"
             rounded
-            class="white--text"
+            class="white--text clav-linear-background"
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
               'px-2': $vuetify.breakpoint.mdAndDown,

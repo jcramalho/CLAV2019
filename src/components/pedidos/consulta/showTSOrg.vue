@@ -74,9 +74,7 @@
               <v-expansion-panels>
                 <v-expansion-panel popout>
                   <!-- DESCRITIVO DA CLASSE -->
-                  <v-expansion-panel-header
-                    class="clav-linear-background white--text"
-                  >
+                  <v-expansion-panel-header class="clav-linear-background white--text">
                     <div>
                       <font size="4"><b> Descritivo da Classe</b></font>
                       <InfoBox
@@ -113,9 +111,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="
-                        item.exemplosNotasAp && item.exemplosNotasAp.length > 0
-                      "
+                      v-if="item.exemplosNotasAp && item.exemplosNotasAp.length > 0"
                       color="neutralpurple"
                       nome="Exemplos de Notas de Aplicação"
                       infoHeader="Exemplos de Notas de Aplicação"
@@ -123,10 +119,7 @@
                     >
                       <template v-slot:conteudo>
                         <ul>
-                          <li
-                            v-for="n in item.exemplosNotasAp"
-                            :key="n.idExemplo"
-                          >
+                          <li v-for="n in item.exemplosNotasAp" :key="n.idExemplo">
                             {{ n.exemplo }}
                           </li>
                         </ul>
@@ -165,14 +158,9 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
 
-                <v-expansion-panel
-                  v-if="item.codigo.split('.').length === 3"
-                  popout
-                >
+                <v-expansion-panel v-if="item.codigo.split('.').length === 3" popout>
                   <!-- DECISÔES DE AVALIAÇÂO DA CLASSE -->
-                  <v-expansion-panel-header
-                    class="clav-linear-background white--text"
-                  >
+                  <v-expansion-panel-header class="clav-linear-background white--text">
                     <div>
                       <font size="4"><b>Decisões de Avaliação</b></font>
                       <InfoBox
@@ -210,7 +198,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="item.pca.notas != ''"
+                      v-if="item.pca.notas && item.pca.notas != ''"
                       color="neutralpurple"
                       nome="Nota"
                       infoHeader="Nota"
@@ -221,7 +209,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="item.pca.formaContagem != ''"
+                      v-if="item.pca.formaContagem && item.pca.formaContagem != ''"
                       color="neutralpurple"
                       nome="Forma de Contagem"
                       infoHeader="Forma de Contagem"
@@ -246,7 +234,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="item.pca.justificacao.length > 0"
+                      v-if="item.pca.justificacao && item.pca.justificacao.length > 0"
                       color="neutralpurple"
                       nome="Justificação"
                       infoHeader="Justificação"
@@ -255,9 +243,7 @@
                       <template v-slot:conteudo>
                         <div v-for="c in item.pca.justificacao" :key="c.tipoId">
                           <!-- Critério Gestionário ...............................-->
-                          <v-row
-                            v-if="c.tipoId == 'CriterioJustificacaoGestionario'"
-                          >
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoGestionario'">
                             <v-col xs="2" sm="2">
                               <div class="info-label">Critério Gestionário</div>
                             </v-col>
@@ -276,8 +262,7 @@
                           <!-- Critério Utilidade Administrativa .................-->
                           <v-row
                             v-if="
-                              c.tipoId ==
-                              'CriterioJustificacaoUtilidadeAdministrativa'
+                              c.tipoId == 'CriterioJustificacaoUtilidadeAdministrativa'
                             "
                           >
                             <v-col xs="2" sm="2">
@@ -364,7 +349,7 @@
                       </template>
                     </Campo>
                     <Campo
-                      v-if="item.df.justificacao.length > 0"
+                      v-if="item.df.justificacao && item.df.justificacao.length > 0"
                       color="neutralpurple"
                       nome="Justificação"
                       infoHeader="Justificação"
@@ -394,11 +379,7 @@
                           </v-row>
 
                           <!-- Critério de Densidade Informacional ..............-->
-                          <v-row
-                            v-if="
-                              c.tipoId == 'CriterioJustificacaoDensidadeInfo'
-                            "
-                          >
+                          <v-row v-if="c.tipoId == 'CriterioJustificacaoDensidadeInfo'">
                             <v-col xs="2" sm="2">
                               <div class="info-label">
                                 Critério de Densidade Informacional
@@ -420,10 +401,7 @@
 
                           <!-- Critério de Complementaridade Informacional ..............-->
                           <v-row
-                            v-if="
-                              c.tipoId ==
-                              'CriterioJustificacaoComplementaridadeInfo'
-                            "
+                            v-if="c.tipoId == 'CriterioJustificacaoComplementaridadeInfo'"
                           >
                             <v-col xs="2" sm="2">
                               <div class="info-label">
@@ -468,7 +446,7 @@
 
 <script>
 import InfoBox from "@/components/generic/infoBox.vue";
-import Campo from "@/components/generic/Campo.vue";
+import Campo from "@/components/generic/CampoCLAV.vue";
 
 export default {
   props: ["p"],
@@ -511,13 +489,32 @@ export default {
       "get",
       "/classes?estrutura=arvore&nivel=2&info=esqueleto"
     );
-    let aux = [];
-    this.procs = JSON.parse(
-      JSON.stringify(this.p.objeto.dados.ts.listaProcessos.procs)
+
+    const lvl4 = await this.$request(
+      "get",
+      "/classes?estrutura=arvore&nivel=4&info=esqueleto"
     );
+
+    let aux = [];
+    this.procs = JSON.parse(JSON.stringify(this.p.objeto.dados.ts.listaProcessos.procs));
     this.procs.map((proc) => {
       !aux.some((pr) => pr && proc.pai.codigo === pr.codigo)
         ? aux.push(lvl2.data.find((p) => p.codigo === proc.pai.codigo))
+        : "";
+
+      proc.temSubclasses4Nivel
+        ? (aux = aux.concat(
+            lvl4.data
+              .filter((p) => p.codigo.includes(proc.codigo))
+              .map((p) => {
+                var pca = p.pca;
+                var df = p.df;
+                p.pca = { valores: pca };
+                p.df = { valor: df };
+
+                return p;
+              })
+          ))
         : "";
     });
     aux.map((proc) => {
@@ -527,7 +524,26 @@ export default {
         ? this.procs.push(lvl1.data.find((p) => p.codigo === codigo))
         : "";
     });
-    this.procs.sort((p1, p2) => p1.codigo > p2.codigo);
+    this.procs.sort((p1, p2) => {
+      var c1 = p1.codigo.split(".");
+      var c2 = p2.codigo.split(".");
+      return c1.length - c2.length;
+    });
+    this.procs.sort((p1, p2) => {
+      var c1 = p1.codigo.split(".");
+      var c2 = p2.codigo.split(".");
+      return c1[0] - c2[0];
+    });
+    this.procs.sort((p1, p2) => {
+      var c1 = p1.codigo.split(".");
+      var c2 = p2.codigo.split(".");
+      if (c1[0] === c2[0]) return c1[1] - c2[1];
+    });
+    this.procs.sort((p1, p2) => {
+      var c1 = p1.codigo.split(".");
+      var c2 = p2.codigo.split(".");
+      if (c1[0] === c2[0] && c1[1] === c2[1]) return c1[2] - c2[2];
+    });
   },
 };
 </script>

@@ -137,27 +137,28 @@ var excel2Json = function(file, tipo) {
 
 var verificarSerie = function(str) {
   var arr = str.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
-  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da classe / série") return false;
-  if(arr[1].replace(/['"]/g,'').trim() != "Número de referência") return false;
-  if(arr[2].replace(/['"]/g,'').trim() != "Título da classe / série") return false;
-  if(arr[3].replace(/['"]/g,'').trim() != "Data inicial da documentação proposta para eliminação") return false;
-  if(arr[4].replace(/['"]/g,'').trim() != "Data final da documentação proposta para eliminação") return false;
-  if(arr[5].replace(/['"]/g,'').trim() != "Nº de agregações simples / UI – unidade de instalação") return false;
-  if(arr[6].replace(/['"]/g,'').trim() != "Medição das agregações / UI em papel (m.l.)") return false;
-  if(arr[7].replace(/['"]/g,'').trim() != "Medição das agregações / UI em digital (Gb)") return false;
-  if(arr[8].replace(/['"]/g,'').trim() != "Medição das agregações / UI noutros suportes") return false;
+  if(arr[0].replace(/['"]/g,'').trim() != "codigo") return false;
+  if(arr[1].replace(/['"]/g,'').trim() != "referencia") return false;
+  // if(arr[2].replace(/['"]/g,'').trim() != "Título da classe / série") return false;
+  if(arr[3].replace(/['"]/g,'').trim() != "dataInicial") return false;
+  if(arr[4].replace(/['"]/g,'').trim() != "dataFinal") return false;
+  if(arr[5].replace(/['"]/g,'').trim() != "numAgregacoes") return false;
+  if(arr[6].replace(/['"]/g,'').trim() != "medicaoPapel") return false;
+  if(arr[7].replace(/['"]/g,'').trim() != "medicaoDigital") return false;
+  if(arr[8].replace(/['"]/g,'').trim() != "medicaoOutro") return false;
+  if(arr[9].replace(/['"]/g,'').trim() != "intervencao") return false;
   return true;
 };
 
 var verificarAgregacoes = function(str) {
   var arr = str.split(/[,;](?=(?:(?:[^"]*"){2})*[^"]*$)/)
 
-  if(arr[0].replace(/['"]/g,'').trim() != "Código de classificação da classe / série") return false;
-  if(arr[1].replace(/['"]/g,'').trim() != "Número de referência") return false;
-  if(arr[2].replace(/['"]/g,'').trim() != "Código da agregação simples / UI - unidade de instalação") return false;
-  if(arr[3].replace(/['"]/g,'').trim() != "Título da agregação / UI") return false;
-  if(arr[4].replace(/['"]/g,'').trim() != "Data de início de contagem do PCA") return false;
-  if(arr[5].replace(/['"]/g,'').trim() != "Natureza da intervenção") return false;
+  if(arr[0].replace(/['"]/g,'').trim() != "codigoClasse") return false;
+  if(arr[1].replace(/['"]/g,'').trim() != "referencia") return false;
+  if(arr[2].replace(/['"]/g,'').trim() != "codigoAgregacao") return false;
+  if(arr[3].replace(/['"]/g,'').trim() != "titulo") return false;
+  if(arr[4].replace(/['"]/g,'').trim() != "dataInicioContagemPCA") return false;
+  if(arr[5].replace(/['"]/g,'').trim() != "intervencao") return false;
   return true;
 };
 

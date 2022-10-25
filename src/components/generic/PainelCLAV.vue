@@ -11,7 +11,7 @@
           <slot name="icon"></slot>
         </v-col>
         <v-col cols="11" justify="center">
-          <span class="mr-3 header-text">{{ titulo }}</span>
+          <span class="mr-3 clav-header-text">{{ titulo }}</span>
           <InfoBox :header="infoHeader" :text="infoBody" />
         </v-col>
       </v-row>
@@ -34,8 +34,4 @@ export default {
 </script>
 
 <style scoped>
-.header-text {
-  font-weight: bold;
-  font-size: 14pt;
-}
 </style>

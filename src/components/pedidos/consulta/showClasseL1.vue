@@ -44,7 +44,7 @@
               >
                 <template v-slot:no-data>
                   <v-alert type="error" width="100%" class="m-auto mb-2 mt-2" outlined>
-                    Nenhuma Nota selecionada...
+                    Nenhuma nota adicionada.
                   </v-alert>
                 </template>
 
@@ -67,20 +67,7 @@
 </template>
 
 <script>
-import ShowNotasAp from "@/components/pedidos/consulta/classes/ShowNotasAp";
-import ShowExemplosNotasAp from "@/components/pedidos/consulta/classes/ShowExemplosNotasAp";
-import ShowNotasEx from "@/components/pedidos/consulta/classes/ShowNotasEx";
-import ShowTIs from "@/components/pedidos/consulta/classes/ShowTIs";
-
-import ShowDonos from "@/components/pedidos/consulta/classes/ShowDonos";
-import ShowParticipantes from "@/components/pedidos/consulta/classes/ShowParticipantes";
-import ShowProcRel from "@/components/pedidos/consulta/classes/ShowProcRel";
-import ShowLegislacao from "@/components/pedidos/consulta/classes/ShowLegislacao";
-
-import ShowDecisoesPCA from "@/components/pedidos/consulta/classes/ShowDecisoesPCA";
-import ShowDecisoesDF from "@/components/pedidos/consulta/classes/ShowDecisoesDF";
-
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 import { NIVEIS_CONSULTAR_HISTORICO } from "@/utils/consts";
 
@@ -126,20 +113,4 @@ export default {
 };
 </script>
 
-<style>
-.info-label {
-  color: #00695c;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e0f2f1;
-  font-weight: bold;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #283593;
-  border-radius: 3px;
-}
-</style>
+<style></style>

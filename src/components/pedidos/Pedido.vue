@@ -3,9 +3,20 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="6" md="7">
         <span class="clav-content-title-2">
-          Consulta do pedido: {{ Pedido.codigo }} <v-spacer />
+          Consulta do pedido: {{ Pedido.codigo }}
         </span>
+        <br />
+        <v-chip
+          :color="this.avisos[this.Pedido.objeto.tipo] <= dias ? 'primary' : 'error'"
+          class="mt-1"
+          label
+          :outlined="this.avisos[this.Pedido.objeto.tipo] <= dias"
+        >
+          Prazo: {{ dias > -1 ? dias : 0 }} dias
+          <v-icon class="mr-1">date_range</v-icon>
+        </v-chip>
       </v-col>
+      <v-spacer></v-spacer>
       <v-col cols="12" sm="6" md="5" align="right" justify="center">
         <v-chip color="primary" text-color="white" label>
           <v-icon class="mr-1">label</v-icon>
@@ -25,7 +36,7 @@
     </Campo>
     <Campo nome="Entidade" infoHeader="Entidade do Pedido" color="neutralpurple">
       <template v-slot:conteudo>
-        <span>{{ Pedido.entidade ? Pedido.entidade.split("_")[1] : "a carregar" }}</span>
+        <span>{{ Pedido.entidade ? Pedido.entidade.split("_")[1] : "a carregar" }} - {{ desig ? desig : "a carregar" }}</span>
       </template>
     </Campo>
     <Campo nome="Criado Por" infoHeader="Criador do Pedido" color="neutralpurple">
@@ -59,7 +70,7 @@
           <template v-slot:item="{ item }">
             <tr>
               <td class="subheading">{{ item.estado }}</td>
-              <td class="subheading">
+              <td  md="4" class="subheading">
                 {{ item.data.split("T")[0] }}
               </td>
               <td class="subheading">
@@ -82,10 +93,9 @@
         </v-data-table>
       </v-card-text>
     </v-card>
-
     <ShowTSPluri v-if="Pedido.objeto.tipo == 'TS Pluriorganizacional'" :p="Pedido" />
     <ShowTSOrg v-else-if="Pedido.objeto.tipo == 'TS Organizacional'" :p="Pedido" />
-    <ShowClasse v-else-if="Pedido.objeto.tipo == 'Classe'" :p="Pedido" />
+    <ShowClasse v-else-if="Pedido.objeto.tipo == 'Classe_N3'" :p="Pedido" />
     <ShowClasseL1
       v-else-if="Pedido.objeto.tipo == 'Classe_N1' || Pedido.objeto.tipo == 'Classe_N2'"
       :p="Pedido"
@@ -119,7 +129,7 @@
     <ShowDefault v-else :p="Pedido" />
 
     <v-row>
-      <v-col align="left">
+      <v-col style="margin-top: 10px;" align="left">
         <Voltar />
       </v-col>
       <v-spacer></v-spacer>
@@ -133,7 +143,7 @@
         "
         align="center"
       >
-        <v-btn color="primary" @click="substituirResponsavelDialog = true" rounded
+        <v-btn style="margin-top: 10px;" color="primary" @click="substituirResponsavelDialog = true" rounded
           >Substituir Responsável</v-btn
         >
       </v-col>
@@ -183,7 +193,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 import Voltar from "@/components/generic/Voltar";
 
 import ShowTSPluri from "@/components/pedidos/consulta/showTSPluri.vue";
@@ -211,6 +221,7 @@ export default {
   props: ["idp"],
 
   data: () => ({
+    desig: "",
     utilizadores: [],
     verHistoricoDialog: false,
     substituirResponsavelDialog: false,
@@ -225,11 +236,33 @@ export default {
         tipo: "a carregar",
       },
     },
+    prazos: {
+      Classe_N1: 60,
+      Classe_N2: 60,
+      Classe_N3: 60,
+      RADA: 60,
+      PPD: 60,
+      "Auto de Eliminação": 30,
+      Tipologia: 20,
+      Legislação: 20,
+      Entidade: 20,
+    },
+    avisos: {
+      Classe_N1: 25,
+      Classe_N2: 25,
+      Classe_N3: 25,
+      RADA: 15,
+      PPD: 20,
+      "Auto de Eliminação": 10,
+      Tipologia: 5,
+      Legislação: 5,
+      Entidade: 5,
+    },
     distHeaders: [
       { text: "Estado", value: "estado", class: "subtitle-1" },
       { text: "Data", value: "data", class: "subtitle-1" },
       { text: "Responsável", value: "responsavel", class: "subtitle-1" },
-      { text: "Informação da Etapa", value: "despacho", class: "subtitle-1" },
+      { text: "Informação da Etapa", value: "despacho", class: "subtitle-1",width: '65%' },
     ],
   }),
   components: {
@@ -284,18 +317,62 @@ export default {
       }
       return value;
     },
+    diasDevolvido() {
+      var dd = 0;
+      var sd = false;
+      var ld = "";
+
+      if (this.Pedido.distribuicao && this.Pedido.distribuicao.length)
+        this.Pedido.distribuicao.map((value) => {
+          if (value.estado == "Devolvido") {
+            if (this.mesmoDia(new Date(ld), new Date(value.data))) sd = true;
+            else {
+              sd = false;
+              ld = value.data;
+            }
+          } else if (value.estado == "Ressubmetido" && !sd) {
+            const date1 = new Date(ld);
+            const date2 = new Date(value.data);
+            const diffTime = Math.abs(date2 - date1);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            dd += diffDays;
+          }
+        });
+      return dd;
+    },
+    dias() {
+      const date1 = new Date();
+      const date2 = new Date(this.Pedido.data);
+      const diffTime = Math.abs(date2 - date1);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return this.prazos[this.Pedido.objeto.tipo] - (diffDays - this.diasDevolvido);
+    },
   },
   async created() {
     await this.listaUtilizadores();
     this.$request("get", "/pedidos/" + this.idp)
       .then((response) => {
         this.Pedido = response.data;
+        this.$request("get", "/entidades/" + this.Pedido.entidade)
+          .then((response) => {
+            this.desig = response.data.designacao 
+          })
+          .catch((error) => {
+            return error;
+          });
       })
       .catch((error) => {
         return error;
       });
   },
   methods: {
+    mesmoDia(d1, d2) {
+      return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+      );
+    },
     async listaUtilizadores() {
       const response = await this.$request("get", "/users");
 

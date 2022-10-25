@@ -46,11 +46,6 @@
               <v-icon right>assignment_turned_in</v-icon>
             </v-chip>
 
-            <v-chip v-else-if="item.estado === 'Devolvido'" outlined color="red">
-              {{ item.estado }}
-              <v-icon right>assignment_late</v-icon>
-            </v-chip>
-
             <v-chip v-else-if="item.estado === 'Submetido'" outlined color="blue">
               {{ item.estado }}
               <v-icon right>send</v-icon>
@@ -60,7 +55,16 @@
               <v-icon right>send</v-icon>
             </v-chip>
 
-            <v-chip v-else outlined color="orange">
+            <v-chip v-else-if="item.estado === 'Devolvido'" outlined color="orange">
+              {{ item.estado }}
+              <v-icon right>assignment_late</v-icon>
+            </v-chip>
+            <v-chip v-else-if="item.estado === 'Cancelado'" outlined color="red">
+              {{ item.estado }}
+              <v-icon right>send</v-icon>
+            </v-chip>
+
+            <v-chip v-else outlined color="primary">
               {{ item.estado }}
               <v-icon right>assignment</v-icon>
             </v-chip>

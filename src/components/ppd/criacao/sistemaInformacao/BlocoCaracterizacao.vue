@@ -60,7 +60,7 @@
         <v-col cols="12" xs="12" sm="9">
           <v-text-field
               :rules="[v => !!v || 'Campo de preenchimento obrigatório!']"
-              v-model="ppd.si.caracterizacao.formatos"
+              v-model="ppd.si.caracterizacao.formatosUtilizados"
               label="Indique os formatos utilizados (ex: Mysql, doc, pdf, xlsx)"
               solo
               clearable
@@ -582,7 +582,7 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 const help = require("@/config/help").help;
 
 import InfoBox from "@/components/generic/infoBox.vue";
@@ -637,7 +637,7 @@ export default {
 
   },
   watch:{
-    "metodoCheck": function() {
+    "modeloCresCheck": function() {
 
       if(this.modeloCresCheck !='Outra situação'){
         this.ppd.si.caracterizacao.modeloCres = this.modeloCresCheck;

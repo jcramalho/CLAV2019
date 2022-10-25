@@ -31,15 +31,15 @@
           <div class="info-label">Fonte de legitimação</div>
         </v-col>
         <v-col>
-          <v-text-field solo readonly :value="this.ppd.fonteLegitimacao.titulo"></v-text-field>
+          <v-text-field solo readonly :value="this.ppd.geral.fonteLegitimacao.titulo"></v-text-field>
         </v-col>
       </div>
       <v-col v-if="this.ppd.geral.entSel.length > 0">
         <v-card-title>
           <v-text-field
-            v-model="searchSI"
+            v-model="searchEnt"
             append-icon="search"
-            label="Procura filtra entidades"
+            label="Procurar/filtrar entidades"
             single-line
             hide-details
           ></v-text-field>
@@ -49,7 +49,7 @@
           :items="this.ppd.geral.entSel"
           :items-per-page="5"
           item-key="id"
-          :search="searchSI"
+          :search="searchEnt"
           :sort-by="['sigla']"
           class="elevation-1"
           :footer-props="footer_propsEnt"
@@ -83,7 +83,7 @@
           <v-text-field
             v-model="searchSI"
             append-icon="search"
-            label="Procura filtra sistemas informação"
+            label="Procurar/filtrar sistemas informação"
             single-line
             hide-details
           ></v-text-field>
@@ -174,7 +174,7 @@
 
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
@@ -201,6 +201,7 @@ export default {
 	data: () => ({
     ppd: {},
     searchSI: "",
+    searchEnt: "",
     entidades: [],
     siSpec: {
       numeroSI: [],
@@ -239,9 +240,8 @@ export default {
 	created: async function() {
       try{
         this.ppd = this.p.objeto;
-        //this.ppd.listaSistemasInfoAuxiliar = this.ppd.sistemasInfo;
-        //await this.loadEntidades();
-        //await this.consultaFT();
+        //alert(JSON.stringify(this.ppd.sistemasInfo))
+        this.criarArvore()
       }
       catch(e){
         console.log('Erro ao carregar a informação inicial: ' + e);
@@ -252,16 +252,37 @@ export default {
       this.siSpec = item;
       this.verSI = true;
       if(item.visto){
+        item.visto=false;
         this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
         this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
         this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
         this.siSpec.identificacao.propDados= item.identificacao.propDados.map(e => e.sigla).toString(),
         this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString(),
-        this.siSpec.avaliacao.decomposicao= item.avaliacao.tabelaDecomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.decomposicao= item.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.codClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.codigo).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.numeroClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.referencia).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.tituloClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.titulo).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.pcaClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.pca).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.destinoFinalClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.df).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.formaContagemPrazos= item.avaliacao.selecionadosTabelaFL.map(e=> e.formaContagem).toString().replaceAll(",","#")
         this.siSpec.avaliacao.siRelacionado= item.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
         this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
-        item.visto=false;
       }
+    },
+
+    criarArvore: function(){
+      var child = [];
+      this.ppd.arvore = []
+      this.ppd.sistemasInfo.forEach(element => {
+        var index =  this.ppd.arvore.findIndex(l => l.id === element.numeroSI);
+        child = [];
+        if(element.avaliacao.decomposicao != ""){
+          child = element.avaliacao.decomposicao.split("#").map(e=> e=({"id": e.split("-")[0], "name":e.split("-").slice(1).toString()}));
+        }
+        child.sort((a,b) => (parseFloat(a.id) > parseFloat(b.id)) ? 1 : ((parseFloat(b.id) > parseFloat(a.id)) ? -1 : 0));
+        this.ppd.arvore.push({"id": element.numeroSI, "name": element.nomeSI, "titulo": element.nomeSI, children: child })
+        this.ppd.arvore.sort((a,b) => (parseInt(a.id) > parseInt(b.id)) ? 1 : ((parseInt(b.id) > parseInt(a.id)) ? -1 : 0));
+      });
     }
   }
 

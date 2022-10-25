@@ -11,7 +11,7 @@
     <!-- CONTENT -->
     <v-row justify="center">
       <v-col cols="12" md="8">
-        <p class="content-text">Pretende importar múltiplos ficheiros:</p>
+        <p class="clav-content-text">Pretende importar múltiplos ficheiros:</p>
         <v-row justify="center">
           <v-tooltip top color="info" open-delay="500">
             <template v-slot:activator="{ on }">
@@ -25,7 +25,7 @@
             <span> Fonte de legitimação</span>
           </v-tooltip>
         </v-row>
-        <p class="content-text">
+        <p class="clav-content-text">
           Selecione a fonte de legitimação da Tabela de Seleção a importar:
         </p>
         <v-row justify="center">
@@ -35,7 +35,7 @@
                 class="py-5 mt-5"
                 v-model="fonteLegitimacao"
                 :rules="[
-                  (v) => !!v || 'Tem de escolher uma fonte de legitimação',
+                  v => !!v || 'Tem de escolher uma fonte de legitimação'
                 ]"
                 required
                 row
@@ -54,7 +54,7 @@
             <span> Fonte de legitimação</span>
           </v-tooltip>
         </v-row>
-        <p class="content-text">Selecione o tipo de Tabela de Seleção:</p>
+        <p class="clav-content-text">Selecione o tipo de Tabela de Seleção:</p>
         <v-row justify="center">
           <v-tooltip top color="info" open-delay="500">
             <template v-slot:activator="{ on }">
@@ -100,7 +100,7 @@
         </v-row>
         <div v-if="tipo != null">
           <div class="pa-0 ma-0" v-if="!multImport && tipo == 'Organizacional'">
-            <p class="content-text">
+            <p class="clav-content-text">
               Identifique a entidade ou tipologia da Tabela de Seleção:
             </p>
             <v-tooltip top color="info" open-delay="500">
@@ -129,7 +129,7 @@
             </v-tooltip>
           </div>
           <div class="pa-0 ma-0" v-else-if="!multImport">
-            <p class="content-text">
+            <p class="clav-content-text">
               Identifique as entidades e tipologias da Tabela de Seleção:
             </p>
             <v-tooltip top color="info" open-delay="500">
@@ -153,7 +153,7 @@
             </v-tooltip>
           </div>
           <div v-if="!multImport">
-            <p class="content-text">
+            <p class="clav-content-text">
               Insira a designação para a Tabela de Seleção:
             </p>
             <v-tooltip top color="info" open-delay="500">
@@ -174,7 +174,7 @@
             </v-tooltip>
           </div>
 
-          <p class="content-text">
+          <p class="clav-content-text">
             Selecione o ficheiro com a Tabela de Seleção a importar:
           </p>
           <v-tooltip top color="info" open-delay="500">
@@ -196,7 +196,7 @@
             <span> Ficheiro com a Tabela de Seleção a importar</span>
           </v-tooltip>
 
-          <v-card id="info-import-file" class="mx-auto pa-4 content-text">
+          <v-card id="info-import-file" class="mx-auto pa-4 clav-content-text">
             <div v-if="tipo == 'Organizacional'">
               <b>Caso o ficheiro seja CSV deve respeitar o seguinte:</b>
 
@@ -282,8 +282,8 @@
         </div>
         <div class="text-center mt-6">
           <v-progress-linear
-            class="my-2 white--text"
             v-if="loading && multImport"
+            class="my-2 white--text"
             :value="(progresso * 100) / total"
             color="primary"
             height="25"
@@ -300,26 +300,26 @@
           <v-btn
             v-if="
               (multImport && (fonteLegitimacao == null || file.length < 2)) ||
-              (tipo == 'Organizacional' &&
-                !multImport &&
-                (designacao == null ||
-                  file.length == 0 ||
-                  tipo == null ||
-                  fonteLegitimacao == null ||
-                  entidade_tipologia == null ||
-                  !entidade_tipologia.length)) ||
-              (tipo == 'Pluriorganizacional' &&
-                !multImport &&
-                (designacao == null ||
-                  file.length == 0 ||
-                  tipo == null ||
-                  fonteLegitimacao == null))
+                (tipo == 'Organizacional' &&
+                  !multImport &&
+                  (designacao == null ||
+                    file.length == 0 ||
+                    tipo == null ||
+                    fonteLegitimacao == null ||
+                    entidade_tipologia == null ||
+                    !entidade_tipologia.length)) ||
+                (tipo == 'Pluriorganizacional' &&
+                  !multImport &&
+                  (designacao == null ||
+                    file.length == 0 ||
+                    tipo == null ||
+                    fonteLegitimacao == null))
             "
             disabled
             rounded
             :class="{
               'px-8': $vuetify.breakpoint.lgAndUp,
-              'px-2': $vuetify.breakpoint.mdAndDown,
+              'px-2': $vuetify.breakpoint.mdAndDown
             }"
             class="mb-6"
             id="botao-shadow"
@@ -336,8 +336,8 @@
 
           <v-btn
             v-else
-            @click="enviarFicheiro()"
             :loading="loading"
+            @click="enviarFicheiro()"
             rounded
             class="white--text clav-linear-background"
           >
@@ -370,9 +370,42 @@
                     <v-expansion-panel-content>
                       <ol>
                         <li v-for="(erro, j) in item.errors" :key="j">
-                          <span class="red--text text--darken-5">{{
-                            erro.msg
-                          }}</span>
+                          <v-row>
+                            <v-col
+                              cols="12"
+                              sm="10"
+                              :md="erro.deleted === true ? 11 : 10"
+                            >
+                              <span class="red--text text--darken-5"
+                                >{{ erro.msg }}
+                              </span>
+                            </v-col>
+
+                            <v-col
+                              cols="12"
+                              sm="2"
+                              :md="erro.deleted === true ? 1 : 2"
+                            >
+                              <v-spacer />
+
+                              <v-btn
+                                v-if="!!erro.id && !erro.deleted"
+                                color="red darken-4"
+                                rounded
+                                dark
+                                elevation="0"
+                                class="px-4"
+                                :loading="loadingBtn"
+                                @click="removeTS(erro.id, i, j)"
+                                >Remover</v-btn
+                              >
+                              <v-icon
+                                v-else-if="erro.deleted === true"
+                                color="success"
+                                >mdi-check</v-icon
+                              >
+                            </v-col>
+                          </v-row>
                         </li>
                       </ol>
                     </v-expansion-panel-content>
@@ -422,16 +455,51 @@
                     <v-expansion-panel-content>
                       <ol v-if="item.errors">
                         <li v-for="(erro, j) in item.errors" :key="j">
-                          <span class="red--text text--darken-5">{{
-                            erro.msg
-                          }}</span>
+                          <v-row>
+                            <v-col
+                              cols="12"
+                              sm="10"
+                              :md="erro.deleted === true ? 11 : 10"
+                            >
+                              <span class="red--text text--darken-5"
+                                >{{ erro.msg }}
+                              </span>
+                            </v-col>
+
+                            <v-col
+                              cols="12"
+                              sm="2"
+                              :md="erro.deleted === true ? 1 : 2"
+                            >
+                              <v-spacer />
+
+                              <v-btn
+                                v-if="!!erro.id && !erro.deleted"
+                                color="red darken-4"
+                                rounded
+                                dark
+                                elevation="0"
+                                class="px-4"
+                                :loading="loadingBtn"
+                                @click="removeTS(erro.id, i, j)"
+                                >Remover</v-btn
+                              >
+                              <v-icon
+                                v-else-if="erro.deleted === true"
+                                color="success"
+                                >mdi-check</v-icon
+                              >
+                            </v-col>
+                          </v-row>
                         </li>
                       </ol>
                       <span v-else
                         >Código do pedido: {{ item.id }}
                         <p>Estatísticas:</p>
                         <ol>
-                          <li>{{ loadStats(item.stats) }}</li>
+                          <li v-for="(stat, i) in item.stats" v-bind:key="i">
+                            {{ loadStats(stat, i) }}
+                          </li>
                         </ol>
                         <v-btn
                           v-if="multImport"
@@ -452,7 +520,9 @@
                   Código do pedido: {{ codigo }}
                   <p>Estatísticas:</p>
                   <ol>
-                    <li>{{ loadStats(stats) }}</li>
+                    <li v-for="(stat, i) in stats" v-bind:key="i">
+                      {{ loadStats(stat, i) }}
+                    </li>
                   </ol>
                 </div>
               </v-card-text>
@@ -573,8 +643,9 @@ export default {
     erro: "",
     erroDialog: false,
     success: "",
-    successDialog: false,
     loading: false,
+    loadingBtn: false,
+    successDialog: false,
     progresso: 0,
     total: 0,
     fileName: "",
@@ -590,30 +661,30 @@ export default {
     dialogConfirmacao: {
       visivel: false,
       mensagem: "",
-      dados: null,
+      dados: null
     },
     entidadesFalta: [],
-    acrescenta: null,
+    acrescenta: null
   }),
   components: {
-    Voltar,
+    Voltar
   },
 
-  mounted: async function () {
+  mounted: async function() {
     try {
       var response = await this.$request("get", "/entidades");
-      var entidades = response.data.map((ent) => {
+      var entidades = response.data.map(ent => {
         return {
           text: ent.sigla + " - " + ent.designacao,
-          value: ent.sigla,
+          value: ent.sigla
         };
       });
 
       response = await this.$request("get", "/tipologias");
-      var tipologias = response.data.map((tip) => {
+      var tipologias = response.data.map(tip => {
         return {
           text: tip.sigla + " - " + tip.designacao,
-          value: tip.sigla,
+          value: tip.sigla
         };
       });
 
@@ -631,68 +702,34 @@ export default {
     goBack() {
       this.$router.push("/tsInfo");
     },
-    loadStats(fstats) {
-      for (var k in fstats) {
-        switch (k) {
-          case "processos":
-            return "Número de Processos: " + fstats[k];
-          case "donos":
-            return "Número de Processos Donos: " + fstats[k];
-          case "participantes":
-            return "Número de Processos Participantes: " + fstats[k];
-          /*
-          default:
-            stats += "<li>Entidade: " + k + "<ul>";
-            for (var kb in fstats[k]) {
-              switch (kb) {
-                case "processos":
-                  stats +=
-                    "<li>Número de Processos: " +
-                    response.data.stats[k][kb] +
-                    "</li>";
-                  break;
-                case "donos":
-                  stats +=
-                    "<li>Número de Processos Donos: " +
-                    response.data.stats[k][kb] +
-                    "</li>";
-                  break;
-                case "participantes":
-                  stats +=
-                    "<li>Número de Processos Participantes: " +
-                    response.data.stats[k][kb] +
-                    "</li>";
-                  break;
-                default:
-                  break;
-              }
-            }
-            stats += "</ul>";
-        }
-      }
-      stats += "</ul>";
-      */
-        }
+    loadStats(stat, k) {
+      switch (k) {
+        case "processos":
+          return "Número de Processos: " + stat + "\n";
+        case "donos":
+          return "Número de Processos Donos: " + stat + "\n";
+        case "participantes":
+          return "Número de Processos Participantes: " + stat + "\n";
       }
     },
-    enviarFicheiro: async function () {
+    enviarFicheiro: async function() {
       this.erro = "";
       this.erroDialog = false;
       this.successDialog = false;
       this.success = "";
-      this.total = this.file.length;
       this.loading = true;
+      this.total = this.file.length;
 
       for (var index in this.file) {
         try {
           this.fileName = this.file[index].name;
           var formData = new FormData();
-          formData.append("file", this.file[index]);
+          formData.append("file", this.file[index], this.fileName);
 
           if (!this.multImport) {
             formData.append("designacao", this.designacao);
             formData.append(
-              "entidades_ts",
+              "entidade_ts",
               JSON.stringify(this.entidade_tipologia)
             );
           }
@@ -711,51 +748,50 @@ export default {
               this.multImportList.push({
                 file: this.file[index].name,
                 id: response.data.codigo,
-                stats: response.data.stats,
+                stats: response.data.stats
               });
             } else {
               this.stats = response.data.stats;
               this.codigo = response.data.codigo;
+              this.loading = false;
             }
           }
         } catch (e) {
           if (e) {
+            this.loading = !this.multImport ? false : true;
             if (e.response.data.entidades) {
-              this.loading = false;
               this.entidadesFalta = e.response.data.entidades;
               this.acrescenta = e.response.data.acrescenta;
               if (e.response.data.acrescenta) {
                 this.dialogConfirmacao = {
                   visivel: true,
-                  mensagem: e.response.data.message,
+                  mensagem: e.response.data.message
                 };
               } else {
                 this.dialogConfirmacao = {
                   visivel: true,
-                  mensagem: e.response.data.message,
+                  mensagem: e.response.data.message
                 };
               }
-            } else if (e.response.data.some((err) => !!err.file)) {
+            } else if (e.response.data.some(err => !!err.file)) {
               if (this.multImport) {
                 this.multImportList = this.multImportList.concat(
                   e.response.data
                 );
               } else {
-                this.loading = false;
                 this.erro = e.response.data;
                 this.erroDialog = true;
               }
             } else {
-              this.loading = false;
               this.erro = e.response.data[0].msg || e.response.data;
               this.erroDialog = true;
             }
           } else {
-            this.loading = false;
             this.erro = "Erro interno";
             this.erroDialog = true;
           }
         }
+
         this.progresso += 1;
       }
 
@@ -843,8 +879,9 @@ export default {
           ? (this.successDialog = true)
           : ""
         : "";
+      this.loading = false;
     },
-    seguirPedido: function (codigo = this.codigo) {
+    seguirPedido: function(codigo = this.codigo) {
       switch (this.fonteLegitimacao) {
         case "TS/LC":
           this.$router.push(`/pedidos/submissao/${codigo}`);
@@ -860,24 +897,36 @@ export default {
           break;
       }
     },
-    selecionar: function () {
+    async removeTS(id, item, error) {
+      try {
+        this.loadingBtn = true;
+        await this.$request("delete", "/tabelasSelecao/" + id);
+        if (!this.multImport) {
+          this.erro[item].errors[error].deleted = true;
+        } else {
+          this.multImportList[item].errors[error].deleted = true;
+        }
+        this.loadingBtn = false;
+      } catch (e) {}
+    },
+    selecionar: function() {
       this.dialogConfirmacao.visivel = false;
       if (this.tipo == "Pluriorganizacional")
         this.entidade_tipologia = this.entidade_tipologia.concat(
-          this.entidadesFalta.map((e) => e.sigla)
+          this.entidadesFalta.map(e => e.sigla)
         );
       else {
-        this.entidade_tipologia = this.entidadesFalta.map((e) => e.sigla)[0];
+        this.entidade_tipologia = this.entidadesFalta.map(e => e.sigla)[0];
         this.designacao = `Tabela de Seleção de ${this.entidade_tipologia}`;
       }
       this.entidadesFalta = [];
       this.acrescenta = null;
     },
-    desselecionar: function () {
+    desselecionar: function() {
       this.dialogConfirmacao.visivel = false;
-      this.entidadesFalta.map((e) =>
+      this.entidadesFalta.map(e =>
         this.entidade_tipologia.splice(
-          this.entidade_tipologia.findIndex((ent) => e.sigla == ent),
+          this.entidade_tipologia.findIndex(ent => e.sigla == ent),
           1
         )
       );
@@ -885,7 +934,7 @@ export default {
       this.entidadesFalta = [];
       this.acrescenta = null;
     },
-    fonteL: function () {
+    fonteL: function() {
       if (this.fonteLegitimacao == "RADA") {
         this.designacao =
           "Relatório de Avaliação de Documentação Acumulada de ...";
@@ -907,10 +956,10 @@ export default {
       else this.designacao = null;
     },
 
-    voltar: function () {
+    voltar: function() {
       this.$router.go();
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

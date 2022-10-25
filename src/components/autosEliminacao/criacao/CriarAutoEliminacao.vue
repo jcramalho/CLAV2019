@@ -224,22 +224,12 @@
                   !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-                >Guardar Trabalho <v-icon right>save</v-icon></v-btn
+                >Guardar<v-icon right>save</v-icon></v-btn
               >
+
               <v-btn
                 medium
-                color="indigo darken-4"
-                dark
-                @click="continuarDepois"
-                :disabled="
-                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
-                "
-                class="ma-2"
-                >Continuar Depois <v-icon right>save</v-icon></v-btn
-              >
-              <v-btn
-                medium
-                color="indigo darken-4"
+                color="green darken-4"
                 dark
                 @click="successDialog = true"
                 :disabled="
@@ -251,6 +241,18 @@
 
               <v-btn
                 medium
+                color="indigo darken-4"
+                dark
+                @click="continuarDepois"
+                :disabled="
+                  !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
+                "
+                class="ma-2"
+                >Sair<v-icon right>save</v-icon></v-btn
+              >
+
+              <v-btn
+                medium
                 color="red darken-4"
                 dark
                 @click="eliminar = true"
@@ -258,7 +260,7 @@
                   !auto.legislacao || !auto.fundo || auto.zonaControlo.length == 0
                 "
                 class="ma-2"
-                >Eliminar</v-btn
+                >Cancelar</v-btn
               >
             </div>
           </v-stepper-content>

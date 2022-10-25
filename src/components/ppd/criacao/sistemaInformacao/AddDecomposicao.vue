@@ -41,16 +41,15 @@
           </v-text-field>
         </v-col>
       </v-row>
-      <v-row align="center" justify="space-around">
-        <v-btn
-        color="indigo darken-2"
-        dark
-        class="ma-2"
-        rounded
-        @click="guardarDecomp($event)"
-        >
-          Guardar
-        </v-btn>
+      <v-row>
+        <v-col align="right">
+          <v-btn color="indigo darken-2" dark class="ma-2" rounded @click="guardarDecomp($event)">
+            Guardar
+          </v-btn>
+          <v-btn color="red darken-2" dark class="ma-2" rounded @click="cancelarDecomp()">
+            Cancelar
+          </v-btn>
+        </v-col>
       </v-row>
     </v-card-text>
   </v-card>
@@ -83,6 +82,10 @@ export default {
       this.numeroSub = "";
       this.nomeSub = "";
     },
+
+    cancelarDecomp(){
+      this.$emit("cancelarDecomp")
+    }
   },
 
 }

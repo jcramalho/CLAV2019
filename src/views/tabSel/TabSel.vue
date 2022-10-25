@@ -24,7 +24,7 @@
                   'px-8': $vuetify.breakpoint.lgAndUp,
                   'px-2': $vuetify.breakpoint.mdAndDown,
                 }"
-                color="success darken-1"
+                color="indigo darken-4"
                 id="botao-shadow"
               >
                 <unicon
@@ -46,9 +46,10 @@
                   'px-8': $vuetify.breakpoint.lgAndUp,
                   'px-2': $vuetify.breakpoint.mdAndDown,
                 }"
-                style="background-color: rgb(153, 17, 17)"
+                color="indigo darken-4"
                 id="botao-shadow"
               >
+              <!-- style="background-color: rgb(153, 17, 17)" -->
                 <unicon
                   name="close-all-icon"
                   width="20"

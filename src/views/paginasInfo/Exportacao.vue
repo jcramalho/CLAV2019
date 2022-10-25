@@ -66,7 +66,7 @@
             </template>
           </PainelCLAV>
 
-          <PainelCLAV titulo="Defina as query strings a usar na exportação">
+          <PainelCLAV titulo="Defina os parâmetros a usar na exportação">
             <template v-slot:icon>
               <v-icon color="secondary">{{ exportIcon }}</v-icon>
             </template>
@@ -126,7 +126,7 @@
 
 <script>
 import PainelCLAV from "@/components/generic/PainelCLAV.vue";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV.vue";
 import TogglePanelsCLAV from "@/components/generic/TogglePanelsCLAV";
 
 const lhost = require("@/config/global").host;

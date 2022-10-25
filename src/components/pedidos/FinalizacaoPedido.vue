@@ -180,11 +180,18 @@ export default {
       const id = this.identificador();
 
       switch (this.objetoPedido.tipo) {
+        case "Auto de Eliminação":
+          this.$router.push(`/autosEliminacao/${id}`);
+          break;
         case "RADA":
           this.$router.push(`/rada/${this.objetoPedido.dados.id}`);
           break;
         case "Tipologia":
           this.$router.push(`/tipologias/tip_${id}`);
+          break;
+
+        case "Classe":
+          this.$router.push(`/classes/c${id}`);
           break;
 
         case "Entidade":

@@ -1,19 +1,15 @@
 <template>
-  <v-row>
-    <v-col cols="2">
-      <div class="info-label">
-        Donos do processo
-        <InfoBox
-          header="Donos do processo"
-          :text="myhelp.Classe.Campos.Donos"
-        />
-      </div>
-    </v-col>
-    <v-col v-if="entidades.length > 0">
+  <Campo
+    nome="Donos do processo"
+    infoHeader="Donos do processo"
+    :infoBody="myhelp.Classe.Campos.Donos"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
       <v-data-table
+        v-if="entidades.length > 0"
         :headers="headers"
         :items="entidades"
-        class="elevation-1"
         hide-default-footer
       >
         <template v-slot:header="props">
@@ -43,29 +39,27 @@
           </tr>
         </template>
       </v-data-table>
-    </v-col>
-    <v-col v-else>
-      <v-alert :value="true" type="warning"
-        >Não tem donos selecionados...</v-alert
-      >
-    </v-col>
-  </v-row>
+      <v-alert v-else :value="true" type="warning" border="left">
+        Não tem donos selecionados...
+      </v-alert>
+    </template>
+  </Campo>
 </template>
 
 <script>
 const labels = require("@/config/labels").classeCriacaoDonosOps;
 const help = require("@/config/help").help;
 
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["entidades"],
 
   components: {
-    InfoBox
+    Campo,
   },
 
-  data: function() {
+  data: function () {
     return {
       mylabels: labels,
       myhelp: help,
@@ -73,41 +67,20 @@ export default {
         { text: "Sigla", align: "left", value: "sigla" },
         { text: "Designação", value: "designacao" },
         { text: "Tipo", value: "tipo" },
-        { text: "Remover" }
-      ]
+        { text: "Remover" },
+      ],
     };
   },
 
   methods: {
-    go: function(idClasse) {
+    go: function (idClasse) {
       this.$router.push("/entidades/" + idClasse);
       this.$router.go();
     },
-    unselectEntidade: function(entidade) {
+    unselectEntidade: function (entidade) {
       this.$emit("unselectEntidade", entidade);
-    }
-  }
+    },
+  },
 };
 </script>
-<style>
-.info-label {
-  color: #2e7d32; /* green darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-</style>
+<style></style>

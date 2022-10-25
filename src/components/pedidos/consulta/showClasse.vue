@@ -1,20 +1,21 @@
 <template>
-  <v-card class="mt-2">
+  <v-card class="my-2">
     <v-card-title class="clav-linear-background white--text">
       {{ p.objeto.acao }} da Classe
     </v-card-title>
-    <v-card-text>
-      <v-row v-for="c in classeInfo" :key="c.campo">
-        <v-col cols="2">
-          <div class="info-label">{{ c.campo }}</div>
-        </v-col>
-        <v-col>
-          <div class="info-content">{{ c.conteudo }}</div>
-        </v-col>
-      </v-row>
+    <v-card-text class="pa-2">
+      <Campo
+        v-for="c in classeInfo"
+        :key="c.campo"
+        :nome="c.campo"
+        :infoHeader="c.campo"
+        color="neutralpurple"
+      >
+        <template v-slot:conteudo> {{ c.conteudo }} </template>
+      </Campo>
 
       <v-card
-        class="ma-2"
+        class="my-2"
         v-if="
           p.objeto.dados.notasAp.length > 0 ||
           p.objeto.dados.exemplosNotasAp.length > 0 ||
@@ -22,92 +23,209 @@
           (p.objeto.dados.nivel == 3 && p.objeto.dados.termosInd.length > 0)
         "
       >
-        <v-card-title class="info-label subtitle-1 font-weight-medium">
+        <v-card-title class="clav-linear-background white--text">
           Descritivo da classe
         </v-card-title>
-        <v-card-text>
-          <ShowNotasAp
+        <v-card-text class="pa-2">
+          <Campo
             v-if="p.objeto.dados.notasAp.length > 0"
-            :lista="p.objeto.dados.notasAp"
-          />
-          <ShowExemplosNotasAp
+            nome="Notas de aplicação"
+            infoHeader="Notas de aplicação"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(n, i) in p.objeto.dados.notasAp" :key="i">{{ n.nota }}</li>
+              </ul>
+            </template>
+          </Campo>
+          <Campo
             v-if="p.objeto.dados.exemplosNotasAp.length > 0"
-            :lista="p.objeto.dados.exemplosNotasAp"
-          />
-          <ShowNotasEx
+            nome="Exemplos de notas de aplicação"
+            infoHeader="Exemplos de notas de aplicação"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(n, i) in p.objeto.dados.exemplosNotasAp" :key="i">
+                  {{ n.exemplo }}
+                </li>
+              </ul>
+            </template>
+          </Campo>
+          <Campo
             v-if="p.objeto.dados.notasEx.length > 0"
-            :lista="p.objeto.dados.notasEx"
-          />
-          <ShowTIs
+            nome="Notas de exclusão"
+            infoHeader="Notas de exclusão"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(n, i) in p.objeto.dados.notasEx" :key="i">{{ n.nota }}</li>
+              </ul>
+            </template>
+          </Campo>
+          <Campo
             v-if="p.objeto.dados.nivel == 3 && p.objeto.dados.termosInd.length > 0"
-            :lista="p.objeto.dados.termosInd"
-          />
+            nome="Termos de Índice"
+            infoHeader="Termos de Índice"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(n, i) in p.objeto.dados.termosInd" :key="i">{{ n.termo }}</li>
+              </ul>
+            </template>
+          </Campo>
         </v-card-text>
       </v-card>
 
-      <v-card class="ma-2">
-        <v-card-title class="info-label subtitle-1 font-weight-medium">
+      <v-card class="my-2">
+        <v-card-title class="clav-linear-background white--text">
           Contexto de avaliação
         </v-card-title>
-        <v-card-text>
-          <v-row v-if="p.objeto.dados.tipoProc != ''">
-            <v-col cols="2">
-              <div class="info-label">Tipo de processo</div>
-            </v-col>
-            <v-col>
-              <div class="info-content">{{ p.objeto.dados.tipoProc }}</div>
-            </v-col>
-          </v-row>
-          <v-row v-if="p.objeto.dados.procTrans != ''">
-            <v-col cols="2">
-              <div class="info-label">Processo transversal</div>
-            </v-col>
-            <v-col>
-              <div class="info-content">{{ p.objeto.dados.procTrans }}</div>
-            </v-col>
-          </v-row>
+        <v-card-text class="pa-2">
+          <Campo
+            v-if="p.objeto.dados.tipoProc != ''"
+            nome="Tipo de processo"
+            infoHeader="Tipo de processo"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              {{ p.objeto.dados.tipoProc }}
+            </template>
+          </Campo>
+          <Campo
+            v-if="p.objeto.dados.procTrans != ''"
+            nome="Processo transversal"
+            infoHeader="Processo transversal"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              {{ p.objeto.dados.procTrans }}
+            </template>
+          </Campo>
 
-          <ShowDonos
+          <Campo
             v-if="p.objeto.dados.donos.length > 0"
-            :lista="p.objeto.dados.donos"
-          />
-          <ShowParticipantes
+            nome="Donos do processo"
+            infoHeader="Donos do processo"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(p, i) in p.objeto.dados.donos" :key="i">
+                  {{ p.sigla }}:
+                  {{ p.designacao }}
+                  ({{ p.tipo }})
+                </li>
+              </ul>
+            </template>
+          </Campo>
+
+          <Campo
             v-if="p.objeto.dados.participantes.length > 0"
-            :lista="p.objeto.dados.participantes"
-          />
-          <ShowProcRel
+            nome="Participantes no processo"
+            infoHeader="Participantes no processo"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(p, i) in p.objeto.dados.participantes" :key="i">
+                  [{{ p.intervencao }}] {{ p.sigla }}:
+                  {{ p.designacao }}
+                  ({{ p.tipo }})
+                </li>
+              </ul>
+            </template>
+          </Campo>
+
+          <Campo
             v-if="p.objeto.dados.processosRelacionados.length > 0"
-            :lista="p.objeto.dados.processosRelacionados"
-          />
-          <ShowLegislacao
+            nome="Processos relacionados"
+            infoHeader="Processos relacionados"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(p, i) in p.objeto.dados.processosRelacionados" :key="i">
+                  [{{ p.relacao }}]: {{ p.codigo }} - {{ p.titulo }}
+                </li>
+              </ul>
+            </template>
+          </Campo>
+
+          <Campo
             v-if="p.objeto.dados.legislacao.length > 0"
-            :lista="p.objeto.dados.legislacao"
-          />
+            nome="Legislação"
+            infoHeader="Legislação"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              <ul>
+                <li v-for="(leg, i) in p.objeto.dados.legislacao" :key="i">
+                  {{ leg.tipo }}
+                  {{ leg.numero }}, {{ leg.data }}, {{ leg.sumario }}
+                </li>
+              </ul>
+            </template>
+          </Campo>
         </v-card-text>
       </v-card>
 
-      <v-card class="ma-2">
-        <v-card-title class="info-label subtitle-1 font-weight-medium">
+      <v-card class="my-2">
+        <v-card-title class="clav-linear-background white--text">
           Decisões de avaliação
         </v-card-title>
-        <v-card-text>
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">PCA</div>
-            </v-col>
-            <v-col>
-              <ShowDecisoesPCA :pca="p.objeto.dados.pca" />
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col cols="2">
-              <div class="info-label">DF</div>
-            </v-col>
-            <v-col>
-              <ShowDecisoesDF :df="p.objeto.dados.df" />
-            </v-col>
-          </v-row>
+        <v-card-text class="pa-2">
+          <Campo
+            nome="Subclasses de 4º nível?"
+            infoHeader="Subclasses de 4º nível"
+            color="neutralpurple"
+          >
+            <template v-slot:conteudo>
+              {{ !p.objeto.dados.temSubclasses4Nivel ? "Não" : "Sim" }}
+            </template>
+          </Campo>
+          <div v-if="!p.objeto.dados.temSubclasses4Nivel">
+            <Campo nome="PCA" infoHeader="PCA" color="neutralpurple">
+              <template v-slot:conteudo>
+                <ShowDecisoesPCA :pca="p.objeto.dados.pca" />
+              </template>
+            </Campo>
+            <Campo nome="DF" infoHeader="DF" color="neutralpurple">
+              <template v-slot:conteudo>
+                <ShowDecisoesDF :df="p.objeto.dados.df" />
+              </template>
+            </Campo>
+          </div>
+          <div v-else>
+            <Campo
+              nome="Motivo(s) da subdivisão em 4ºs níveis"
+              infoHeader="Motivo(s) da subdivisão em 4ºs níveis:"
+              color="neutralpurple"
+            >
+              <template v-slot:conteudo>
+                <ul>
+                  <li v-if="!!p.objeto.dados.temSubclasses4NivelPCA">
+                    Prazo de Conservação Administrativa distinto
+                  </li>
+                  <li v-if="!!p.objeto.dados.temSubclasses4NivelDF">
+                    Destino Final distinto
+                  </li>
+                </ul>
+              </template>
+            </Campo>
+            <strong></strong>
+            <Subclasses4Nivel
+              :c="p.objeto.dados"
+              :semaforos="p.objeto.dados.subclasses[0].semaforos"
+              :pcaFormasContagem="p.objeto.dados.pca.pcaFormasContagem"
+              :pcaSubFormasContagem="p.objeto.dados.pca.pcaSubFormasContagem"
+              :disable="true"
+              class="mt-3"
+            />
+          </div>
         </v-card-text>
       </v-card>
 
@@ -119,33 +237,20 @@
 </template>
 
 <script>
-import ShowNotasAp from "@/components/pedidos/consulta/classes/ShowNotasAp";
-import ShowExemplosNotasAp from "@/components/pedidos/consulta/classes/ShowExemplosNotasAp";
-import ShowNotasEx from "@/components/pedidos/consulta/classes/ShowNotasEx";
-import ShowTIs from "@/components/pedidos/consulta/classes/ShowTIs";
-
-import ShowDonos from "@/components/pedidos/consulta/classes/ShowDonos";
-import ShowParticipantes from "@/components/pedidos/consulta/classes/ShowParticipantes";
-import ShowProcRel from "@/components/pedidos/consulta/classes/ShowProcRel";
-import ShowLegislacao from "@/components/pedidos/consulta/classes/ShowLegislacao";
-
 import ShowDecisoesPCA from "@/components/pedidos/consulta/classes/ShowDecisoesPCA";
 import ShowDecisoesDF from "@/components/pedidos/consulta/classes/ShowDecisoesDF";
+import Subclasses4Nivel from "@/components/classes/criacao/Subclasses4Nivel";
+
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["p"],
 
   components: {
-    ShowNotasAp,
-    ShowExemplosNotasAp,
-    ShowNotasEx,
-    ShowTIs,
-    ShowDonos,
-    ShowParticipantes,
-    ShowProcRel,
-    ShowLegislacao,
+    Subclasses4Nivel,
     ShowDecisoesPCA,
     ShowDecisoesDF,
+    Campo,
   },
 
   data() {
@@ -161,19 +266,4 @@ export default {
 };
 </script>
 
-<style>
-.info-label {
-  color: #00695c;
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e0f2f1;
-  font-weight: bold;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-</style>
+<style></style>

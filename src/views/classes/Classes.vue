@@ -347,6 +347,22 @@
             <v-row justify="center" align="center">
               <v-col cols="12" md="4">
                 <v-btn
+                  @click="pesquisaAvancada"
+                  rounded
+                  class="white--text clav-linear-background"
+                >
+                  <unicon
+                    name="consultar-icon"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20.71 20.697"
+                    fill="#ffffff"
+                  />
+                  <p class="ml-2">Pesquisar</p>
+                </v-btn>
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-btn
                   @click="cancelarPesquisa"
                   rounded
                   class="white--text"
@@ -360,22 +376,6 @@
                     fill="#ffffff"
                   />
                   <p class="ml-2">Cancelar</p>
-                </v-btn>
-              </v-col>
-              <v-col cols="12" md="4">
-                <v-btn
-                  @click="pesquisaAvancada"
-                  rounded
-                  class="white--text clav-linear-background"
-                >
-                  <unicon
-                    name="consultar-icon"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20.71 20.697"
-                    fill="#ffffff"
-                  />
-                  <p class="ml-2">Pesquisar</p>
                 </v-btn>
               </v-col>
             </v-row>

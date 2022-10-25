@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Como registar-se na CLAV</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       O acesso aos serviços da CLAV depende do registo prévio dos utilizadores designados
       como representantes pelas Entidades.
     </p>

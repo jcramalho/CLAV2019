@@ -160,14 +160,14 @@
                             <div class="info-label">Data de Início</div>
                           </td>
                           <td style="width:80%;">
-                            {{ item.dataInicio }}
+                            {{ item.dataInicial }}
                           </td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
                             <div class="info-label">Data de Fim</div>
                           </td>
-                          <td style="width:80%;">{{ item.dataFim }}</td>
+                          <td style="width:80%;">{{ item.dataFinal }}</td>
                         </tr>
                         <tr>
                           <td style="width:20%;">
@@ -256,8 +256,29 @@ export default {
     ],
     footer_props: {
       "items-per-page-text": "Mostrar"
+    },
+    autoReady: false
+  }),
+
+  created: async function(){
+    try {
+      const idAE = this.$route.params.idAE;
+
+      this.$request("get", "/autosEliminacao/" + idAE)
+      .then((response) => {
+        console.log(response) // response.data aparece vazio porque o "AutosEliminacao.consultar" não está a funcionar
+      })
+      .catch((error) => {
+        return error;
+      });
+      
+      console.log(this.auto)
+
+      this.autoReady = true;
+    } catch (e) {
+      return e;
     }
-  })
+  }
 };
 </script>
 

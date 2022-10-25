@@ -2,15 +2,12 @@
   <v-card flat class="pa-3">
     <!-- Header -->
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="3" align="center" justify="center">
-        <Voltar />
-      </v-col>
-      <v-col cols="12" sm="9" align="center" justify="center">
-        <p class="clav-content-title-1">Alterar Diploma</p>
-        <p class="clav-content-title-2">
+      <v-col align="center" justify="center">
+        <div class="clav-content-title-1">Alterar Diploma</div>
+        <div class="clav-content-title-2">
           {{ legislacaoOriginal.tipo }} -
           {{ legislacaoOriginal.numero }}
-        </p>
+        </div>
       </v-col>
     </v-row>
 
@@ -152,7 +149,7 @@ import SelProc from "@/components/generic/selecao/SelecionarPNs.vue";
 
 import PainelOpsLeg from "@/components/legislacao/PainelOperacoesLegislacao";
 import Voltar from "@/components/generic/Voltar";
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 import PainelCLAV from "@/components/generic/PainelCLAV";
 
 export default {
@@ -339,27 +336,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.expansion-panel-heading {
-  background-color: #283593 !important;
-  color: #fff;
-  font-size: large;
-  font-weight: bold;
-}
-
-.card-heading {
-  font-size: x-large;
-  font-weight: bold;
-}
-
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-</style>
+<style scoped></style>

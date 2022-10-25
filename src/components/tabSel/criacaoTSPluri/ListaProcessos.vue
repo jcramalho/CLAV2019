@@ -22,14 +22,14 @@
             label="Específicos"
             value="Processo Específico"
           ></v-radio>
-          <v-radio
+          <!--v-radio
             color="indigo darken-4"
             label="Restantes"
             value="Processo Restante"
-          ></v-radio>
+          ></v-radio-->
           <v-radio
             color="indigo darken-4"
-            label="A Selecionar"
+            label="Relacionados"
             value="Pré-Selecionado"
           ></v-radio>
         </v-radio-group>
@@ -57,10 +57,48 @@
           <td>{{ props.item.codigo }}</td>
           <td>{{ props.item.titulo }}</td>
           <td>
-            <v-icon v-if="props.item.dono">check</v-icon>
+            <span
+              v-if="
+                props.item.dono &&
+                props.item.entidades &&
+                props.item.entidades.length > 0
+              "
+            >
+              <span v-for="(e, i) in props.item.entidades" :key="i">
+                <v-chip
+                  v-if="e.dono"
+                  class="ml-1"
+                  color="indigo darken-4"
+                  outlined
+                  label
+                  x-small
+                >
+                  {{ e.sigla }}
+                </v-chip>
+              </span>
+            </span>
           </td>
           <td>
-            <v-icon v-if="props.item.participante">check</v-icon>
+            <span
+              v-if="
+                props.item.participante &&
+                props.item.entidades &&
+                props.item.entidades.length > 0
+              "
+            >
+              <span v-for="(e, i) in props.item.entidades" :key="i">
+                <v-chip
+                  v-if="e.participante != 'NP'"
+                  class="ml-1"
+                  color="indigo darken-4"
+                  outlined
+                  label
+                  x-small
+                >
+                  {{ e.sigla }}-{{ e.participante }}
+                </v-chip>
+              </span>
+            </span>
           </td>
           <td>
             <v-btn

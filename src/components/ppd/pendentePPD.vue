@@ -41,11 +41,11 @@
                 @unselectSistema="unselectSistema($event)"
               />
               <v-btn v-if="addSI == false" color="indigo lighten-2" dark class="ma-1" @click="importarSI = true">
-                Importar
+                Importar SI
                 <v-icon dark right>file_upload</v-icon>
               </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-1" rounded @click="addSI = true">
-                Novo
+                Adicionar SI
               </v-btn>
               <v-row>
                 <v-col>
@@ -137,19 +137,21 @@
                   </v-col>
                 </v-row>
               </div>
-              <v-btn color="indigo darken-2" dark class="ma-2" @click="guardarPPD">
-                Guardar Trabalho
+
+              <v-btn color="indigo darken-4" dark class="ma-2" rounded @click="changeE1(1)">
+                Voltar
+              </v-btn>
+              <v-btn color="indigo darken-4" dark class="ma-2" @click="guardarPPD">
+                Guardar
                 <v-icon right>save</v-icon>
               </v-btn>
-              <v-btn color="indigo darken-2" dark class="ma-2" @click="submeterPPD">
+              <v-btn color="green darken-4" class="ma-2" @click="submeterPPD">
                 Submeter
               </v-btn>
               <v-btn v-if="addSI == false" color="indigo darken-2" dark class="ma-2">
                 Finalizar
               </v-btn>
-              <v-btn color="red" dark class="ma-2" rounded @click="changeE1(1)">
-                Voltar
-              </v-btn>
+              
             </v-stepper-content>
           </v-stepper>
           <v-row justify-center>
@@ -261,7 +263,7 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 

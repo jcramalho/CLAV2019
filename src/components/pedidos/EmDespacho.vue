@@ -11,6 +11,9 @@
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
       <ErroDialog :erros="erroDialog.mensagem" uri="/pedidos" />
     </v-dialog>
+    <v-dialog v-model="showPedido">
+      <span>{{pedido}}</span>
+    </v-dialog>
   </div>
 </template>
 
@@ -19,12 +22,13 @@ import ConsultaPedido from "@/components/pedidos/ConsultaPedido.vue"; // @ is an
 import DespachoAprovacao from "@/components/pedidos/DespachoAprovacao.vue";
 import { converterParaTriplosRADA } from "@/utils/conversorTriplosRADA";
 import ErroDialog from "@/components/generic/ErroDialog";
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 
 export default {
   props: ["idPedido"],
   data() {
     return {
+      showPedido: false,
       pedido: null,
       sumario: null,
       erroDialog: {
@@ -47,6 +51,12 @@ export default {
           break;
         case "TS Pluriorganizacional":
           this.sumario = newValue.objeto.dados.designacao;
+          break;
+        case "PPD":
+          this.sumario = newValue.objeto.dados.geral.nomePPD;
+          break;
+        case "Auto de Eliminação":
+          this.sumario = newValue.objeto.dados.id;
           break;
         default:
           this.sumario = newValue.objeto.dados.titulo;
@@ -108,6 +118,7 @@ export default {
       }
     },
     async finalizarPedido(despacho) {
+      //alert(this.pedido.objeto.tipo)
       let res;
       let despachoAprovacao;
       try {
@@ -206,11 +217,46 @@ export default {
           this.numeroDespacho =
             res.data.valor.toString() + "/" + new Date().getFullYear();
 
-          
+
+        } else if (this.pedido.objeto.tipo == 'PPD') {
+          //for (const key in this.pedido.objeto.dados) {
+          //  if (
+          //    this.pedido.objeto.dados[key] === undefined ||
+          //    this.pedido.objeto.dados[key] === null ||
+          //    this.pedido.objeto.dados[key] === ""
+          //  ) {
+          //    delete this.pedido.objeto.dados[key];
+          //  }
+          //}
+          //alert(JSON.stringify(this.pedido.objeto))
+          //alert(JSON.stringify(this.pedido.objeto.dados))
+          this.showPedido = true
+          //await this.$request("post", "/ppd/registar",  this.pedido.objeto.dados );
+        } else if (this.pedido.objeto.tipo == 'Auto de Eliminação') {
+          despachoAprovacao = {
+            id: "leg_" + nanoid(),
+            numero: this.numeroDespacho,
+            sumario: despacho.sumario,
+            tipo: "Despacho",
+            data: despacho.data,
+            link: "",
+            diplomaFonte: "",
+            dataRevogacao: "",
+            estado: "Ativo",
+            entidadesSel: [
+              {
+                sigla: "DGLAB",
+                designacao:
+                  "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
+                id: "ent_DGLAB"
+              }
+            ],
+            processosSel: []
+          };
         }
-
+    
         await this.$request("post", "/legislacao", despachoAprovacao);
-
+        
         let dadosUtilizador = this.$verifyTokenUser();
 
         let novaDistribuicao = {
@@ -225,6 +271,8 @@ export default {
 
         this.pedido.estado = "Validado";
 
+        console.log(this.pedido)
+        console.log(novaDistribuicao)
         await this.$request("put", "/pedidos", {
           pedido: this.pedido,
           distribuicao: novaDistribuicao
@@ -233,6 +281,7 @@ export default {
         await this.$request("put", "/contador/despacho");
 
         this.$router.push(`/pedidos/finalizacao/${this.idPedido}`);
+        
       } catch (e) {
         console.log(e);
         this.erroDialog.visivel = true;

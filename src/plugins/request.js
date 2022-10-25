@@ -85,6 +85,8 @@ async function exec(type, path, data, config, objThis) {
 const request = {
   install(Vue) {
     Vue.prototype.$request = async function(type, path, data, config) {
+      console.log(type + ": " + path)
+      //console.log(JSON.stringify(data))
       return await exec(type, path, data, config, this);
     };
     Vue.prototype.$getAuthToken = async function() {

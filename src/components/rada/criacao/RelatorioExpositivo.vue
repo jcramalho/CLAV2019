@@ -229,18 +229,22 @@
     </v-form>
     <br />
     <v-btn color="indigo darken-4" dark @click="$emit('seguinte', 1)">Voltar</v-btn>
+
+    <v-btn dark color="indigo darken-4" style="margin-left: 10px" @click="next">Continuar</v-btn>
+
     <v-btn style="margin-left: 10px" color="indigo darken-4" dark @click="$emit('guardar', 'sim')">
-      Guardar Trabalho
+      Guardar
       <v-icon right>save</v-icon>
     </v-btn>
+
     <v-btn
       style="margin-left: 10px"
       color="indigo darken-4"
       dark
       @click="$emit('guardar', 'nao')"
-    >Continuar Depois</v-btn>
-    <v-btn dark color="indigo darken-4" style="margin-left: 10px" @click="next">Continuar</v-btn>
-    <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">Limpar</v-btn>
+    >Sair</v-btn>
+    
+    <v-btn color="red darken-4" style="margin-left: 10px" dark @click="apagar">Cancelar</v-btn>
   </v-card>
 </template>
 
@@ -319,6 +323,8 @@ export default {
       }
       this.isMultiple = false;
       this.panels = [0, 0, 0];
+
+      this.$router.push('/');
     },
     next: function () {
       this.isMultiple = true;

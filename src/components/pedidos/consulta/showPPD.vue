@@ -9,12 +9,6 @@
     </v-col>
     <v-col cols="12" xs="12" sm="9">
       <div>
-        <v-col cols="5" xs="5" sm="3">
-          <div class="info-label">Número</div>
-        </v-col>
-        <v-col>
-          <v-text-field solo readonly :value="this.ppd.geral.numeroPPD"></v-text-field>
-        </v-col>
         <v-col cols="5" xs="5" sm="2">
           <div class="info-label">Título</div>
         </v-col>
@@ -43,9 +37,9 @@
       <v-col v-if="this.ppd.geral.entSel.length > 0">
         <v-card-title>
           <v-text-field
-            v-model="searchSI"
+            v-model="searchEnt"
             append-icon="search"
-            label="Procura filtra entidades"
+            label="Procurar/filtrar entidades"
             single-line
             hide-details
           ></v-text-field>
@@ -55,7 +49,7 @@
           :items="this.ppd.geral.entSel"
           :items-per-page="5"
           item-key="id"
-          :search="searchSI"
+          :search="searchEnt"
           :sort-by="['sigla']"
           class="elevation-1"
           :footer-props="footer_propsEnt"
@@ -89,7 +83,7 @@
           <v-text-field
             v-model="searchSI"
             append-icon="search"
-            label="Procura filtra sistemas informação"
+            label="Procurar/filtrar sistemas informação"
             single-line
             hide-details
           ></v-text-field>
@@ -180,7 +174,7 @@
 
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 const help = require("@/config/help").help;
 const criteriosLabels = require("@/config/labels").criterios;
 
@@ -207,6 +201,7 @@ export default {
 	data: () => ({
     ppd: {},
     searchSI: "",
+    searchEnt: "",
     entidades: [],
     siSpec: {
       numeroSI: [],
@@ -256,16 +251,22 @@ export default {
     item2Show: function(item){
       this.siSpec = item;
       this.verSI = true;
-      if(item.visto){
+      if(item.visto && typeof(item.identificacao.adminSistema) != 'string'){
+        item.visto=false;
         this.siSpec.identificacao.adminSistema= item.identificacao.adminSistema.map(e => e.sigla).toString()
         this.siSpec.identificacao.adminDados= item.identificacao.adminDados.map(e => e.sigla).toString(),
         this.siSpec.identificacao.propSistemaPublico= item.identificacao.propSistemaPublico.map(e => e.sigla).toString(),
         this.siSpec.identificacao.propDados= item.identificacao.propDados.map(e => e.sigla).toString(),
         this.siSpec.identificacao.localDadosPublico= item.identificacao.localDadosPublico.map(e => e.sigla).toString(),
         this.siSpec.avaliacao.decomposicao= item.avaliacao.decomposicao.map(e=> e.numeroSI+"."+e.numeroSub + " " + e.nomeSub).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.codClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.codigo).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.numeroClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.referencia).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.tituloClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.titulo).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.pcaClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.pca).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.destinoFinalClasse= item.avaliacao.selecionadosTabelaFL.map(e=> e.df).toString().replaceAll(",","#")
+        this.siSpec.avaliacao.formaContagemPrazos= item.avaliacao.selecionadosTabelaFL.map(e=> e.formaContagem).toString().replaceAll(",","#")
         this.siSpec.avaliacao.siRelacionado= item.avaliacao.sistemasRelacionados.map(e=> e.numeroSI).toString().replaceAll(",","#")
         this.siSpec.avaliacao.siRelacionadoRelacao= item.avaliacao.sistemasRelacionados.map(e=> e.relacao).toString().replaceAll(",","#")
-        item.visto=false;
       }
     },
 

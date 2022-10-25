@@ -111,7 +111,7 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 import PainelOperacoesPedido from "@/components/pedidos/generic/PainelOperacoesPedido";
 import CampoPedido from "@/components/pedidos/generic/CampoPedido";
 
@@ -187,7 +187,7 @@ export default {
           }
         ],
         notasEx: [
-          { text: "Notas de Aplicação", value: "nota", class: "subtitle-1" },
+          { text: "Notas de Exclusão", value: "nota", class: "subtitle-1" },
           {
             text: "Operação",
             value: "operacao",
@@ -199,7 +199,7 @@ export default {
         ],
         exemplosNotasAp: [
           {
-            text: "Exemplo Notas de Aplicação",
+            text: "Exemplos de Notas de Aplicação",
             value: "exemplo",
             class: "subtitle-1"
           },
@@ -214,7 +214,7 @@ export default {
         ],
         termosInd: [
           {
-            text: "Termos Indice",
+            text: "Termos de Índice",
             value: "termo",
             class: "subtitle-1"
           },

@@ -254,10 +254,10 @@
                   <v-col cols="12" class="text-right">
                     <v-btn
                       @click="adicionarClasseUI(UI_clone)"
-                      color="green lighten-1"
+                      color="clav-linear-background"
                       style="margin-left: 10px"
                       dark
-                    >Clique para associar série/subsérie à unidade de instalação</v-btn>
+                    >Adicionar série/subsérie</v-btn>
                     <v-btn
                       style="margin-left: 10px"
                       dark

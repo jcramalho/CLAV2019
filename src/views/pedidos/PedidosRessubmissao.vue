@@ -1,6 +1,7 @@
 <template>
   <div>
     <RessubmissaoClasse v-if="objLoaded && tipoClasse" :c="pedido" />
+    <!-- <RessubmissaoTS v-if="objLoaded && tipoTS" :ts="pedido" /> -->
     <RessubmissaoEntidade v-if="objLoaded && tipoEntidade" :e="pedido" />
     <RessubmissaoTipologia v-if="objLoaded && tipoTipologia" :t="pedido" />
     <RessubmissaoLegislacao v-if="objLoaded && tipoLegislacao" :l="pedido" />
@@ -12,9 +13,11 @@ import RessubmissaoClasse from "@/components/classes/ressubmissao/RessubmissaoCl
 import RessubmissaoEntidade from "@/components/entidades/RessubmissaoEntidade";
 import RessubmissaoTipologia from "@/components/tipologias/RessubmissaoTipologia";
 import RessubmissaoLegislacao from "@/components/legislacao/RessubmissaoLegislacao";
+// import RessubmissaoTS from "@/components/tabSel/RessubmissaoTS";
 
 export default {
   components: {
+    // RessubmissaoTS,
     RessubmissaoClasse,
     RessubmissaoEntidade,
     RessubmissaoTipologia,
@@ -45,10 +48,8 @@ export default {
           this.tipoClasse = true;
           break;
         case "TS Organizacional":
-          this.tipoTSOrg = true;
-          break;
         case "TS Pluriorganizacional":
-          this.tipoTSPluri = true;
+          this.tipoTS = true;
           break;
         case "Auto de Eliminação":
           this.tipoAE = true;

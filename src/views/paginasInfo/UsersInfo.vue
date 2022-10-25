@@ -1,7 +1,7 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Utilizadores</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       A partir desta página será possível gerir todos os utilizadores presentes na
       plataforma, sendo possível, dependendo do nível de acesso atribuído, consultar todos
       os utilizadores registados na plataforma e seus detalhes, registar utilizadores para

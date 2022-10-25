@@ -1,35 +1,33 @@
 <template>
-      <v-row>
-        <v-col cols="2">
-          <div class="info-label">
-            Processo Transversal
-            <InfoBox header="Processo Transversal" :text="myhelp.Classe.Campos.ProcessoTransversal" />
-          </div>
-        </v-col>
-        <v-col>
-            <v-radio-group v-model="c.procTrans" row>
-                <v-radio
-                  v-for="(o, i) in simNao"
-                  :key="i"
-                  :label="o.label"
-                  :value="o.value"
-                  color="indigo darken-3"
-                ></v-radio>
-              </v-radio-group>
-        </v-col>
-      </v-row>
+  <Campo
+    nome="Processo Transversal"
+    infoHeader="Processo Transversal"
+    :infoBody="myhelp.Classe.Campos.ProcessoTransversal"
+    color="neutralpurple"
+  >
+    <template v-slot:conteudo>
+      <v-radio-group v-model="c.procTrans" row dense hide-details>
+        <v-radio
+          v-for="(o, i) in simNao"
+          :key="i"
+          :label="o.label"
+          :value="o.value"
+          color="indigo darken-3"
+        ></v-radio>
+      </v-radio-group>
+    </template>
+  </Campo>
 </template>
 
 <script>
 const help = require("@/config/help").help;
-
-import InfoBox from "@/components/generic/infoBox.vue";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["c"],
 
   components: {
-    InfoBox
+    Campo,
   },
 
   data: () => {
@@ -37,31 +35,10 @@ export default {
       myhelp: help,
       simNao: [
         { label: "Não", value: "N" },
-        { label: "Sim", value: "S" }
-      ]
+        { label: "Sim", value: "S" },
+      ],
     };
-  }
+  },
 };
 </script>
-<style>
-.info-label {
-  color: #2e7d32; /* green darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8f5e9; /* green lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-</style>
+<style></style>

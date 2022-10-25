@@ -1,7 +1,37 @@
 <template>
   <div>
     <v-row>
-      <!-- Guardar trabalho......................... -->
+
+      <!-- Guardar: grava e mantem-se......................... -->
+      <v-col>
+        <v-btn
+          dark
+          rounded
+          class="ma-2 indigo darken-4"
+          @click="gravarTrabalho"
+          v-bind:disabled="c.codigo == ''"
+        >
+          Guardar
+        </v-btn>
+      </v-col>
+
+      <!-- Validar ......................................... -->
+      <valida-classe-info-box :c="o.objeto" />
+
+      <!-- Submeter: criar a classe....................... -->
+      <v-col>
+        <v-btn
+          v-bind:disabled="o.objeto.codigo == ''"
+          dark
+          rounded
+          class="ma-2 teal darken-4"
+          @click="criarClasse"
+        >
+          Submeter
+        </v-btn>
+      </v-col>
+
+      <!-- Sair: grava e sai......................... -->
       <v-col>
         <v-btn
           dark
@@ -10,26 +40,7 @@
           @click="guardarTrabalho"
           :disabled="o.objeto.codigo == ''"
         >
-          Guardar trabalho
-
-          <DialogPendenteGuardado 
-              v-if="pendenteGuardado" 
-              :pendente="pendente"
-              @continuar="pendenteGuardado = false"/>
-        </v-btn>
-      </v-col>
-      <valida-classe-info-box :c="o.objeto" />
-
-      <!-- Criar classe......................... -->
-      <v-col>
-        <v-btn
-          v-bind:disabled="o.objeto.codigo == ''"
-          dark
-          rounded
-          class="ma-2 indigo darken-4"
-          @click="criarClasse"
-        >
-          Criar classe
+          Sair
         </v-btn>
       </v-col>
 
@@ -59,12 +70,7 @@
           class="ma-2 red darken-4"
           @click="eliminarClasse = true"
         >
-          Cancelar criação
-
-          <DialogCancelar v-if="eliminarClasse"
-            @continuar="eliminarClasse = false"
-            @sair="cancelarCriacaoClasse"
-          />
+          Cancelar
         </v-btn>
       </v-col>
 
@@ -178,8 +184,10 @@ export default {
   data() {
     return {
       c: {},
-      pendente: {},
-
+      estadoAtual: {}, // Vai ser guardado em pendentes
+      estadoAtualGravado: false,
+      trabalhoGuardado: false,
+      idTrabalho: "???",
       pendenteGuardado: false,
       dialogClasseCriada: false,
       eliminarClasse: false,
@@ -212,6 +220,63 @@ export default {
   },
 
   methods: {
+    // Gravar o que se fez até ao momento para continuar a trabalhar
+    gravarTrabalho: async function(){
+      try {
+        if (this.$store.state.name === "") {
+          this.loginErrorSnackbar = true;
+        } else {
+          if(!this.estadoAtualGravado){ // Se for a primeira vez faz um POST
+            var userBD = this.$verifyTokenUser();
+            this.estadoAtual = {
+              numInterv: 1,
+              acao: "Criação",
+              tipo: "Classe",
+              objeto: this.o,
+              criadoPor: userBD.email,
+              user: { email: userBD.email },
+              token: this.$store.state.token,
+            };
+            try{
+              var response = await this.$request("post", "/pendentes", this.estadoAtual);
+              this.estadoAtual._id = response.data._id;
+              this.estadoAtualGravado = true;
+              this.trabalhoGuardado = true;
+              this.idTrabalho = response.data._id;
+            }
+            catch(e){
+              console.log("Erro: " + e)
+              return(e)
+            }
+          }
+          else{ // Se o pendente já existe faz um PUT incrementando as intervenções
+            var userBD = this.$verifyTokenUser();
+            this.estadoAtual = {
+              _id: this.estadoAtual._id,
+              numInterv: this.estadoAtual.numInterv + 1,
+              acao: "Criação",
+              tipo: "Classe",
+              objeto: this.o,
+              criadoPor: userBD.email,
+              user: { email: userBD.email },
+              token: this.$store.state.token,
+            };
+            try{
+              var response = await this.$request("put", "/pendentes", this.estadoAtual);
+              this.trabalhoGuardado = true;
+              this.idTrabalho = response.data._id;
+            }
+            catch(e){
+              console.log("Erro: " + e)
+              return(e)
+            }
+          }
+        }
+      } catch (error) {
+        return error;
+      }
+    },
+
     // Permite guardar o trabalho para ser retomado depois
     guardarTrabalho: async function () {
       try {
@@ -682,9 +747,10 @@ export default {
     async ressubmeterPedido() {
       try {
         let pedido = JSON.parse(JSON.stringify(this.pedido));
-        let estado = "Ressubmetido";
 
         let dadosUtilizador = this.$verifyTokenUser();
+
+        let estado = "Ressubmetido";
 
         pedido.estado = estado;
 
@@ -704,41 +770,52 @@ export default {
         console.log(e);
       }
     },
+    async cancelarPedido() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+        let dadosUtilizador = this.$verifyTokenUser();
+        let estado = "Cancelado";
+        pedido.estado = estado;
 
-    criacaoClasseTerminada: function () {
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: "Cancelar",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.$router.push(`/pedidos/submissao/${pedido.codigo}`);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    criacaoClasseTerminada() {
       this.$router.push("/");
     },
 
     // Cancela a criação da classe
-    eliminarClasse: function () {
+    eliminarClasse() {
       this.pedidoEliminado = true;
     },
 
-    cancelarCriacaoClasse: function () {
-      this.$router.push("/");
+    cancelarCriacaoClasse() {
+      if (this.pedido) {
+        this.cancelarPedido();
+        this.$router.push("/");
+      } else if (!this.o._id) {
+        this.$router.push("/");
+      } else {
+        this.$request("delete", "/pendentes/" + this.o._id)
+          .then(() => this.$router.push("/"))
+          .catch((err) => console.error(err));
+      }
     },
   },
 };
 </script>
-<style>
-.info-label {
-  color: #283593; /* indigo darken-3 */
-  padding: 5px;
-  font-weight: 400;
-  width: 100%;
-  background-color: #e8eaf6; /* indigo lighten-5 */
-  font-weight: bold;
-  margin: 5px;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
-}
-
-.is-collapsed li:nth-child(n + 5) {
-  display: none;
-}
-</style>
+<style scoped></style>

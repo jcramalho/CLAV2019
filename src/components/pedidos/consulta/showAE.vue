@@ -11,6 +11,7 @@
         fill="white"
       />
     </v-card-title>
+    </br>
     <v-card-text>
       <Campo
         nome="Entidade Responsável"
@@ -19,10 +20,10 @@
       >
         <template v-slot:conteudo>
           <span v-if="p.objeto.dados.entidade">
-            {{ p.objeto.dados.entidade.split("_")[1] }}
+            {{ p.objeto.dados.entidade.split("_")[1] }} - {{ desig }} 
           </span>
           <span v-else>
-            {{ p.entidade }}
+            {{ p.entidade.split("_")[1] }} - {{ desig2 }} 
           </span>
         </template>
       </Campo>
@@ -54,11 +55,13 @@
           <span v-else>{{ p.objeto.dados.referencial.split("#")[0] }}</span>
         </template>
       </Campo>
-      <Campo nome="Fundo" infoHeader="Fundo" color="neutralpurple">
+      <Campo nome="Entidades" infoHeader="Entidades" color="neutralpurple">
         <template v-slot:conteudo>
           <ul>
-            <li v-for="(f, i) in p.objeto.dados.fundo" :key="i">
-              <a :href="'/entidades/ent_' + f.split(' - ')[0]">{{ f }}</a>
+            <li v-for="(e, i) in p.objeto.dados.entidades" :key="i">
+              <a :href="'/entidades/ent_' + e.entidade"
+                >{{ e.entidade }}: {{ e.designacao }}</a
+              >
             </li>
           </ul>
         </template>
@@ -68,7 +71,7 @@
         <template v-slot:conteudo>
           <v-list dense color="secondary">
             <v-list-group
-              v-for="(item, index) in p.objeto.dados.zonaControlo"
+              v-for="(item, index) in p.objeto.dados.classes"
               :key="index"
               no-action
             >
@@ -77,22 +80,15 @@
                   <v-list-item-title
                     v-if="item.codigo && item.referencia"
                     v-text="item.codigo + ', ' + item.referencia"
-                    ><span v-if="item.titulo">
-                      - {{ item.titulo }}</span
-                    ></v-list-item-title
-                  >
-                  <v-list-item-title
-                    v-else-if="item.codigo"
+                  ></v-list-item-title>
+                  <v-list-item-title 
+                    v-else-if="item.codigo" 
                     v-text="item.codigo"
-                    ><span v-if="item.titulo">
-                      - {{ item.titulo }}</span
-                    ></v-list-item-title
-                  >
-                  <v-list-item-title v-else v-text="item.referencia"
-                    ><span v-if="item.titulo">
-                      - {{ item.titulo }}</span
-                    ></v-list-item-title
-                  >
+                  ></v-list-item-title>
+                  <v-list-item-title 
+                    v-else 
+                    v-text="item.referencia"
+                  ></v-list-item-title>
                 </v-list-item-content>
               </template>
               <v-list-item-content>
@@ -128,21 +124,17 @@
                     </template>
                   </Campo>
                   <Campo
-                    nome="Data de Início"
-                    infoHeader="Data de Início"
+                    nome="Ano de Início"
+                    infoHeader="Ano de Início"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.dataInicio }}</span>
+                      <span> {{ item.dataInicial }}</span>
                     </template>
                   </Campo>
-                  <Campo
-                    nome="Data de Fim"
-                    infoHeader="Data de Fim"
-                    color="neutralpurple"
-                  >
+                  <Campo nome="Ano de Fim" infoHeader="Ano de Fim" color="neutralpurple">
                     <template v-slot:conteudo>
-                      <span> {{ item.dataFim }}</span>
+                      <span> {{ item.dataFinal }}</span>
                     </template>
                   </Campo>
                   <Campo
@@ -151,112 +143,59 @@
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span>
-                        {{ item.nrAgregacoes ? item.nrAgregacoes : 0 }}</span
-                      >
+                      <span> {{ item.numAgregacoes }}</span>
                     </template>
                   </Campo>
                   <Campo
-                    v-if="item.uiPapel"
-                    nome="Medição das UI em papel (m.l.)"
+                    v-if="item.medicaoPapel"
+                    nome="Medição das UI em papel"
                     infoHeader="Medição das UI em papel (m.l.)"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.uiPapel }}</span>
+                      <span> {{ item.medicaoPapel }} </span>
                     </template>
                   </Campo>
                   <Campo
-                    v-if="item.uiDigital"
-                    nome="Medição das UI em digital (Gb)"
+                    v-if="item.medicaoDigital"
+                    nome="Medição das UI em digital"
                     infoHeader="Medição das UI em digital (Gb)"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.uiDigital }}</span>
+                      <span> {{ item.medicaoDigital }} </span>
                     </template>
                   </Campo>
                   <Campo
-                    v-if="item.uiOutros"
-                    nome="Medição das UI noutros suportes"
+                    v-if="item.medicaoOutro"
+                    nome="Medição noutros suportes"
                     infoHeader="Medição das UI noutros suportes"
                     color="neutralpurple"
                   >
                     <template v-slot:conteudo>
-                      <span> {{ item.uiOutros }}</span>
+                      <span> {{ item.medicaoOutro }} </span>
                     </template>
                   </Campo>
-                  <table class="consulta mx-5">
-                    <!--tr v-if="item.prazoConservacao">
-                          <td style="width:20%;">
-                            <div class="info-label">Prazo de Conservação Administrativa</div>
-                          </td>
-                          <td style="width:80%;">
-                            {{ item.prazoConservacao }} <span v-if="item.prazoConservacao=='1'">Ano</span><span v-else>Anos</span>
-                          </td>
-                        </tr-->
-                    <!--tr v-if="item.notasPCA">
-                          <td style="width:20%;">
-                            <div class="info-label">
-                              Notas do PCA
-                            </div>
-                          </td>
-                          <td style="width:80%;">{{ item.notasPCA }}</td>
-                        </tr-->
-                    <!--tr v-if="item.destino">
-                          <td style="width:20%;">
-                            <div class="info-label">Destino final</div>
-                          </td>
-                          <td v-if="item.destino === 'E'" style="width:80%;">
-                            Eliminação
-                          </td>
-                          <td
-                            v-else-if="item.destino === 'C'"
-                            style="width:80%;"
-                          >
-                            Conservação
-                          </td>
-                          <td v-else style="width:80%;">
-                            {{ item.destino }}
-                          </td>
-                        </tr-->
-                    <!--tr v-if="item.notaDF">
-                          <td style="width:20%;">
-                            <div class="info-label">
-                              Nota do DF
-                            </div>
-                          </td>
-                          <td style="width:80%;">{{ item.notaDF }}</td>
-                        </tr-->
-
-                    <!--tr v-if="item.destino=='CP' && item.justificaDF">
-                          <td style="width:20%;">
-                            <div class="info-label">
-                              Justificação do DF
-                            </div>
-                          </td>
-                          <td style="width:80%;"><span v-for="(just,index) in item.justificaDF" :key="index">{{ just }}</span></td>
-                        </tr-->
-                    <!--tr v-if="item.ni && (item.destino === 'C' || item.destino === 'Conservação')">
-                          <td style="width:20%;">
-                            <div class="info-label">
-                              Natureza de intervenção
-                            </div>
-                          </td>
-                          <td style="width:80%;">{{ item.ni }}</td>
-                        </tr-->
-                    <!--tr v-if="item.dono && item.dono.length>0 && (item.destino === 'C' || item.destino === 'Conservação')">
-                          <td style="width:20%;">
-                            <div class="info-label">Donos do PN</div>
-                          </td>
-                          <td style="width:80%;"><li v-for="(d,i) in item.dono" :key="i">{{ d }}</li></td>
-                        </tr-->
-                  </table>
-                  <div
-                    class="ma-1"
-                    v-if="item.agregacoes && item.agregacoes.length > 0"
+                  <Campo
+                    v-if="item.dono"
+                    nome="Dono"
+                    infoHeader="Dono"
+                    color="neutralpurple"
                   >
-                    <v-row justify="space-between" class="info-label">
+                    <template v-slot:conteudo>
+                      <ul :class="{ 'is-collapsed': entCollapsed }">
+                        <li v-for="(l, index) in listaDonos[item.codigo]" v-bind:key="index">
+                          <a :href="'/entidades/ent_' + l">{{ l }}</a>
+                        </li>
+                      </ul>
+                      <a @click="entCollapsed = !entCollapsed" v-if="listaDonos[item.codigo].length > 6">
+                        <span v-if="entCollapsed" style="color:#283593;">Mostrar mais...</span>
+                        <span v-else style="color:#283593;">Mostrar menos...</span>
+                      </a>
+                    </template>
+                  </Campo>
+                  <div class="ma-1" v-if="item.agregacoes && item.agregacoes.length > 0">
+                    <v-row style="margin-top:10px" justify="space-between" class="info-label">
                       <v-col>Lista de Agregações</v-col>
                       <v-col>
                         <v-text-field
@@ -288,7 +227,7 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
+import Campo from "@/components/generic/CampoCLAV";
 
 export default {
   props: ["p"],
@@ -299,15 +238,49 @@ export default {
   data: () => ({
     search: "",
     cabecalho: [
-      { text: "Código", align: "left", sortable: false, value: "codigo" },
+      { text: "Código de Agregação", align: "left", value: "codigoAgregacao" },
       { text: "Título", align: "left", value: "titulo" },
-      { text: "Data de Contagem", align: "center", value: "dataContagem" },
-      { text: "Natureza de Intervenção", align: "center", value: "ni" },
+      { text: "Ano", align: "left", value: "dataContagem" },
+      { text: "Natureza de Intervenção", align: "left", value: "ni" },
     ],
     footer_props: {
       "items-per-page-text": "Mostrar",
     },
+
+    desig: "",
+    desig2: "",
+
+    entCollapsed: true,
+    listaDonos: {}
   }),
+
+  created: async function(){
+    this.$request("get", "/entidades/" + this.p.objeto.dados.entidade)
+      .then((response) => {
+        this.desig = response.data.designacao 
+      })
+      .catch((error) => {
+        return error;
+      });
+
+    this.$request("get", "/entidades/" + this.p.entidade)
+      .then((response) => {
+        this.desig2 = response.data.designacao 
+      })
+      .catch((error) => {
+        return error;
+      });
+
+    this.p.objeto.dados.classes.forEach(
+      c => {
+        if(c.dono) {
+          this.listaDonos[c.codigo] = c.dono.split("#")
+          if(!((/[a-zA-Z]+/).test(this.listaDonos[c.codigo][this.listaDonos[c.codigo].length - 1])))
+            this.listaDonos[c.codigo].pop()
+        }
+      }
+    )
+  }
 };
 </script>
 
@@ -349,13 +322,6 @@ export default {
   width: 100%;
   background-color: #e8eaf6; /* indigo lighten-5 */
   font-weight: bold;
-  border-radius: 3px;
-}
-
-.info-content {
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #1a237e;
   border-radius: 3px;
 }
 

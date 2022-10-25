@@ -1,21 +1,21 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Legislação</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Catálogo de legislação que regula os processos de negócio (classes de 3º nível da
       Lista Consolidada) e enquadra os respetivos prazos de conservação administrativa
       (PCA) e destino final (DF). Do catálogo constam ainda as fontes de legitimação, isto
       é, a portaria ou despacho que integra as tabelas de seleção, onde estão
       estabelecidas as decisões de avaliação que fundamentam a ação de eliminação.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para aceder à legislação, selecione a opção <b>CONSULTAR</b>.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para adicionar legislação, selecione a opção
       <b>ADICIONAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para editar legislação, selecione a opção
       <b>EDITAR. Deve estar registado na CLAV para aceder a esta funcionalidade.</b>
     </p>
@@ -66,7 +66,7 @@
               viewBox="0 0 20.71 20.721"
               fill="#ffffff"
             />
-            <p class="ml-2">Adicionar</p>
+            <p class="ml-2">Criar</p>
           </v-btn>
         </v-col>
         <v-col
@@ -94,7 +94,7 @@
               viewBox="0 0 20.71 20.727"
               fill="#ffffff"
             />
-            <p class="ml-2">Editar</p>
+            <p class="ml-2">Alterar</p>
           </v-btn>
         </v-col>
       </v-row>

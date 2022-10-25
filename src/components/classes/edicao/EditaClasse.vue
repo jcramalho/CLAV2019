@@ -802,42 +802,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.separador {
-  color: white;
-  font-weight: 400;
-  padding: 5px;
-  margin: 5px;
-  width: 100%;
-  min-height: 55px;
-  background: linear-gradient(to right, #19237e 0%, #0056b6 100%) !important;
-  font-size: 14pt;
-  font-weight: bold;
-  border-radius: 10px 10px 0 0;
-}
-.info-label {
-  color: #1a237e !important;
-  padding: 8px;
-  width: 100%;
-  background-color: #dee2f8;
-  font-weight: bold;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12) !important;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 6px;
-  text-align: center;
-}
-.info-content {
-  padding: 5px;
-  width: 100%;
-  background-color: #f1f6f8 !important;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.22) !important;
-  border-radius: 10px;
-}
-#expanded-content {
-  margin-left: 5px;
-  margin-top: -1.1rem;
-  border: 1px solid #dee2f8;
-  border-radius: 0 0 10px 10px;
-  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.12);
-}
-</style>
+<style scoped></style>

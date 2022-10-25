@@ -1,24 +1,24 @@
 <template>
   <v-card flat class="pa-3">
     <p class="clav-content-title-1">Relatórios de Avaliação de Documentação Acumulada</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Um Relatório de Avaliação de Documentação Acumulada (RADA) é um instrumento que
       caracteriza a documentação acumulada, tendo em vista a sua avaliação através da
       determinação do seu prazo de conservação administrativa (PCA) e do seu destino final
       (DF).
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Destina-se à documentação que ainda não foi objeto de avaliação arquivística, isto
       é, não abrangida por uma portaria de gestão de documentos.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Um RADA integra um relatório expositivo e uma tabela de seleção.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Um relatório expositivo do RADA consiste na descrição sumária do universo documental
       avaliado.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Uma tabela de seleção do RADA consiste numa estrutura hierárquica de classes que
       reflete a organização da documentação. Integra áreas orgânico e/ou funcionais e
       séries e subséries documentais, com as respetivas descrições de contextualização
@@ -27,16 +27,16 @@
       administrativa), o destino a aplicar findo esse prazo (conservação permanente ou
       eliminação).
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Complementarmente, pode ainda integrar a identificação das unidades de instalação a
       que se aplica a tabela de seleção.
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para aceder ao catálogo dos RADA e respetivas tabelas de seleção aprovadas pela
       DGLAB e disponibilizadas na CLAV, selecione a opção
       <span class="content-title-2">CONSULTAR.</span>
     </p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       Para propor um RADA, selecione a opção
       <b
         >CRIAR. Deve estar registado na CLAV para aceder a esta funcionalidade. Consulte
@@ -45,7 +45,7 @@
       >.
     </p>
     <p class="content-title-2 px-8 py-10 pb-3">CONSULTAR</p>
-    <p class="content-text px-8 py-2">
+    <p class="clav-content-text px-8 py-2">
       As tabelas de seleção encontram-se organizadas em dois conjuntos:
     </p>
     <div class="pl-10">
@@ -65,7 +65,7 @@
       </ol>
     </div>
     <p class="content-title-2 px-8 py-10 pb-3">CRIAR</p>
-    <p class="content-text px-8 py-2">A criação de um RADA é efetuada em três etapas:</p>
+    <p class="clav-content-text px-8 py-2">A criação de um RADA é efetuada em três etapas:</p>
     <div class="pl-10">
       <ol>
         <li>

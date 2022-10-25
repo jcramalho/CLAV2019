@@ -273,7 +273,7 @@
           elevation="24"
           @click="insereNovoUser(ppd.si.identificacao.userList, 'na')"
           >
-            Novo utilizador
+            Adicionar
             <v-icon dark right>add_circle_outline</v-icon>
           </v-btn>
         </v-col>
@@ -330,7 +330,7 @@
 </template>
 
 <script>
-const nanoid = require("nanoid");
+import { nanoid } from 'nanoid'
 const help = require("@/config/help").help;
 
 import InfoBox from "@/components/generic/infoBox.vue";

@@ -1,13 +1,19 @@
 <template>
   <Campo :nome="nome" :infoHeader="infoHeader" :infoBody="infoBody" color="neutralpurple">
     <template v-slot:lateral>
-      <v-btn small color="success" rounded @click="insereNovaNota(lista)">
-        Nota de aplicação
-        <v-icon right>add_circle_outline</v-icon>
-      </v-btn>
+      <v-row>
+        <v-col align="right">
+          <v-btn dark small color="indigo darken-4" rounded @click="insereNovaNota(lista)">
+            {{ acrescentar[tipo] }}
+            <v-icon right>add_circle_outline</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
     </template>
     <template v-slot:conteudo>
-      <v-alert v-if="!lista.length" color="warning" border="left">Sem notas</v-alert>
+      <v-alert v-if="!lista.length" color="warning" border="left">{{
+        aviso[tipo]
+      }}</v-alert>
 
       <v-row v-else v-for="(nota, index) in lista" :key="index">
         <v-col>
@@ -15,7 +21,7 @@
             v-model="nota[campo]"
             auto-grow
             solo
-            label="Nota de Aplicação"
+            label="Este campo deve ser preenchido!"
             rows="1"
           ></v-textarea>
           <v-row>
@@ -56,8 +62,8 @@
 </template>
 
 <script>
-import Campo from "@/components/generic/Campo";
-const nanoid = require("nanoid");
+import Campo from "@/components/generic/CampoCLAV";
+import { nanoid } from 'nanoid'
 
 export default {
   name: "ListaDeNotasCLAV",
@@ -74,6 +80,18 @@ export default {
         "A nota anterior encontra-se vazia. Queira preenchê-la antes de criar nova.",
       mensagemNotaDuplicada:
         "A última nota introduzida é um duplicado de outra já introduzida previamente!",
+      acrescentar: {
+        na: "Adicionar",
+        exna: "Adicionar",
+        ne: "Adicionar",
+        ti: "Adicionar",
+      },
+      aviso: {
+        na: "Sem Notas de Aplicação!",
+        exna: "Sem Exemplos de Notas de Aplicação!",
+        ne: "Sem Notas de Exclusão!",
+        ti: "Sem Termos de Índice",
+      },
     };
   },
   computed: {
@@ -101,7 +119,7 @@ export default {
         case "ti":
           return "termo";
         default:
-          return [];
+          return "";
       }
     },
   },
@@ -109,7 +127,8 @@ export default {
     notaDuplicada: function (notas) {
       if (notas.length > 1) {
         var lastNota = notas[notas.length - 1][this.campo];
-        var duplicados = notas.filter((n) => n[this.campo] == lastNota);
+        var semEspacos = lastNota.trim();
+        var duplicados = notas.filter((n) => n[this.campo] == semEspacos);
         if (duplicados.length > 1) {
           return true;
         } else return false;
@@ -119,6 +138,9 @@ export default {
     },
 
     insereNovaNota: async function (notas) {
+      if(notas.length > 0) 
+        notas[notas.length - 1][this.campo] = (notas[notas.length - 1][this.campo]).trim()
+        //console.log('['+ notas[notas.length - 1][this.campo] + ']')
       if (notas.length > 0 && notas[notas.length - 1][this.campo] == "") {
         this.vaziaFlag = true;
       } else if (this.notaDuplicada(notas)) {

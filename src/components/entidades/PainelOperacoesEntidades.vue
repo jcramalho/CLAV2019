@@ -7,23 +7,23 @@
         <v-btn
           v-if="this.acao == 'Criação'"
           rounded
-          class="indigo accent-4 white--text"
+          class="teal darken-4 white--text"
           @click="criarAlterarEntidade"
-          >Criar Entidade</v-btn
+          >Submeter</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
           rounded
-          class="indigo accent-4 white--text"
+          class="teal darken-4 white--text"
           @click="criarAlterarEntidade"
-          >Alterar Entidade</v-btn
+          >Submeter</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Extinção'"
           rounded
           class="indigo accent-4 white--text"
           @click="criarAlterarEntidade"
-          >Extinguir Entidade</v-btn
+          >Extinguir</v-btn
         >
       </v-col>
 
@@ -34,7 +34,7 @@
           rounded
           class="red darken-4"
           @click="eliminarEntidade"
-          >Cancelar Criação</v-btn
+          >Cancelar</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Alteração'"
@@ -42,7 +42,7 @@
           rounded
           class="red darken-4"
           @click="eliminarEntidade"
-          >Cancelar Alteração</v-btn
+          >Cancelar</v-btn
         >
         <v-btn
           v-else-if="this.acao == 'Extinção'"
@@ -357,6 +357,7 @@ export default {
 
     async ressubmeterPedido() {
       try {
+        this.pedido.objeto.dados = this.e;
         let pedido = JSON.parse(JSON.stringify(this.pedido));
         let estado = "Ressubmetido";
 
@@ -390,8 +391,38 @@ export default {
       this.pedidoEliminado = true;
     },
 
+    async cancelarPedido() {
+      try {
+        let pedido = JSON.parse(JSON.stringify(this.pedido));
+
+        let dadosUtilizador = this.$verifyTokenUser();
+
+        let estado = "Cancelado";
+
+        pedido.estado = estado;
+
+        const novaDistribuicao = {
+          estado: estado,
+          responsavel: dadosUtilizador.email,
+          data: new Date(),
+          despacho: "Cancelar",
+        };
+
+        await this.$request("put", "/pedidos", {
+          pedido: pedido,
+          distribuicao: novaDistribuicao,
+        });
+        this.$router.push(`/pedidos/submissao/${pedido.codigo}`);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
     cancelarCriacaoEntidade: function () {
-      this.$router.push("/");
+      if (this.pedido) {
+        this.cancelarPedido();
+        this.$router.push("/");
+      } else this.$router.push("/");
     },
   },
 };

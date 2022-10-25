@@ -13,7 +13,7 @@
 
     <v-stepper v-model="stepNo" vertical style="background-color: #f3f7fc">
       <v-stepper-step :complete="stepNo > 1" step="1"
-        ><b> Identificação das entidades ou tipologias da Tabela de Seleção</b>
+        ><b> Identificação das entidades da Tabela de Seleção</b>
       </v-stepper-step>
       <span v-if="stepNo > 1">
         <v-row
@@ -134,7 +134,7 @@
                 viewBox="0 0 20.71 37.261"
                 fill="#ffffff"
               />
-              <p>Retroceder</p>
+              <p>Voltar</p>
             </v-btn>
           </v-col>
 
@@ -453,15 +453,20 @@ export default {
             "get",
             "/classes?nivel=3&info=completa"
           );
+
+          var p = -1
           for (let i = 0; i < response.data.length; i++) {
-            this.listaProcessos.procs.push(response.data[i]);
-            this.listaProcessos.procs[i].chave = i;
-            this.listaProcessos.procs[i].edited = false;
-            this.listaProcessos.procs[i].descriptionEdited = false;
-            this.listaProcessos.procs[i].preSelected = 0;
-            // Para poder ser filtrado na tabela
-            this.listaProcessos.procs[i].preSelectedLabel = "";
-            this.listaProcessos.procs[i].entidades = [];
+            if(response.data[i].status == 'A'){
+              this.listaProcessos.procs.push(response.data[i]);
+              p ++;
+              this.listaProcessos.procs[p].chave = i;
+              this.listaProcessos.procs[p].edited = false;
+              this.listaProcessos.procs[p].descriptionEdited = false;
+              this.listaProcessos.procs[p].preSelected = 0;
+              // Para poder ser filtrado na tabela
+              this.listaProcessos.procs[p].preSelectedLabel = "";
+              this.listaProcessos.procs[p].entidades = [];
+            }
           }
           // this.listaProcessos.procs.sort((a, b) => (a.proc > b.proc ? 1 : -1));
         }

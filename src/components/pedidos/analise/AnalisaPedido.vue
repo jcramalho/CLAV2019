@@ -1,10 +1,10 @@
 <template>
   <v-row class="ma-1">
     <Loading v-if="loading" :message="'pedido'" />
-    <v-row v-else>
+    <v-row v-else class="ma-1">
       <v-col>
         <v-card>
-          <v-card-title class="clav-linear-background white--text">
+          <v-card-title class="indigo darken-4 title white--text mb-5" dark>
             Análise do pedido: {{ pedido.codigo }} - {{ pedido.objeto.acao }} de
             {{ pedido.objeto.tipo }}
             <v-spacer />
@@ -85,11 +85,7 @@
               fase="analise"
             />
 
-            <AnalisaPPD
-              v-else-if="pedido.objeto.tipo === 'PPD'"
-              :p="pedido"
-              fase="analise"
-            />
+            <AnalisaPPD v-else-if="pedido.objeto.tipo === 'PPD'" :p="pedido" fase="analise" />
 
             <AnalisaDefault v-else :p="pedido" />
           </v-card-text>
@@ -113,8 +109,7 @@
 
                 <span
                   v-else-if="
-                    pedido.objeto.tipo === 'Entidade' ||
-                    pedido.objeto.tipo === 'Tipologia'
+                    pedido.objeto.tipo === 'Entidade' || pedido.objeto.tipo === 'Tipologia'
                   "
                 >
                   <b>{{ pedido.objeto.tipo }}:</b>
@@ -140,19 +135,19 @@
             <AnalisaDefault v-else :p="pedido" />
           </v-card-text>
         </v-card>
+
+        <v-snackbar
+          v-model="snackbar.visivel"
+          color="warning"
+          multi-linagh
+          :timeout="6000"
+          top
+        >
+          {{ snackbar.texto }}
+          <v-btn dark text @click="snackbar.visivel = false">Fechar</v-btn>
+        </v-snackbar>
       </v-col>
     </v-row>
-
-    <v-snackbar
-      v-model="snackbar.visivel"
-      color="warning"
-      multi-linagh
-      :timeout="6000"
-      top
-    >
-      {{ snackbar.texto }}
-      <v-btn dark text @click="snackbar.visivel = false">Fechar</v-btn>
-    </v-snackbar>
 
     <!-- Dialog de erros -->
     <v-dialog v-model="erroDialog.visivel" width="50%" persistent>
