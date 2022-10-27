@@ -94,6 +94,7 @@ downloadInstallScript() {
         chmod +x $NAME
         ./$NAME --install
         rm $NAME
+        $EXEC --set-default-ca --server letsencrypt
         $EXEC --upgrade --auto-upgrade
     fi
 }
