@@ -106,7 +106,7 @@ getCertificate() {
         mkdir -p $WEBDIR
     fi
 
-    $EXEC --issue $domains -w $WEBDIR
+    $EXEC --issue $domains -w $WEBDIR --server letsencrypt
 }
 
 installCertificate() {
