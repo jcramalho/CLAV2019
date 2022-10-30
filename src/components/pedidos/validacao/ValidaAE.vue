@@ -560,7 +560,7 @@ export default {
             }
           }
 
-          const estado = "Em Despacho";
+          const estado = "Validado";
           pedido.estado = estado;
 
           // Atualizar histórico
