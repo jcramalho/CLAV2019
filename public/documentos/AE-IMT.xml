@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autoEliminacao xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <tipo>PGD_LC</tipo>
+    <legislacao>leg_Portaria_381_2019</legislacao>
+    <entidades>
+        <entidade>A3ES</entidade>
+    </entidades>
+    <classes>
+        <classe>
+            <codigo>150.10.701.01</codigo>
+            <dataInicial>1995</dataInicial>
+            <dataFinal>2005</dataFinal>
+            <numAgregacoes>10</numAgregacoes>
+            <medicaoPapel>1</medicaoPapel>
+            <medicaoDigital>123.456</medicaoDigital>
+            <medicaoOutro>456.789</medicaoOutro>
+        </classe>
+        <classe>
+            <codigo>150.20.102</codigo>
+            <dataInicial>1995</dataInicial>
+            <dataFinal>2005</dataFinal>
+            <numAgregacoes>15</numAgregacoes>
+            <medicaoPapel>456.789</medicaoPapel>
+            <medicaoDigital>123.456</medicaoDigital>
+            <medicaoOutro>1</medicaoOutro>
+            <donos>
+                <dono>DGLAB</dono>
+                <dono>FCT</dono>
+            </donos>
+        </classe>
+    </classes>
+</autoEliminacao>

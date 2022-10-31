@@ -1,0 +1,26 @@
+{
+    "tipo": "PGD_LC",
+    "legislacao": "leg_Portaria_381_2019",
+    "entidades": ["A3ES"],
+    "classes": [
+        {
+        	"codigo": "150.10.701.01",
+            "dataInicial": 1995,
+            "dataFinal": 2005,
+            "numAgregacoes": 10,
+            "medicaoPapel": 1,
+            "medicaoDigital": "123,456",
+            "medicaoOutro": "456,789"
+        },
+        {
+            "codigo": "150.20.102",
+            "dataInicial": 1995,
+            "dataFinal": 2005,
+            "numAgregacoes": 15,
+            "medicaoPapel": "456,789",
+            "medicaoDigital": "123,456",
+            "medicaoOutro": 1,
+            "dono": ["DGLAB","FCT"]
+        }
+    ]
+}
