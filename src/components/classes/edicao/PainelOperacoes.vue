@@ -1,97 +1,54 @@
 <template>
   <div>
     <v-row v-if="!c.codigo == ''" class="align-center pa-3" style="text-align: center">
-      <!-- Guardar trabalho......................... -->
+      <!-- Guardar......................... -->
       <v-col>
         <v-btn
-          @click="guardarTrabalho"
+          dark
           rounded
-          class="white--text clav-linear-background"
+          class="ma-2 indigo darken-4"
+          @click="guardarTrabalho"
         >
-          <unicon
-            name="guardar-icon"
-            width="20"
-            height="20"
-            viewBox="0 0 20.71 20.71"
-            fill="#ffffff"
-          />
-          <p class="ml-2">Guardar Trabalho</p>
+          Guardar
         </v-btn>
       </v-col>
 
-      <!-- Continuar trabalho......................... -->
-      <v-col>
-        <v-btn
-          @click="guardarTrabalho"
-          rounded
-          class="white--text clav-linear-background"
-        >
-          <unicon
-            name="relogio-icon"
-            width="20"
-            height="20"
-            viewBox="0 0 20.71 20.71"
-            fill="#ffffff"
-          />
-          <p class="ml-2">Continuar Depois</p>
-        </v-btn>
-      </v-col>
-
-      <!-- Validar classe......................... -->
+      <!-- Validar......................... -->
       <valida-classe-info-box :c="c" :original="o" />
 
-      <!-- Alterar classe......................... -->
+      <!-- Submeter: alterar a classe......................... -->
       <v-col>
         <v-btn
           @click="alterarClasse"
-          color="success darken-1"
+          dark
           rounded
-          class="white--text"
-          :class="{
-            'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown,
-          }"
-          style="
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
-              0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-            outline: none !important;
-          "
+          class="ma-2 teal darken-4"
         >
-          <unicon
-            name="adicionar-icon"
-            width="20"
-            height="20"
-            viewBox="0 0 20.71 20.71"
-            fill="#ffffff"
-          />
-          <p class="ml-2">Submeter</p>
+          Submeter
         </v-btn>
       </v-col>
+
+      <!-- Sair: grava e sai......................... -->
+      <v-col>
+        <v-btn
+          dark
+          rounded
+          class="ma-2 indigo darken-4"
+          @click="guardarTrabalho"
+        >
+          Sair
+        </v-btn>
+      </v-col>
+
       <!-- Cancelar alteração......................... -->
       <v-col>
         <v-btn
           @click="eliminarClasse"
-          color="red darken-4"
+          dark
           rounded
-          class="white--text"
-          :class="{
-            'px-8': $vuetify.breakpoint.lgAndUp,
-            'px-2': $vuetify.breakpoint.mdAndDown,
-          }"
-          style="
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
-              0 2px 4px -1px rgba(0, 0, 0, 0.36) !important;
-            outline: none !important;
-          "
+          class="ma-2 red darken-4"
         >
-          <unicon
-            name="eliminar-icon"
-            width="20"
-            height="20"
-            viewBox="0 0 20.71 20.71"
-            fill="#ffffff"
-          />
-          <p class="ml-2">Eliminar</p>
+          Cancelar
         </v-btn>
       </v-col>
     </v-row>
