@@ -10,7 +10,7 @@
           <li class="ml-6">
             Um formulário para ficheiro JSON (veja
             <a
-              :href="`${publicPath}documentos/Formulario_auto_importacao_classes_series.csv`"
+              :href="`${publicPath}documentos/AE-IMT.json`"
               download
               >aqui</a
             >)
@@ -18,7 +18,7 @@
           <li class="ml-6">
             um formulário para ficheiro XML (veja
             <a
-              :href="`${publicPath}documentos/Formulario_auto_importacao_agregacoes_UI.csv`"
+              :href="`${publicPath}documentos/AE-IMT.xml`"
               download
               >aqui</a
             >)

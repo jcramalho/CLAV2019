@@ -40,8 +40,7 @@ export default {
   },
   async created() {
     let res = await this.$request("get", "/contador/despacho");
-    this.numeroDespacho =
-      res.data.valor.toString() + "/" + new Date().getFullYear();
+    this.numeroDespacho = res.data.valor.toString() + "/" + new Date().getFullYear();
   },
   watch: {
     pedido(newValue) {
@@ -56,7 +55,7 @@ export default {
           this.sumario = newValue.objeto.dados.geral.nomePPD;
           break;
         case "Auto de Eliminação":
-          this.sumario = newValue.objeto.dados.id;
+          this.sumario = "Auto de Eliminação";
           break;
         default:
           this.sumario = newValue.objeto.dados.titulo;
@@ -232,7 +231,7 @@ export default {
           //alert(JSON.stringify(this.pedido.objeto.dados))
           this.showPedido = true
           //await this.$request("post", "/ppd/registar",  this.pedido.objeto.dados );
-        } else if (this.pedido.objeto.tipo == 'Auto de Eliminação') {
+        } /*else if (this.pedido.objeto.tipo == 'Auto de Eliminação') {
           despachoAprovacao = {
             id: "leg_" + nanoid(),
             numero: this.numeroDespacho,
@@ -240,20 +239,13 @@ export default {
             tipo: "Despacho",
             data: despacho.data,
             link: "",
-            diplomaFonte: "",
+            diplomaFonte: this.pedido.objeto.dados.tipo.slice(3).replace("_","/"),
             dataRevogacao: "",
             estado: "Ativo",
-            entidadesSel: [
-              {
-                sigla: "DGLAB",
-                designacao:
-                  "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
-                id: "ent_DGLAB"
-              }
-            ],
+            entidadesSel: [],
             processosSel: []
           };
-        }
+        }*/
     
         await this.$request("post", "/legislacao", despachoAprovacao);
         
@@ -271,8 +263,6 @@ export default {
 
         this.pedido.estado = "Validado";
 
-        console.log(this.pedido)
-        console.log(novaDistribuicao)
         await this.$request("put", "/pedidos", {
           pedido: this.pedido,
           distribuicao: novaDistribuicao
