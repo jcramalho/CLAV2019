@@ -601,7 +601,10 @@ export default {
       return marked(d || "");
     },
     compiledMarkdownOmmitParagraph: function (d) {
-      return new marked.inlineLexer(d || "", []);
+      if (d != ""){
+        return d.replace(/(\s*\<p\>\s*)|(\s*\<\/p\>\s*)/g, " ").trim();
+      }
+      else return ""
     },
   },
 
