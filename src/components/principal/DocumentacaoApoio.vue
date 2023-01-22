@@ -601,7 +601,7 @@ export default {
       return marked(d || "");
     },
     compiledMarkdownOmmitParagraph: function (d) {
-      return marked.inlineLexer(d || "", []);
+      return new marked.inlineLexer(d || "", []);
     },
   },
 
