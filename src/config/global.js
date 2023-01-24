@@ -10,6 +10,6 @@ const dominioDefault = "https://clav.dglab.gov.pt"; //para o nginx proxy quando 
 const dominio = process.env.VUE_APP_API_URL || dominioDefault;
 const apiVersion = process.env.VUE_APP_API_VERSION || "v2";
 
-module.exports.interfaceVersion = process.env.VUE_APP_INTERFACE_VERSION || "2022-10-18";
+module.exports.interfaceVersion = process.env.VUE_APP_INTERFACE_VERSION || "2023-01-24";
 
 module.exports.host = dominio + "/" + apiVersion;

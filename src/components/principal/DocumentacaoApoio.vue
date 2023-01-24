@@ -601,11 +601,12 @@ export default {
       return marked(d || "");
     },
     compiledMarkdownOmmitParagraph: function (d) {
-      var res = ""
+      return marked.parseInline(d)
+      /*var res = ""
       if (d != ""){
         res = d.replace(/(\s*\<p\>\s*)|(\s*\<\/p\>\s*)/g, " ").trim();
       }
-      return marked(res)
+      return marked(res)*/
     },
   },
 
